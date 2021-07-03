@@ -2,7 +2,7 @@
 
 import pytest
 
-from physdes-py.skeleton import fib
+from physdes.skeleton import fib
 
 __author__ = "Wai-Shing Luk"
 __copyright__ = "Wai-Shing Luk"

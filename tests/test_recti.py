@@ -1,6 +1,6 @@
 from random import randint
 
-from physdes-py.recti import interval, point, rectangle
+from physdes.recti import interval, point, rectangle
 
 
 class my_point(point):

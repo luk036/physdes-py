@@ -1,12 +1,12 @@
-from physdes-py.halton_int import halton
-from physdes-py.polygon import (
+from physdes.halton_int import halton
+from physdes.polygon import (
     create_test_polygon,
     create_xmono_polygon,
     create_ymono_polygon,
     point_in_polygon,
     polygon
 )
-from physdes-py.recti import point
+from physdes.recti import point
 
 
 def test_polygon():

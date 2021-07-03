@@ -1,6 +1,6 @@
-from physdes-py.halton_int import halton
-from physdes-py.recti import point
-from physdes-py.rpolygon import (
+from physdes.halton_int import halton
+from physdes.recti import point
+from physdes.rpolygon import (
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
