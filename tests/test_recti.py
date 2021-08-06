@@ -25,6 +25,7 @@ def test_Interval():
     a = interval(4, 8)
     b = interval(5, 6)
 
+    assert 3 < a
     assert not (a < b)
     assert not (b < a)
     assert not (a > b)

@@ -1,105 +1,168 @@
-class vector2:
-    __slots__ = ('_x', '_y')
+from numpy import isscalar
+from .vector2 import vector2
 
-    def __init__(self, x, y):
-        self._x = x
-        self._y = y
+def overlap(lhs, rhs) -> bool:
+    """[summary]
 
-    @property
-    def x(self):
-        return self._x
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
 
-    @property
-    def y(self):
-        return self._y
+    Returns:
+        bool: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.overlaps(rhs)
+    elif not isscalar(rhs):
+        return rhs.overlaps(lhs)
+    else:
+        return lhs == rhs
 
-    def copy(self):
-        return vector2(self._x, self._y)
 
-    def __iadd__(self, rhs):
-        self._x += rhs.x
-        self._y += rhs.y
-        return self
+def contain(lhs, rhs) -> bool:
+    """[summary]
 
-    def __add__(self, rhs):
-        tmp = self.copy()
-        return tmp.__iadd__(rhs)
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
 
-    def __isub__(self, rhs):
-        self._x -= rhs.x
-        self._y -= rhs.y
-        return self
+    Returns:
+        bool: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.contains(rhs)
+    elif not isscalar(rhs):
+        return False
+    else:
+        return lhs == rhs
 
-    def __sub__(self, rhs):
-        tmp = self.copy()
-        return tmp.__isub__(rhs)
 
-    def __imul__(self, alpha):
-        self._x *= alpha
-        self._y *= alpha
-        return self
+def intersection(lhs, rhs):
+    """[summary]
 
-    def __mul__(self, alpha):
-        tmp = self.copy()
-        return tmp.__imul__(alpha)
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
 
-    def __idiv__(self, alpha):
-        self._x /= alpha
-        self._y /= alpha
-        return self
+    Returns:
+        [type]: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.intersection_with(rhs)
+    elif not isscalar(rhs):
+        return rhs.intersection_with(lhs)
+    else:
+        assert lhs == rhs;
+        return lhs
 
-    def __div__(self, alpha):
-        tmp = self.copy()
-        return tmp.__idiv__(alpha)
 
-    def __eq__(self, rhs) -> bool:
-        return (self._x, self._y) == (rhs._x, rhs._y)
+def min_dist(lhs, rhs):
+    """[summary]
 
-    def __ne__(self, rhs) -> bool:
-        return not self.__eq__(rhs)
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
 
-    def cross(self, rhs):
-        return self._x * rhs._y - rhs._x * self._y
+    Returns:
+        [type]: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.min_dist_with(rhs)
+    elif not isscalar(rhs):
+        return rhs.min_dist_with(lhs)
+    else:
+        return abs(lhs - rhs)
 
-    def __str__(self):
-        return '<{self.x}, {self.y}>'.format(self=self)
+
+def min_dist_change(lhs, rhs):
+    """[summary]
+
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.min_dist_change_with(rhs)
+    elif not isscalar(rhs):
+        return rhs.min_dist_change_with(lhs)
+    else:
+        return abs(lhs - rhs)
 
 
 class point:
     __slots__ = ('_x', '_y')
 
     def __init__(self, x, y):
+        """[summary]
+
+        Args:
+            x ([type]): [description]
+            y ([type]): [description]
+        """
         self._x = x
         self._y = y
 
     @property
     def x(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return self._x
 
     @property
     def y(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return self._y
 
     def copy(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return point(self._x, self._y)
 
     def __lt__(self, rhs) -> bool:
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return (self.x, self.y) < (rhs.x, rhs.y)
 
-    def __gt__(self, rhs) -> bool:
-        return (self.x, self.y) > (rhs.x, rhs.y)
-
     def __le__(self, rhs) -> bool:
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return (self.x, self.y) <= (rhs.x, rhs.y)
 
-    def __ge__(self, rhs) -> bool:
-        return (self.x, self.y) >= (rhs.x, rhs.y)
-
     def __eq__(self, rhs) -> bool:
-        return (self.x, self.y) == (rhs.x, rhs.y)
+        """[summary]
 
-    def __ne__(self, rhs) -> bool:
-        return (self.x, self.y) != (rhs.x, rhs.y)
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
+        return (self.x, self.y) == (rhs.x, rhs.y)
 
     def __iadd__(self, rhs: vector2):
         self._x += rhs.x
@@ -107,8 +170,10 @@ class point:
         return self
 
     def __add__(self, rhs: vector2):
-        tmp = self.copy()
-        return tmp.__iadd__(rhs)
+        if isinstance(rhs, vector2):
+            return point(self.x + rhs.x, self.y + rhs.y)
+        else:
+            return point(self.x + rhs, self.y + rhs)
 
     def __isub__(self, rhs: vector2):
         self._x -= rhs.x
@@ -117,15 +182,17 @@ class point:
 
     def __sub__(self, rhs):
         if isinstance(rhs, vector2):
-            tmp = self.copy()
-            return tmp.__isub__(rhs)
+            return point(self.x - rhs.x, self.y - rhs.y)
         elif isinstance(rhs, point):
             return vector2(self.x - rhs.x, self.y - rhs.y)
         else:
-            raise NotImplementedError()
+            return point(self.x - rhs, self.y - rhs)
 
     def flip(self):
         return point(self.y, self.x)
+
+    def overlap(self, other):
+        return overlap(self.x, other.x) and overlap(self.y, other.y)
 
     def __str__(self):
         return '({self.x}, {self.y})'.format(self=self)
@@ -148,45 +215,112 @@ class interval:
     __slots__ = ('_lower', '_upper')
 
     def __init__(self, lower, upper):
+        """[summary]
+
+        Args:
+            lower ([type]): [description]
+            upper ([type]): [description]
+        """
+        assert not (upper < lower)
         self._lower = lower
         self._upper = upper
 
     @property
     def lower(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return self._lower
 
     @property
     def upper(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return self._upper
 
     def copy(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return interval(self._lower, self._upper)
 
     def len(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return self.upper - self.lower
 
     def __eq__(self, rhs) -> bool:
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return (self.lower, self.upper) == (rhs.lower, rhs.upper)
 
     def __lt__(self, rhs) -> bool:
-        if isinstance(rhs, interval):
-            return self.upper < rhs.lower
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return self.upper < rhs
 
     def __gt__(self, rhs) -> bool:
-        if isinstance(rhs, interval):
-            return self.lower > rhs.upper
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return self.lower > rhs
 
     def __le__(self, rhs) -> bool:
-        if isinstance(rhs, interval):
-            return not (rhs.upper < self.lower)
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return not (rhs < self.lower)
 
     def __ge__(self, rhs) -> bool:
-        if isinstance(rhs, interval):
-            return not (self.upper < rhs.lower)
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         return not (self.upper < rhs)
+
+    def __neg__(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
+        return interval(-self.upper, -self.lower)
 
     def contains(self, a) -> bool:
         # `a` can be an interval or int
@@ -218,9 +352,6 @@ class rectangle(point):
 
     def flip(self):
         return rectangle(self.y, self.x)
-
-    def __str__(self):
-        return '({self.x}, {self.y})'.format(self=self)
 
     # `a` can be point, vsegment, hsegment, or rectangle
     def contains(self, a) -> bool:
