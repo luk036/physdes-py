@@ -2,5 +2,6 @@ name: physdes-py
 channels:
   - conda-forge
 dependencies:
+  - numpy
   - pytest
   - pytest-benchmark
