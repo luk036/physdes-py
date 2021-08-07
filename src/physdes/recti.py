@@ -1,99 +1,9 @@
-from numpy import isscalar
+from .generic import contain, intersection, min_dist, overlap
 from .vector2 import vector2
-
-def overlap(lhs, rhs) -> bool:
-    """[summary]
-
-    Args:
-        lhs ([type]): [description]
-        rhs ([type]): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if not isscalar(lhs):
-        return lhs.overlaps(rhs)
-    elif not isscalar(rhs):
-        return rhs.overlaps(lhs)
-    else:
-        return lhs == rhs
-
-
-def contain(lhs, rhs) -> bool:
-    """[summary]
-
-    Args:
-        lhs ([type]): [description]
-        rhs ([type]): [description]
-
-    Returns:
-        bool: [description]
-    """
-    if not isscalar(lhs):
-        return lhs.contains(rhs)
-    elif not isscalar(rhs):
-        return False
-    else:
-        return lhs == rhs
-
-
-def intersection(lhs, rhs):
-    """[summary]
-
-    Args:
-        lhs ([type]): [description]
-        rhs ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    if not isscalar(lhs):
-        return lhs.intersection_with(rhs)
-    elif not isscalar(rhs):
-        return rhs.intersection_with(lhs)
-    else:
-        assert lhs == rhs;
-        return lhs
-
-
-def min_dist(lhs, rhs):
-    """[summary]
-
-    Args:
-        lhs ([type]): [description]
-        rhs ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    if not isscalar(lhs):
-        return lhs.min_dist_with(rhs)
-    elif not isscalar(rhs):
-        return rhs.min_dist_with(lhs)
-    else:
-        return abs(lhs - rhs)
-
-
-def min_dist_change(lhs, rhs):
-    """[summary]
-
-    Args:
-        lhs ([type]): [description]
-        rhs ([type]): [description]
-
-    Returns:
-        [type]: [description]
-    """
-    if not isscalar(lhs):
-        return lhs.min_dist_change_with(rhs)
-    elif not isscalar(rhs):
-        return rhs.min_dist_change_with(lhs)
-    else:
-        return abs(lhs - rhs)
 
 
 class point:
-    __slots__ = ('_x', '_y')
+    __slots__ = ("_x", "_y")
 
     def __init__(self, x, y):
         """[summary]
@@ -165,22 +75,54 @@ class point:
         return (self.x, self.y) == (rhs.x, rhs.y)
 
     def __iadd__(self, rhs: vector2):
+        """[summary]
+
+        Args:
+            rhs (vector2): [description]
+
+        Returns:
+            [type]: [description]
+        """
         self._x += rhs.x
         self._y += rhs.y
         return self
 
-    def __add__(self, rhs: vector2):
+    def __add__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if isinstance(rhs, vector2):
             return point(self.x + rhs.x, self.y + rhs.y)
         else:
             return point(self.x + rhs, self.y + rhs)
 
     def __isub__(self, rhs: vector2):
+        """[summary]
+
+        Args:
+            rhs (vector2): [description]
+
+        Returns:
+            [type]: [description]
+        """
         self._x -= rhs.x
         self._y -= rhs.y
         return self
 
     def __sub__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if isinstance(rhs, vector2):
             return point(self.x - rhs.x, self.y - rhs.y)
         elif isinstance(rhs, point):
@@ -189,13 +131,59 @@ class point:
             return point(self.x - rhs, self.y - rhs)
 
     def flip(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return point(self.y, self.x)
 
-    def overlap(self, other):
+    def overlaps(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         return overlap(self.x, other.x) and overlap(self.y, other.y)
 
+    def contains(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        return contain(self.x, other.x) and contain(self.y, other.y)
+
+    def intersection_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        return point(intersection(self.x, other.x), intersection(self.y, other.y))
+
+    def min_dist_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        return min_dist(self.x, other.x) + min_dist(self.y, other.y)
+
     def __str__(self):
-        return '({self.x}, {self.y})'.format(self=self)
+        return "({self.x}, {self.y})".format(self=self)
 
 
 class dualpoint(point):
@@ -212,7 +200,7 @@ class dualpoint(point):
 
 
 class interval:
-    __slots__ = ('_lower', '_upper')
+    __slots__ = ("_lower", "_upper")
 
     def __init__(self, lower, upper):
         """[summary]
@@ -329,7 +317,7 @@ class interval:
         return not (a < self.lower or self.upper < a)
 
     def __str__(self):
-        return '[{self.lower}, {self.upper}]'.format(self=self)
+        return "[{self.lower}, {self.upper}]".format(self=self)
 
 
 class rectangle(point):
@@ -355,8 +343,7 @@ class rectangle(point):
 
     # `a` can be point, vsegment, hsegment, or rectangle
     def contains(self, a) -> bool:
-        return self.x.contains(a.x)\
-            and self.y.contains(a.y)
+        return self.x.contains(a.x) and self.y.contains(a.y)
 
     def area(self):
         return self.x.len() * self.y.len()
@@ -371,8 +358,7 @@ class vsegment(point):
 
     # `a` can be point or vsegment
     def contains(self, a) -> bool:
-        return self.x == a.x\
-            and self.y.contains(a.y)
+        return self.x == a.x and self.y.contains(a.y)
 
     def flip(self):
         return hsegment(self.y, self.x)
@@ -387,8 +373,7 @@ class hsegment(point):
 
     # `a` can be point or hsegment
     def contains(self, a) -> bool:
-        return self.y == a.y \
-            and self.x.contains(a.x)
+        return self.y == a.y and self.x.contains(a.x)
 
     def flip(self):
         return vsegment(self.y, self.x)
@@ -402,7 +387,7 @@ def test_recti(obj):
     assert obj3 == obj
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     v = vector2(1, 2)
     p = point(3, 4)
     q = point(5, 6)

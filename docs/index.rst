@@ -1,6 +1,6 @@
-=========
+==========
 physdes-py
-=========
+==========
 
 This is the documentation of **physdes-py**.
 
@@ -29,6 +29,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   Overview <readme>
    License <license>
    Authors <authors>
    Changelog <changelog>
