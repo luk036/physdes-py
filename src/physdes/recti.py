@@ -1,6 +1,6 @@
-from .generic import contain, intersection, min_dist, overlap
+from .generic import contain, intersection, min_dist, min_dist_change, overlap
 from .vector2 import vector2
-
+from numpy import isscalar
 
 class point:
     __slots__ = ("_x", "_y")
@@ -310,11 +310,97 @@ class interval:
         """
         return interval(-self.upper, -self.lower)
 
+    def __iadd__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs (vector2): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        self._lower += rhs
+        self._upper += rhs
+        return self
+
+    def __add__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        return interval(self.lower + rhs, self.upper + rhs)
+
+    def __isub__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs (vector2): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        self._lower -= rhs
+        self._upper -= rhs
+        return self
+
+    def __sub__(self, rhs):
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        return interval(self.lower - rhs, self.upper - rhs)
+
+    def overlaps(self, a) -> bool:
+        """[summary]
+
+        Args:
+            a ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
+        return not (self < a or a < self)
+
     def contains(self, a) -> bool:
         # `a` can be an interval or int
-        if isinstance(a, interval):
-            return not (a.lower < self.lower or self.upper < a.upper)
-        return not (a < self.lower or self.upper < a)
+        if isscalar(a):
+            return self.lower <= a and a <= self.upper
+        return self.lower <= a.lower and a.upper <= self.upper
+
+    def intersection_with(self, other):
+        # `a` can be an interval or int
+        if isscalar(other):
+            return other
+        return interval(max(self.lower, other.lower),
+                        min(self.upper, other.upper))
+
+    def min_dist_with(self, other):
+        if self < other:
+            return min_dist(self.upper, other);
+        if other < self:
+            return min_dist(self.lower, other);
+        return 0;
+
+    def min_dist_change_with(self, other):
+        if self < other:
+            self._lower = self._upper
+            return min_dist_change(self._upper, other);
+        if other < self:
+            self._upper = self._lower
+            return min_dist_change(self._lower, other);
+        if isscalar(other):
+            self._upper = self._lower = other;
+        else:
+            self = other = self.intersection_with(other);
+        return 0;
 
     def __str__(self):
         return "[{self.lower}, {self.upper}]".format(self=self)
