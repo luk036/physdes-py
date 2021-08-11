@@ -30,8 +30,7 @@ def test_interval():
     assert not b.contains(a)
     assert a.overlaps(b)
     assert b.overlaps(a)
-
-    # assert min_dist(a, b) == 0
+    assert min_dist(a, b) == 0
 
 
 def test_interval_of_interval():
@@ -57,13 +56,17 @@ def test_interval_of_interval():
     assert a.contains(interval(7, 8))
     assert a.overlaps(interval(7, 8))
 
+    # print(max(interval(3, 4), 7))
+    # print(min(interval(8, 9), 8))
     # print(a.intersection_with(interval(7, 8)))
-    # assert a.intersection_with(interval(7, 8)) == 8
+
+    # The following depends on how max() and min() are implemented!!!!
+    assert a.intersection_with(interval(7, 8)) == interval(7, interval(8, 9))
+
     assert a.contains(b)
     assert a.intersection_with(b) == b
     assert not b.contains(a)
     assert a.overlaps(b)
     assert b.overlaps(a)
-
-    # assert min_dist(a, b) == 0
+    assert min_dist(a, b) == 0
 
