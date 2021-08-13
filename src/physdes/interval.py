@@ -214,9 +214,23 @@ class interval:
         Returns:
             [type]: [description]
         """
-        self._lower -= alpha
-        self._upper += alpha
-        return self
+        return interval(self._lower - alpha, self._upper + alpha)
 
     def __str__(self):
         return "[{self.lower}, {self.upper}]".format(self=self)
+
+
+def enlarge(lhs, rhs):
+    """[summary]
+
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.enlarge_with(rhs)
+    else:
+        return interval(lhs - rhs, lhs + rhs)

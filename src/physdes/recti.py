@@ -139,7 +139,7 @@ class point:
         """
         return point(self.y, self.x)
 
-    def overlaps(self, other):
+    def overlaps(self, other) -> bool:
         """[summary]
 
         Args:
@@ -150,7 +150,7 @@ class point:
         """
         return overlap(self.x, other.x) and overlap(self.y, other.y)
 
-    def contains(self, other):
+    def contains(self, other) -> bool:
         """[summary]
 
         Args:
@@ -257,44 +257,3 @@ class hsegment(point):
 
     def flip(self):
         return vsegment(self.y, self.x)
-
-
-def test_recti(obj):
-    print(obj)
-    obj2 = obj.copy()
-    assert obj2 == obj
-    obj3 = obj2.flip().flip()
-    assert obj3 == obj
-
-
-if __name__ == "__main__":
-    v = vector2(1, 2)
-    p = point(3, 4)
-    q = point(5, 6)
-    intv1 = interval(2, 8)
-    intv3 = interval(1, 10)
-    R = rectangle(intv1, intv3)
-    vseg = vsegment(4, intv1)
-    hseg = hsegment(intv3, 11)
-
-    print(v)
-    print(q)
-    print(intv1)
-    print(intv3)
-
-    v2 = v.copy()
-    assert v2 == v
-
-    intv2 = intv1.copy()
-    assert intv2 == intv1
-    assert intv2.contains(5)
-    assert intv3.contains(intv2)
-
-    test_recti(p)
-    test_recti(vseg)
-    test_recti(hseg)
-    test_recti(R)
-
-    assert R.contains(p)
-    assert R.contains(vseg)
-    assert not R.contains(hseg)
