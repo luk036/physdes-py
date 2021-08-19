@@ -49,7 +49,14 @@ class vdcorput:
 
 class halton:
     """Generate Halton sequence"""
+
     def __init__(self, base: List[int], scale: List[int]):
+        """[summary]
+
+        Args:
+            base (List[int]): [description]
+            scale (List[int]): [description]
+        """
         self._vdc0 = vdcorput(base[0], scale[0])
         self._vdc1 = vdcorput(base[1], scale[1])
 
@@ -62,6 +69,11 @@ class halton:
         return (self._vdc0(), self._vdc1())
 
     def reseed(self, seed: int):
+        """[summary]
+
+        Args:
+            seed (int): [description]
+        """
         self._vdc0.reseed(seed)
         self._vdc1.reseed(seed)
 

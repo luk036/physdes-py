@@ -38,23 +38,23 @@ class rpolygon:
             res += v1.x * (v1.y - v0.y)
         return res
 
-    def contains(self, p):
-        """inclusively contains a point p
+    # def contains(self, p):
+    #     """inclusively contains a point p
 
-        Args:
-            p ([type]): [description]
+    #     Args:
+    #         p ([type]): [description]
 
-        Returns:
-            [type]: [description]
-        """
-        q = p - self._origin
-        o = vector2(0, 0)
-        c = False
-        for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
-            if (v1.y <= q.y and q.y < v0.y) or (v0.y <= q.y and q.y < v1.y):
-                if v1.x > q.x:
-                    c = not c
-        return c
+    #     Returns:
+    #         [type]: [description]
+    #     """
+    #     q = p - self._origin
+    #     o = vector2(0, 0)
+    #     c = False
+    #     for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
+    #         if (v1.y <= q.y and q.y < v0.y) or (v0.y <= q.y and q.y < v1.y):
+    #             if v1.x > q.x:
+    #                 c = not c
+    #     return c
 
     def to_polygon(self):
         ''' @todo '''

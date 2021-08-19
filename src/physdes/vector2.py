@@ -175,9 +175,22 @@ class vector2:
         return self
 
     def __div__(self, alpha):
+        """[summary]
+
+        Args:
+            alpha ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         return vector2(self.x / alpha, self.y / alpha)
 
     def __str__(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return '<{self.x}, {self.y}>'.format(self=self)
 
 

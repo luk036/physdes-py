@@ -174,18 +174,42 @@ class interval:
         return not (self < a or a < self)
 
     def contains(self, a) -> bool:
+        """[summary]
+
+        Args:
+            a ([type]): [description]
+
+        Returns:
+            bool: [description]
+        """
         # `a` can be an interval or int
         if isscalar(a):
             return self.lower <= a and a <= self.upper
         return self.lower <= a.lower and a.upper <= self.upper
 
     def intersection_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         # `a` can be an interval or int
         if isscalar(other):
             return other
         return interval(max(self.lower, other.lower), min(self.upper, other.upper))
 
     def min_dist_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if self < other:
             return min_dist(self.upper, other)
         if other < self:
@@ -193,6 +217,14 @@ class interval:
         return 0
 
     def min_dist_change_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         if self < other:
             self._lower = self._upper
             return min_dist_change(self._upper, other)
@@ -217,6 +249,11 @@ class interval:
         return interval(self._lower - alpha, self._upper + alpha)
 
     def __str__(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+        """
         return "[{self.lower}, {self.upper}]".format(self=self)
 
 
