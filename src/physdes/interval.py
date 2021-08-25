@@ -184,7 +184,7 @@ class interval:
         """
         # `a` can be an interval or int
         if isscalar(a):
-            return self.lower <= a and a <= self.upper
+            return self.lower <= a <= self.upper
         return self.lower <= a.lower and a.upper <= self.upper
 
     def intersection_with(self, other):

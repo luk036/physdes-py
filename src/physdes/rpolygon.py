@@ -57,12 +57,12 @@ class rpolygon:
     #     return c
 
     def to_polygon(self):
-        ''' @todo '''
+        """@todo"""
         pass
 
 
 def partition(pred, iterable):
-    'Use a predicate to partition entries into true entries and false entries'
+    "Use a predicate to partition entries into true entries and false entries"
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
     return filter(pred, t1), filterfalse(pred, t2)
@@ -175,8 +175,7 @@ def point_in_rpolygon(S, q):
     c = False
     p0 = S[-1]
     for p1 in S:
-        if (p1.y <= q.y and q.y < p0.y) \
-          or (p0.y <= q.y and q.y < p1.y):
+        if (p1.y <= q.y < p0.y) or (p0.y <= q.y < p1.y):
             if p1.x > q.x:
                 c = not c
         p0 = p1
