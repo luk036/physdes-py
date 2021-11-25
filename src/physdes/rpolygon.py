@@ -1,6 +1,6 @@
 from itertools import filterfalse, tee
 
-from .recti import vector2
+from .vector2 import vector2
 
 
 class rpolygon:
