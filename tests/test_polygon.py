@@ -1,4 +1,5 @@
 from physdes.halton_int import halton
+from physdes.point import point
 from physdes.polygon import (
     create_test_polygon,
     create_xmono_polygon,
@@ -6,7 +7,6 @@ from physdes.polygon import (
     point_in_polygon,
     polygon,
 )
-from physdes.point import point
 
 
 def test_polygon():

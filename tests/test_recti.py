@@ -1,8 +1,9 @@
 from random import randint
 
-from physdes.recti import rectangle
 from physdes.interval import interval
 from physdes.point import point
+from physdes.recti import rectangle
+
 
 class my_point(point):
     def __init__(self, x, y, data: float):

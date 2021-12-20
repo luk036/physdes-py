@@ -171,4 +171,3 @@ class point:
             [type]: [description]
         """
         return "({self.x}, {self.y})".format(self=self)
-
