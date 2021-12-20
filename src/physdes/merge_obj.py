@@ -1,6 +1,6 @@
 from .generic import intersection, min_dist
 from .interval import enlarge
-from .recti import point
+from .point import point
 from .vector2 import vector2
 
 
@@ -23,8 +23,8 @@ class merge_obj(point):
         Returns:
             [type]: [description]
         """
-        self._x += rhs.x + rhs.y
-        self._y += rhs.x - rhs.y
+        self.x += rhs.x + rhs.y
+        self.y += rhs.x - rhs.y
         return self
 
     def __isub__(self, rhs: vector2):
@@ -36,8 +36,8 @@ class merge_obj(point):
         Returns:
             [type]: [description]
         """
-        self._x -= rhs.x + rhs.y
-        self._y -= rhs.x - rhs.y
+        self.x -= rhs.x + rhs.y
+        self.y -= rhs.x - rhs.y
         return self
 
     def min_dist_with(self, other):
@@ -49,7 +49,7 @@ class merge_obj(point):
         Returns:
             [type]: [description]
         """
-        return max(min_dist(self._x, other._x), min_dist(self._y, other._y))
+        return max(min_dist(self.x, other.x), min_dist(self.y, other.y))
 
     def enlarge_with(self, alpha):
         """[summary]

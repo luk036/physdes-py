@@ -6,7 +6,7 @@ from physdes.polygon import (
     point_in_polygon,
     polygon,
 )
-from physdes.recti import point
+from physdes.point import point
 
 
 def test_polygon():
