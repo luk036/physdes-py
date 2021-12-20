@@ -4,18 +4,32 @@ from physdes.polygon import (
     create_xmono_polygon,
     create_ymono_polygon,
     point_in_polygon,
-    polygon
+    polygon,
 )
 from physdes.recti import point
 
 
 def test_polygon():
-    coords = [(-2, 2), (0, -1), (-5, 1), (-2, 4), (0, -4), (-4, 3), (-6, -2),
-              (5, 1), (2, 2), (3, -3), (-3, -3), (3, 3), (-3, -4), (1, 4)]
+    coords = [
+        (-2, 2),
+        (0, -1),
+        (-5, 1),
+        (-2, 4),
+        (0, -4),
+        (-4, 3),
+        (-6, -2),
+        (5, 1),
+        (2, 2),
+        (3, -3),
+        (-3, -3),
+        (3, 3),
+        (-3, -4),
+        (1, 4),
+    ]
     S = [point(x, y) for x, y in coords]
     S = create_test_polygon(S)
     for p in S:
-        print("{},{}".format(p.x, p.y), end=' ')
+        print("{},{}".format(p.x, p.y), end=" ")
     P = polygon(S)
     assert P.signed_area_x2() == 110
 
@@ -43,16 +57,16 @@ def test_polygon4():
     coords = [hgen() for _ in range(50)]
     S = create_test_polygon([point(x, y) for x, y in coords])
     print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    print('  <polygon points="', end=' ')
+    print('  <polygon points="', end=" ")
     for p in S:
-        print("{},{}".format(p.x, p.y), end=' ')
+        print("{},{}".format(p.x, p.y), end=" ")
     print('"')
     print('  fill="#88C0D0" stroke="black" />')
     for p in S:
         print('  <circle cx="{}" cy="{}" r="10" />'.format(p.x, p.y))
     qx, qy = hgen()
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
-    print('</svg>')
+    print("</svg>")
     P = polygon(S)
     assert P.signed_area_x2() == -4449600
     assert point_in_polygon(S, point(qx, qy))

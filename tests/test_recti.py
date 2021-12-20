@@ -65,6 +65,7 @@ def test_Rectilinear():
             r = rectangle(xrng, yrng)
             lst += [r]
 
+
 #     S = set()  # set of maximal non-overlapped rectangles
 #     L = []  # list of the removed rectangles
 

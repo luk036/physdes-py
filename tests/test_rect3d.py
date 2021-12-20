@@ -1,6 +1,6 @@
+from physdes.generic import min_dist, overlap
 from physdes.recti import interval, point, rectangle
 from physdes.vector2 import vector2
-from physdes.generic import min_dist, overlap
 
 
 def test_Point_3D():
@@ -84,4 +84,3 @@ def test_Rectangle_3D():
 #     s2 = vsegment(5, yrng1)
 
 #     assert s1.overlaps(s2))
-

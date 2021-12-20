@@ -1,12 +1,13 @@
-from physdes.recti import interval
 from physdes.generic import min_dist
-#include <recti/halton_int.hpp>
+from physdes.recti import interval
+
+# include <recti/halton_int.hpp>
 
 
 def test_interval():
     a = interval(4, 8)
     b = interval(5, 6)
-    v = 3;
+    v = 3
 
     assert not (a < b)
     assert not (b < a)
@@ -36,7 +37,7 @@ def test_interval():
 def test_interval_of_interval():
     a = interval(interval(3, 4), interval(8, 9))
     b = interval(interval(5, 6), interval(6, 7))
-    v = 3;
+    v = 3
 
     assert not (a < b)
     assert not (b < a)
@@ -69,4 +70,3 @@ def test_interval_of_interval():
     assert a.overlaps(b)
     assert b.overlaps(a)
     assert min_dist(a, b) == 0
-

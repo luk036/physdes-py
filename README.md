@@ -12,20 +12,15 @@ Physical Design Python Code
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/physdes-py/badge)](https://www.codefactor.io/repository/github/luk036/physdes-py)
 [![Build status](https://ci.appveyor.com/api/projects/status/f9h5xt1b32mykakg?svg=true)](https://ci.appveyor.com/project/luk036/physdes-py-ku9mp)
 
+## Features
 
-Features
---------
+- Rectilinear Polygon support
 
--   Rectilinear Polygon support
+## See also
 
-See also
---------
+- [physdes](https://github.com/luk036/physdes)
 
--   [physdes](https://github.com/luk036/physdes)
-
-
-Note
-----
+## Note
 
 This project has been set up using PyScaffold 3.2.1. For details and usage
 information on PyScaffold see <https://pyscaffold.org/>.

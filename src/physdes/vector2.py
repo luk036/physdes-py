@@ -1,5 +1,5 @@
 class vector2:
-    __slots__ = ('_x', '_y')
+    __slots__ = ("_x", "_y")
 
     def __init__(self, x, y):
         """[summary]
@@ -191,14 +191,14 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return '<{self.x}, {self.y}>'.format(self=self)
+        return "<{self.x}, {self.y}>".format(self=self)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     v = vector2(3, 4)
     w = -v
-    print(w >= v) 
+    print(w >= v)
 
-    v3d = vector2(v, 5) # vector in 3d
-    w3d = vector2(w, 5) # vector in 3d
+    v3d = vector2(v, 5)  # vector in 3d
+    w3d = vector2(w, 5)  # vector in 3d
     print(w >= v)
