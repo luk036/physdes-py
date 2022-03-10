@@ -136,4 +136,3 @@ class dualpoint(Point):
     @property
     def y(self):
         return self.x
-

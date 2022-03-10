@@ -1,11 +1,11 @@
 from physdes.halton_int import halton
 from physdes.point import Point
 from physdes.rpolygon import (
+    RPolygon,
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
     point_in_rpolygon,
-    RPolygon,
 )
 
 
