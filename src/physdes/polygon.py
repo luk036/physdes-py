@@ -1,9 +1,9 @@
 from itertools import filterfalse, tee
 
-from .vector2 import vector2
+from .vector2 import Vector2
 
 
-class polygon:
+class Polygon:
     def __init__(self, coords):
         """[summary]
 
@@ -13,11 +13,11 @@ class polygon:
         self._origin = coords[0]
         self._vecs = list(c - coords[0] for c in coords[1:])
 
-    def __iadd__(self, rhs: vector2):
+    def __iadd__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -136,14 +136,14 @@ def create_test_polygon(lst):
 
 
 def point_in_polygon(S, q):
-    """determine if a point is within a polygon
+    """determine if a Point is within a Polygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
     (see URL below) with some minor modifications for integer. It returns
     true for strictly interior points, false for strictly exterior, and ub
     for points on the boundary.  The boundary behavior is complex but
     determined; in particular, for a partition of a region into polygons,
-    each point is "in" exactly one polygon.
+    each Point is "in" exactly one Polygon.
     (See p.243 of [O'Rourke (C)] for a discussion of boundary behavior.)
 
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03

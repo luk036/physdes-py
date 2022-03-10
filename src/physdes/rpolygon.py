@@ -1,9 +1,9 @@
 from itertools import filterfalse, tee
 
-from .vector2 import vector2
+from .vector2 import Vector2
 
 
-class rpolygon:
+class RPolygon:
     def __init__(self, coords: list):
         """[summary]
 
@@ -13,11 +13,11 @@ class rpolygon:
         self._origin = coords[0]
         self._vecs = list(c - coords[0] for c in coords[1:])
 
-    def __iadd__(self, rhs: vector2):
+    def __iadd__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -39,7 +39,7 @@ class rpolygon:
         return res
 
     # def contains(self, p):
-    #     """inclusively contains a point p
+    #     """inclusively contains a Point p
 
     #     Args:
     #         p ([type]): [description]
@@ -48,7 +48,7 @@ class rpolygon:
     #         [type]: [description]
     #     """
     #     q = p - self._origin
-    #     o = vector2(0, 0)
+    #     o = Vector2(0, 0)
     #     c = False
     #     for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
     #         if (v1.y <= q.y and q.y < v0.y) or (v0.y <= q.y and q.y < v1.y):
@@ -153,14 +153,14 @@ def create_test_rpolygon(lst):
 
 
 def point_in_rpolygon(S, q):
-    """determine if a point is within a rpolygon
+    """determine if a Point is within a RPolygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
     (see URL below) with some minor modifications for rectilinear. It returns
     true for strictly interior points, false for strictly exterior, and ub
     for points on the boundary.  The boundary behavior is complex but
     determined; in particular, for a partition of a region into polygons,
-    each point is "in" exactly one polygon.
+    each Point is "in" exactly one Polygon.
     (See p.243 of [O'Rourke (C)] for a discussion of boundary behavior.)
 
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03

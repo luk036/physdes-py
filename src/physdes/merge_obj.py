@@ -1,10 +1,10 @@
 from .generic import intersection, min_dist
 from .interval import enlarge
-from .point import point
-from .vector2 import vector2
+from .point import Point
+from .vector2 import Vector2
 
 
-class merge_obj(point):
+class MergeObj(Point):
     def __init__(self, x, y):
         """[summary]
 
@@ -12,13 +12,13 @@ class merge_obj(point):
             x ([type]): [description]
             y ([type]): [description]
         """
-        point.__init__(self, x, y)
+        Point.__init__(self, x, y)
 
-    def __iadd__(self, rhs: vector2):
+    def __iadd__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -27,11 +27,11 @@ class merge_obj(point):
         self.y += rhs.x - rhs.y
         return self
 
-    def __isub__(self, rhs: vector2):
+    def __isub__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -62,7 +62,7 @@ class merge_obj(point):
         """
         x = enlarge(self.x, alpha)
         y = enlarge(self.y, alpha)
-        return merge_obj(x, y)  # ???
+        return MergeObj(x, y)  # ???
 
     def intersection_with(self, other):
         """[summary]
@@ -74,7 +74,7 @@ class merge_obj(point):
             [type]: [description]
         """
         p = super().intersection_with(other)
-        return merge_obj(p.x, p.y)
+        return MergeObj(p.x, p.y)
 
     def merge_with(self, other):
         """[summary]

@@ -1,13 +1,13 @@
 from random import randint
 
-from physdes.interval import interval
-from physdes.point import point
-from physdes.recti import rectangle
+from physdes.interval import Interval
+from physdes.point import Point
+from physdes.recti import Rect
 
 
-class my_point(point):
+class my_point(Point):
     def __init__(self, x, y, data: float):
-        point.__init__(self, x, y)
+        Point.__init__(self, x, y)
         self._data = data
 
 
@@ -24,8 +24,8 @@ def test_Point():
 
 
 def test_Interval():
-    a = interval(4, 8)
-    b = interval(5, 6)
+    a = Interval(4, 8)
+    b = Interval(5, 6)
 
     assert 3 < a
     assert not (a < b)
@@ -46,10 +46,10 @@ def test_Interval():
 
 
 def test_Rectangle():
-    xrng1 = interval(4, 8)
-    yrng1 = interval(5, 7)
-    r1 = rectangle(xrng1, yrng1)
-    p = point(7, 6)
+    xrng1 = Interval(4, 8)
+    yrng1 = Interval(5, 7)
+    r1 = Rect(xrng1, yrng1)
+    p = Point(7, 6)
     assert r1.contains(p)
     # assert r2 in r1
 
@@ -62,9 +62,9 @@ def test_Rectilinear():
         ii = i * 100
         for j in range(N):
             jj = j * 100
-            xrng = interval(ii, ii + randint(0, 99))
-            yrng = interval(jj, jj + randint(0, 99))
-            r = rectangle(xrng, yrng)
+            xrng = Interval(ii, ii + randint(0, 99))
+            yrng = Interval(jj, jj + randint(0, 99))
+            r = Rect(xrng, yrng)
             lst += [r]
 
 

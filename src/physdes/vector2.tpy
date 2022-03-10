@@ -1,4 +1,4 @@
-class vector2:
+class Vector2:
     __slots__ = ('_x', '_y')
 
     def __init__(self, x, y):
@@ -19,7 +19,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self._x, self._y)
+        return Vector2(self._x, self._y)
 
     def __iadd__(self, rhs):
         self._x += rhs.x

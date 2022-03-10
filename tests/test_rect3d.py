@@ -1,11 +1,11 @@
 from physdes.generic import min_dist, overlap
-from physdes.recti import interval, point, rectangle
-from physdes.vector2 import vector2
+from physdes.recti import Interval, Point, Rect
+from physdes.vector2 import Vector2
 
 
 def test_Point_3D():
-    a = point(point(40000, 80000), 20000)
-    b = point(point(50000, 60000), 10000)
+    a = Point(Point(40000, 80000), 20000)
+    b = Point(Point(50000, 60000), 10000)
     v = (b - a) * 0.5  # integer division
 
     assert a < b
@@ -22,9 +22,9 @@ def test_Point_3D():
 
 
 def test_Interval_3D():
-    a = point(interval(4, 8), 1)
-    b = point(interval(5, 6), 1)
-    v = vector2(3, 0)
+    a = Point(Interval(4, 8), 1)
+    b = Point(Interval(5, 6), 1)
+    v = Vector2(3, 0)
 
     assert not (a < b)
     assert not (b < a)
@@ -50,15 +50,15 @@ def test_Interval_3D():
 
 
 def test_Rectangle_3D():
-    xrng1 = interval(40000, 80000)
-    yrng1 = interval(50000, 70000)
-    r1 = point(rectangle(xrng1, yrng1), 1000)
-    xrng2 = interval(50000, 70000)
-    yrng2 = interval(60000, 60000)
-    r2 = point(rectangle(xrng2, yrng2), 1000)
-    v = vector2(vector2(50000, 60000), 0)
-    p1 = point(point(70000, 60000), 1000)
-    p2 = point(point(70000, 60000), 2000)
+    xrng1 = Interval(40000, 80000)
+    yrng1 = Interval(50000, 70000)
+    r1 = Point(Rect(xrng1, yrng1), 1000)
+    xrng2 = Interval(50000, 70000)
+    yrng2 = Interval(60000, 60000)
+    r2 = Point(Rect(xrng2, yrng2), 1000)
+    v = Vector2(Vector2(50000, 60000), 0)
+    p1 = Point(Point(70000, 60000), 1000)
+    p2 = Point(Point(70000, 60000), 2000)
 
     assert r1 != r2
     assert (r1 - v) + v == r1
@@ -78,9 +78,9 @@ def test_Rectangle_3D():
 
 
 # def test_Segment():
-#     xrng1 = interval(4, 8)
-#     yrng1 = interval(5, 7)
-#     s1 = hsegment(xrng1, 6)
-#     s2 = vsegment(5, yrng1)
+#     xrng1 = Interval(4, 8)
+#     yrng1 = Interval(5, 7)
+#     s1 = HSegment(xrng1, 6)
+#     s2 = VSegment(5, yrng1)
 
 #     assert s1.overlaps(s2))

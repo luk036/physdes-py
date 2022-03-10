@@ -1,34 +1,34 @@
-from .interval import interval
-from .point import point
+from .interval import Interval
+from .point import Point
 
 
-class rectangle(point):
-    def __init__(self, x: interval, y: interval):
+class Rect(Point):
+    def __init__(self, x: Interval, y: Interval):
         """[summary]
 
         Args:
-            x (interval): [description]
-            y (interval): [description]
+            x (Interval): [description]
+            y (Interval): [description]
         """
-        point.__init__(self, x, y)
+        Point.__init__(self, x, y)
 
     @property
-    def lower(self):
+    def lb(self):
         """[summary]
 
         Returns:
             [type]: [description]
         """
-        return point(self.x.lower, self.y.lower)
+        return Point(self.x.lb, self.y.lb)
 
     @property
-    def upper(self):
+    def ub(self):
         """[summary]
 
         Returns:
             [type]: [description]
         """
-        return point(self.x.upper, self.y.upper)
+        return Point(self.x.ub, self.y.ub)
 
     def copy(self):
         """[summary]
@@ -36,7 +36,7 @@ class rectangle(point):
         Returns:
             [type]: [description]
         """
-        return rectangle(self.x, self.y)
+        return Rect(self.x, self.y)
 
     # def __eq__(self, rhs) -> bool:
     #     return self.x == rhs.x and self.y == rhs.y
@@ -47,9 +47,9 @@ class rectangle(point):
         Returns:
             [type]: [description]
         """
-        return rectangle(self.y, self.x)
+        return Rect(self.y, self.x)
 
-    # `a` can be point, vsegment, hsegment, or rectangle
+    # `a` can be Point, VSegment, HSegment, or Rect
     def contains(self, a) -> bool:
         """[summary]
 
@@ -70,7 +70,7 @@ class rectangle(point):
         return self.x.len() * self.y.len()
 
 
-class vsegment(point):
+class VSegment(Point):
     def __init__(self, x, y):
         """[summary]
 
@@ -78,7 +78,7 @@ class vsegment(point):
             x ([type]): [description]
             y ([type]): [description]
         """
-        point.__init__(self, x, y)
+        Point.__init__(self, x, y)
 
     def copy(self):
         """[summary]
@@ -86,9 +86,9 @@ class vsegment(point):
         Returns:
             [type]: [description]
         """
-        return vsegment(self.x, self.y)
+        return VSegment(self.x, self.y)
 
-    # `a` can be point or vsegment
+    # `a` can be Point or VSegment
     def contains(self, a) -> bool:
         """[summary]
 
@@ -106,10 +106,10 @@ class vsegment(point):
         Returns:
             [type]: [description]
         """
-        return hsegment(self.y, self.x)
+        return HSegment(self.y, self.x)
 
 
-class hsegment(point):
+class HSegment(Point):
     def __init__(self, x, y):
         """[summary]
 
@@ -117,7 +117,7 @@ class hsegment(point):
             x ([type]): [description]
             y ([type]): [description]
         """
-        point.__init__(self, x, y)
+        Point.__init__(self, x, y)
 
     def copy(self):
         """[summary]
@@ -125,9 +125,9 @@ class hsegment(point):
         Returns:
             [type]: [description]
         """
-        return hsegment(self.x, self.y)
+        return HSegment(self.x, self.y)
 
-    # `a` can be point or hsegment
+    # `a` can be Point or HSegment
     def contains(self, a) -> bool:
         """[summary]
 
@@ -145,4 +145,4 @@ class hsegment(point):
         Returns:
             [type]: [description]
         """
-        return vsegment(self.y, self.x)
+        return VSegment(self.y, self.x)

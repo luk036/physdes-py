@@ -10,16 +10,16 @@ Applications: VLSI
 
 - Mainly Integer Coordinate
 
-  - faster than floating point. More importantly, more accurate.
+  - faster than floating Point. More importantly, more accurate.
   - Objects are small, but coordinates could be very large
     - Concept of affine space:
-      - point + vector = point
-      - point - point = vector
+      - Point + vector = Point
+      - Point - Point = vector
       - arithmetics for vector only
 
-- Rectilinear polygon
+- Rectilinear Polygon
 
-  - the number of vertices of each polygon is small
+  - the number of vertices of each Polygon is small
     (say within 100)
   - Consider special cases
   - Testing

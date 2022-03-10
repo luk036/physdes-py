@@ -1,4 +1,4 @@
-class vector2:
+class Vector2:
     __slots__ = ("_x", "_y")
 
     def __init__(self, x, y):
@@ -35,7 +35,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self._x, self._y)
+        return Vector2(self._x, self._y)
 
     def cross(self, rhs):
         """[summary]
@@ -87,7 +87,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(-self.x, -self.y)
+        return Vector2(-self.x, -self.y)
 
     def __iadd__(self, rhs):
         """[summary]
@@ -111,7 +111,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self.x + rhs.x, self.y + rhs.y)
+        return Vector2(self.x + rhs.x, self.y + rhs.y)
 
     def __isub__(self, rhs):
         """[summary]
@@ -135,7 +135,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self.x - rhs.x, self.y - rhs.y)
+        return Vector2(self.x - rhs.x, self.y - rhs.y)
 
     def __imul__(self, alpha):
         """[summary]
@@ -159,7 +159,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self.x * alpha, self.y * alpha)
+        return Vector2(self.x * alpha, self.y * alpha)
 
     def __idiv__(self, alpha):
         """[summary]
@@ -183,7 +183,7 @@ class vector2:
         Returns:
             [type]: [description]
         """
-        return vector2(self.x / alpha, self.y / alpha)
+        return Vector2(self.x / alpha, self.y / alpha)
 
     def __str__(self):
         """[summary]
@@ -195,10 +195,10 @@ class vector2:
 
 
 if __name__ == "__main__":
-    v = vector2(3, 4)
+    v = Vector2(3, 4)
     w = -v
     print(w >= v)
 
-    v3d = vector2(v, 5)  # vector in 3d
-    w3d = vector2(w, 5)  # vector in 3d
+    v3d = Vector2(v, 5)  # vector in 3d
+    w3d = Vector2(w, 5)  # vector in 3d
     print(w >= v)

@@ -1,11 +1,11 @@
 from physdes.halton_int import halton
-from physdes.point import point
+from physdes.point import Point
 from physdes.rpolygon import (
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
     point_in_rpolygon,
-    rpolygon,
+    RPolygon,
 )
 
 
@@ -24,10 +24,10 @@ def test_RPolygon():
         (-3, -4),
         (1, 4),
     ]
-    S, is_anticw = create_ymono_rpolygon([point(x, y) for x, y in coords])
+    S, is_anticw = create_ymono_rpolygon([Point(x, y) for x, y in coords])
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.x, p1.y, p2.x, p1.y), end=" ")
-    P = rpolygon(S)
+    P = RPolygon(S)
     assert is_anticw
     assert P.signed_area() == 45
 
@@ -35,10 +35,10 @@ def test_RPolygon():
 def test_RPolygon2():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(20)]
-    S, is_anticw = create_ymono_rpolygon([point(x, y) for x, y in coords])
+    S, is_anticw = create_ymono_rpolygon([Point(x, y) for x, y in coords])
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.x, p1.y, p2.x, p1.y), end=" ")
-    P = rpolygon(S)
+    P = RPolygon(S)
     assert not is_anticw
     assert P.signed_area() == -1871424
 
@@ -58,10 +58,10 @@ def test_RPolygon3():
         (-3, -4),
         (1, 4),
     ]
-    S, is_anticw = create_xmono_rpolygon([point(x, y) for x, y in coords])
+    S, is_anticw = create_xmono_rpolygon([Point(x, y) for x, y in coords])
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.x, p1.y, p2.x, p1.y), end=" ")
-    P = rpolygon(S)
+    P = RPolygon(S)
     assert not is_anticw
     assert P.signed_area() == -53
 
@@ -69,12 +69,12 @@ def test_RPolygon3():
 def test_RPolygon4():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(20)]
-    S, is_anticw = create_xmono_rpolygon([point(x, y) for x, y in coords])
+    S, is_anticw = create_xmono_rpolygon([Point(x, y) for x, y in coords])
     p0 = S[-1]
     for p1 in S:
         print("{},{} {},{}".format(p0.x, p0.y, p1.x, p0.y), end=" ")
         p0 = p1
-    P = rpolygon(S)
+    P = RPolygon(S)
     assert is_anticw
     assert P.signed_area() == 2001024
 
@@ -82,7 +82,7 @@ def test_RPolygon4():
 def test_RPolygon5():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(50)]
-    S = create_test_rpolygon([point(x, y) for x, y in coords])
+    S = create_test_rpolygon([Point(x, y) for x, y in coords])
     # for p1, p2 in zip(S, S[1:] + [S[0]]):
     #     print("{},{} {},{}".format(p1.x, p1.y, p2.x, p1.y), end=' ')
     print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
@@ -98,6 +98,6 @@ def test_RPolygon5():
     qx, qy = hgen()
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
     print("</svg>")
-    P = rpolygon(S)
+    P = RPolygon(S)
     assert P.signed_area() == -2176416
-    assert point_in_rpolygon(S, point(qx, qy))
+    assert point_in_rpolygon(S, Point(qx, qy))

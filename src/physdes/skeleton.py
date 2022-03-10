@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This is a skeleton file that can serve as a starting point for a Python
+This is a skeleton file that can serve as a starting Point for a Python
 console script. To run this script uncomment the following lines in the
 [options.entry_points] section in setup.cfg:
 
@@ -92,7 +92,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Main entry point allowing external calls
+    """Main entry Point allowing external calls
 
     Args:
       args ([str]): command line parameter list
@@ -105,7 +105,7 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts"""
+    """Entry Point for console_scripts"""
     main(sys.argv[1:])
 
 

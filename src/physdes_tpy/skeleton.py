@@ -1,5 +1,5 @@
 """
-This is a skeleton file that can serve as a starting point for a Python
+This is a skeleton file that can serve as a starting Point for a Python
 console script. To run this script uncomment the following lines in the
 ``[options.entry_points]`` section in ``setup.cfg``::
 
@@ -130,7 +130,7 @@ def main(args):
 def run():
     """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
 
-    This function can be used as entry point to create console scripts with setuptools.
+    This function can be used as entry Point to create console scripts with setuptools.
     """
     main(sys.argv[1:])
 

@@ -1,8 +1,8 @@
 from .generic import contain, intersection, min_dist, overlap
-from .vector2 import vector2
+from .vector2 import Vector2
 
 
-class point:
+class Point:
     __slots__ = ("x", "y")
 
     def __init__(self, x, y):
@@ -21,7 +21,7 @@ class point:
         Returns:
             [type]: [description]
         """
-        return point(self.x, self.y)
+        return Point(self.x, self.y)
 
     def __lt__(self, rhs) -> bool:
         """[summary]
@@ -56,11 +56,11 @@ class point:
         """
         return (self.x, self.y) == (rhs.x, rhs.y)
 
-    def __iadd__(self, rhs: vector2):
+    def __iadd__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -78,16 +78,16 @@ class point:
         Returns:
             [type]: [description]
         """
-        if isinstance(rhs, vector2):
-            return point(self.x + rhs.x, self.y + rhs.y)
+        if isinstance(rhs, Vector2):
+            return Point(self.x + rhs.x, self.y + rhs.y)
         else:
-            return point(self.x + rhs, self.y + rhs)
+            return Point(self.x + rhs, self.y + rhs)
 
-    def __isub__(self, rhs: vector2):
+    def __isub__(self, rhs: Vector2):
         """[summary]
 
         Args:
-            rhs (vector2): [description]
+            rhs (Vector2): [description]
 
         Returns:
             [type]: [description]
@@ -105,12 +105,12 @@ class point:
         Returns:
             [type]: [description]
         """
-        if isinstance(rhs, vector2):
-            return point(self.x - rhs.x, self.y - rhs.y)
-        elif isinstance(rhs, point):
-            return vector2(self.x - rhs.x, self.y - rhs.y)
+        if isinstance(rhs, Vector2):
+            return Point(self.x - rhs.x, self.y - rhs.y)
+        elif isinstance(rhs, Point):
+            return Vector2(self.x - rhs.x, self.y - rhs.y)
         else:
-            return point(self.x - rhs, self.y - rhs)
+            return Point(self.x - rhs, self.y - rhs)
 
     def flip(self):
         """[summary]
@@ -118,7 +118,7 @@ class point:
         Returns:
             [type]: [description]
         """
-        return point(self.y, self.x)
+        return Point(self.y, self.x)
 
     def overlaps(self, other) -> bool:
         """[summary]
@@ -151,7 +151,7 @@ class point:
         Returns:
             [type]: [description]
         """
-        return point(intersection(self.x, other.x), intersection(self.y, other.y))
+        return Point(intersection(self.x, other.x), intersection(self.y, other.y))
 
     def min_dist_with(self, other):
         """[summary]
