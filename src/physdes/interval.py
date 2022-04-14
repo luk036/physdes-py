@@ -12,10 +12,28 @@ class Interval:
         Args:
             lb ([type]): [description]
             ub ([type]): [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a)
+            [3, 4]
         """
         assert not (ub < lb)
         self._lb = lb
         self._ub = ub
+
+    def __str__(self):
+        """[summary]
+
+        Returns:
+            [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a)
+            [3, 4]
+        """
+        return "[{self.lb}, {self.ub}]".format(self=self)
 
     @property
     def lb(self):
@@ -23,6 +41,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a.lb
+            3
         """
         return self._lb
 
@@ -32,6 +55,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a.ub
+            4
         """
         return self._ub
 
@@ -40,6 +68,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a.copy())
+            [3, 4]
         """
         return Interval(self._lb, self._ub)
 
@@ -59,6 +92,12 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> b = Interval(3, 5)
+            >>> a == b
+            False
         """
         return (self.lb, self.ub) == (rhs.lb, rhs.ub)
 
@@ -70,6 +109,14 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> b = Interval(3, 5)
+            >>> a < b
+            False
+            >>> b < a
+            False
         """
         return self.ub < rhs
 
@@ -81,6 +128,14 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> b = Interval(3, 5)
+            >>> a > b
+            False
+            >>> b > a
+            False
         """
         return self.lb > rhs
 
@@ -92,6 +147,14 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> b = Interval(3, 5)
+            >>> a <= b
+            True
+            >>> b <= a
+            True
         """
         return not (rhs < self.lb)
 
@@ -103,6 +166,14 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> b = Interval(3, 5)
+            >>> a >= b
+            True
+            >>> b >= a
+            True
         """
         return not (self.ub < rhs)
 
@@ -111,6 +182,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(-a)
+            [-4, -3]
         """
         return Interval(-self.ub, -self.lb)
 
@@ -122,6 +198,12 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a += 10
+            >>> print(a)
+            [13, 14]
         """
         self._lb += rhs
         self._ub += rhs
@@ -247,14 +329,6 @@ class Interval:
             [type]: [description]
         """
         return Interval(self._lb - alpha, self._ub + alpha)
-
-    def __str__(self):
-        """[summary]
-
-        Returns:
-            [type]: [description]
-        """
-        return "[{self.lb}, {self.ub}]".format(self=self)
 
 
 def enlarge(lhs, rhs):

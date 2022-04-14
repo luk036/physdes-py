@@ -34,6 +34,56 @@ def test_polygon():
     assert P.signed_area_x2() == 110
 
 
+def test_ymono_polygon():
+    coords = [
+        (-2, 2),
+        (0, -1),
+        (-5, 1),
+        (-2, 4),
+        (0, -4),
+        (-4, 3),
+        (-6, -2),
+        (5, 1),
+        (2, 2),
+        (3, -3),
+        (-3, -3),
+        (3, 3),
+        (-3, -4),
+        (1, 4),
+    ]
+    S = [Point(x, y) for x, y in coords]
+    S = create_ymono_polygon(S)
+    for p in S:
+        print("{},{}".format(p.x, p.y), end=" ")
+    P = Polygon(S)
+    assert P.signed_area_x2() == 102
+
+
+def test_xmono_polygon():
+    coords = [
+        (-2, 2),
+        (0, -1),
+        (-5, 1),
+        (-2, 4),
+        (0, -4),
+        (-4, 3),
+        (-6, -2),
+        (5, 1),
+        (2, 2),
+        (3, -3),
+        (-3, -3),
+        (3, 3),
+        (-3, -4),
+        (1, 4),
+    ]
+    S = [Point(x, y) for x, y in coords]
+    S = create_xmono_polygon(S)
+    for p in S:
+        print("{},{}".format(p.x, p.y), end=" ")
+    P = Polygon(S)
+    assert P.signed_area_x2() == 111
+
+
 def test_polygon2():
     hgen = halton([2, 3], [11, 7])
     coords = [hgen() for _ in range(20)]
