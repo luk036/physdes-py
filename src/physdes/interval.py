@@ -217,6 +217,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a + 10)
+            [13, 14]
         """
         return Interval(self.lb + rhs, self.ub + rhs)
 
@@ -228,6 +233,12 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a -= 1
+            >>> print(a)
+            [2, 3]
         """
         self._lb -= rhs
         self._ub -= rhs
@@ -241,6 +252,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a - 1)
+            [2, 3]
         """
         return Interval(self.lb - rhs, self.ub - rhs)
 
@@ -252,6 +268,13 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> a.overlaps(Interval(4, 9))
+            True
+            >>> a.overlaps(Interval(6, 9))
+            False
         """
         return not (self < a or a < self)
 
@@ -263,6 +286,15 @@ class Interval:
 
         Returns:
             bool: [description]
+
+        Examples:
+            >>> a = Interval(3, 8)
+            >>> a.contains(4)
+            True
+            >>> a.contains(Interval(4, 7))
+            True
+            >>> a.contains(Interval(6, 9))
+            False
         """
         # `a` can be an Interval or int
         if isscalar(a):
@@ -277,6 +309,15 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 8)
+            >>> print(a.intersection_with(4))
+            4
+            >>> print(a.intersection_with(Interval(4, 7)))
+            [4, 7]
+            >>> print(a.intersection_with(Interval(6, 9)))
+            [6, 8]
         """
         # `a` can be an Interval or int
         if isscalar(other):
@@ -291,6 +332,15 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> print(a.min_dist_with(2))
+            1
+            >>> print(a.min_dist_with(Interval(4, 7)))
+            0
+            >>> print(a.min_dist_with(Interval(6, 9)))
+            1
         """
         if self < other:
             return min_dist(self.ub, other)
@@ -327,6 +377,11 @@ class Interval:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> print(a.enlarge_with(2))
+            [1, 7]
         """
         return Interval(self._lb - alpha, self._ub + alpha)
 
@@ -340,6 +395,11 @@ def enlarge(lhs, rhs):
 
     Returns:
         [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> print(enlarge(a, 2))
+            [1, 7]
     """
     if not isscalar(lhs):
         return lhs.enlarge_with(rhs)
