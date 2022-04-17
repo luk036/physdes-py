@@ -1,17 +1,19 @@
 from itertools import filterfalse, tee
+from typing import List
 
+from .point import Point
 from .vector2 import Vector2
 
 
 class RPolygon:
-    def __init__(self, coords: list):
+    def __init__(self, pointset: List[Point]):
         """[summary]
 
         Args:
             coords ([type]): [description]
         """
-        self._origin = coords[0]
-        self._vecs = list(c - coords[0] for c in coords[1:])
+        self._origin = pointset[0]
+        self._vecs = list(c - pointset[0] for c in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -30,6 +32,29 @@ class RPolygon:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(x, y) for x, y in coords]
+            >>> P = RPolygon(S)
+            >>> P.signed_area()
+            54
         """
         assert len(self._vecs) >= 1
         vecs = self._vecs
@@ -122,6 +147,44 @@ def create_test_rpolygon(lst):
 
     Returns:
         [type]: [description]
+
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = create_test_rpolygon(S)
+        >>> for p in S:
+        ...     print("{},".format(p))
+        ...
+        (0, -4),
+        (0, -1),
+        (3, -3),
+        (5, 1),
+        (2, 2),
+        (3, 3),
+        (1, 4),
+        (-2, 4),
+        (-2, 2),
+        (-4, 3),
+        (-5, 1),
+        (-6, -2),
+        (-3, -3),
+        (-3, -4),
     """
     max_pt = max(lst, key=lambda a: (a.y, a.x))
     min_pt = min(lst, key=lambda a: (a.y, a.x))
@@ -171,6 +234,28 @@ def point_in_rpolygon(S, q):
 
     Returns:
         [type]: [description]
+
+    Examples:
+        >>> coords = [
+        ...     (0, -4),
+        ...     (0, -1),
+        ...     (3, -3),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, 3),
+        ...     (1, 4),
+        ...     (-2, 4),
+        ...     (-2, 2),
+        ...     (-4, 3),
+        ...     (-5, 1),
+        ...     (-6, -2),
+        ...     (-3, -3),
+        ...     (-3, -4),
+        ... ]
+        ...
+        >>> S = [Point(x, y) for x, y in coords]
+        >>> point_in_rpolygon(S, Point(0, 1))
+        True
     """
     c = False
     p0 = S[-1]

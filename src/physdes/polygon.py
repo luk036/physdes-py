@@ -1,17 +1,19 @@
 from itertools import filterfalse, tee
+from typing import List
 
+from .point import Point
 from .vector2 import Vector2
 
 
 class Polygon:
-    def __init__(self, coords):
+    def __init__(self, pointset: List[Point]):
         """[summary]
 
         Args:
-            coords ([type]): [description]
+            pointset ([type]): [description]
         """
-        self._origin = coords[0]
-        self._vecs = list(c - coords[0] for c in coords[1:])
+        self._origin = pointset[0]
+        self._vecs = list(c - pointset[0] for c in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -30,6 +32,29 @@ class Polygon:
 
         Returns:
             [type]: [description]
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(x, y) for x, y in coords]
+            >>> P = Polygon(S)
+            >>> P.signed_area_x2()
+            110
         """
         assert len(self._vecs) >= 2
         vecs = self._vecs
@@ -106,6 +131,44 @@ def create_test_polygon(lst):
 
     Returns:
         [type]: [description]
+
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = create_test_polygon(S)
+        >>> for p in S:
+        ...     print("{},".format(p))
+        ...
+        (0, -4),
+        (0, -1),
+        (3, -3),
+        (5, 1),
+        (2, 2),
+        (3, 3),
+        (1, 4),
+        (-2, 4),
+        (-2, 2),
+        (-4, 3),
+        (-5, 1),
+        (-6, -2),
+        (-3, -3),
+        (-3, -4),
     """
     upmost = max(lst, key=lambda a: (a.y, a.x))
     downmost = min(lst, key=lambda a: (a.y, a.x))
@@ -154,6 +217,28 @@ def point_in_polygon(S, q):
 
     Returns:
         [type]: [description]
+
+    Examples:
+        >>> coords = [
+        ...     (0, -4),
+        ...     (0, -1),
+        ...     (3, -3),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, 3),
+        ...     (1, 4),
+        ...     (-2, 4),
+        ...     (-2, 2),
+        ...     (-4, 3),
+        ...     (-5, 1),
+        ...     (-6, -2),
+        ...     (-3, -3),
+        ...     (-3, -4),
+        ... ]
+        ...
+        >>> S = [Point(x, y) for x, y in coords]
+        >>> point_in_polygon(S, Point(0, 1))
+        True
     """
     c = False
     p0 = S[-1]
