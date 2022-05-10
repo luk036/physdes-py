@@ -104,6 +104,12 @@ class Rect(Point):
         """
         return self.x.contains(a.x) and self.y.contains(a.y)
 
+    def width(self):
+        return self.x.len()
+
+    def height(self):
+        return self.y.len()
+
     def area(self):
         """[summary]
 

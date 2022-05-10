@@ -1,5 +1,6 @@
 from .generic import contain, intersection, min_dist, overlap
 from .vector2 import Vector2
+from .interval import hull
 
 
 class Point:
@@ -260,6 +261,18 @@ class Point:
         """
         return contain(self.x, other.x) and contain(self.y, other.y)
 
+    def hull_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
+        Self = type(self)
+        return Self(hull(self.x, other.x), hull(self.y, other.y))
+
     def intersection_with(self, other):
         """[summary]
 
@@ -269,7 +282,9 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return Point(intersection(self.x, other.x), intersection(self.y, other.y))
+        Self = type(self)
+        return Self(intersection(self.x, other.x),
+                    intersection(self.y, other.y))
 
     def min_dist_with(self, other):
         """[summary]

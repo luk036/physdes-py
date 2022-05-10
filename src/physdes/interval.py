@@ -301,6 +301,26 @@ class Interval:
             return self.lb <= a <= self.ub
         return self.lb <= a.lb and a.ub <= self.ub
 
+    def hull_with(self, other):
+        """[summary]
+
+        Args:
+            other ([type]): [description]
+
+        Returns:
+            [type]: [description]
+
+        Examples:
+            >>> a = Interval(3, 8)
+            >>> print(a.hull_with(Interval(4, 7)))
+            [3, 8]
+            >>> print(a.hull_with(Interval(6, 9)))
+            [3, 9]
+        """
+        if isscalar(other):
+            return Interval(min(self.lb, other), max(self.ub, other))
+        return Interval(min(self.lb, other.lb), max(self.ub, other.ub))
+
     def intersection_with(self, other):
         """[summary]
 
@@ -384,6 +404,24 @@ class Interval:
             [1, 7]
         """
         return Interval(self._lb - alpha, self._ub + alpha)
+
+
+def hull(lhs, rhs):
+    """[summary]
+
+    Args:
+        lhs ([type]): [description]
+        rhs ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    if not isscalar(lhs):
+        return lhs.hull_with(rhs)
+    elif not isscalar(rhs):
+        return rhs.hull_with(lhs)
+    else:
+        return Interval(min(lhs, rhs), max(lhs, rhs))
 
 
 def enlarge(lhs, rhs):
