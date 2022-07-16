@@ -1,6 +1,6 @@
 from .generic import contain, intersection, min_dist, overlap
-from .vector2 import Vector2
 from .interval import hull
+from .vector2 import Vector2
 
 
 class Point:

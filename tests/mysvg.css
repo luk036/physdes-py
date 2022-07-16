@@ -1,15 +1,15 @@
 polygon {
-  fill: #0062FF;
+  fill: #0062ff;
   stroke: black;
 }
 
 circle {
   r: 10;
-  fill: #FF00A7
+  fill: #ff00a7;
 }
 
 rect {
-  fill: #00321C;
+  fill: #00321c;
 }
 
 /* PRESENTATIONAL STYLES */
