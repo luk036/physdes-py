@@ -14,7 +14,7 @@ def vdc(k: int, base: int = 2, scale: int = 10) -> int:
         int: [description]
     """
     vdc: int = 0
-    factor: int = base ** scale
+    factor: int = base**scale
     while k != 0:
         factor //= base
         remainder: int = k % base

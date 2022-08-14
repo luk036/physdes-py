@@ -283,8 +283,7 @@ class Point:
             [type]: [description]
         """
         Self = type(self)
-        return Self(intersection(self.x, other.x),
-                    intersection(self.y, other.y))
+        return Self(intersection(self.x, other.x), intersection(self.y, other.y))
 
     def min_dist_with(self, other):
         """[summary]
