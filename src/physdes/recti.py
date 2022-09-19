@@ -1,27 +1,26 @@
 from .interval import Interval
 from .point import Point
 
-
 class Rect(Point):
-    # def __init__(self, x: Interval, y: Interval):
-    #     """[summary]
-    #
-    #     Args:
-    #         x (Interval): [description]
-    #         y (Interval): [description]
-    #
-    #     Examples:
-    #         >>> a = Rect(Interval(3, 4), Interval(5, 6))
-    #         >>> print(a)
-    #         ([3, 4], [5, 6])
-    #         >>> a3d = Rect(a, Interval(7, 8))  # Rect in 3d
-    #         >>> print(a3d)
-    #         (([3, 4], [5, 6]), [7, 8])
-    #     """
-    #     Point.__init__(self, x, y)
+    def __init__(self, x: Interval, y: Interval):
+        """[summary]
+    
+        Args:
+            x (Interval): [description]
+            y (Interval): [description]
+    
+        Examples:
+            >>> a = Rect(Interval(3, 4), Interval(5, 6))
+            >>> print(a)
+            ([3, 4], [5, 6])
+            >>> a3d = Rect(a, Interval(7, 8))  # Rect in 3d
+            >>> print(a3d)
+            (([3, 4], [5, 6]), [7, 8])
+        """
+        Point.__init__(self, x, y)
 
     @property
-    def lb(self) -> Interval:
+    def lb(self) -> Point:
         """[summary]
 
         Returns:
@@ -35,7 +34,7 @@ class Rect(Point):
         return Point(self.x.lb, self.y.lb)
 
     @property
-    def ub(self) -> Interval:
+    def ub(self) -> Point:
         """[summary]
 
         Returns:

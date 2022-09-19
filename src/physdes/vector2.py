@@ -1,29 +1,29 @@
-from typing import NamedTuple, Any
+from typing import Any
 
 
-class Vector2(NamedTuple):
+class Vector2:
     x_: Any
     y_: Any
 
-    # __slots__ = ("x_", "y_")
-    #
-    # def __init__(self, x, y):
-    #     """[summary]
-    #
-    #     Args:
-    #         x ([type]): [description]
-    #         y ([type]): [description]
-    #
-    #     Examples:
-    #         >>> v = Vector2(3, 4)
-    #         >>> print(v)
-    #         <3, 4>
-    #         >>> v3d = Vector2(v, 5)  # vector in 3d
-    #         >>> print(v3d)
-    #         <<3, 4>, 5>
-    #     """
-    #     self.x_ = x
-    #     self.y_ = y
+    __slots__ = ("x_", "y_")
+    
+    def __init__(self, x, y):
+        """[summary]
+    
+        Args:
+            x ([type]): [description]
+            y ([type]): [description]
+    
+        Examples:
+            >>> v = Vector2(3, 4)
+            >>> print(v)
+            <3, 4>
+            >>> v3d = Vector2(v, 5)  # vector in 3d
+            >>> print(v3d)
+            <<3, 4>, 5>
+        """
+        self.x_ = x
+        self.y_ = y
 
     def __str__(self):
         """[summary]

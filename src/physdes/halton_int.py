@@ -1,4 +1,4 @@
-from typing import List
+from typing import Tuple, List
 
 
 def vdc(k: int, base: int = 2, scale: int = 10) -> int:
@@ -34,7 +34,7 @@ class vdcorput:
         self._scale: int = scale
         self._count: int = 0
 
-    def __call__(self) -> float:
+    def __call__(self) -> int:
         """[summary]
 
         Returns:
@@ -60,7 +60,7 @@ class halton:
         self._vdc0 = vdcorput(base[0], scale[0])
         self._vdc1 = vdcorput(base[1], scale[1])
 
-    def __call__(self) -> List[int]:
+    def __call__(self) -> Tuple[int, int]:
         """Get the next item
 
         Returns:

@@ -1,32 +1,31 @@
 from .generic import contain, intersection, min_dist, overlap
 from .interval import hull
 from .vector2 import Vector2
-from typing import NamedTuple, Any
+from typing import Any
 
-
-class Point(NamedTuple):
+class Point:
     x: Any
     y: Any
 
-    # __slots__ = ("x", "y")
+    __slots__ = ("x", "y")
 
-    # def __init__(self, x, y):
-    #     """[summary]
-    #
-    #     Args:
-    #         x ([type]): [description]
-    #         y ([type]): [description]
-    #
-    #     Examples:
-    #         >>> a = Point(3, 4)
-    #         >>> print(a)
-    #         (3, 4)
-    #         >>> a3d = Point(a, 5)  # Point in 3d
-    #         >>> print(a3d)
-    #         ((3, 4), 5)
-    #     """
-    #     self.x = x
-    #     self.y = y
+    def __init__(self, x, y):
+        """[summary]
+    
+        Args:
+            x ([type]): [description]
+            y ([type]): [description]
+    
+        Examples:
+            >>> a = Point(3, 4)
+            >>> print(a)
+            (3, 4)
+            >>> a3d = Point(a, 5)  # Point in 3d
+            >>> print(a3d)
+            ((3, 4), 5)
+        """
+        self.x = x
+        self.y = y
 
     def __str__(self):
         """[summary]
