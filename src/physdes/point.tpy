@@ -14,7 +14,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return Point(self._x, self._y)
+        return Point(self.x_, self.y_)
 
     def __iadd__(self, rhs: Vector2):
         """[summary]

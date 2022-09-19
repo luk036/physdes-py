@@ -1,23 +1,29 @@
-class Vector2:
-    __slots__ = ("_x", "_y")
+from typing import NamedTuple, Any
 
-    def __init__(self, x, y):
-        """[summary]
 
-        Args:
-            x ([type]): [description]
-            y ([type]): [description]
+class Vector2(NamedTuple):
+    x_: Any
+    y_: Any
 
-        Examples:
-            >>> v = Vector2(3, 4)
-            >>> print(v)
-            <3, 4>
-            >>> v3d = Vector2(v, 5)  # vector in 3d
-            >>> print(v3d)
-            <<3, 4>, 5>
-        """
-        self._x = x
-        self._y = y
+    # __slots__ = ("x_", "y_")
+    #
+    # def __init__(self, x, y):
+    #     """[summary]
+    #
+    #     Args:
+    #         x ([type]): [description]
+    #         y ([type]): [description]
+    #
+    #     Examples:
+    #         >>> v = Vector2(3, 4)
+    #         >>> print(v)
+    #         <3, 4>
+    #         >>> v3d = Vector2(v, 5)  # vector in 3d
+    #         >>> print(v3d)
+    #         <<3, 4>, 5>
+    #     """
+    #     self.x_ = x
+    #     self.y_ = y
 
     def __str__(self):
         """[summary]
@@ -50,7 +56,7 @@ class Vector2:
             >>> print(v3d.x)
             <3, 4>
         """
-        return self._x
+        return self.x_
 
     @property
     def y(self):
@@ -67,7 +73,7 @@ class Vector2:
             >>> print(v3d.y)
             5
         """
-        return self._y
+        return self.y_
 
     def copy(self):
         """[summary]
@@ -85,7 +91,7 @@ class Vector2:
             >>> print(w3d)
             <<3, 4>, 5>
         """
-        return Vector2(self._x, self._y)
+        return Vector2(self.x_, self.y_)
 
     def cross(self, rhs):
         """[summary]
@@ -102,7 +108,7 @@ class Vector2:
             >>> v.cross(w)
             -2
         """
-        return self._x * rhs._y - rhs._x * self._y
+        return self.x_ * rhs.y_ - rhs.x_ * self.y_
 
     def __eq__(self, rhs) -> bool:
         """[summary]
@@ -123,7 +129,7 @@ class Vector2:
             >>> v3d == w3d
             False
         """
-        return (self._x, self._y) == (rhs._x, rhs._y)
+        return (self.x_, self.y_) == (rhs.x_, rhs.y_)
 
     def __neg__(self):
         """[summary]
@@ -160,8 +166,8 @@ class Vector2:
             >>> print(v3d)
             <<16, 20>, 6>
         """
-        self._x += rhs.x
-        self._y += rhs.y
+        self.x_ += rhs.x
+        self.y_ += rhs.y
         return self
 
     def __add__(self, rhs):
@@ -204,8 +210,8 @@ class Vector2:
             >>> print(v3d)
             <<0, 0>, 4>
         """
-        self._x -= rhs.x
-        self._y -= rhs.y
+        self.x_ -= rhs.x
+        self.y_ -= rhs.y
         return self
 
     def __sub__(self, rhs):
@@ -248,8 +254,8 @@ class Vector2:
             >>> print(v3d)
             <<12, 16>, 10>
         """
-        self._x *= alpha
-        self._y *= alpha
+        self.x_ *= alpha
+        self.y_ *= alpha
         return self
 
     def __mul__(self, alpha):
@@ -290,8 +296,8 @@ class Vector2:
             >>> print(v3d)
             <<6.0, 9.0>, 10.0>
         """
-        self._x /= alpha
-        self._y /= alpha
+        self.x_ /= alpha
+        self.y_ /= alpha
         return self
 
     def __truediv__(self, alpha):

@@ -5,16 +5,17 @@ from physdes.point import Point
 from physdes.recti import Rect
 
 
-class my_point(Point):
-    def __init__(self, x, y, data: float):
-        Point.__init__(self, x, y)
-        self._data = data
+# class my_point(Point):
+#     def __init__(self, x, y, data: float):
+#         Point.__init__(self, x, y)
+#         self._data = data
 
 
 def test_Point():
-    a = my_point(4, 8, 3.4)
-    b = my_point(5, 6, 1.0)
+    a = Point(4, 8)
+    b = Point(5, 6)
 
+    assert(a[0] == 4)  # Point is a NamedTuple
     assert a < b
     assert a <= b
     assert not (a == b)

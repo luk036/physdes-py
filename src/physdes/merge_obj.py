@@ -5,19 +5,19 @@ from .vector2 import Vector2
 
 
 class MergeObj(Point):
-    def __init__(self, x, y):
-        """[summary]
-
-        Args:
-            x ([type]): [description]
-            y ([type]): [description]
-
-        Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
-            >>> print(a)
-            /9, -1/
-        """
-        Point.__init__(self, x, y)
+    # def __init__(self, x, y):
+    #     """[summary]
+    #
+    #     Args:
+    #         x ([type]): [description]
+    #         y ([type]): [description]
+    #
+    #     Examples:
+    #         >>> a = MergeObj(4 + 5, 4 - 5)
+    #         >>> print(a)
+    #         /9, -1/
+    #     """
+    #     Point.__init__(self, x, y)
 
     def __str__(self):
         """[summary]
@@ -105,7 +105,7 @@ class MergeObj(Point):
         """
         x = enlarge(self.x, alpha)
         y = enlarge(self.y, alpha)
-        return MergeObj(x, y)  # ???
+        return MergeObj(x, y)  # TODO
 
     def intersection_with(self, other):
         """[summary]
@@ -122,7 +122,7 @@ class MergeObj(Point):
             >>> print(r)
             /9, -1/
         """
-        p = super().intersection_with(other)  # ???
+        p = super().intersection_with(other)  # TODO
         return MergeObj(p.x, p.y)
 
     def merge_with(self, other):

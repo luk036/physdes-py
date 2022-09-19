@@ -3,25 +3,25 @@ from .point import Point
 
 
 class Rect(Point):
-    def __init__(self, x: Interval, y: Interval):
-        """[summary]
-
-        Args:
-            x (Interval): [description]
-            y (Interval): [description]
-
-        Examples:
-            >>> a = Rect(Interval(3, 4), Interval(5, 6))
-            >>> print(a)
-            ([3, 4], [5, 6])
-            >>> a3d = Rect(a, Interval(7, 8))  # Rect in 3d
-            >>> print(a3d)
-            (([3, 4], [5, 6]), [7, 8])
-        """
-        Point.__init__(self, x, y)
+    # def __init__(self, x: Interval, y: Interval):
+    #     """[summary]
+    #
+    #     Args:
+    #         x (Interval): [description]
+    #         y (Interval): [description]
+    #
+    #     Examples:
+    #         >>> a = Rect(Interval(3, 4), Interval(5, 6))
+    #         >>> print(a)
+    #         ([3, 4], [5, 6])
+    #         >>> a3d = Rect(a, Interval(7, 8))  # Rect in 3d
+    #         >>> print(a3d)
+    #         (([3, 4], [5, 6]), [7, 8])
+    #     """
+    #     Point.__init__(self, x, y)
 
     @property
-    def lb(self):
+    def lb(self) -> Interval:
         """[summary]
 
         Returns:
@@ -35,7 +35,7 @@ class Rect(Point):
         return Point(self.x.lb, self.y.lb)
 
     @property
-    def ub(self):
+    def ub(self) -> Interval:
         """[summary]
 
         Returns:
@@ -125,22 +125,22 @@ class Rect(Point):
 
 
 class VSegment(Point):
-    def __init__(self, x, y):
-        """[summary]
-
-        Args:
-            x ([type]): [description]
-            y ([type]): [description]
-
-        Examples:
-            >>> a = VSegment(5, Interval(3, 4))
-            >>> print(a)
-            (5, [3, 4])
-            >>> a3d = VSegment(6, a)  # VSegment in 3d
-            >>> print(a3d)
-            (6, (5, [3, 4]))
-        """
-        Point.__init__(self, x, y)
+    # def __init__(self, x, y):
+    #     """[summary]
+    #
+    #     Args:
+    #         x ([type]): [description]
+    #         y ([type]): [description]
+    #
+    #     Examples:
+    #         >>> a = VSegment(5, Interval(3, 4))
+    #         >>> print(a)
+    #         (5, [3, 4])
+    #         >>> a3d = VSegment(6, a)  # VSegment in 3d
+    #         >>> print(a3d)
+    #         (6, (5, [3, 4]))
+    #     """
+    #     Point.__init__(self, x, y)
 
     def copy(self):
         """[summary]
@@ -194,22 +194,22 @@ class VSegment(Point):
 
 
 class HSegment(Point):
-    def __init__(self, x, y):
-        """[summary]
-
-        Args:
-            x ([type]): [description]
-            y ([type]): [description]
-
-        Examples:
-            >>> a = HSegment(Interval(3, 4), 5)
-            >>> print(a)
-            ([3, 4], 5)
-            >>> a3d = HSegment(a, 7)  # HSegment in 3d
-            >>> print(a3d)
-            (([3, 4], 5), 7)
-        """
-        Point.__init__(self, x, y)
+    # def __init__(self, x, y):
+    #     """[summary]
+    #
+    #     Args:
+    #         x ([type]): [description]
+    #         y ([type]): [description]
+    #
+    #     Examples:
+    #         >>> a = HSegment(Interval(3, 4), 5)
+    #         >>> print(a)
+    #         ([3, 4], 5)
+    #         >>> a3d = HSegment(a, 7)  # HSegment in 3d
+    #         >>> print(a3d)
+    #         (([3, 4], 5), 7)
+    #     """
+    #     Point.__init__(self, x, y)
 
     def copy(self):
         """[summary]
