@@ -1,5 +1,5 @@
 from physdes.generic import min_dist, overlap
-from physdes.recti import Interval, Point, Rect
+from physdes.recti import Interval, Point, Rectangle
 from physdes.vector2 import Vector2
 
 
@@ -52,10 +52,10 @@ def test_Interval_3D():
 def test_Rectangle_3D():
     xrng1 = Interval(40000, 80000)
     yrng1 = Interval(50000, 70000)
-    r1 = Point(Rect(xrng1, yrng1), 1000)
+    r1 = Point(Rectangle(xrng1, yrng1), 1000)
     xrng2 = Interval(50000, 70000)
     yrng2 = Interval(60000, 60000)
-    r2 = Point(Rect(xrng2, yrng2), 1000)
+    r2 = Point(Rectangle(xrng2, yrng2), 1000)
     v = Vector2(Vector2(50000, 60000), 0)
     p1 = Point(Point(70000, 60000), 1000)
     p2 = Point(Point(70000, 60000), 2000)

@@ -4,8 +4,8 @@ from .vector2 import Vector2
 from typing import Any
 
 class Point:
-    x: Any
-    y: Any
+    x: Any # Can be int, Interval, and Point
+    y: Any # Can be int and Interval
 
     __slots__ = ("x", "y")
 
@@ -59,7 +59,8 @@ class Point:
             >>> print(b3d)
             ((3, 4), 5)
         """
-        return Point(self.x, self.y)
+        T = type(self) # Type could be Point or Rectangle or others
+        return T(self.x, self.y)
 
     def __lt__(self, rhs) -> bool:
         """[summary]
@@ -148,7 +149,7 @@ class Point:
         self.y += rhs.y
         return self
 
-    def __add__(self, rhs):
+    def __add__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -166,10 +167,11 @@ class Point:
             >>> print(a3d + Vector2(v, 1))
             ((8, 10), 6)
         """
+        T = type(self) # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
-            return Point(self.x + rhs.x, self.y + rhs.y)
-        else:
-            return Point(self.x + rhs, self.y + rhs)
+            return T(self.x + rhs.x, self.y + rhs.y)
+        else: # assume scalar
+            return T(self.x + rhs, self.y + rhs)
 
     def __isub__(self, rhs: Vector2):
         """[summary]
@@ -195,7 +197,7 @@ class Point:
         self.y -= rhs.y
         return self
 
-    def __sub__(self, rhs):
+    def __sub__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -219,12 +221,13 @@ class Point:
             >>> print(a3d - b3d)
             <<5, 6>, 1>
         """
+        T = type(self) # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
-            return Point(self.x - rhs.x, self.y - rhs.y)
+            return T(self.x - rhs.x, self.y - rhs.y)
         elif isinstance(rhs, Point):
             return Vector2(self.x - rhs.x, self.y - rhs.y)
-        else:
-            return Point(self.x - rhs, self.y - rhs)
+        else: # assume scalar
+            return T(self.x - rhs, self.y - rhs)
 
     def flip(self):
         """[summary]
@@ -236,11 +239,12 @@ class Point:
             >>> a = Point(3, 4)
             >>> print(a.flip())
             (4, 3)
-            >>> r = Point([3, 4], [5, 6])  # Rect
+            >>> r = Point([3, 4], [5, 6])  # Rectangle
             >>> print(r.flip())
             ([5, 6], [3, 4])
         """
-        return Point(self.y, self.x)
+        T = type(self) # Type could be Point or Rectangle or others
+        return T(self.y, self.x)
 
     def overlaps(self, other) -> bool:
         """[summary]

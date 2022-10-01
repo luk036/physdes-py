@@ -2,8 +2,8 @@ from typing import Any
 
 
 class Vector2:
-    x_: Any
-    y_: Any
+    x_: Any # Can be int, Interval, and Vector2
+    y_: Any # Can be int and Interval
 
     __slots__ = ("x_", "y_")
     
