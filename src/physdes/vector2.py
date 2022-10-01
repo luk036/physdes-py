@@ -9,6 +9,7 @@ class Vector2:
     
     def __init__(self, x, y):
         """[summary]
+        TODO: use other name than x and y (don't same as Point)
     
         Args:
             x ([type]): [description]

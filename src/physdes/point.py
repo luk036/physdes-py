@@ -1,5 +1,5 @@
 from .generic import contain, intersection, min_dist, overlap
-from .interval import hull
+from .interval import hull, enlarge
 from .vector2 import Vector2
 from typing import Any
 
@@ -303,3 +303,22 @@ class Point:
             [type]: [description]
         """
         return min_dist(self.x, other.x) + min_dist(self.y, other.y)
+
+    def enlarge_with(self, alpha: int):
+        """[summary]
+
+        Args:
+            alpha ([type]): [description]
+
+        Returns:
+            [type]: [description]
+
+        Examples:
+            >>> a = Point(9, -1)
+            >>> r = a.enlarge_with(1)
+            >>> print(r)
+            ([8, 10], [-2, 0])
+        """
+        x = enlarge(self.x, alpha)
+        y = enlarge(self.y, alpha)
+        return Point(x, y)
