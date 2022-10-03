@@ -2,12 +2,12 @@ from .interval import Interval
 from .point import Point
 
 class Rectangle(Point):
-    def __init__(self, x: Interval, y: Interval):
+    def __init__(self, xcoord: Interval, ycoord: Interval):
         """[summary]
     
         Args:
-            x (Interval): [description]
-            y (Interval): [description]
+            xcoord (Interval): [description]
+            ycoord (Interval): [description]
     
         Examples:
             >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
@@ -17,7 +17,7 @@ class Rectangle(Point):
             >>> print(a3d)
             (([3, 4], [5, 6]), [7, 8])
         """
-        Point.__init__(self, x, y)
+        Point.__init__(self, xcoord, ycoord)
 
     @property
     def ll(self) -> Point:
@@ -31,7 +31,7 @@ class Rectangle(Point):
             >>> print(a.ll)
             (3, 5)
         """
-        return Point(self.x.lb, self.y.lb)
+        return Point(self.xcoord.lb, self.ycoord.lb)
 
     @property
     def ur(self) -> Point:
@@ -45,7 +45,7 @@ class Rectangle(Point):
             >>> print(a.ur)
             (4, 6)
         """
-        return Point(self.x.ub, self.y.ub)
+        return Point(self.xcoord.ub, self.ycoord.ub)
 
     # def copy(self):
     #     """[summary]
@@ -61,10 +61,10 @@ class Rectangle(Point):
     #         >>> print(a3d.copy())
     #         (([3, 4], [5, 6]), [7, 8])
     #     """
-    #     return Rectangle(self.x, self.y)
+    #     return Rectangle(self.xcoord, self.ycoord)
 
     # def __eq__(self, rhs) -> bool:
-    #     return self.x == rhs.x and self.y == rhs.y
+    #     return self.xcoord == rhs.xcoord and self.ycoord == rhs.ycoord
 
     # def flip(self):
     #     """[summary]
@@ -80,7 +80,7 @@ class Rectangle(Point):
     #         >>> print(a3d.flip())
     #         ([7, 8], ([3, 4], [5, 6]))
     #     """
-    #     return Rectangle(self.y, self.x)
+    #     return Rectangle(self.ycoord, self.xcoord)
 
     # `a` can be Point, VSegment, HSegment, or Rectangle
     def contains(self, a: Point) -> bool:
@@ -101,7 +101,7 @@ class Rectangle(Point):
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
         """
-        return self.x.contains(a.x) and self.y.contains(a.y)
+        return self.xcoord.contains(a.xcoord) and self.ycoord.contains(a.ycoord)
 
     def width(self):
         """[summary]
@@ -114,7 +114,7 @@ class Rectangle(Point):
             >>> a.width()
             10
         """
-        return self.x.len()
+        return self.xcoord.len()
 
     def height(self):
         """[summary]
@@ -127,7 +127,7 @@ class Rectangle(Point):
             >>> a.height()
             12
         """
-        return self.y.len()
+        return self.ycoord.len()
 
     def area(self):
         """[summary]
@@ -140,16 +140,16 @@ class Rectangle(Point):
             >>> a.area()
             120
         """
-        return self.x.len() * self.y.len()
+        return self.xcoord.len() * self.ycoord.len()
 
 
 class VSegment(Point):
-    # def __init__(self, x, y):
+    # def __init__(self, xcoord, ycoord):
     #     """[summary]
     #
     #     Args:
-    #         x ([type]): [description]
-    #         y ([type]): [description]
+    #         xcoord ([type]): [description]
+    #         ycoord ([type]): [description]
     #
     #     Examples:
     #         >>> a = VSegment(5, Interval(3, 4))
@@ -159,7 +159,7 @@ class VSegment(Point):
     #         >>> print(a3d)
     #         (6, (5, [3, 4]))
     #     """
-    #     Point.__init__(self, x, y)
+    #     Point.__init__(self, xcoord, ycoord)
 
     # def copy(self):
     #     """[summary]
@@ -175,7 +175,7 @@ class VSegment(Point):
     #         >>> print(a3d.copy())
     #         (6, (5, [3, 4]))
     #     """
-    #     return VSegment(self.x, self.y)
+    #     return VSegment(self.xcoord, self.ycoord)
 
     # `a` can be Point or VSegment
     def contains(self, a: Point) -> bool:
@@ -196,7 +196,7 @@ class VSegment(Point):
             >>> a.contains(VSegment(6, Interval(33, 38)))
             False
         """
-        return self.x == a.x and self.y.contains(a.y)
+        return self.xcoord == a.xcoord and self.ycoord.contains(a.ycoord)
 
     # def flip(self):
     #     """[summary]
@@ -209,16 +209,16 @@ class VSegment(Point):
     #         >>> print(a.flip())
     #         ([30, 40], 5)
     #     """
-    #     return HSegment(self.y, self.x)
+    #     return HSegment(self.ycoord, self.xcoord)
 
 
 class HSegment(Point):
-    # def __init__(self, x, y):
+    # def __init__(self, xcoord, ycoord):
     #     """[summary]
     #
     #     Args:
-    #         x ([type]): [description]
-    #         y ([type]): [description]
+    #         xcoord ([type]): [description]
+    #         ycoord ([type]): [description]
     #
     #     Examples:
     #         >>> a = HSegment(Interval(3, 4), 5)
@@ -228,7 +228,7 @@ class HSegment(Point):
     #         >>> print(a3d)
     #         (([3, 4], 5), 7)
     #     """
-    #     Point.__init__(self, x, y)
+    #     Point.__init__(self, xcoord, ycoord)
 
     # def copy(self):
     #     """[summary]
@@ -244,7 +244,7 @@ class HSegment(Point):
     #         >>> print(a3d.copy())
     #         (([3, 4], 5), 7)
     #     """
-    #     return HSegment(self.x, self.y)
+    #     return HSegment(self.xcoord, self.ycoord)
 
     # `a` can be Point or HSegment
     def contains(self, a) -> bool:
@@ -265,7 +265,7 @@ class HSegment(Point):
             >>> a.contains(HSegment(Interval(33, 38), 6))
             False
         """
-        return self.y == a.y and self.x.contains(a.x)
+        return self.ycoord == a.ycoord and self.xcoord.contains(a.xcoord)
 
     # def flip(self):
     #     """[summary]
@@ -278,4 +278,4 @@ class HSegment(Point):
     #         >>> print(a.flip())
     #         (5, [30, 40])
     #     """
-    #     return VSegment(self.y, self.x)
+    #     return VSegment(self.ycoord, self.xcoord)

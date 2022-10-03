@@ -4,17 +4,17 @@ from .vector2 import Vector2
 from typing import Any
 
 class Point:
-    x: Any # Can be int, Interval, and Point
-    y: Any # Can be int and Interval
+    xcoord: Any # Can be int, Interval, and Point
+    ycoord: Any # Can be int and Interval
 
-    __slots__ = ("x", "y")
+    __slots__ = ("xcoord", "ycoord")
 
-    def __init__(self, x, y):
+    def __init__(self, xcoord, ycoord):
         """[summary]
     
         Args:
-            x ([type]): [description]
-            y ([type]): [description]
+            xcoord ([type]): [description]
+            ycoord ([type]): [description]
     
         Examples:
             >>> a = Point(3, 4)
@@ -24,8 +24,8 @@ class Point:
             >>> print(a3d)
             ((3, 4), 5)
         """
-        self.x = x
-        self.y = y
+        self.xcoord = xcoord
+        self.ycoord = ycoord
 
     def __str__(self):
         """[summary]
@@ -41,7 +41,7 @@ class Point:
             >>> print(a3d)
             ((3, 4), 5)
         """
-        return "({self.x}, {self.y})".format(self=self)
+        return "({self.xcoord}, {self.ycoord})".format(self=self)
 
     def copy(self):
         """[summary]
@@ -60,7 +60,7 @@ class Point:
             ((3, 4), 5)
         """
         T = type(self) # Type could be Point or Rectangle or others
-        return T(self.x, self.y)
+        return T(self.xcoord, self.ycoord)
 
     def __lt__(self, rhs) -> bool:
         """[summary]
@@ -81,7 +81,7 @@ class Point:
             >>> a3d > b3d
             False
         """
-        return (self.x, self.y) < (rhs.x, rhs.y)
+        return (self.xcoord, self.ycoord) < (rhs.xcoord, rhs.ycoord)
 
     def __le__(self, rhs) -> bool:
         """[summary]
@@ -102,7 +102,7 @@ class Point:
             >>> a3d >= b3d
             False
         """
-        return (self.x, self.y) <= (rhs.x, rhs.y)
+        return (self.xcoord, self.ycoord) <= (rhs.xcoord, rhs.ycoord)
 
     def __eq__(self, rhs) -> bool:
         """[summary]
@@ -123,7 +123,7 @@ class Point:
             >>> a3d != b3d
             True
         """
-        return (self.x, self.y) == (rhs.x, rhs.y)
+        return (self.xcoord, self.ycoord) == (rhs.xcoord, rhs.ycoord)
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -145,8 +145,8 @@ class Point:
             >>> print(a3d)
             ((13, 16), 6)
         """
-        self.x += rhs.x
-        self.y += rhs.y
+        self.xcoord += rhs.x
+        self.ycoord += rhs.y
         return self
 
     def __add__(self, rhs: Vector2):
@@ -169,9 +169,9 @@ class Point:
         """
         T = type(self) # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
-            return T(self.x + rhs.x, self.y + rhs.y)
+            return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
         else: # assume scalar
-            return T(self.x + rhs, self.y + rhs)
+            return T(self.xcoord + rhs, self.ycoord + rhs)
 
     def __isub__(self, rhs: Vector2):
         """[summary]
@@ -193,8 +193,8 @@ class Point:
             >>> print(a3d)
             ((-7, -8), 4)
         """
-        self.x -= rhs.x
-        self.y -= rhs.y
+        self.xcoord -= rhs.x
+        self.ycoord -= rhs.y
         return self
 
     def __sub__(self, rhs: Vector2):
@@ -223,11 +223,12 @@ class Point:
         """
         T = type(self) # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
-            return T(self.x - rhs.x, self.y - rhs.y)
+            return T(self.xcoord - rhs.x, 
+                     self.ycoord - rhs.y)
         elif isinstance(rhs, Point):
-            return Vector2(self.x - rhs.x, self.y - rhs.y)
+            return Vector2(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
         else: # assume scalar
-            return T(self.x - rhs, self.y - rhs)
+            return T(self.xcoord - rhs, self.ycoord - rhs)
 
     def flip(self):
         """[summary]
@@ -244,7 +245,7 @@ class Point:
             ([5, 6], [3, 4])
         """
         T = type(self) # Type could be Point or Rectangle or others
-        return T(self.y, self.x)
+        return T(self.ycoord, self.xcoord)
 
     def overlaps(self, other) -> bool:
         """[summary]
@@ -255,7 +256,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return overlap(self.x, other.x) and overlap(self.y, other.y)
+        return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
     def contains(self, other) -> bool:
         """[summary]
@@ -266,7 +267,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return contain(self.x, other.x) and contain(self.y, other.y)
+        return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
     def hull_with(self, other):
         """[summary]
@@ -278,7 +279,7 @@ class Point:
             [type]: [description]
         """
         Self = type(self)
-        return Self(hull(self.x, other.x), hull(self.y, other.y))
+        return Self(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
     def intersection_with(self, other):
         """[summary]
@@ -290,8 +291,8 @@ class Point:
             [type]: [description]
         """
         Self = type(self)
-        return Self(intersection(self.x, other.x),
-                    intersection(self.y, other.y))
+        return Self(intersection(self.xcoord, other.xcoord),
+                    intersection(self.ycoord, other.ycoord))
 
     def min_dist_with(self, other):
         """[summary]
@@ -302,7 +303,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return min_dist(self.x, other.x) + min_dist(self.y, other.y)
+        return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
     def enlarge_with(self, alpha: int):
         """[summary]
@@ -319,6 +320,6 @@ class Point:
             >>> print(r)
             ([8, 10], [-2, 0])
         """
-        x = enlarge(self.x, alpha)
-        y = enlarge(self.y, alpha)
-        return Point(x, y)
+        xcoord = enlarge(self.xcoord, alpha)
+        ycoord = enlarge(self.ycoord, alpha)
+        return Point(xcoord, ycoord)

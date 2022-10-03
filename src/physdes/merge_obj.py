@@ -10,34 +10,34 @@ class MergeObj:
     impl: Point # implemented by a 45 degree rotated point, vertical or
                 # horizontal segment, and rectangle
 
-    def __init__(self, x, y):
+    def __init__(self, xcoord, ycoord):
         """[summary]
     
         Args:
-            x ([type]): [description]
-            y ([type]): [description]
+            xcoord ([type]): [description]
+            ycoord ([type]): [description]
     
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
             >>> print(a)
             /9, -1/
         """
-        self.impl = Point(x, y)
+        self.impl = Point(xcoord, ycoord)
 
-    def construct(x, y):
+    def construct(xcoord, ycoord):
         """Construct from the real point
     
         Args:
-            x ([type]): [description]
-            y ([type]): [description]
+            xcoord ([type]): [description]
+            ycoord ([type]): [description]
     
         Examples:
             >>> a = MergeObj.construct(4, 5)
             >>> print(a)
             /9, -1/
         """
-        impl = Point(x + y, x - y)
-        return MergeObj(impl.x, impl.y)
+        impl = Point(xcoord + ycoord, xcoord - ycoord)
+        return MergeObj(impl.xcoord, impl.ycoord)
 
     def __str__(self):
         """[summary]
@@ -50,7 +50,7 @@ class MergeObj:
             >>> print(a)
             /9, -1/
         """
-        return "/{self.impl.x}, {self.impl.y}/".format(self=self)
+        return "/{self.impl.xcoord}, {self.impl.ycoord}/".format(self=self)
 
     def __eq__(self, rhs) -> bool:
         """[summary]
@@ -87,8 +87,8 @@ class MergeObj:
             >>> print(a)
             /12, -2/
         """
-        self.impl.x += rhs.x + rhs.y
-        self.impl.y += rhs.x - rhs.y
+        self.impl.xcoord += rhs.x + rhs.y
+        self.impl.ycoord += rhs.x - rhs.y
         return self
 
     def __isub__(self, rhs: Vector2):
@@ -106,8 +106,8 @@ class MergeObj:
             >>> print(a)
             /6, 0/
         """
-        self.impl.x -= rhs.x + rhs.y
-        self.impl.y -= rhs.x - rhs.y
+        self.impl.xcoord -= rhs.x + rhs.y
+        self.impl.ycoord -= rhs.x - rhs.y
         return self
 
     def min_dist_with(self, other) -> int:
@@ -126,9 +126,9 @@ class MergeObj:
             >>> r1.min_dist_with(r2)
             7
         """
-        # Note: take max of x and y
-        return max(min_dist(self.impl.x, other.impl.x),
-                   min_dist(self.impl.y, other.impl.y))
+        # Note: take max of xcoord and ycoord
+        return max(min_dist(self.impl.xcoord, other.impl.xcoord),
+                   min_dist(self.impl.ycoord, other.impl.ycoord))
 
     def enlarge_with(self, alpha: int):
         """[summary]
@@ -145,9 +145,9 @@ class MergeObj:
             >>> print(r)
             /[8, 10], [-2, 0]/
         """
-        x = enlarge(self.impl.x, alpha) # TODO: check
-        y = enlarge(self.impl.y, alpha) # TODO: check
-        return MergeObj(x, y)  # TODO
+        xcoord = enlarge(self.impl.xcoord, alpha) # TODO: check
+        ycoord = enlarge(self.impl.ycoord, alpha) # TODO: check
+        return MergeObj(xcoord, ycoord)  # TODO
 
     def intersection_with(self, other):
         """[summary]
@@ -165,7 +165,7 @@ class MergeObj:
             /9, -1/
         """
         p = self.impl.intersection_with(other.impl)  # TODO
-        return MergeObj(p.x, p.y)
+        return MergeObj(p.xcoord, p.ycoord)
 
     def merge_with(self, other):
         """[summary]
@@ -188,4 +188,4 @@ class MergeObj:
         trr1 = enlarge(self.impl, half)
         trr2 = enlarge(other.impl, alpha - half)
         impl = intersection(trr1, trr2)
-        return MergeObj(impl.x, impl.y)
+        return MergeObj(impl.xcoord, impl.ycoord)

@@ -5,8 +5,8 @@ from typing import Any
 
 @dataclass(order=True)
 class Point:
-    x: Any
-    y: Any
+    xcoord: Any
+    ycoord: Any
 
     def copy(self):
         """[summary]
@@ -25,8 +25,8 @@ class Point:
         Returns:
             [type]: [description]
         """
-        self.x += rhs.x
-        self.y += rhs.y
+        self.xcoord += rhs.xcoord
+        self.ycoord += rhs.ycoord
         return self
 
     def __add__(self, rhs):
@@ -39,9 +39,9 @@ class Point:
             [type]: [description]
         """
         if isinstance(rhs, Vector2):
-            return Point(self.x + rhs.x, self.y + rhs.y)
+            return Point(self.xcoord + rhs.xcoord, self.ycoord + rhs.ycoord)
         else:
-            return Point(self.x + rhs, self.y + rhs)
+            return Point(self.xcoord + rhs, self.ycoord + rhs)
 
     def __isub__(self, rhs: Vector2):
         """[summary]
@@ -52,8 +52,8 @@ class Point:
         Returns:
             [type]: [description]
         """
-        self.x -= rhs.x
-        self.y -= rhs.y
+        self.xcoord -= rhs.xcoord
+        self.ycoord -= rhs.ycoord
         return self
 
     def __sub__(self, rhs):
@@ -66,11 +66,11 @@ class Point:
             [type]: [description]
         """
         if isinstance(rhs, Vector2):
-            return Point(self.x - rhs.x, self.y - rhs.y)
+            return Point(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
         elif isinstance(rhs, Point):
-            return Vector2(self.x - rhs.x, self.y - rhs.y)
+            return Vector2(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
         else:
-            return Point(self.x - rhs, self.y - rhs)
+            return Point(self.xcoord - rhs, self.ycoord - rhs)
 
     def flip(self):
         """[summary]
@@ -78,7 +78,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return Point(self.y, self.x)
+        return Point(self.ycoord, self.xcoord)
 
     def overlaps(self, other) -> bool:
         """[summary]
@@ -89,7 +89,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return overlap(self.x, other.x) and overlap(self.y, other.y)
+        return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
     def contains(self, other) -> bool:
         """[summary]
@@ -100,7 +100,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return contain(self.x, other.x) and contain(self.y, other.y)
+        return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
     def intersection_with(self, other):
         """[summary]
@@ -111,7 +111,7 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return Point(intersection(self.x, other.x), intersection(self.y, other.y))
+        return Point(intersection(self.xcoord, other.xcoord), intersection(self.ycoord, other.ycoord))
 
     def min_dist_with(self, other):
         """[summary]
@@ -122,17 +122,17 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return min_dist(self.x, other.x) + min_dist(self.y, other.y)
+        return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
 
 class dualpoint(Point):
-    def __init__(self, x, y):
-        Point.__init__(self, x, y)
+    def __init__(self, xcoord, ycoord):
+        Point.__init__(self, xcoord, ycoord)
 
     @property
-    def x(self):
-        return self.y
+    def xcoord(self):
+        return self.ycoord
 
     @property
-    def y(self):
-        return self.x
+    def ycoord(self):
+        return self.xcoord

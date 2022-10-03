@@ -51,7 +51,7 @@ class RPolygon:
             ...     (-3, -4),
             ... ]
             ...
-            >>> S = [Point(x, y) for x, y in coords]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon(S)
             >>> P.signed_area()
             54
@@ -76,8 +76,8 @@ class RPolygon:
     #     o = Vector2(0, 0)
     #     c = False
     #     for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
-    #         if (v1.y <= q.y and q.y < v0.y) or (v0.y <= q.y and q.y < v1.y):
-    #             if v1.x > q.x:
+    #         if (v1.ycoord <= q.ycoord and q.ycoord < v0.ycoord) or (v0.ycoord <= q.ycoord and q.ycoord < v1.ycoord):
+    #             if v1.xcoord > q.xcoord:
     #                 c = not c
     #     return c
 
@@ -104,15 +104,15 @@ def create_ymono_rpolygon(lst):
     """
     assert len(lst) >= 2
 
-    botmost = min(lst, key=lambda a: (a.y, a.x))
-    topmost = max(lst, key=lambda a: (a.y, a.x))
-    is_anticlockwise = topmost.x >= botmost.x
+    botmost = min(lst, key=lambda a: (a.ycoord, a.xcoord))
+    topmost = max(lst, key=lambda a: (a.ycoord, a.xcoord))
+    is_anticlockwise = topmost.xcoord >= botmost.xcoord
     if is_anticlockwise:
-        [lst1, lst2] = partition(lambda a: a.x >= botmost.x, lst)
+        [lst1, lst2] = partition(lambda a: a.xcoord >= botmost.xcoord, lst)
     else:
-        [lst1, lst2] = partition(lambda a: a.x <= botmost.x, lst)
-    lst1 = sorted(lst1, key=lambda a: (a.y, a.x))
-    lst2 = sorted(lst2, key=lambda a: (a.y, a.x), reverse=True)
+        [lst1, lst2] = partition(lambda a: a.xcoord <= botmost.xcoord, lst)
+    lst1 = sorted(lst1, key=lambda a: (a.ycoord, a.xcoord))
+    lst2 = sorted(lst2, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
     return lst1 + lst2, is_anticlockwise
 
 
@@ -129,11 +129,11 @@ def create_xmono_rpolygon(lst):
 
     leftmost = min(lst)
     rightmost = max(lst)
-    is_anticlockwise = rightmost.y <= leftmost.y
+    is_anticlockwise = rightmost.ycoord <= leftmost.ycoord
     if is_anticlockwise:
-        [lst1, lst2] = partition(lambda a: a.y <= leftmost.y, lst)
+        [lst1, lst2] = partition(lambda a: a.ycoord <= leftmost.ycoord, lst)
     else:
-        [lst1, lst2] = partition(lambda a: a.y >= leftmost.y, lst)
+        [lst1, lst2] = partition(lambda a: a.ycoord >= leftmost.ycoord, lst)
     lst1 = sorted(lst1)
     lst2 = sorted(lst2, reverse=True)
     return lst1 + lst2, is_anticlockwise
@@ -166,7 +166,7 @@ def create_test_rpolygon(lst):
         ...     (1, 4),
         ... ]
         ...
-        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> S = create_test_rpolygon(S)
         >>> for p in S:
         ...     print("{},".format(p))
@@ -186,32 +186,32 @@ def create_test_rpolygon(lst):
         (-3, -3),
         (-3, -4),
     """
-    max_pt = max(lst, key=lambda a: (a.y, a.x))
-    min_pt = min(lst, key=lambda a: (a.y, a.x))
-    dx = max_pt.x - min_pt.x
-    dy = max_pt.y - min_pt.y
+    max_pt = max(lst, key=lambda a: (a.ycoord, a.xcoord))
+    min_pt = min(lst, key=lambda a: (a.ycoord, a.xcoord))
+    dx = max_pt.xcoord - min_pt.xcoord
+    dy = max_pt.ycoord - min_pt.ycoord
 
     def right_left(a):
-        return dx * (a.y - min_pt.y) < (a.x - min_pt.x) * dy
+        return dx * (a.ycoord - min_pt.ycoord) < (a.xcoord - min_pt.xcoord) * dy
 
     [lst1, lst2] = partition(right_left, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    max_pt1 = max(lst1, key=lambda a: (a.x, a.y))
-    [lst3, lst4] = partition(lambda a: a.y < max_pt1.y, lst1)
-    min_pt2 = min(lst2, key=lambda a: (a.x, a.y))
-    [lst5, lst6] = partition(lambda a: a.y > min_pt2.y, lst2)
+    max_pt1 = max(lst1, key=lambda a: (a.xcoord, a.ycoord))
+    [lst3, lst4] = partition(lambda a: a.ycoord < max_pt1.ycoord, lst1)
+    min_pt2 = min(lst2, key=lambda a: (a.xcoord, a.ycoord))
+    [lst5, lst6] = partition(lambda a: a.ycoord > min_pt2.ycoord, lst2)
 
     if dx < 0:
-        lsta = sorted(lst6, key=lambda a: (a.x, a.y), reverse=True)
-        lstb = sorted(lst5, key=lambda a: (a.y, a.x))
-        lstc = sorted(lst4, key=lambda a: (a.x, a.y))
-        lstd = sorted(lst3, key=lambda a: (a.y, a.x), reverse=True)
+        lsta = sorted(lst6, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
+        lstb = sorted(lst5, key=lambda a: (a.ycoord, a.xcoord))
+        lstc = sorted(lst4, key=lambda a: (a.xcoord, a.ycoord))
+        lstd = sorted(lst3, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
     else:
-        lsta = sorted(lst3, key=lambda a: (a.x, a.y))
-        lstb = sorted(lst4, key=lambda a: (a.y, a.x))
-        lstc = sorted(lst5, key=lambda a: (a.x, a.y), reverse=True)
-        lstd = sorted(lst6, key=lambda a: (a.y, a.x), reverse=True)
+        lsta = sorted(lst3, key=lambda a: (a.xcoord, a.ycoord))
+        lstb = sorted(lst4, key=lambda a: (a.ycoord, a.xcoord))
+        lstc = sorted(lst5, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
+        lstd = sorted(lst6, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
     return lsta + lstb + lstc + lstd
 
 
@@ -253,15 +253,15 @@ def point_in_rpolygon(S, q):
         ...     (-3, -4),
         ... ]
         ...
-        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> point_in_rpolygon(S, Point(0, 1))
         True
     """
     c = False
     p0 = S[-1]
     for p1 in S:
-        if (p1.y <= q.y < p0.y) or (p0.y <= q.y < p1.y):
-            if p1.x > q.x:
+        if (p1.ycoord <= q.ycoord < p0.ycoord) or (p0.ycoord <= q.ycoord < p1.ycoord):
+            if p1.xcoord > q.xcoord:
                 c = not c
         p0 = p1
     return c

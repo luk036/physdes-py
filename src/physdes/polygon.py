@@ -51,7 +51,7 @@ class Polygon:
             ...     (-3, -4),
             ... ]
             ...
-            >>> S = [Point(x, y) for x, y in coords]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = Polygon(S)
             >>> P.signed_area_x2()
             110
@@ -116,11 +116,11 @@ def create_mono_polygon(lst, dir):
 
 
 def create_ymono_polygon(lst):
-    return create_mono_polygon(lst, lambda a: (a.y, a.x))
+    return create_mono_polygon(lst, lambda a: (a.ycoord, a.xcoord))
 
 
 def create_xmono_polygon(lst):
-    return create_mono_polygon(lst, lambda a: (a.x, a.y))
+    return create_mono_polygon(lst, lambda a: (a.xcoord, a.ycoord))
 
 
 def create_test_polygon(lst):
@@ -150,7 +150,7 @@ def create_test_polygon(lst):
         ...     (1, 4),
         ... ]
         ...
-        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> S = create_test_polygon(S)
         >>> for p in S:
         ...     print("{},".format(p))
@@ -170,31 +170,31 @@ def create_test_polygon(lst):
         (-3, -3),
         (-3, -4),
     """
-    upmost = max(lst, key=lambda a: (a.y, a.x))
-    downmost = min(lst, key=lambda a: (a.y, a.x))
+    upmost = max(lst, key=lambda a: (a.ycoord, a.xcoord))
+    downmost = min(lst, key=lambda a: (a.ycoord, a.xcoord))
     d = upmost - downmost
 
     def right_left(a):
-        return d.x * (a.y - downmost.y) < (a.x - downmost.x) * d.y
+        return d.x * (a.ycoord - downmost.ycoord) < (a.xcoord - downmost.xcoord) * d.y
 
     [lst1, lst2] = partition(right_left, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    upmost1 = max(lst1, key=lambda a: (a.x, a.y))
-    [lst3, lst4] = partition(lambda a: a.y < upmost1.y, lst1)
-    downmost2 = min(lst2, key=lambda a: (a.x, a.y))
-    [lst5, lst6] = partition(lambda a: a.y > downmost2.y, lst2)
+    upmost1 = max(lst1, key=lambda a: (a.xcoord, a.ycoord))
+    [lst3, lst4] = partition(lambda a: a.ycoord < upmost1.ycoord, lst1)
+    downmost2 = min(lst2, key=lambda a: (a.xcoord, a.ycoord))
+    [lst5, lst6] = partition(lambda a: a.ycoord > downmost2.ycoord, lst2)
 
     if d.x < 0:
-        lsta = sorted(lst6, key=lambda a: (a.x, a.y), reverse=True)
-        lstb = sorted(lst5, key=lambda a: (a.y, a.x))
-        lstc = sorted(lst4, key=lambda a: (a.x, a.y))
-        lstd = sorted(lst3, key=lambda a: (a.y, a.x), reverse=True)
+        lsta = sorted(lst6, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
+        lstb = sorted(lst5, key=lambda a: (a.ycoord, a.xcoord))
+        lstc = sorted(lst4, key=lambda a: (a.xcoord, a.ycoord))
+        lstd = sorted(lst3, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
     else:
-        lsta = sorted(lst3, key=lambda a: (a.x, a.y))
-        lstb = sorted(lst4, key=lambda a: (a.y, a.x))
-        lstc = sorted(lst5, key=lambda a: (a.x, a.y), reverse=True)
-        lstd = sorted(lst6, key=lambda a: (a.y, a.x), reverse=True)
+        lsta = sorted(lst3, key=lambda a: (a.xcoord, a.ycoord))
+        lstb = sorted(lst4, key=lambda a: (a.ycoord, a.xcoord))
+        lstc = sorted(lst5, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
+        lstd = sorted(lst6, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
     return lsta + lstb + lstc + lstd
 
 
@@ -236,19 +236,19 @@ def point_in_polygon(S, q):
         ...     (-3, -4),
         ... ]
         ...
-        >>> S = [Point(x, y) for x, y in coords]
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> point_in_polygon(S, Point(0, 1))
         True
     """
     c = False
     p0 = S[-1]
     for p1 in S:
-        if (p1.y <= q.y < p0.y) or (p0.y <= q.y < p1.y):
+        if (p1.ycoord <= q.ycoord < p0.ycoord) or (p0.ycoord <= q.ycoord < p1.ycoord):
             d = (q - p0).cross(p1 - p0)
-            if p1.y > p0.y:
+            if p1.ycoord > p0.ycoord:
                 if d < 0:
                     c = not c
-            else:  # v1.y < v0.y
+            else:  # v1.ycoord < v0.ycoord
                 if d > 0:
                     c = not c
         p0 = p1
