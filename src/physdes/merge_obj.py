@@ -52,6 +52,26 @@ class MergeObj:
         """
         return "/{self.impl.x}, {self.impl.y}/".format(self=self)
 
+    def __eq__(self, rhs) -> bool:
+        """[summary]
+
+        Args:
+            rhs ([type]): [description]
+
+        Returns:
+            bool: [description]
+
+        Examples:
+            >>> a = MergeObj(4 + 5, 4 - 5)
+            >>> b = MergeObj(7 + 9, 7 - 9)
+            >>> a == b
+            False
+            >>> c = MergeObj(9, -1)
+            >>> a == c
+            True
+        """
+        return self.impl == rhs.impl
+
     def __iadd__(self, rhs: Vector2):
         """Translate by displacement
 
