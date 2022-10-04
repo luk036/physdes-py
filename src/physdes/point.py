@@ -173,7 +173,7 @@ class Point:
         else: # assume scalar
             return T(self.xcoord + rhs, self.ycoord + rhs)
 
-    def __isub__(self, rhs: Vector2):
+    def __isub__(self, rhs):
         """[summary]
 
         Args:
@@ -197,11 +197,11 @@ class Point:
         self.ycoord -= rhs.y
         return self
 
-    def __sub__(self, rhs: Vector2):
+    def __sub__(self, rhs):
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            rhs (Vector or Point): [description]
 
         Returns:
             [type]: [description]

@@ -1,13 +1,13 @@
-from physdes.generic import min_dist, overlap
+from physdes.generic import min_dist
 from physdes.merge_obj import MergeObj
 from physdes.recti import Interval
-from physdes.vector2 import Vector2
+# from physdes.vector2 import Vector2
 
 
 def test_MergeObj():
     r1 = MergeObj(4 + 5, 4 - 5)
     r2 = MergeObj(7 + 9, 7 - 9)
-    v = Vector2(5, 6)
+    # v = Vector2(5, 6)
 
     assert r1 != r2
     # assert (r1 - v) + v == r1
