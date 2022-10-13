@@ -13,7 +13,7 @@ class Polygon:
             pointset ([type]): [description]
         """
         self._origin = pointset[0]
-        self._vecs = list(c - pointset[0] for c in pointset[1:])
+        self._vecs = list(vtx - self._origin for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -108,19 +108,19 @@ def create_mono_polygon(lst, dir):
 
     max_pt = max(lst, key=dir)
     min_pt = min(lst, key=dir)
-    d = max_pt - min_pt
-    [lst1, lst2] = partition(lambda a: d.cross(a - min_pt) <= 0, lst)
+    vec = max_pt - min_pt
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt - min_pt) <= 0, lst)
     lst1 = sorted(lst1, key=dir)
     lst2 = sorted(lst2, key=dir, reverse=True)
     return lst1 + lst2
 
 
 def create_ymono_polygon(lst):
-    return create_mono_polygon(lst, lambda a: (a.ycoord, a.xcoord))
+    return create_mono_polygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def create_xmono_polygon(lst):
-    return create_mono_polygon(lst, lambda a: (a.xcoord, a.ycoord))
+    return create_mono_polygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def create_test_polygon(lst):
@@ -170,35 +170,38 @@ def create_test_polygon(lst):
         (-3, -3),
         (-3, -4),
     """
-    upmost = max(lst, key=lambda a: (a.ycoord, a.xcoord))
-    downmost = min(lst, key=lambda a: (a.ycoord, a.xcoord))
-    d = upmost - downmost
+    def dir1(pt):
+        return (pt.ycoord, pt.xcoord)
 
-    def right_left(a):
-        return d.x * (a.ycoord - downmost.ycoord) < (a.xcoord - downmost.xcoord) * d.y
+    upmost = max(lst, key=dir1)
+    downmost = min(lst, key=dir1)
+    vec = upmost - downmost
+
+    def right_left(pt):
+        return vec.cross(pt - downmost) < 0
 
     [lst1, lst2] = partition(right_left, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    upmost1 = max(lst1, key=lambda a: (a.xcoord, a.ycoord))
-    [lst3, lst4] = partition(lambda a: a.ycoord < upmost1.ycoord, lst1)
-    downmost2 = min(lst2, key=lambda a: (a.xcoord, a.ycoord))
-    [lst5, lst6] = partition(lambda a: a.ycoord > downmost2.ycoord, lst2)
+    rightmost = max(lst1)
+    [lst3, lst4] = partition(lambda a: a.ycoord < rightmost.ycoord, lst1)
+    leftmost = min(lst2)
+    [lst5, lst6] = partition(lambda a: a.ycoord > leftmost.ycoord, lst2)
 
-    if d.x < 0:
-        lsta = sorted(lst6, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
-        lstb = sorted(lst5, key=lambda a: (a.ycoord, a.xcoord))
-        lstc = sorted(lst4, key=lambda a: (a.xcoord, a.ycoord))
-        lstd = sorted(lst3, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
+    if vec.x < 0:
+        lsta = sorted(lst6, reverse=True)
+        lstb = sorted(lst5, key=dir1)
+        lstc = sorted(lst4)
+        lstd = sorted(lst3, key=dir1, reverse=True)
     else:
-        lsta = sorted(lst3, key=lambda a: (a.xcoord, a.ycoord))
-        lstb = sorted(lst4, key=lambda a: (a.ycoord, a.xcoord))
-        lstc = sorted(lst5, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
-        lstd = sorted(lst6, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
+        lsta = sorted(lst3)
+        lstb = sorted(lst4, key=dir1)
+        lstc = sorted(lst5, reverse=True)
+        lstd = sorted(lst6, key=dir1, reverse=True)
     return lsta + lstb + lstc + lstd
 
 
-def point_in_polygon(S, q):
+def point_in_polygon(pointset, ptq):
     """determine if a Point is within a Polygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
@@ -212,8 +215,8 @@ def point_in_polygon(S, q):
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
 
     Args:
-        S ([type]): [description]
-        q ([type]): [description]
+        pointset ([type]): [description]
+        ptq ([type]): [description]
 
     Returns:
         [type]: [description]
@@ -236,20 +239,21 @@ def point_in_polygon(S, q):
         ...     (-3, -4),
         ... ]
         ...
-        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-        >>> point_in_polygon(S, Point(0, 1))
+        >>> pointset = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> point_in_polygon(pointset, Point(0, 1))
         True
     """
-    c = False
-    p0 = S[-1]
-    for p1 in S:
-        if (p1.ycoord <= q.ycoord < p0.ycoord) or (p0.ycoord <= q.ycoord < p1.ycoord):
-            d = (q - p0).cross(p1 - p0)
-            if p1.ycoord > p0.ycoord:
-                if d < 0:
-                    c = not c
+    res = False
+    pt0 = pointset[-1]
+    for pt1 in pointset:
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or \
+                (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+            det = (ptq - pt0).cross(pt1 - pt0)
+            if pt1.ycoord > pt0.ycoord:
+                if det < 0:
+                    res = not res
             else:  # v1.ycoord < v0.ycoord
-                if d > 0:
-                    c = not c
-        p0 = p1
-    return c
+                if det > 0:
+                    res = not res
+        pt0 = pt1
+    return res

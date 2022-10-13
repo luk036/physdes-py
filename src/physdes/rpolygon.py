@@ -10,10 +10,10 @@ class RPolygon:
         """[summary]
 
         Args:
-            coords ([type]): [description]
+            pointset (List[Point]): [description]
         """
         self._origin = pointset[0]
-        self._vecs = list(each - pointset[0] for each in pointset[1:])
+        self._vecs = list(vtx - self._origin for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -76,7 +76,8 @@ class RPolygon:
     #     o = Vector2(0, 0)
     #     c = False
     #     for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
-    #         if (v1.ycoord <= q.ycoord and q.ycoord < v0.ycoord) or (v0.ycoord <= q.ycoord and q.ycoord < v1.ycoord):
+    #         if (v1.ycoord <= q.ycoord and q.ycoord < v0.ycoord) or
+    #                 (v0.ycoord <= q.ycoord and q.ycoord < v1.ycoord):
     #             if v1.xcoord > q.xcoord:
     #                 c = not c
     #     return c
@@ -104,15 +105,18 @@ def create_ymono_rpolygon(lst):
     """
     assert len(lst) >= 2
 
-    botmost = min(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
-    topmost = max(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
+    def dir(pt):
+        return (pt.ycoord, pt.xcoord)
+
+    botmost = min(lst, key=dir)
+    topmost = max(lst, key=dir)
     is_anticlockwise = topmost.xcoord >= botmost.xcoord
     if is_anticlockwise:
         [lst1, lst2] = partition(lambda pt: pt.xcoord >= botmost.xcoord, lst)
     else:
         [lst1, lst2] = partition(lambda pt: pt.xcoord <= botmost.xcoord, lst)
-    lst1 = sorted(lst1, key=lambda pt: (pt.ycoord, pt.xcoord))
-    lst2 = sorted(lst2, key=lambda pt: (pt.ycoord, pt.xcoord), reverse=True)
+    lst1 = sorted(lst1, key=dir)
+    lst2 = sorted(lst2, key=dir, reverse=True)
     return lst1 + lst2, is_anticlockwise
 
 
@@ -186,33 +190,34 @@ def create_test_rpolygon(lst):
         (-3, -3),
         (-3, -4),
     """
-    max_pt = max(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
-    min_pt = min(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
-    dx = max_pt.xcoord - min_pt.xcoord
-    dy = max_pt.ycoord - min_pt.ycoord
+    def dir(pt):
+        return (pt.ycoord, pt.xcoord)
+
+    max_pt = max(lst, key=dir)
+    min_pt = min(lst, key=dir)
+    vec = max_pt - min_pt
 
     def right_left(pt):
-        return dx * (pt.ycoord - min_pt.ycoord) \
-            < dy * (pt.xcoord - min_pt.xcoord)
+        return vec.cross(pt - min_pt) < 0
 
     [lst1, lst2] = partition(right_left, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    max_pt1 = max(lst1, key=lambda pt: (pt.xcoord, pt.ycoord))
+    max_pt1 = max(lst1)
     [lst3, lst4] = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
-    min_pt2 = min(lst2, key=lambda pt: (pt.xcoord, pt.ycoord))
+    min_pt2 = min(lst2)
     [lst5, lst6] = partition(lambda pt: pt.ycoord > min_pt2.ycoord, lst2)
 
-    if dx < 0:
-        lsta = sorted(lst6, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
-        lstb = sorted(lst5, key=lambda a: (a.ycoord, a.xcoord))
-        lstc = sorted(lst4, key=lambda a: (a.xcoord, a.ycoord))
-        lstd = sorted(lst3, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
+    if vec.x < 0:
+        lsta = sorted(lst6, reverse=True)
+        lstb = sorted(lst5, key=dir)
+        lstc = sorted(lst4)
+        lstd = sorted(lst3, key=dir, reverse=True)
     else:
-        lsta = sorted(lst3, key=lambda a: (a.xcoord, a.ycoord))
-        lstb = sorted(lst4, key=lambda a: (a.ycoord, a.xcoord))
-        lstc = sorted(lst5, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
-        lstd = sorted(lst6, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
+        lsta = sorted(lst3)
+        lstb = sorted(lst4, key=dir)
+        lstc = sorted(lst5, reverse=True)
+        lstd = sorted(lst6, key=dir, reverse=True)
     return lsta + lstb + lstc + lstd
 
 
@@ -261,8 +266,8 @@ def point_in_rpolygon(pointset, ptq):
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) \
-                or (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or \
+                (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
             if pt1.xcoord > ptq.xcoord:
                 res = not res
         pt0 = pt1

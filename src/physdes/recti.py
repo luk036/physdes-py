@@ -1,14 +1,15 @@
 from .interval import Interval
 from .point import Point
 
+
 class Rectangle(Point):
     def __init__(self, xcoord: Interval, ycoord: Interval):
         """[summary]
-    
+
         Args:
             xcoord (Interval): [description]
             ycoord (Interval): [description]
-    
+
         Examples:
             >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
             >>> print(a)
@@ -83,11 +84,11 @@ class Rectangle(Point):
     #     return Rectangle(self.ycoord, self.xcoord)
 
     # `a` can be Point, VSegment, HSegment, or Rectangle
-    def contains(self, a: Point) -> bool:
+    def contains(self, obj: Point) -> bool:
         """[summary]
 
         Args:
-            a ([type]): [description]
+            obj (Point): [description]
 
         Returns:
             bool: [description]
@@ -101,7 +102,8 @@ class Rectangle(Point):
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
         """
-        return self.xcoord.contains(a.xcoord) and self.ycoord.contains(a.ycoord)
+        return self.xcoord.contains(obj.xcoord) and \
+            self.ycoord.contains(obj.ycoord)
 
     def width(self):
         """[summary]
@@ -114,7 +116,7 @@ class Rectangle(Point):
             >>> a.width()
             10
         """
-        return self.xcoord.len()
+        return self.xcoord.length()
 
     def height(self):
         """[summary]
@@ -127,7 +129,7 @@ class Rectangle(Point):
             >>> a.height()
             12
         """
-        return self.ycoord.len()
+        return self.ycoord.length()
 
     def area(self):
         """[summary]
@@ -140,7 +142,7 @@ class Rectangle(Point):
             >>> a.area()
             120
         """
-        return self.xcoord.len() * self.ycoord.len()
+        return self.xcoord.length() * self.ycoord.length()
 
 
 class VSegment(Point):

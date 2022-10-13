@@ -76,7 +76,7 @@ class Interval:
         """
         return Interval(self._lb, self._ub)
 
-    def len(self):
+    def length(self):
         """[summary]
 
         Returns:
@@ -84,11 +84,11 @@ class Interval:
         """
         return self.ub - self.lb
 
-    def __eq__(self, rhs) -> bool:
+    def __eq__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -99,13 +99,13 @@ class Interval:
             >>> a == b
             False
         """
-        return (self.lb, self.ub) == (rhs.lb, rhs.ub)
+        return (self.lb, self.ub) == (other.lb, other.ub)
 
-    def __lt__(self, rhs) -> bool:
+    def __lt__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -118,13 +118,13 @@ class Interval:
             >>> b < a
             False
         """
-        return self.ub < rhs
+        return self.ub < other
 
-    def __gt__(self, rhs) -> bool:
+    def __gt__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -137,13 +137,13 @@ class Interval:
             >>> b > a
             False
         """
-        return self.lb > rhs
+        return self.lb > other
 
-    def __le__(self, rhs) -> bool:
+    def __le__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -156,13 +156,13 @@ class Interval:
             >>> b <= a
             True
         """
-        return not (rhs < self.lb)
+        return not (other < self.lb)
 
-    def __ge__(self, rhs) -> bool:
+    def __ge__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -175,7 +175,7 @@ class Interval:
             >>> b >= a
             True
         """
-        return not (self.ub < rhs)
+        return not (self.ub < other)
 
     def __neg__(self):
         """[summary]
@@ -260,11 +260,11 @@ class Interval:
         """
         return Interval(self.lb - rhs, self.ub - rhs)
 
-    def overlaps(self, a) -> bool:
+    def overlaps(self, obj) -> bool:
         """[summary]
 
         Args:
-            a ([type]): [description]
+            obj ([type]): [description]
 
         Returns:
             bool: [description]
@@ -276,13 +276,13 @@ class Interval:
             >>> a.overlaps(Interval(6, 9))
             False
         """
-        return not (self < a or a < self)
+        return not (self < obj or obj < self)
 
-    def contains(self, a) -> bool:
+    def contains(self, obj) -> bool:
         """[summary]
 
         Args:
-            a ([type]): [description]
+            obj ([type]): [description]
 
         Returns:
             bool: [description]
@@ -296,16 +296,16 @@ class Interval:
             >>> a.contains(Interval(6, 9))
             False
         """
-        # `a` can be an Interval or int
-        if isscalar(a):
-            return self.lb <= a <= self.ub
-        return self.lb <= a.lb and a.ub <= self.ub
+        # `obj` can be an Interval or int
+        if isscalar(obj):
+            return self.lb <= obj <= self.ub
+        return self.lb <= obj.lb and obj.ub <= self.ub
 
-    def hull_with(self, other):
+    def hull_with(self, obj):
         """[summary]
 
         Args:
-            other ([type]): [description]
+            obj ([type]): [description]
 
         Returns:
             [type]: [description]
@@ -317,11 +317,11 @@ class Interval:
             >>> print(a.hull_with(Interval(6, 9)))
             [3, 9]
         """
-        if isscalar(other):
-            return Interval(min(self.lb, other), max(self.ub, other))
-        return Interval(min(self.lb, other.lb), max(self.ub, other.ub))
+        if isscalar(obj):
+            return Interval(min(self.lb, obj), max(self.ub, obj))
+        return Interval(min(self.lb, obj.lb), max(self.ub, obj.ub))
 
-    def intersection_with(self, other):
+    def intersection_with(self, obj):
         """[summary]
 
         Args:
@@ -340,15 +340,15 @@ class Interval:
             [6, 8]
         """
         # `a` can be an Interval or int
-        if isscalar(other):
-            return other
-        return Interval(max(self.lb, other.lb), min(self.ub, other.ub))
+        if isscalar(obj):
+            return obj
+        return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
 
-    def min_dist_with(self, other):
+    def min_dist_with(self, obj):
         """[summary]
 
         Args:
-            other ([type]): [description]
+            obj ([type]): [description]
 
         Returns:
             [type]: [description]
@@ -362,13 +362,13 @@ class Interval:
             >>> print(a.min_dist_with(Interval(6, 9)))
             1
         """
-        if self < other:
-            return min_dist(self.ub, other)
-        if other < self:
-            return min_dist(self.lb, other)
+        if self < obj:
+            return min_dist(self.ub, obj)
+        if obj < self:
+            return min_dist(self.lb, obj)
         return 0
 
-    def min_dist_change_with(self, other):
+    def min_dist_change_with(self, obj):
         """[summary]
 
         Args:
@@ -377,16 +377,16 @@ class Interval:
         Returns:
             [type]: [description]
         """
-        if self < other:
+        if self < obj:
             self._lb = self._ub
-            return min_dist_change(self._ub, other)
-        if other < self:
+            return min_dist_change(self._ub, obj)
+        if obj < self:
             self._ub = self._lb
-            return min_dist_change(self._lb, other)
-        if isscalar(other):
-            self._ub = self._lb = other
+            return min_dist_change(self._lb, obj)
+        if isscalar(obj):
+            self._ub = self._lb = obj
         else:
-            self = other = self.intersection_with(other)
+            self = obj = self.intersection_with(obj)
         return 0
 
     def enlarge_with(self, alpha):
