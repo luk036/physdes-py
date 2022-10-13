@@ -7,16 +7,16 @@ from .vector2 import Vector2
 class MergeObj:
     """Merging point, segment, or region"""
 
-    impl: Point # implemented by a 45 degree rotated point, vertical or
-                # horizontal segment, and rectangle
+    impl: Point  # implemented by a 45 degree rotated point, vertical or
+    # horizontal segment, and rectangle
 
     def __init__(self, xcoord, ycoord):
         """[summary]
-    
+
         Args:
             xcoord ([type]): [description]
             ycoord ([type]): [description]
-    
+
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
             >>> print(a)
@@ -26,11 +26,11 @@ class MergeObj:
 
     def construct(xcoord, ycoord):
         """Construct from the real point
-    
+
         Args:
             xcoord ([type]): [description]
             ycoord ([type]): [description]
-    
+
         Examples:
             >>> a = MergeObj.construct(4, 5)
             >>> print(a)
@@ -52,11 +52,11 @@ class MergeObj:
         """
         return "/{self.impl.xcoord}, {self.impl.ycoord}/".format(self=self)
 
-    def __eq__(self, rhs) -> bool:
+    def __eq__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -70,7 +70,7 @@ class MergeObj:
             >>> a == c
             True
         """
-        return self.impl == rhs.impl
+        return self.impl == other.impl
 
     def __iadd__(self, rhs: Vector2):
         """Translate by displacement
@@ -145,8 +145,8 @@ class MergeObj:
             >>> print(r)
             /[8, 10], [-2, 0]/
         """
-        xcoord = enlarge(self.impl.xcoord, alpha) # TODO: check
-        ycoord = enlarge(self.impl.ycoord, alpha) # TODO: check
+        xcoord = enlarge(self.impl.xcoord, alpha)  # TODO: check
+        ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
         return MergeObj(xcoord, ycoord)  # TODO
 
     def intersection_with(self, other):
@@ -164,8 +164,8 @@ class MergeObj:
             >>> print(r)
             /9, -1/
         """
-        p = self.impl.intersection_with(other.impl)  # TODO
-        return MergeObj(p.xcoord, p.ycoord)
+        point = self.impl.intersection_with(other.impl)  # TODO
+        return MergeObj(point.xcoord, point.ycoord)
 
     def merge_with(self, other):
         """[summary]

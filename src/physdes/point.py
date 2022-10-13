@@ -3,19 +3,20 @@ from .interval import hull, enlarge
 from .vector2 import Vector2
 from typing import Any
 
+
 class Point:
-    xcoord: Any # Can be int, Interval, and Point
-    ycoord: Any # Can be int and Interval
+    xcoord: Any  # Can be int, Interval, and Point
+    ycoord: Any  # Can be int and Interval
 
     __slots__ = ("xcoord", "ycoord")
 
     def __init__(self, xcoord, ycoord):
         """[summary]
-    
+
         Args:
             xcoord ([type]): [description]
             ycoord ([type]): [description]
-    
+
         Examples:
             >>> a = Point(3, 4)
             >>> print(a)
@@ -59,14 +60,14 @@ class Point:
             >>> print(b3d)
             ((3, 4), 5)
         """
-        T = type(self) # Type could be Point or Rectangle or others
+        T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord, self.ycoord)
 
-    def __lt__(self, rhs) -> bool:
+    def __lt__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -81,13 +82,13 @@ class Point:
             >>> a3d > b3d
             False
         """
-        return (self.xcoord, self.ycoord) < (rhs.xcoord, rhs.ycoord)
+        return (self.xcoord, self.ycoord) < (other.xcoord, other.ycoord)
 
-    def __le__(self, rhs) -> bool:
+    def __le__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -102,13 +103,13 @@ class Point:
             >>> a3d >= b3d
             False
         """
-        return (self.xcoord, self.ycoord) <= (rhs.xcoord, rhs.ycoord)
+        return (self.xcoord, self.ycoord) <= (other.xcoord, other.ycoord)
 
-    def __eq__(self, rhs) -> bool:
+    def __eq__(self, other) -> bool:
         """[summary]
 
         Args:
-            rhs ([type]): [description]
+            other ([type]): [description]
 
         Returns:
             bool: [description]
@@ -123,7 +124,7 @@ class Point:
             >>> a3d != b3d
             True
         """
-        return (self.xcoord, self.ycoord) == (rhs.xcoord, rhs.ycoord)
+        return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -167,10 +168,10 @@ class Point:
             >>> print(a3d + Vector2(v, 1))
             ((8, 10), 6)
         """
-        T = type(self) # Type could be Point or Rectangle or others
+        T = type(self)  # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
             return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
-        else: # assume scalar
+        else:  # assume scalar
             return T(self.xcoord + rhs, self.ycoord + rhs)
 
     def __isub__(self, rhs):
@@ -221,13 +222,13 @@ class Point:
             >>> print(a3d - b3d)
             <<5, 6>, 1>
         """
-        T = type(self) # Type could be Point or Rectangle or others
+        T = type(self)  # Type could be Point or Rectangle or others
         if isinstance(rhs, Vector2):
-            return T(self.xcoord - rhs.x, 
+            return T(self.xcoord - rhs.x,
                      self.ycoord - rhs.y)
         elif isinstance(rhs, Point):
             return Vector2(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
-        else: # assume scalar
+        else:  # assume scalar
             return T(self.xcoord - rhs, self.ycoord - rhs)
 
     def flip(self):
@@ -244,7 +245,7 @@ class Point:
             >>> print(r.flip())
             ([5, 6], [3, 4])
         """
-        T = type(self) # Type could be Point or Rectangle or others
+        T = type(self)  # Type could be Point or Rectangle or others
         return T(self.ycoord, self.xcoord)
 
     def overlaps(self, other) -> bool:
@@ -256,7 +257,8 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
+        return overlap(self.xcoord, other.xcoord) \
+            and overlap(self.ycoord, other.ycoord)
 
     def contains(self, other) -> bool:
         """[summary]
@@ -267,7 +269,8 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
+        return contain(self.xcoord, other.xcoord) \
+            and contain(self.ycoord, other.ycoord)
 
     def hull_with(self, other):
         """[summary]
@@ -279,7 +282,8 @@ class Point:
             [type]: [description]
         """
         Self = type(self)
-        return Self(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
+        return Self(hull(self.xcoord, other.xcoord),
+                    hull(self.ycoord, other.ycoord))
 
     def intersection_with(self, other):
         """[summary]
@@ -303,7 +307,8 @@ class Point:
         Returns:
             [type]: [description]
         """
-        return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
+        return min_dist(self.xcoord, other.xcoord) \
+            + min_dist(self.ycoord, other.ycoord)
 
     def enlarge_with(self, alpha: int):
         """[summary]

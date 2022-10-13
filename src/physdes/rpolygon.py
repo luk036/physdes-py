@@ -13,7 +13,7 @@ class RPolygon:
             coords ([type]): [description]
         """
         self._origin = pointset[0]
-        self._vecs = list(c - pointset[0] for c in pointset[1:])
+        self._vecs = list(each - pointset[0] for each in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -59,8 +59,8 @@ class RPolygon:
         assert len(self._vecs) >= 1
         vecs = self._vecs
         res = vecs[0].x * vecs[0].y
-        for v0, v1 in zip(vecs[:-1], vecs[1:]):
-            res += v1.x * (v1.y - v0.y)
+        for vec0, vec1 in zip(vecs[:-1], vecs[1:]):
+            res += vec1.x * (vec1.y - vec0.y)
         return res
 
     # def contains(self, p):
@@ -104,15 +104,15 @@ def create_ymono_rpolygon(lst):
     """
     assert len(lst) >= 2
 
-    botmost = min(lst, key=lambda a: (a.ycoord, a.xcoord))
-    topmost = max(lst, key=lambda a: (a.ycoord, a.xcoord))
+    botmost = min(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
+    topmost = max(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
     is_anticlockwise = topmost.xcoord >= botmost.xcoord
     if is_anticlockwise:
-        [lst1, lst2] = partition(lambda a: a.xcoord >= botmost.xcoord, lst)
+        [lst1, lst2] = partition(lambda pt: pt.xcoord >= botmost.xcoord, lst)
     else:
-        [lst1, lst2] = partition(lambda a: a.xcoord <= botmost.xcoord, lst)
-    lst1 = sorted(lst1, key=lambda a: (a.ycoord, a.xcoord))
-    lst2 = sorted(lst2, key=lambda a: (a.ycoord, a.xcoord), reverse=True)
+        [lst1, lst2] = partition(lambda pt: pt.xcoord <= botmost.xcoord, lst)
+    lst1 = sorted(lst1, key=lambda pt: (pt.ycoord, pt.xcoord))
+    lst2 = sorted(lst2, key=lambda pt: (pt.ycoord, pt.xcoord), reverse=True)
     return lst1 + lst2, is_anticlockwise
 
 
@@ -131,9 +131,9 @@ def create_xmono_rpolygon(lst):
     rightmost = max(lst)
     is_anticlockwise = rightmost.ycoord <= leftmost.ycoord
     if is_anticlockwise:
-        [lst1, lst2] = partition(lambda a: a.ycoord <= leftmost.ycoord, lst)
+        [lst1, lst2] = partition(lambda pt: pt.ycoord <= leftmost.ycoord, lst)
     else:
-        [lst1, lst2] = partition(lambda a: a.ycoord >= leftmost.ycoord, lst)
+        [lst1, lst2] = partition(lambda pt: pt.ycoord >= leftmost.ycoord, lst)
     lst1 = sorted(lst1)
     lst2 = sorted(lst2, reverse=True)
     return lst1 + lst2, is_anticlockwise
@@ -186,21 +186,22 @@ def create_test_rpolygon(lst):
         (-3, -3),
         (-3, -4),
     """
-    max_pt = max(lst, key=lambda a: (a.ycoord, a.xcoord))
-    min_pt = min(lst, key=lambda a: (a.ycoord, a.xcoord))
+    max_pt = max(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
+    min_pt = min(lst, key=lambda pt: (pt.ycoord, pt.xcoord))
     dx = max_pt.xcoord - min_pt.xcoord
     dy = max_pt.ycoord - min_pt.ycoord
 
-    def right_left(a):
-        return dx * (a.ycoord - min_pt.ycoord) < (a.xcoord - min_pt.xcoord) * dy
+    def right_left(pt):
+        return dx * (pt.ycoord - min_pt.ycoord) \
+            < dy * (pt.xcoord - min_pt.xcoord)
 
     [lst1, lst2] = partition(right_left, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    max_pt1 = max(lst1, key=lambda a: (a.xcoord, a.ycoord))
-    [lst3, lst4] = partition(lambda a: a.ycoord < max_pt1.ycoord, lst1)
-    min_pt2 = min(lst2, key=lambda a: (a.xcoord, a.ycoord))
-    [lst5, lst6] = partition(lambda a: a.ycoord > min_pt2.ycoord, lst2)
+    max_pt1 = max(lst1, key=lambda pt: (pt.xcoord, pt.ycoord))
+    [lst3, lst4] = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
+    min_pt2 = min(lst2, key=lambda pt: (pt.xcoord, pt.ycoord))
+    [lst5, lst6] = partition(lambda pt: pt.ycoord > min_pt2.ycoord, lst2)
 
     if dx < 0:
         lsta = sorted(lst6, key=lambda a: (a.xcoord, a.ycoord), reverse=True)
@@ -215,7 +216,7 @@ def create_test_rpolygon(lst):
     return lsta + lstb + lstc + lstd
 
 
-def point_in_rpolygon(S, q):
+def point_in_rpolygon(pointset, ptq):
     """determine if a Point is within a RPolygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
@@ -229,7 +230,7 @@ def point_in_rpolygon(S, q):
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
 
     Args:
-        S ([type]): [description]
+        pointset ([type]): [description]
         q ([type]): [description]
 
     Returns:
@@ -257,11 +258,12 @@ def point_in_rpolygon(S, q):
         >>> point_in_rpolygon(S, Point(0, 1))
         True
     """
-    c = False
-    p0 = S[-1]
-    for p1 in S:
-        if (p1.ycoord <= q.ycoord < p0.ycoord) or (p0.ycoord <= q.ycoord < p1.ycoord):
-            if p1.xcoord > q.xcoord:
-                c = not c
-        p0 = p1
-    return c
+    res = False
+    pt0 = pointset[-1]
+    for pt1 in pointset:
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) \
+                or (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+            if pt1.xcoord > ptq.xcoord:
+                res = not res
+        pt0 = pt1
+    return res
