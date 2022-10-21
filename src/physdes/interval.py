@@ -18,7 +18,6 @@ class Interval:
             >>> print(a)
             [3, 4]
         """
-        assert not (ub < lb)
         self._lb = lb
         self._ub = ub
 
@@ -340,6 +339,7 @@ class Interval:
             [6, 8]
         """
         # `a` can be an Interval or int
+        assert self.overlaps(obj)
         if isscalar(obj):
             return obj
         return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))

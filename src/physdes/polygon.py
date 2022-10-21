@@ -177,10 +177,7 @@ def create_test_polygon(lst):
     downmost = min(lst, key=dir1)
     vec = upmost - downmost
 
-    def right_left(pt):
-        return vec.cross(pt - downmost) < 0
-
-    [lst1, lst2] = partition(right_left, lst)
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt - downmost) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     rightmost = max(lst1)

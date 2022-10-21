@@ -197,10 +197,7 @@ def create_test_rpolygon(lst):
     min_pt = min(lst, key=dir)
     vec = max_pt - min_pt
 
-    def right_left(pt):
-        return vec.cross(pt - min_pt) < 0
-
-    [lst1, lst2] = partition(right_left, lst)
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt - min_pt) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     max_pt1 = max(lst1)
