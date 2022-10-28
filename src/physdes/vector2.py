@@ -2,19 +2,19 @@ from typing import Any
 
 
 class Vector2:
-    x_: Any # Can be int, Interval, and Vector2
-    y_: Any # Can be int and Interval
+    x_: Any  # Can be int, Interval, and Vector2
+    y_: Any  # Can be int and Interval
 
     __slots__ = ("x_", "y_")
-    
+
     def __init__(self, x, y):
         """[summary]
         TODO: use other name than x and y (don't same as Point)
-    
+
         Args:
             x ([type]): [description]
             y ([type]): [description]
-    
+
         Examples:
             >>> v = Vector2(3, 4)
             >>> print(v)
@@ -26,7 +26,7 @@ class Vector2:
         self.x_ = x
         self.y_ = y
 
-    def __str__(self):
+    def __str__(self) -> str:
         """[summary]
 
         Returns:

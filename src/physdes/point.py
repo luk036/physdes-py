@@ -1,7 +1,9 @@
 from .generic import contain, intersection, min_dist, overlap
 from .interval import hull, enlarge
 from .vector2 import Vector2
-from typing import Any
+from typing import Any, TypeVar
+
+TPoint = TypeVar("TPoint", bound="Point")
 
 
 class Point:
@@ -126,7 +128,7 @@ class Point:
         """
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
-    def __iadd__(self, rhs: Vector2):
+    def __iadd__(self: TPoint, rhs: Vector2) -> TPoint:
         """[summary]
 
         Args:
