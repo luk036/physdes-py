@@ -13,7 +13,7 @@ class RPolygon:
             pointset (List[Point]): [description]
         """
         self._origin = pointset[0]
-        self._vecs = list(vtx - self._origin for vtx in pointset[1:])
+        self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -195,9 +195,9 @@ def create_test_rpolygon(lst):
 
     max_pt = max(lst, key=dir)
     min_pt = min(lst, key=dir)
-    vec = max_pt - min_pt
+    vec = max_pt.displace(min_pt)
 
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt - min_pt) < 0, lst)
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(min_pt)) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     max_pt1 = max(lst1)

@@ -1,36 +1,58 @@
+"""
+Rectilinear Point Class
+"""
+from typing import TypeVar, Generic
 from .generic import contain, intersection, min_dist, overlap
 from .interval import hull, enlarge
 from .vector2 import Vector2
-from typing import Any, TypeVar
 
-TPoint = TypeVar("TPoint", bound="Point")
+T1 = TypeVar("T1")
+T2 = TypeVar("T2")
+# TPoint = TypeVar("TPoint", bound="Point")
 
 
-class Point:
-    xcoord: Any  # Can be int, Interval, and Point
-    ycoord: Any  # Can be int and Interval
+class TPoint(Generic[T1, T2]):
+    """
+    Generic Point class
+    """
+    xcoord: T1
+    ycoord: T2
 
-    __slots__ = ("xcoord", "ycoord")
-
-    def __init__(self, xcoord, ycoord):
+    def __init__(self, xcoord: T1, ycoord: T2):
         """[summary]
 
         Args:
             xcoord ([type]): [description]
             ycoord ([type]): [description]
-
-        Examples:
-            >>> a = Point(3, 4)
-            >>> print(a)
-            (3, 4)
-            >>> a3d = Point(a, 5)  # Point in 3d
-            >>> print(a3d)
-            ((3, 4), 5)
         """
         self.xcoord = xcoord
         self.ycoord = ycoord
 
-    def __str__(self):
+
+class TDPoint(Generic[T2, T1]):
+    """
+    Generic Point class
+    """
+    xcoord: T2
+    ycoord: T1
+
+    def __init__(self, xcoord: T2, ycoord: T1):
+        """[summary]
+
+        Args:
+            xcoord ([type]): [description]
+            ycoord ([type]): [description]
+        """
+        self.xcoord = xcoord
+        self.ycoord = ycoord
+
+
+class Point(TPoint[T1, T2]):
+    """
+    Point class
+    """
+
+    def __str__(self) -> str:
         """[summary]
 
         Returns:
@@ -46,7 +68,7 @@ class Point:
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    def copy(self):
+    def copy(self: TPoint[T1, T2]) -> TPoint[T1, T2]:
         """[summary]
 
         Returns:
@@ -152,7 +174,7 @@ class Point:
         self.ycoord += rhs.y
         return self
 
-    def __add__(self, rhs: Vector2):
+    def __add__(self, rhs: Vector2) -> TPoint:
         """[summary]
 
         Args:
@@ -171,12 +193,9 @@ class Point:
             ((8, 10), 6)
         """
         T = type(self)  # Type could be Point or Rectangle or others
-        if isinstance(rhs, Vector2):
-            return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
-        else:  # assume scalar
-            return T(self.xcoord + rhs, self.ycoord + rhs)
+        return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
 
-    def __isub__(self, rhs):
+    def __isub__(self, rhs: Vector2) -> TPoint:
         """[summary]
 
         Args:
@@ -200,7 +219,7 @@ class Point:
         self.ycoord -= rhs.y
         return self
 
-    def __sub__(self, rhs):
+    def __sub__(self, rhs: Vector2) -> TPoint:
         """[summary]
 
         Args:
@@ -215,29 +234,36 @@ class Point:
             >>> b = a - v
             >>> print(b)
             (-2, -2)
-            >>> print(a - b)
-            <5, 6>
-            >>> a3d = Point(a, 5)  # Point in 3d
-            >>> b3d = a3d - Vector2(v, 1)
-            >>> print(b3d)
-            ((-2, -2), 4)
-            >>> print(a3d - b3d)
-            <<5, 6>, 1>
         """
         T = type(self)  # Type could be Point or Rectangle or others
-        if isinstance(rhs, Vector2):
-            return T(self.xcoord - rhs.x,
-                     self.ycoord - rhs.y)
-        elif isinstance(rhs, Point):
-            return Vector2(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
-        else:  # assume scalar
-            return T(self.xcoord - rhs, self.ycoord - rhs)
+        return T(self.xcoord - rhs.x,
+                 self.ycoord - rhs.y)
+
+    def displace(self, rhs: TPoint[T1, T2]) -> Vector2:
+        """[summary]
+
+        Args:
+            rhs (Vector or Point): [description]
+
+        Returns:
+            [type]: [description]
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> v = Vector2(5, 6)
+            >>> b = a - v
+            >>> print(b)
+            (-2, -2)
+            >>> print(a.displace(b))
+            <5, 6>
+        """
+        return Vector2(self.xcoord - rhs.xcoord, self.ycoord - rhs.ycoord)
 
     def flip(self):
         """[summary]
 
         Returns:
-            [type]: [description]
+            TPoint[T2, T1]: [description]
 
         Examples:
             >>> a = Point(3, 4)
@@ -250,7 +276,7 @@ class Point:
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.ycoord, self.xcoord)
 
-    def overlaps(self, other) -> bool:
+    def overlaps(self, other: TPoint) -> bool:
         """[summary]
 
         Args:
@@ -262,7 +288,7 @@ class Point:
         return overlap(self.xcoord, other.xcoord) \
             and overlap(self.ycoord, other.ycoord)
 
-    def contains(self, other) -> bool:
+    def contains(self, other: TPoint) -> bool:
         """[summary]
 
         Args:
@@ -274,7 +300,7 @@ class Point:
         return contain(self.xcoord, other.xcoord) \
             and contain(self.ycoord, other.ycoord)
 
-    def hull_with(self, other):
+    def hull_with(self, other: TPoint) -> TPoint:
         """[summary]
 
         Args:
@@ -283,11 +309,11 @@ class Point:
         Returns:
             [type]: [description]
         """
-        Self = type(self)
-        return Self(hull(self.xcoord, other.xcoord),
-                    hull(self.ycoord, other.ycoord))
+        T = type(self)
+        return T(hull(self.xcoord, other.xcoord),
+                 hull(self.ycoord, other.ycoord))
 
-    def intersection_with(self, other):
+    def intersection_with(self, other: TPoint) -> TPoint:
         """[summary]
 
         Args:
@@ -296,11 +322,11 @@ class Point:
         Returns:
             [type]: [description]
         """
-        Self = type(self)
-        return Self(intersection(self.xcoord, other.xcoord),
-                    intersection(self.ycoord, other.ycoord))
+        T = type(self)
+        return T(intersection(self.xcoord, other.xcoord),
+                 intersection(self.ycoord, other.ycoord))
 
-    def min_dist_with(self, other):
+    def min_dist_with(self, other: TPoint):
         """[summary]
 
         Args:
@@ -312,7 +338,7 @@ class Point:
         return min_dist(self.xcoord, other.xcoord) \
             + min_dist(self.ycoord, other.ycoord)
 
-    def enlarge_with(self, alpha: int):
+    def enlarge_with(self, alpha: int) -> TPoint:
         """[summary]
 
         Args:
@@ -329,4 +355,5 @@ class Point:
         """
         xcoord = enlarge(self.xcoord, alpha)
         ycoord = enlarge(self.ycoord, alpha)
-        return Point(xcoord, ycoord)
+        T = type(self)
+        return T(xcoord, ycoord)

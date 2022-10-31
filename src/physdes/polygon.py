@@ -13,7 +13,7 @@ class Polygon:
             pointset ([type]): [description]
         """
         self._origin = pointset[0]
-        self._vecs = list(vtx - self._origin for vtx in pointset[1:])
+        self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2):
         """[summary]
@@ -108,8 +108,8 @@ def create_mono_polygon(lst, dir):
 
     max_pt = max(lst, key=dir)
     min_pt = min(lst, key=dir)
-    vec = max_pt - min_pt
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt - min_pt) <= 0, lst)
+    vec = max_pt.displace(min_pt)
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(min_pt)) <= 0, lst)
     lst1 = sorted(lst1, key=dir)
     lst2 = sorted(lst2, key=dir, reverse=True)
     return lst1 + lst2
@@ -175,9 +175,9 @@ def create_test_polygon(lst):
 
     upmost = max(lst, key=dir1)
     downmost = min(lst, key=dir1)
-    vec = upmost - downmost
+    vec = upmost.displace(downmost)
 
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt - downmost) < 0, lst)
+    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(downmost)) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     rightmost = max(lst1)
@@ -245,7 +245,7 @@ def point_in_polygon(pointset, ptq):
     for pt1 in pointset:
         if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or \
                 (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
-            det = (ptq - pt0).cross(pt1 - pt0)
+            det = ptq.displace(pt0).cross(pt1.displace(pt0))
             if pt1.ycoord > pt0.ycoord:
                 if det < 0:
                     res = not res

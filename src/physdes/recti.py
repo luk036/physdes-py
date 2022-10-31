@@ -2,7 +2,7 @@ from .interval import Interval
 from .point import Point
 
 
-class Rectangle(Point):
+class Rectangle(Point[Interval, Interval]):
     def __init__(self, xcoord: Interval, ycoord: Interval):
         """[summary]
 
@@ -84,7 +84,7 @@ class Rectangle(Point):
     #     return Rectangle(self.ycoord, self.xcoord)
 
     # `a` can be Point, VSegment, HSegment, or Rectangle
-    def contains(self, obj: Point) -> bool:
+    def contains(self, other: Point) -> bool:
         """[summary]
 
         Args:
@@ -102,8 +102,8 @@ class Rectangle(Point):
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
         """
-        return self.xcoord.contains(obj.xcoord) and \
-            self.ycoord.contains(obj.ycoord)
+        return self.xcoord.contains(other.xcoord) and \
+            self.ycoord.contains(other.ycoord)
 
     def width(self):
         """[summary]
@@ -145,7 +145,11 @@ class Rectangle(Point):
         return self.xcoord.length() * self.ycoord.length()
 
 
-class VSegment(Point):
+class VSegment(Point[int, Interval]):
+    """
+    Represents a VSegment.
+    """
+
     # def __init__(self, xcoord, ycoord):
     #     """[summary]
     #
@@ -180,7 +184,7 @@ class VSegment(Point):
     #     return VSegment(self.xcoord, self.ycoord)
 
     # `a` can be Point or VSegment
-    def contains(self, a: Point) -> bool:
+    def contains(self, other: Point) -> bool:
         """[summary]
 
         Args:
@@ -198,7 +202,8 @@ class VSegment(Point):
             >>> a.contains(VSegment(6, Interval(33, 38)))
             False
         """
-        return self.xcoord == a.xcoord and self.ycoord.contains(a.ycoord)
+        return self.xcoord == other.xcoord \
+            and self.ycoord.contains(other.ycoord)
 
     # def flip(self):
     #     """[summary]
@@ -214,7 +219,11 @@ class VSegment(Point):
     #     return HSegment(self.ycoord, self.xcoord)
 
 
-class HSegment(Point):
+class HSegment(Point[Interval, int]):
+    """
+    Represents a HSegment.
+    """
+
     # def __init__(self, xcoord, ycoord):
     #     """[summary]
     #
@@ -249,7 +258,7 @@ class HSegment(Point):
     #     return HSegment(self.xcoord, self.ycoord)
 
     # `a` can be Point or HSegment
-    def contains(self, a) -> bool:
+    def contains(self, other) -> bool:
         """[summary]
 
         Args:
@@ -267,7 +276,8 @@ class HSegment(Point):
             >>> a.contains(HSegment(Interval(33, 38), 6))
             False
         """
-        return self.ycoord == a.ycoord and self.xcoord.contains(a.xcoord)
+        return self.ycoord == other.ycoord \
+            and self.xcoord.contains(other.xcoord)
 
     # def flip(self):
     #     """[summary]
