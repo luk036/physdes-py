@@ -1,5 +1,3 @@
-from numpy import isscalar
-
 from .generic import min_dist, min_dist_change
 
 
@@ -296,9 +294,10 @@ class Interval:
             False
         """
         # `obj` can be an Interval or int
-        if isscalar(obj):
+        if isinstance(obj, Interval):
+            return self.lb <= obj.lb and obj.ub <= self.ub
+        else:  # assume scalar
             return self.lb <= obj <= self.ub
-        return self.lb <= obj.lb and obj.ub <= self.ub
 
     def hull_with(self, obj):
         """[summary]
@@ -316,9 +315,10 @@ class Interval:
             >>> print(a.hull_with(Interval(6, 9)))
             [3, 9]
         """
-        if isscalar(obj):
+        if isinstance(obj, Interval):
+            return Interval(min(self.lb, obj.lb), max(self.ub, obj.ub))
+        else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
-        return Interval(min(self.lb, obj.lb), max(self.ub, obj.ub))
 
     def intersection_with(self, obj):
         """[summary]
@@ -340,9 +340,10 @@ class Interval:
         """
         # `a` can be an Interval or int
         assert self.overlaps(obj)
-        if isscalar(obj):
+        if isinstance(obj, Interval):
+            return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
+        else:  # assume scalar
             return obj
-        return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
 
     def min_dist_with(self, obj):
         """[summary]
@@ -383,10 +384,10 @@ class Interval:
         if obj < self:
             self._ub = self._lb
             return min_dist_change(self._lb, obj)
-        if isscalar(obj):
-            self._ub = self._lb = obj
-        else:
+        if isinstance(obj, Interval):
             self = obj = self.intersection_with(obj)
+        else:  # assume scalar
+            self._ub = self._lb = obj
         return 0
 
     def enlarge_with(self, alpha):
@@ -416,11 +417,11 @@ def hull(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'hull_with'):
         return lhs.hull_with(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'hull_with'):
         return rhs.hull_with(lhs)
-    else:
+    else:  # assume scalar
         return Interval(min(lhs, rhs), max(lhs, rhs))
 
 
@@ -439,7 +440,7 @@ def enlarge(lhs, rhs):
             >>> print(enlarge(a, 2))
             [1, 7]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'enlarge_with'):
         return lhs.enlarge_with(rhs)
-    else:
+    else:  # assume scalar
         return Interval(lhs - rhs, lhs + rhs)

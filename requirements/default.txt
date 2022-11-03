@@ -1,2 +1,1 @@
 decorator>=4.1.0
-numpy>=1.12.0

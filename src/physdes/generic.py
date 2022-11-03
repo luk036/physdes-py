@@ -1,6 +1,3 @@
-from numpy import isscalar
-
-
 def overlap(lhs, rhs) -> bool:
     """[summary]
 
@@ -11,11 +8,11 @@ def overlap(lhs, rhs) -> bool:
     Returns:
         bool: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'overlaps'):
         return lhs.overlaps(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'overlaps'):
         return rhs.overlaps(lhs)
-    else:
+    else:  # assume scalar
         return lhs == rhs
 
 
@@ -29,11 +26,11 @@ def contain(lhs, rhs) -> bool:
     Returns:
         bool: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'contains'):
         return lhs.contains(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'contains'):
         return False
-    else:
+    else:  # assume scalar
         return lhs == rhs
 
 
@@ -47,11 +44,11 @@ def intersection(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'intersection_with'):
         return lhs.intersection_with(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'intersection_with'):
         return rhs.intersection_with(lhs)
-    else:
+    else:  # assume scalar
         assert lhs == rhs
         return lhs
 
@@ -66,11 +63,11 @@ def min_dist(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'min_dist_with'):
         return lhs.min_dist_with(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'min_dist_with'):
         return rhs.min_dist_with(lhs)
-    else:
+    else:  # assume scalar
         return abs(lhs - rhs)
 
 
@@ -84,9 +81,9 @@ def min_dist_change(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if not isscalar(lhs):
+    if hasattr(lhs, 'min_dist_change_with'):
         return lhs.min_dist_change_with(rhs)
-    elif not isscalar(rhs):
+    elif hasattr(rhs, 'min_dist_change_with'):
         return rhs.min_dist_change_with(lhs)
-    else:
+    else:  # assume scalar
         return abs(lhs - rhs)
