@@ -2,6 +2,7 @@ from itertools import filterfalse, tee
 from typing import List
 
 from .point import Point
+from .skeleton import _logger
 from .vector2 import Vector2
 
 
@@ -108,6 +109,7 @@ def create_ymono_rpolygon(lst):
     def dir(pt):
         return (pt.ycoord, pt.xcoord)
 
+    _logger.debug("create_ymono_rpolygon begin")
     botmost = min(lst, key=dir)
     topmost = max(lst, key=dir)
     is_anticlockwise = topmost.xcoord >= botmost.xcoord
@@ -190,6 +192,7 @@ def create_test_rpolygon(lst):
         (-3, -3),
         (-3, -4),
     """
+
     def dir(pt):
         return (pt.ycoord, pt.xcoord)
 
@@ -263,8 +266,9 @@ def point_in_rpolygon(pointset, ptq):
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or \
-                (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (
+            pt0.ycoord <= ptq.ycoord < pt1.ycoord
+        ):
             if pt1.xcoord > ptq.xcoord:
                 res = not res
         pt0 = pt1

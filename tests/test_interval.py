@@ -1,13 +1,23 @@
+from hypothesis import given
+from hypothesis.strategies import integers
+
 from physdes.generic import min_dist
 from physdes.recti import Interval
 
-# include <recti/halton_int.hpp>
+
+@given(integers(), integers(), integers(), integers(), integers())
+def test_interval_hypo(a1, a2, b1, b2, v):
+    a = Interval(min(a1, a2), max(a1, a2))
+    b = Interval(min(b1, b2), max(b1, b2))
+    c = Interval(min(a, b), max(a, b))  # interval of interval
+    assert (a - v) + v == a
+    assert (b - v) + v == b
+    assert (c - v) + v == c
 
 
 def test_interval():
     a = Interval(4, 8)
     b = Interval(5, 6)
-    v = 3
 
     assert not (a < b)
     assert not (b < a)
@@ -20,8 +30,6 @@ def test_interval():
 
     assert not (b == a)
     assert b != a
-
-    assert (a - v) + v == a
 
     assert a.contains(4)
     assert a.contains(8)
