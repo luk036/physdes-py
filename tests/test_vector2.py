@@ -1,4 +1,17 @@
+from hypothesis import given
+from hypothesis.strategies import integers
+
 from physdes.vector2 import Vector2
+
+
+@given(integers(), integers(), integers(), integers())
+def test_Vector2_hypo(a, b, c, d):
+    p = Vector2(a, b)
+    q = Vector2(c, d)
+    r = Vector2(-b, c)
+    assert p + q == q + p
+    assert p - q == -(q - p)
+    assert (p + q) + r == p + (q + r)
 
 
 def test_Vector2():

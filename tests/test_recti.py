@@ -4,7 +4,6 @@ from physdes.interval import Interval
 from physdes.point import Point
 from physdes.recti import Rectangle
 
-
 # class my_point(Point):
 #     def __init__(self, xcoord, ycoord, data: float):
 #         Point.__init__(self, xcoord, ycoord)

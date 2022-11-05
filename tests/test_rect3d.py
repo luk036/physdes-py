@@ -1,11 +1,23 @@
+from hypothesis import given
+from hypothesis.strategies import integers
+
 from physdes.generic import min_dist, overlap
 from physdes.recti import Interval, Point, Rectangle
 from physdes.vector2 import Vector2
 
 
+@given(integers(), integers(), integers(), integers(), integers(), integers())
+def test_Point_hypo(a1, a2, b1, b2, v1, v2):
+    a = Point(a1, a2)
+    b = Point(b1, b2)
+    v = Vector2(v1, v2)
+    assert (a - v) + v == a
+    assert (b - v) + v == b
+
+
 def test_Point_3D():
-    a = Point(Point(40000, 80000), 20000)
-    b = Point(Point(50000, 60000), 10000)
+    a = Point(Point(40000, 8), 20000)
+    b = Point(Point(50000, 6), 10000)
     # v = b.displace(a) * 0.5  # integer division
 
     assert a < b
