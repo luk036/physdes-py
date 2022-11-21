@@ -7,6 +7,20 @@ from .vector2 import Vector2
 
 
 class RPolygon:
+    """
+    Rectilinear Polygon
+
+                  ┌────1
+                  │    │
+                  │    │
+                  │    │
+       ┌──────────2    │
+       │               │
+       3────────┐      │
+                │      │
+                0──────┘
+    """
+
     def __init__(self, pointset: List[Point]):
         """[summary]
 
@@ -64,25 +78,6 @@ class RPolygon:
             res += vec1.x * (vec1.y - vec0.y)
         return res
 
-    # def contains(self, p):
-    #     """inclusively contains a Point p
-
-    #     Args:
-    #         p ([type]): [description]
-
-    #     Returns:
-    #         [type]: [description]
-    #     """
-    #     q = p - self._origin
-    #     o = Vector2(0, 0)
-    #     c = False
-    #     for v0, v1 in zip([o] + self._vecs, self._vecs + [o]):
-    #         if (v1.ycoord <= q.ycoord and q.ycoord < v0.ycoord) or
-    #                 (v0.ycoord <= q.ycoord and q.ycoord < v1.ycoord):
-    #             if v1.xcoord > q.xcoord:
-    #                 c = not c
-    #     return c
-
     def to_polygon(self):
         """@todo"""
         pass
@@ -96,7 +91,8 @@ def partition(pred, iterable):
 
 
 def create_ymono_rpolygon(lst):
-    """[summary]
+    """Create a y-monotone rectilinear polygon for a given point set.
+
 
     Args:
         lst ([type]): [description]
@@ -123,7 +119,23 @@ def create_ymono_rpolygon(lst):
 
 
 def create_xmono_rpolygon(lst):
-    """[summary]
+    """Create an x-monotone rectilinear polygon for a given point set.
+
+                                       ┌────0
+                ┌──────────4           │    │
+                │   lst2   │           │    │
+           ┌────5          │ ┌────2    │    │
+           │               │ │    │    │    │
+           │               └─3    └────1    │
+           │                                │
+      -----0───────┬------------------------┼---- leftmost.ycoord
+                   │                        │
+                   1────┐                   │
+                        │   3────┐  lst1    │
+                        2───┘    │          │
+                                 │   5──────┘
+                                 │   │
+                                 4───┘
 
     Args:
         lst ([type]): [description]
@@ -233,6 +245,15 @@ def point_in_rpolygon(pointset, ptq):
     (See p.243 of [O'Rourke (C)] for a discussion of boundary behavior.)
 
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
+
+       │     │                │    │    │       │
+       │     │  o────────┐    │    │    │       │
+       │     │  │        │    │    │    │       │
+       │     │  │    q───T────F────T────F───────T──────►
+       │     │  └──o     │    │    │    │       │
+       │     │     │     │    │    │    │       │
+       │     │     │     o────┘    │    │       │
+       │     │     │               │    │       │
 
     Args:
         pointset ([type]): [description]
