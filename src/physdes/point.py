@@ -13,7 +13,7 @@ T2 = TypeVar("T2")
 
 class TPoint(Generic[T1, T2]):
     """
-    Generic Point class
+    Generic Rectilinear Point class (▪️, ──, │, or 🫱)
     """
     xcoord: T1
     ycoord: T2

@@ -5,7 +5,7 @@ from .vector2 import Vector2
 
 
 class MergeObj:
-    """Merging point, segment, or region"""
+    """⛝ Merging point, segment, or region"""
 
     impl: Point  # implemented by a 45 degree rotated point, vertical or
     # horizontal segment, and rectangle
