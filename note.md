@@ -6,24 +6,32 @@ python: shapely
 
 Applications: VLSI
 
-- Billion of objects N
-
+- Billions of objects
 - Mainly Integer Coordinate
 
-  - faster than floating Point. More importantly, more accurate.
-  - Objects are small, but coordinates could be very large
-    - Concept of affine space:
-      - Point + vector = Point
-      - Point - Point = vector
-      - arithmetics for vector only
+- Faster than floating Point. No round-off error.
+- Rectangle = Point<Interval, Interval>
 
-- Rectilinear Polygon
+---
 
-  - the number of vertices of each Polygon is small
+## Rectilinear Polygon
+
+- The number of vertices of each Polygon is small
     (say within 100)
-  - Consider special cases
-  - Testing
+- Consider special cases
+- Testing
   - Visualization
   - Accept O(n^2)
+- x-monotone, y-monotone
+- [ ] Rectilinearly convex hull
+  (Steiner points only exists inside the convex hull of given points)
 
-- Rectilinear Steiner tree
+## Merging segment (45 degree line segment)
+
+## 3D Extension
+
+## Possible contribution
+
+- Testing
+- Port to C++
+
