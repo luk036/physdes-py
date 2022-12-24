@@ -1,37 +1,57 @@
 # Geometry shapes
 
-python: shapely
+c.f. python: shapely
 
-# Rectilinear shapes
+# 𓊍 Rectilinear shape
+
+- Also known as L-shape, orthogonal shape
 
 Applications: VLSI
 
 - Billions of objects
-- Mainly Integer Coordinate
-
-- Faster than floating Point. No round-off error.
+- Restrict integer coordinate ✨🚀
+    - In C++/Rust, faster than floating Point. No round-off error.
+    - In Python, arbitrary precision.
+- Usually Simpler than general shapes
 - Rectangle = Point<Interval, Interval>
+
+Additional metric consideration, different story.
+- L1 metric vs. L2 metric
 
 ---
 
 ## Rectilinear Polygon
 
-- The number of vertices of each Polygon is small
+- Use canonical form to simplify algorithms ✨🚀
+- Assume the number of vertices of each Polygon is small
     (say within 100)
-- Consider special cases
-- Testing
-  - Visualization
-  - Accept O(n^2)
+- Accept O(n^2) algorithms
 - x-monotone, y-monotone
-- [ ] Rectilinearly convex hull
+- Orthogonal convex hull 
   (Steiner points only exists inside the convex hull of given points)
 
-## Merging segment (45 degree line segment)
+---
+
+## Computational Geometry
+
+- Art Gallery problem
+- Minimum Spanning Tree (easy)
+- Steiner Tree, RST
+- Traveling Sale Person
+- Voronoi diagram (with integer coordinates)
+
+## Merging segment (45° line segment)
+
+- Tap point in Clock tree synthesis (with integer coordinates)
+- Analogue to "Circle" in L2-metric (unit-ball in 2D)
 
 ## 3D Extension
+
+- Path (x -> z -> y)
 
 ## Possible contribution
 
 - Testing
-- Port to C++
+- Porting to C++
+- Documentation
 
