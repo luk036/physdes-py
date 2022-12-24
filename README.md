@@ -1,6 +1,6 @@
 # physdes-py
 
-🏼 Physical Design Python Code
+𓊍 Physical Design Python Code
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/luk036/physdes-py)
 ![Python application](https://github.com/luk036/physdes-py/workflows/Python%20application/badge.svg)
