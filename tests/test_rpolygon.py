@@ -24,22 +24,27 @@ def test_RPolygon():
         (-3, -4),
         (1, 4),
     ]
-    S, is_anticw = create_ymono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    S, is_cw = create_ymono_rpolygon(
+        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
-        print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
+        # print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
+        print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon(S)
-    assert is_anticw
+    assert not is_cw
     assert P.signed_area() == 45
 
 
 def test_RPolygon2():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(20)]
-    S, is_anticw = create_ymono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    S, is_cw = create_ymono_rpolygon(
+        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon(S)
-    assert not is_anticw
+    assert is_cw
     assert P.signed_area() == -1871424
 
 
@@ -58,7 +63,9 @@ def test_RPolygon3():
         (-3, -4),
         (1, 4),
     ]
-    S, is_anticw = create_xmono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    S, is_anticw = create_xmono_rpolygon(
+        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon(S)
@@ -69,7 +76,9 @@ def test_RPolygon3():
 def test_RPolygon4():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(20)]
-    S, is_anticw = create_xmono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    S, is_anticw = create_xmono_rpolygon(
+        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    )
     p0 = S[-1]
     for p1 in S:
         print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
