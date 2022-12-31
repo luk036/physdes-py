@@ -90,7 +90,7 @@ def partition(pred, iterable):
     return filter(pred, t1), filterfalse(pred, t2)
 
 
-def create_mono_rpolygon(lst, dir1):
+def create_mono_rpolygon(lst, dir):
     """Create a monotone rectilinear polygon for a given point set.
 
                                        ┌────0
@@ -118,19 +118,21 @@ def create_mono_rpolygon(lst, dir1):
     assert len(lst) >= 2
     _logger.debug("creating_mono_rpolygon begin")
 
-    def dir2(pt):
-        return dir1(pt)[1]
+    # Use x-monotone as model
+    leftmost = min(lst, key=dir)
+    rightmost = max(lst, key=dir)
+    is_anticlockwise = dir(leftmost)[1] > dir(rightmost)[1]
 
-    leftmost = min(lst, key=dir1)
-    rightmost = max(lst, key=dir1)
-    is_anticlockwise = dir2(leftmost) > dir2(rightmost)
-    if is_anticlockwise:
-        [lst1, lst2] = partition(lambda pt: dir2(pt) <= dir2(leftmost), lst)
-    else:
-        [lst1, lst2] = partition(lambda pt: dir2(pt) >= dir2(leftmost), lst)
-    lst1 = sorted(lst1, key=dir1)
-    lst2 = sorted(lst2, key=dir1, reverse=True)
-    return lst1 + lst2, is_anticlockwise
+    def r2l(pt) -> bool:
+        return dir(pt)[1] <= dir(leftmost)[1]
+
+    def l2r(pt) -> bool:
+        return dir(pt)[1] >= dir(leftmost)[1]
+
+    [lst1, lst2] = partition(r2l if is_anticlockwise else l2r, lst)
+    lst1 = sorted(lst1, key=dir)
+    lst2 = sorted(lst2, key=dir, reverse=True)
+    return lst1 + lst2, is_anticlockwise  # is_clockwise if y-monotone
 
 
 def create_xmono_rpolygon(lst):
