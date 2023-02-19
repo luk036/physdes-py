@@ -1,6 +1,7 @@
 from physdes.generic import min_dist
 from physdes.merge_obj import MergeObj
 from physdes.recti import Interval
+
 # from physdes.vector2 import Vector2
 
 

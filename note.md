@@ -10,12 +10,13 @@ Applications: VLSI
 
 - Billions of objects
 - Restrict integer coordinate ✨🚀
-    - In C++/Rust, faster than floating Point. No round-off error.
-    - In Python, arbitrary precision.
+  - In C++/Rust, faster than floating Point. No round-off error.
+  - In Python, arbitrary precision.
 - Usually Simpler than general shapes
 - Rectangle = Point<Interval, Interval>
 
 Additional metric consideration, different story.
+
 - L1 metric vs. L2 metric
 
 ---
@@ -24,10 +25,10 @@ Additional metric consideration, different story.
 
 - Use canonical form to simplify algorithms ✨🚀
 - Assume the number of vertices of each Polygon is small
-    (say within 100)
+  (say within 100)
 - Accept O(n^2) algorithms
 - x-monotone, y-monotone
-- Orthogonal convex hull 
+- Orthogonal convex hull
   (Steiner points only exists inside the convex hull of given points)
 
 ---
@@ -54,4 +55,3 @@ Additional metric consideration, different story.
 - Testing
 - Porting to C++
 - Documentation
-

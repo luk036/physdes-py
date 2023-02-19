@@ -170,6 +170,7 @@ def create_test_polygon(lst):
         (-3, -3),
         (-3, -4),
     """
+
     def dir1(pt):
         return (pt.ycoord, pt.xcoord)
 
@@ -243,8 +244,9 @@ def point_in_polygon(pointset, ptq):
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or \
-                (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (
+            pt0.ycoord <= ptq.ycoord < pt1.ycoord
+        ):
             det = ptq.displace(pt0).cross(pt1.displace(pt0))
             if pt1.ycoord > pt0.ycoord:
                 if det < 0:

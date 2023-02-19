@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import List, Tuple
 
 
 def vdc(k: int, base: int = 2, scale: int = 10) -> int:

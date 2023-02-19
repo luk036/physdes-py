@@ -127,8 +127,10 @@ class MergeObj:
             7
         """
         # Note: take max of xcoord and ycoord
-        return max(min_dist(self.impl.xcoord, other.impl.xcoord),
-                   min_dist(self.impl.ycoord, other.impl.ycoord))
+        return max(
+            min_dist(self.impl.xcoord, other.impl.xcoord),
+            min_dist(self.impl.ycoord, other.impl.ycoord),
+        )
 
     def enlarge_with(self, alpha: int):
         """[summary]

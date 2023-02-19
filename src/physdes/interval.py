@@ -417,9 +417,9 @@ def hull(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if hasattr(lhs, 'hull_with'):
+    if hasattr(lhs, "hull_with"):
         return lhs.hull_with(rhs)
-    elif hasattr(rhs, 'hull_with'):
+    elif hasattr(rhs, "hull_with"):
         return rhs.hull_with(lhs)
     else:  # assume scalar
         return Interval(min(lhs, rhs), max(lhs, rhs))
@@ -440,7 +440,7 @@ def enlarge(lhs, rhs):
             >>> print(enlarge(a, 2))
             [1, 7]
     """
-    if hasattr(lhs, 'enlarge_with'):
+    if hasattr(lhs, "enlarge_with"):
         return lhs.enlarge_with(rhs)
     else:  # assume scalar
         return Interval(lhs - rhs, lhs + rhs)
