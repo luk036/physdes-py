@@ -33,7 +33,7 @@ def test_interval():
 
     assert a.contains(4)
     assert a.contains(8)
-    assert a.intersection_with(8) == 8
+    assert a.intersection_with(8) == Interval(8, 8)
     assert a.contains(b)
     assert a.intersection_with(b) == b
     assert not b.contains(a)

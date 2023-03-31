@@ -1,18 +1,20 @@
 """
 Rectilinear Point Class
 """
-from typing import Generic, TypeVar
-
 from .generic import contain, intersection, min_dist, overlap
-from .interval import enlarge, hull
+from .interval import Interval, enlarge, hull
 from .vector2 import Vector2
 
-T1 = TypeVar("T1")
-T2 = TypeVar("T2")
+from typing import TypeVar, Generic, Union
+TPoint = TypeVar("TPoint", bound="Point")
+# T1 = TypeVar("T1", int, float, Interval[int], Interval[float], "Point")
+# T2 = TypeVar("T2", int, float, Interval[int], Interval[float], "Point")
+T1 = TypeVar("T1", int, float, "Point")
+T2 = TypeVar("T2", int, float, "Point")
 # TPoint = TypeVar("TPoint", bound="Point")
 
 
-class TPoint(Generic[T1, T2]):
+class Point(Generic[T1, T2]):
     """
     Generic Rectilinear Point class (▪️, ──, │, or 🫱)
     """
@@ -20,7 +22,7 @@ class TPoint(Generic[T1, T2]):
     xcoord: T1
     ycoord: T2
 
-    def __init__(self, xcoord: T1, ycoord: T2):
+    def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """[summary]
 
         Args:
@@ -29,31 +31,6 @@ class TPoint(Generic[T1, T2]):
         """
         self.xcoord = xcoord
         self.ycoord = ycoord
-
-
-class TDPoint(Generic[T2, T1]):
-    """
-    Generic Point class
-    """
-
-    xcoord: T2
-    ycoord: T1
-
-    def __init__(self, xcoord: T2, ycoord: T1):
-        """[summary]
-
-        Args:
-            xcoord ([type]): [description]
-            ycoord ([type]): [description]
-        """
-        self.xcoord = xcoord
-        self.ycoord = ycoord
-
-
-class Point(TPoint[T1, T2]):
-    """
-    Point class
-    """
 
     def __str__(self) -> str:
         """[summary]
@@ -71,7 +48,7 @@ class Point(TPoint[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    def copy(self: TPoint[T1, T2]) -> TPoint[T1, T2]:
+    def copy(self):
         """[summary]
 
         Returns:
@@ -153,7 +130,7 @@ class Point(TPoint[T1, T2]):
         """
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
-    def __iadd__(self: TPoint, rhs: Vector2) -> TPoint:
+    def __iadd__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -177,7 +154,7 @@ class Point(TPoint[T1, T2]):
         self.ycoord += rhs.y
         return self
 
-    def __add__(self, rhs: Vector2) -> TPoint:
+    def __add__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -198,7 +175,7 @@ class Point(TPoint[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
 
-    def __isub__(self, rhs: Vector2) -> TPoint:
+    def __isub__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -222,7 +199,7 @@ class Point(TPoint[T1, T2]):
         self.ycoord -= rhs.y
         return self
 
-    def __sub__(self, rhs: Vector2) -> TPoint:
+    def __sub__(self, rhs: Vector2):
         """[summary]
 
         Args:
@@ -241,7 +218,7 @@ class Point(TPoint[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord - rhs.x, self.ycoord - rhs.y)
 
-    def displace(self, rhs: TPoint[T1, T2]) -> Vector2:
+    def displace(self, rhs): # TODO: what is the type?
         """[summary]
 
         Args:
@@ -275,10 +252,9 @@ class Point(TPoint[T1, T2]):
             >>> print(r.flip())
             ([5, 6], [3, 4])
         """
-        T = type(self)  # Type could be Point or Rectangle or others
-        return T(self.ycoord, self.xcoord)
+        return Point(self.ycoord, self.xcoord)
 
-    def overlaps(self, other: TPoint) -> bool:
+    def overlaps(self, other) -> bool:
         """[summary]
 
         Args:
@@ -289,7 +265,7 @@ class Point(TPoint[T1, T2]):
         """
         return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
-    def contains(self, other: TPoint) -> bool:
+    def contains(self, other) -> bool:
         """[summary]
 
         Args:
@@ -300,7 +276,7 @@ class Point(TPoint[T1, T2]):
         """
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
-    def hull_with(self, other: TPoint) -> TPoint:
+    def hull_with(self, other):
         """[summary]
 
         Args:
@@ -312,7 +288,7 @@ class Point(TPoint[T1, T2]):
         T = type(self)
         return T(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
-    def intersection_with(self, other: TPoint) -> TPoint:
+    def intersection_with(self, other):
         """[summary]
 
         Args:
@@ -327,7 +303,7 @@ class Point(TPoint[T1, T2]):
             intersection(self.ycoord, other.ycoord),
         )
 
-    def min_dist_with(self, other: TPoint):
+    def min_dist_with(self, other):
         """[summary]
 
         Args:
@@ -338,7 +314,7 @@ class Point(TPoint[T1, T2]):
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
-    def enlarge_with(self, alpha: int) -> TPoint:
+    def enlarge_with(self, alpha): # TODO: what is the type?
         """[summary]
 
         Args:

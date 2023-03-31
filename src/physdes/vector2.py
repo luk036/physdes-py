@@ -1,13 +1,19 @@
-from typing import Any
+"""
+Vector Class
+"""
+from .interval import Interval
+from typing import TypeVar, Generic, Union
+TVector2 = TypeVar("TVector2", bound="Vector2")
+T1 = TypeVar("T1", int, float, Interval[int], Interval[float], "Vector2")
+T2 = TypeVar("T2", int, float, Interval[int], Interval[float], "Vector2")
 
-
-class Vector2:
-    x_: Any  # Can be int, Interval, and Vector2
-    y_: Any  # Can be int and Interval
+class Vector2(Generic[T1, T2]):
+    x_: T1  # Can be int, Interval, and Vector2
+    y_: T2  # Can be int and Interval
 
     __slots__ = ("x_", "y_")
 
-    def __init__(self, x, y):
+    def __init__(self, x, y) -> None:
         """[summary]
         TODO: use other name than x and y (don't same as Point)
 
@@ -43,7 +49,7 @@ class Vector2:
         return "<{self.x}, {self.y}>".format(self=self)
 
     @property
-    def x(self):
+    def x(self) -> T1:
         """[summary]
 
         Returns:
@@ -60,7 +66,7 @@ class Vector2:
         return self.x_
 
     @property
-    def y(self):
+    def y(self) -> T2:
         """[summary]
 
         Returns:
@@ -92,7 +98,8 @@ class Vector2:
             >>> print(w3d)
             <<3, 4>, 5>
         """
-        return Vector2(self.x_, self.y_)
+        T = type(self)
+        return T(self.x_, self.y_)
 
     def cross(self, rhs):
         """[summary]
@@ -324,8 +331,8 @@ class Vector2:
 if __name__ == "__main__":
     v = Vector2(3, 4)
     w = -v
-    print(w >= v)
+    print(w == v)
 
     v3d = Vector2(v, 5)  # vector in 3d
     w3d = Vector2(w, 5)  # vector in 3d
-    print(w >= v)
+    print(w == v)

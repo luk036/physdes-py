@@ -1,10 +1,14 @@
 from .generic import min_dist, min_dist_change
+from typing import TypeVar, Generic, Union
+
+TInterval = TypeVar("TInterval", bound="Interval")
+T = TypeVar("T", int, float)
 
 
-class Interval:
+class Interval(Generic[T]):
     __slots__ = ("_lb", "_ub")
 
-    def __init__(self, lb, ub):
+    def __init__(self, lb: T, ub: T) -> None:
         """[summary]
 
         Args:
@@ -16,10 +20,10 @@ class Interval:
             >>> print(a)
             [3, 4]
         """
-        self._lb = lb
-        self._ub = ub
+        self._lb: T = lb
+        self._ub: T = ub
 
-    def __str__(self):
+    def __str__(self) -> str:
         """[summary]
 
         Returns:
@@ -33,7 +37,7 @@ class Interval:
         return "[{self.lb}, {self.ub}]".format(self=self)
 
     @property
-    def lb(self):
+    def lb(self) -> T:
         """[summary]
 
         Returns:
@@ -47,7 +51,7 @@ class Interval:
         return self._lb
 
     @property
-    def ub(self):
+    def ub(self) -> T:
         """[summary]
 
         Returns:
@@ -73,7 +77,7 @@ class Interval:
         """
         return Interval(self._lb, self._ub)
 
-    def length(self):
+    def length(self) -> T:
         """[summary]
 
         Returns:
@@ -187,7 +191,7 @@ class Interval:
         """
         return Interval(-self.ub, -self.lb)
 
-    def __iadd__(self, rhs):
+    def __iadd__(self, rhs: T):
         """[summary]
 
         Args:
@@ -206,7 +210,7 @@ class Interval:
         self._ub += rhs
         return self
 
-    def __add__(self, rhs):
+    def __add__(self, rhs: T):
         """[summary]
 
         Args:
@@ -222,7 +226,7 @@ class Interval:
         """
         return Interval(self.lb + rhs, self.ub + rhs)
 
-    def __isub__(self, rhs):
+    def __isub__(self, rhs: T):
         """[summary]
 
         Args:
@@ -241,7 +245,7 @@ class Interval:
         self._ub -= rhs
         return self
 
-    def __sub__(self, rhs):
+    def __sub__(self, rhs: T):
         """[summary]
 
         Args:
@@ -257,7 +261,7 @@ class Interval:
         """
         return Interval(self.lb - rhs, self.ub - rhs)
 
-    def overlaps(self, obj) -> bool:
+    def overlaps(self, other: Union[TInterval, T]) -> bool:
         """[summary]
 
         Args:
@@ -273,9 +277,9 @@ class Interval:
             >>> a.overlaps(Interval(6, 9))
             False
         """
-        return not (self < obj or obj < self)
+        return not (self < other or other < self)
 
-    def contains(self, obj) -> bool:
+    def contains(self, obj: Union[TInterval, T]) -> bool:
         """[summary]
 
         Args:
@@ -299,7 +303,7 @@ class Interval:
         else:  # assume scalar
             return self.lb <= obj <= self.ub
 
-    def hull_with(self, obj):
+    def hull_with(self, obj: Union[TInterval, T]):
         """[summary]
 
         Args:
@@ -320,7 +324,7 @@ class Interval:
         else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
 
-    def intersection_with(self, obj):
+    def intersection_with(self, obj: Union[TInterval, T]):
         """[summary]
 
         Args:
@@ -332,7 +336,7 @@ class Interval:
         Examples:
             >>> a = Interval(3, 8)
             >>> print(a.intersection_with(4))
-            4
+            [4, 4]
             >>> print(a.intersection_with(Interval(4, 7)))
             [4, 7]
             >>> print(a.intersection_with(Interval(6, 9)))
@@ -343,9 +347,9 @@ class Interval:
         if isinstance(obj, Interval):
             return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
         else:  # assume scalar
-            return obj
+            return Interval(obj, obj)
 
-    def min_dist_with(self, obj):
+    def min_dist_with(self, obj: Union[TInterval, T]):
         """[summary]
 
         Args:
@@ -385,12 +389,12 @@ class Interval:
             self._ub = self._lb
             return min_dist_change(self._lb, obj)
         if isinstance(obj, Interval):
-            self = obj = self.intersection_with(obj)
+            self = obj = self.intersection_with(obj)  # what???
         else:  # assume scalar
             self._ub = self._lb = obj
         return 0
 
-    def enlarge_with(self, alpha):
+    def enlarge_with(self, alpha: T):
         """[summary]
 
         Args:
@@ -425,7 +429,7 @@ def hull(lhs, rhs):
         return Interval(min(lhs, rhs), max(lhs, rhs))
 
 
-def enlarge(lhs, rhs):
+def enlarge(lhs, rhs: T):
     """[summary]
 
     Args:
