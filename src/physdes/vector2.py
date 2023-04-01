@@ -1,11 +1,15 @@
 """
-Vector Class
+Vector2 Class
 """
-from .interval import Interval
-from typing import TypeVar, Generic, Union
-TVector2 = TypeVar("TVector2", bound="Vector2")
-T1 = TypeVar("T1", int, float, Interval[int], Interval[float], "Vector2")
-T2 = TypeVar("T2", int, float, Interval[int], Interval[float], "Vector2")
+from typing import TypeVar, Generic, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .interval import Interval
+    TVector2 = TypeVar("TVector2", bound="Vector2")
+
+T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Vector2")
+T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Vector2")
+
 
 class Vector2(Generic[T1, T2]):
     x_: T1  # Can be int, Interval, and Vector2
@@ -82,7 +86,7 @@ class Vector2(Generic[T1, T2]):
         """
         return self.y_
 
-    def copy(self):
+    def copy(self) -> "Vector2[T1, T2]":
         """[summary]
 
         Returns:
@@ -139,7 +143,7 @@ class Vector2(Generic[T1, T2]):
         """
         return (self.x_, self.y_) == (rhs.x_, rhs.y_)
 
-    def __neg__(self):
+    def __neg__(self) -> "Vector2[T1, T2]":
         """[summary]
 
         Returns:
@@ -155,7 +159,7 @@ class Vector2(Generic[T1, T2]):
         """
         return Vector2(-self.x, -self.y)
 
-    def __iadd__(self, rhs):
+    def __iadd__(self, rhs) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -178,7 +182,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ += rhs.y
         return self
 
-    def __add__(self, rhs):
+    def __add__(self, rhs) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -199,7 +203,7 @@ class Vector2(Generic[T1, T2]):
         """
         return Vector2(self.x + rhs.x, self.y + rhs.y)
 
-    def __isub__(self, rhs):
+    def __isub__(self, rhs) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -222,7 +226,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ -= rhs.y
         return self
 
-    def __sub__(self, rhs):
+    def __sub__(self, rhs) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -243,7 +247,7 @@ class Vector2(Generic[T1, T2]):
         """
         return Vector2(self.x - rhs.x, self.y - rhs.y)
 
-    def __imul__(self, alpha):
+    def __imul__(self, alpha) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -266,7 +270,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ *= alpha
         return self
 
-    def __mul__(self, alpha):
+    def __mul__(self, alpha) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -285,7 +289,7 @@ class Vector2(Generic[T1, T2]):
         """
         return Vector2(self.x * alpha, self.y * alpha)
 
-    def __itruediv__(self, alpha):
+    def __itruediv__(self, alpha) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -308,7 +312,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ /= alpha
         return self
 
-    def __truediv__(self, alpha):
+    def __truediv__(self, alpha) -> "Vector2[T1, T2]":
         """[summary]
 
         Args:
@@ -329,10 +333,6 @@ class Vector2(Generic[T1, T2]):
 
 
 if __name__ == "__main__":
-    v = Vector2(3, 4)
-    w = -v
-    print(w == v)
+    import doctest
 
-    v3d = Vector2(v, 5)  # vector in 3d
-    w3d = Vector2(w, 5)  # vector in 3d
-    print(w == v)
+    doctest.testmod()

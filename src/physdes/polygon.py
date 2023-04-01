@@ -1,12 +1,18 @@
-from itertools import filterfalse, tee
-from typing import List
-
 from .point import Point
 from .vector2 import Vector2
+from itertools import filterfalse, tee
+from typing import TypeVar, Generic
+from typing import List, Callable
+
+T = TypeVar("T", int, float)
+PointSet = List[Point[T, T]]
 
 
-class Polygon:
-    def __init__(self, pointset: List[Point]):
+class Polygon(Generic[T]):
+    _origin: Point[T, T]
+    _vecs: List[Vector2[T, T]]
+
+    def __init__(self, pointset: PointSet) -> None:
         """[summary]
 
         Args:
@@ -15,19 +21,19 @@ class Polygon:
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
-    def __iadd__(self, rhs: Vector2):
+    def __iadd__(self, rhs: Vector2) -> "Polygon[T]":
         """[summary]
 
         Args:
             rhs (Vector2): [description]
 
         Returns:
-            [type]: [description]
+            Self: [description]
         """
         self._origin += rhs
         return self
 
-    def signed_area_x2(self):
+    def signed_area_x2(self) -> T:
         """[summary]
 
         Returns:
@@ -95,42 +101,59 @@ def partition(pred, iterable):
 #     return lst1 + lst2
 
 
-def create_mono_polygon(lst, dir):
-    """[summary]
+def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
+    """Create a monotone polygon for a given point set.
 
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
+        dir (Callable): x- or y-first
 
     Returns:
-        [type]: [description]
+        PointSet: [description]
     """
     assert len(lst) >= 3
 
     max_pt = max(lst, key=dir)
     min_pt = min(lst, key=dir)
     vec = max_pt.displace(min_pt)
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(min_pt)) <= 0, lst)
+    lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(min_pt)) <= 0, lst)
     lst1 = sorted(lst1, key=dir)
     lst2 = sorted(lst2, key=dir, reverse=True)
     return lst1 + lst2
 
 
-def create_ymono_polygon(lst):
+def create_ymono_polygon(lst: PointSet) -> PointSet:
+    """Create a y-monotone polygon for a given point set.
+
+    Args:
+        lst (PointSet): [description]
+
+    Returns:
+        PointSet: [description]
+    """
     return create_mono_polygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
-def create_xmono_polygon(lst):
+def create_xmono_polygon(lst: PointSet) -> PointSet:
+    """Create a x-monotone polygon for a given point set.
+
+    Args:
+        lst (PointSet): [description]
+
+    Returns:
+        PointSet: [description]
+    """
     return create_mono_polygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
-def create_test_polygon(lst):
-    """[summary]
+def create_test_polygon(lst: PointSet) -> PointSet:
+    """Create a test polygon for a given point set.
 
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
 
     Returns:
-        [type]: [description]
+        PointSet: [description]
 
     Examples:
         >>> coords = [
@@ -175,16 +198,16 @@ def create_test_polygon(lst):
         return (pt.ycoord, pt.xcoord)
 
     upmost = max(lst, key=dir1)
-    downmost = min(lst, key=dir1)
-    vec = upmost.displace(downmost)
+    dnmost = min(lst, key=dir1)
+    vec = upmost.displace(dnmost)
 
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(downmost)) < 0, lst)
+    lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(dnmost)) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     rightmost = max(lst1)
-    [lst3, lst4] = partition(lambda a: a.ycoord < rightmost.ycoord, lst1)
+    lst3, lst4 = partition(lambda a: a.ycoord < rightmost.ycoord, lst1)
     leftmost = min(lst2)
-    [lst5, lst6] = partition(lambda a: a.ycoord > leftmost.ycoord, lst2)
+    lst5, lst6 = partition(lambda a: a.ycoord > leftmost.ycoord, lst2)
 
     if vec.x < 0:
         lsta = sorted(lst6, reverse=True)
@@ -199,7 +222,7 @@ def create_test_polygon(lst):
     return lsta + lstb + lstc + lstd
 
 
-def point_in_polygon(pointset, ptq):
+def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     """determine if a Point is within a Polygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
@@ -217,7 +240,7 @@ def point_in_polygon(pointset, ptq):
         ptq ([type]): [description]
 
     Returns:
-        [type]: [description]
+        bool: [description]
 
     Examples:
         >>> coords = [

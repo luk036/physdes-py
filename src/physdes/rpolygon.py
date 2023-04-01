@@ -1,9 +1,10 @@
-from itertools import filterfalse, tee
-from typing import List
-
 from .point import Point
 from .skeleton import _logger
 from .vector2 import Vector2
+from itertools import filterfalse, tee
+from typing import List, Callable, Tuple
+
+PointSet = List[Point[int, int]]
 
 
 class RPolygon:
@@ -20,33 +21,35 @@ class RPolygon:
                 │      │
                 0──────┘
     """
+    _origin: Point[int, int]
+    _vecs: List[Vector2[int, int]]
 
-    def __init__(self, pointset: List[Point]):
+    def __init__(self, pointset: PointSet) -> None:
         """[summary]
 
         Args:
-            pointset (List[Point]): [description]
+            pointset (PointSet): [description]
         """
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
-    def __iadd__(self, rhs: Vector2):
+    def __iadd__(self, rhs: Vector2[int, int]) -> "RPolygon":
         """[summary]
 
         Args:
             rhs (Vector2): [description]
 
         Returns:
-            [type]: [description]
+            Self: [description]
         """
         self._origin += rhs
         return self
 
-    def signed_area(self):
+    def signed_area(self) -> int:
         """[summary]
 
         Returns:
-            [type]: [description]
+            int: [description]
 
         Examples:
             >>> coords = [
@@ -90,7 +93,9 @@ def partition(pred, iterable):
     return filter(pred, t1), filterfalse(pred, t2)
 
 
-def create_mono_rpolygon(lst, dir):
+def create_mono_rpolygon(
+    lst: PointSet, dir: Callable
+) -> Tuple[PointSet, bool]:
     """Create a monotone rectilinear polygon for a given point set.
 
                                        ┌────0
@@ -109,16 +114,19 @@ def create_mono_rpolygon(lst, dir):
                                  │   │
                                  4───┘
 
+
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
+        dir (Callable): x- or y-first
 
     Returns:
-        [type]: [description]
+        PointSet: [description]
+        bool: is_clockwise or is_anticlockwise depend on dir <-- Note!!!
     """
     assert len(lst) >= 2
     _logger.debug("creating_mono_rpolygon begin")
 
-    # Use x-monotone as model
+    # Use x-monotone as notation
     leftmost = min(lst, key=dir)
     rightmost = max(lst, key=dir)
     is_anticlockwise = dir(leftmost)[1] > dir(rightmost)[1]
@@ -135,40 +143,40 @@ def create_mono_rpolygon(lst, dir):
     return lst1 + lst2, is_anticlockwise  # is_clockwise if y-monotone
 
 
-def create_xmono_rpolygon(lst):
+def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     """Create an x-monotone rectilinear polygon for a given point set.
 
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
 
     Returns:
-        [type]: [description]
-        is_anticlockwise
+        PointSet: [description]
+        bool: is_anticlockwise <-- Note!!!
     """
     return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
-def create_ymono_rpolygon(lst):
+def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     """Create an y-monotone rectilinear polygon for a given point set.
 
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
 
     Returns:
-        [type]: [description]
-        is_clockwise <-- Note!!!
+        PointSet: [description]
+        bool: is_clockwise <-- Note!!!
     """
     return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
-def create_test_rpolygon(lst):
+def create_test_rpolygon(lst: PointSet) -> PointSet:
     """[summary]
 
     Args:
-        lst ([type]): [description]
+        lst (PointSet): [description]
 
     Returns:
-        [type]: [description]
+        PointSet: [description]
 
     Examples:
         >>> coords = [
@@ -216,13 +224,13 @@ def create_test_rpolygon(lst):
     min_pt = min(lst, key=dir)
     vec = max_pt.displace(min_pt)
 
-    [lst1, lst2] = partition(lambda pt: vec.cross(pt.displace(min_pt)) < 0, lst)
+    lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(min_pt)) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
     max_pt1 = max(lst1)
-    [lst3, lst4] = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
+    lst3, lst4 = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
     min_pt2 = min(lst2)
-    [lst5, lst6] = partition(lambda pt: pt.ycoord > min_pt2.ycoord, lst2)
+    lst5, lst6 = partition(lambda pt: pt.ycoord > min_pt2.ycoord, lst2)
 
     if vec.x < 0:
         lsta = sorted(lst6, reverse=True)
@@ -237,7 +245,7 @@ def create_test_rpolygon(lst):
     return lsta + lstb + lstc + lstd
 
 
-def point_in_rpolygon(pointset, ptq):
+def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     """determine if a Point is within a RPolygon
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
@@ -260,11 +268,11 @@ def point_in_rpolygon(pointset, ptq):
        │     │     │               │    │       │
 
     Args:
-        pointset ([type]): [description]
-        q ([type]): [description]
+        pointset (PointSet): [description]
+        ptq (Point[int, int]): [description]
 
     Returns:
-        [type]: [description]
+        bool: [description]
 
     Examples:
         >>> coords = [

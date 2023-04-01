@@ -2,7 +2,7 @@ from .interval import Interval
 from .point import Point
 
 
-class Rectangle(Point[Interval, Interval]):
+class Rectangle(Point[Interval[int], Interval[int]]):
     def __init__(self, xcoord: Interval, ycoord: Interval):
         """[summary]
 
@@ -21,7 +21,7 @@ class Rectangle(Point[Interval, Interval]):
         Point.__init__(self, xcoord, ycoord)
 
     @property
-    def ll(self) -> Point:
+    def ll(self) -> Point[int, int]:
         """Lower left
 
         Returns:
@@ -35,7 +35,7 @@ class Rectangle(Point[Interval, Interval]):
         return Point(self.xcoord.lb, self.ycoord.lb)
 
     @property
-    def ur(self) -> Point:
+    def ur(self) -> Point[int, int]:
         """Upper right
 
         Returns:
@@ -67,21 +67,21 @@ class Rectangle(Point[Interval, Interval]):
     # def __eq__(self, rhs) -> bool:
     #     return self.xcoord == rhs.xcoord and self.ycoord == rhs.ycoord
 
-    # def flip(self):
-    #     """[summary]
+    def flip(self) -> "Rectangle":
+        """[summary]
 
-    #     Returns:
-    #         [type]: [description]
+        Returns:
+            [type]: [description]
 
-    #     Examples:
-    #         >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
-    #         >>> print(a.flip())
-    #         ([5, 6], [3, 4])
-    #         >>> a3d = Rectangle(a, Interval(7, 8))  # Rectangle in 3d
-    #         >>> print(a3d.flip())
-    #         ([7, 8], ([3, 4], [5, 6]))
-    #     """
-    #     return Rectangle(self.ycoord, self.xcoord)
+        Examples:
+            >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
+            >>> print(a.flip())
+            ([5, 6], [3, 4])
+            >>> a3d = Rectangle(a, Interval(7, 8))  # Rectangle in 3d
+            >>> print(a3d.flip())
+            ([7, 8], ([3, 4], [5, 6]))
+        """
+        return Rectangle(self.ycoord, self.xcoord)
 
     # `a` can be Point, VSegment, HSegment, or Rectangle
     def contains(self, other: Point) -> bool:
@@ -102,9 +102,10 @@ class Rectangle(Point[Interval, Interval]):
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
         """
-        return self.xcoord.contains(other.xcoord) and self.ycoord.contains(other.ycoord)
+        return self.xcoord.contains(other.xcoord) \
+            and self.ycoord.contains(other.ycoord)
 
-    def width(self):
+    def width(self) -> int:
         """[summary]
 
         Returns:
@@ -117,7 +118,7 @@ class Rectangle(Point[Interval, Interval]):
         """
         return self.xcoord.length()
 
-    def height(self):
+    def height(self) -> int:
         """[summary]
 
         Returns:
@@ -130,7 +131,7 @@ class Rectangle(Point[Interval, Interval]):
         """
         return self.ycoord.length()
 
-    def area(self):
+    def area(self) -> int:
         """[summary]
 
         Returns:
@@ -144,45 +145,11 @@ class Rectangle(Point[Interval, Interval]):
         return self.xcoord.length() * self.ycoord.length()
 
 
-class VSegment(Point[int, Interval]):
+class VSegment(Point[int, Interval[int]]):
     """
     Represents a VSegment.
     """
 
-    # def __init__(self, xcoord, ycoord):
-    #     """[summary]
-    #
-    #     Args:
-    #         xcoord ([type]): [description]
-    #         ycoord ([type]): [description]
-    #
-    #     Examples:
-    #         >>> a = VSegment(5, Interval(3, 4))
-    #         >>> print(a)
-    #         (5, [3, 4])
-    #         >>> a3d = VSegment(6, a)  # VSegment in 3d
-    #         >>> print(a3d)
-    #         (6, (5, [3, 4]))
-    #     """
-    #     Point.__init__(self, xcoord, ycoord)
-
-    # def copy(self):
-    #     """[summary]
-
-    #     Returns:
-    #         [type]: [description]
-
-    #     Examples:
-    #         >>> a = VSegment(5, Interval(3, 4))
-    #         >>> print(a.copy())
-    #         (5, [3, 4])
-    #         >>> a3d = VSegment(6, a)  # VSegment in 3d
-    #         >>> print(a3d.copy())
-    #         (6, (5, [3, 4]))
-    #     """
-    #     return VSegment(self.xcoord, self.ycoord)
-
-    # `a` can be Point or VSegment
     def contains(self, other: Point) -> bool:
         """[summary]
 
@@ -201,23 +168,24 @@ class VSegment(Point[int, Interval]):
             >>> a.contains(VSegment(6, Interval(33, 38)))
             False
         """
-        return self.xcoord == other.xcoord and self.ycoord.contains(other.ycoord)
+        return self.xcoord == other.xcoord \
+            and self.ycoord.contains(other.ycoord)
 
-    # def flip(self):
-    #     """[summary]
+    def flip(self) -> "HSegment":
+        """[summary]
 
-    #     Returns:
-    #         [type]: [description]
+        Returns:
+            [type]: [description]
 
-    #     Examples:
-    #         >>> a = VSegment(5, Interval(30, 40))
-    #         >>> print(a.flip())
-    #         ([30, 40], 5)
-    #     """
-    #     return HSegment(self.ycoord, self.xcoord)
+        Examples:
+            >>> a = VSegment(5, Interval(30, 40))
+            >>> print(a.flip())
+            ([30, 40], 5)
+        """
+        return HSegment(self.ycoord, self.xcoord)
 
 
-class HSegment(Point[Interval, int]):
+class HSegment(Point[Interval[int], int]):
     """
     Represents a HSegment.
     """
@@ -274,17 +242,18 @@ class HSegment(Point[Interval, int]):
             >>> a.contains(HSegment(Interval(33, 38), 6))
             False
         """
-        return self.ycoord == other.ycoord and self.xcoord.contains(other.xcoord)
+        return self.ycoord == other.ycoord \
+            and self.xcoord.contains(other.xcoord)
 
-    # def flip(self):
-    #     """[summary]
+    def flip(self) -> VSegment:
+        """[summary]
 
-    #     Returns:
-    #         [type]: [description]
+        Returns:
+            [type]: [description]
 
-    #     Examples:
-    #         >>> a = HSegment(Interval(30, 40), 5)
-    #         >>> print(a.flip())
-    #         (5, [30, 40])
-    #     """
-    #     return VSegment(self.ycoord, self.xcoord)
+        Examples:
+            >>> a = HSegment(Interval(30, 40), 5)
+            >>> print(a.flip())
+            (5, [30, 40])
+        """
+        return VSegment(self.ycoord, self.xcoord)

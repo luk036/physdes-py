@@ -1,16 +1,27 @@
-from .generic import intersection, min_dist
-from .interval import enlarge
+from .interval import enlarge, intersection, min_dist
 from .point import Point
 from .vector2 import Vector2
 
+from typing import TypeVar, Generic, TYPE_CHECKING
 
-class MergeObj:
-    """⛝ Merging point, segment, or region"""
+if TYPE_CHECKING:
+    from .interval import Interval
 
-    impl: Point  # implemented by a 45 degree rotated point, vertical or
-    # horizontal segment, and rectangle
+T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point")
+T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point")
 
-    def __init__(self, xcoord, ycoord):
+
+class MergeObj(Generic[T1, T2]):
+    """
+    ⛝  Merging point, segment, or region
+
+    A 45 degree rotated point, vertical or horizontal segment, or rectangle
+
+    """
+
+    impl: Point[T1, T2]
+
+    def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """[summary]
 
         Args:
@@ -24,7 +35,8 @@ class MergeObj:
         """
         self.impl = Point(xcoord, ycoord)
 
-    def construct(xcoord, ycoord):
+    @staticmethod
+    def construct(xcoord: int, ycoord: int) -> "MergeObj[int, int]":
         """Construct from the real point
 
         Args:
@@ -39,7 +51,7 @@ class MergeObj:
         impl = Point(xcoord + ycoord, xcoord - ycoord)
         return MergeObj(impl.xcoord, impl.ycoord)
 
-    def __str__(self):
+    def __str__(self) -> str:
         """[summary]
 
         Returns:
@@ -72,7 +84,7 @@ class MergeObj:
         """
         return self.impl == other.impl
 
-    def __iadd__(self, rhs: Vector2):
+    def __iadd__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
         """Translate by displacement
 
         Args:
@@ -91,7 +103,7 @@ class MergeObj:
         self.impl.ycoord += rhs.x - rhs.y
         return self
 
-    def __isub__(self, rhs: Vector2):
+    def __isub__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
         """[summary]
 
         Args:
