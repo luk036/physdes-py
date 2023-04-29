@@ -1,21 +1,12 @@
 """
 Vector2 Class
 """
-from typing import TypeVar, Generic, TYPE_CHECKING
-from typing_extensions import Self
-
-if TYPE_CHECKING:
-    from .interval import Interval
-
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Vector2")
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Vector2")
 
 
-class Vector2(Generic[T1, T2]):
-    x_: T1  # Can be int, Interval, and Vector2
-    y_: T2  # Can be int and Interval
-
+class Vector2:
     __slots__ = ("x_", "y_")
+    x_: float
+    y_: float
 
     def __init__(self, x, y) -> None:
         """[summary]
@@ -50,10 +41,11 @@ class Vector2(Generic[T1, T2]):
             >>> print(v3d)
             <<3, 4>, 5>
         """
+        # return "<{self.x}, {self.y}>".format(self=self)
         return f"<{self.x}, {self.y}>"
 
     @property
-    def x(self) -> T1:
+    def x(self):
         """[summary]
 
         Returns:
@@ -70,7 +62,7 @@ class Vector2(Generic[T1, T2]):
         return self.x_
 
     @property
-    def y(self) -> T2:
+    def y(self):
         """[summary]
 
         Returns:
@@ -86,7 +78,7 @@ class Vector2(Generic[T1, T2]):
         """
         return self.y_
 
-    def copy(self) -> Self:
+    def copy(self):
         """[summary]
 
         Returns:
@@ -143,7 +135,7 @@ class Vector2(Generic[T1, T2]):
         """
         return (self.x_, self.y_) == (rhs.x_, rhs.y_)
 
-    def __neg__(self) -> Self:
+    def __neg__(self):
         """[summary]
 
         Returns:
@@ -160,7 +152,7 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(-self.x, -self.y)
 
-    def __iadd__(self, rhs) -> Self:
+    def __iadd__(self, rhs):
         """[summary]
 
         Args:
@@ -183,7 +175,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ += rhs.y
         return self
 
-    def __add__(self, rhs) -> Self:
+    def __add__(self, rhs):
         """[summary]
 
         Args:
@@ -205,7 +197,7 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x + rhs.x, self.y + rhs.y)
 
-    def __isub__(self, rhs) -> Self:
+    def __isub__(self, rhs):
         """[summary]
 
         Args:
@@ -228,7 +220,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ -= rhs.y
         return self
 
-    def __sub__(self, rhs) -> Self:
+    def __sub__(self, rhs):
         """[summary]
 
         Args:
@@ -250,7 +242,7 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x - rhs.x, self.y - rhs.y)
 
-    def __imul__(self, alpha) -> Self:
+    def __imul__(self, alpha):
         """[summary]
 
         Args:
@@ -273,7 +265,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ *= alpha
         return self
 
-    def __mul__(self, alpha) -> Self:
+    def __mul__(self, alpha):
         """[summary]
 
         Args:
@@ -293,7 +285,7 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x * alpha, self.y * alpha)
 
-    def __itruediv__(self, alpha) -> Self:
+    def __itruediv__(self, alpha):
         """[summary]
 
         Args:
@@ -316,7 +308,7 @@ class Vector2(Generic[T1, T2]):
         self.y_ /= alpha
         return self
 
-    def __truediv__(self, alpha) -> Self:
+    def __truediv__(self, alpha):
         """[summary]
 
         Args:
@@ -344,6 +336,6 @@ if __name__ == "__main__":
     v = Vector2(6.0, 9.0)
     v /= 2.0
     print(v)
-    v3d = Vector2(v, 5)  # vector in 3d
-    v3d /= 0.5
-    print(v3d)
+    # v3d = Vector2(v, 5.0)  # vector in 3d
+    # v3d /= 0.5
+    # print(v3d)

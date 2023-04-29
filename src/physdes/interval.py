@@ -1,5 +1,6 @@
 # from .generic import min_dist, min_dist_change
 from typing import TypeVar, Generic, Union
+from typing_extensions import Self
 
 T = TypeVar("T", int, float)
 
@@ -140,7 +141,8 @@ class Interval(Generic[T]):
             >>> print(a)
             [3, 4]
         """
-        return "[{self.lb}, {self.ub}]".format(self=self)
+        # return "[{self.lb}, {self.ub}]".format(self=self)
+        return f"[{self.lb}, {self.ub}]"
 
     @property
     def lb(self) -> T:
@@ -170,7 +172,7 @@ class Interval(Generic[T]):
         """
         return self._ub
 
-    def copy(self) -> "Interval[T]":
+    def copy(self) -> Self:
         """[summary]
 
         Returns:
@@ -181,7 +183,8 @@ class Interval(Generic[T]):
             >>> print(a.copy())
             [3, 4]
         """
-        return Interval(self._lb, self._ub)
+        S = type(self)
+        return S(self._lb, self._ub)
 
     def length(self) -> T:
         """[summary]
@@ -284,7 +287,7 @@ class Interval(Generic[T]):
         """
         return not (self.ub < other)
 
-    def __neg__(self) -> "Interval[T]":
+    def __neg__(self) -> Self:
         """[summary]
 
         Returns:
@@ -295,9 +298,10 @@ class Interval(Generic[T]):
             >>> print(-a)
             [-4, -3]
         """
-        return Interval(-self.ub, -self.lb)
+        S = type(self)
+        return S(-self.ub, -self.lb)
 
-    def __iadd__(self, rhs: T) -> "Interval[T]":
+    def __iadd__(self, rhs: T) -> Self:
         """[summary]
 
         Args:
@@ -316,7 +320,7 @@ class Interval(Generic[T]):
         self._ub += rhs
         return self
 
-    def __add__(self, rhs: T) -> "Interval[T]":
+    def __add__(self, rhs: T) -> Self:
         """[summary]
 
         Args:
@@ -330,9 +334,10 @@ class Interval(Generic[T]):
             >>> print(a + 10)
             [13, 14]
         """
-        return Interval(self.lb + rhs, self.ub + rhs)
+        S = type(self)
+        return S(self.lb + rhs, self.ub + rhs)
 
-    def __isub__(self, rhs: T) -> "Interval[T]":
+    def __isub__(self, rhs: T) -> Self:
         """[summary]
 
         Args:
@@ -351,7 +356,7 @@ class Interval(Generic[T]):
         self._ub -= rhs
         return self
 
-    def __sub__(self, rhs: T) -> "Interval[T]":
+    def __sub__(self, rhs: T) -> Self:
         """[summary]
 
         Args:
@@ -365,9 +370,10 @@ class Interval(Generic[T]):
             >>> print(a - 1)
             [2, 3]
         """
-        return Interval(self.lb - rhs, self.ub - rhs)
+        S = type(self)
+        return S(self.lb - rhs, self.ub - rhs)
 
-    def overlaps(self, other: Union["Interval[T]", T]) -> bool:
+    def overlaps(self, other: Union[Self, T]) -> bool:
         """[summary]
 
         Args:
@@ -385,7 +391,7 @@ class Interval(Generic[T]):
         """
         return not (self < other or other < self)
 
-    def contains(self, obj: Union["Interval[T]", T]) -> bool:
+    def contains(self, obj: Union[Self, T]) -> bool:
         """[summary]
 
         Args:
@@ -409,7 +415,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return self.lb <= obj <= self.ub
 
-    def hull_with(self, obj: Union["Interval[T]", T]):
+    def hull_with(self, obj: Union[Self, T]):
         """[summary]
 
         Args:
@@ -430,7 +436,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
 
-    def intersection_with(self, obj: Union["Interval[T]", T]):
+    def intersection_with(self, obj: Union[Self, T]):
         """[summary]
 
         Args:
@@ -455,7 +461,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(obj, obj)
 
-    def min_dist_with(self, obj: Union["Interval[T]", T]):
+    def min_dist_with(self, obj: Union[Self, T]):
         """[summary]
 
         Args:
@@ -479,7 +485,7 @@ class Interval(Generic[T]):
             return min_dist(self.lb, obj)
         return 0
 
-    def displace(self, obj: "Interval[T]"):
+    def displace(self, obj: Self):
         """[summary]
 
         Args:
@@ -499,28 +505,29 @@ class Interval(Generic[T]):
         ub = displacement(self.ub, obj.ub)
         return Interval(lb, ub)
 
-    def min_dist_change_with(self, obj: Union["Interval[T]", T]):
-        """[summary]
+    # def min_dist_change_with(self, obj: Union[Self, T]):
+    #     """[summary]
+    #
+    #     Args:
+    #         other ([type]): [description]
+    #
+    #     Returns:
+    #         [type]: [description]
+    #     """
+    #     if self < obj:
+    #         self._lb = self._ub
+    #         return min_dist_change(self._ub, obj)
+    #     if obj < self:
+    #         self._ub = self._lb
+    #         return min_dist_change(self._lb, obj)
+    #     S = type(self)
+    #     if isinstance(obj, S):
+    #         self = obj = self.intersection_with(obj)  # what???
+    #     else:  # assume scalar
+    #         self._ub = self._lb = obj
+    #     return 0
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        if self < obj:
-            self._lb = self._ub
-            return min_dist_change(self._ub, obj)
-        if obj < self:
-            self._ub = self._lb
-            return min_dist_change(self._lb, obj)
-        if isinstance(obj, Interval):
-            self = obj = self.intersection_with(obj)  # what???
-        else:  # assume scalar
-            self._ub = self._lb = obj
-        return 0
-
-    def enlarge_with(self, alpha: T) -> "Interval[T]":
+    def enlarge_with(self, alpha: T) -> Self:
         """[summary]
 
         Args:
@@ -534,7 +541,8 @@ class Interval(Generic[T]):
             >>> print(a.enlarge_with(2))
             [1, 7]
         """
-        return Interval(self._lb - alpha, self._ub + alpha)
+        S = type(self)
+        return S(self._lb - alpha, self._ub + alpha)
 
 
 def hull(lhs, rhs):
@@ -578,5 +586,4 @@ def enlarge(lhs, rhs: T):
 
 if __name__ == "__main__":
     import doctest
-
     doctest.testmod()

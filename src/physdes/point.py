@@ -6,6 +6,7 @@ from .interval import enlarge, hull, displacement
 from .vector2 import Vector2
 
 from typing import TypeVar, Generic, TYPE_CHECKING
+from typing_extensions import Self
 
 if TYPE_CHECKING:
     from .interval import Interval
@@ -48,7 +49,7 @@ class Point(Generic[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    def copy(self) -> "Point[T1, T2]":
+    def copy(self) -> Self:
         """[summary]
 
         Returns:
@@ -130,7 +131,7 @@ class Point(Generic[T1, T2]):
         """
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
-    def __iadd__(self, rhs: Vector2) -> "Point[T1, T2]":
+    def __iadd__(self, rhs: Vector2) -> Self:
         """[summary]
 
         Args:
@@ -154,7 +155,7 @@ class Point(Generic[T1, T2]):
         self.ycoord += rhs.y
         return self
 
-    def __add__(self, rhs: Vector2) -> "Point[T1, T2]":
+    def __add__(self, rhs: Vector2) -> Self:
         """[summary]
 
         Args:
@@ -175,7 +176,7 @@ class Point(Generic[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
 
-    def __isub__(self, rhs: Vector2) -> "Point[T1, T2]":
+    def __isub__(self, rhs: Vector2) -> Self:
         """[summary]
 
         Args:
@@ -199,7 +200,7 @@ class Point(Generic[T1, T2]):
         self.ycoord -= rhs.y
         return self
 
-    def __sub__(self, rhs: Vector2) -> "Point[T1, T2]":
+    def __sub__(self, rhs: Vector2) -> Self:
         """[summary]
 
         Args:
@@ -218,7 +219,7 @@ class Point(Generic[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord - rhs.x, self.ycoord - rhs.y)
 
-    def displace(self, rhs: "Point[T1, T2]"):  # TODO: what is the type?
+    def displace(self, rhs: Self):  # TODO: what is the type?
         """[summary]
 
         Args:
