@@ -21,6 +21,7 @@ class RPolygon:
                 │      │
                 0──────┘
     """
+
     _origin: Point[int, int]
     _vecs: List[Vector2[int, int]]
 
@@ -93,9 +94,7 @@ def partition(pred, iterable):
     return filter(pred, t1), filterfalse(pred, t2)
 
 
-def create_mono_rpolygon(
-    lst: PointSet, dir: Callable
-) -> Tuple[PointSet, bool]:
+def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
     """Create a monotone rectilinear polygon for a given point set.
 
                                        ┌────0

@@ -237,8 +237,9 @@ class Point(Generic[T1, T2]):
             >>> print(a.displace(b))
             <5, 6>
         """
-        return Vector2(displacement(self.xcoord, rhs.xcoord),
-                       displacement(self.ycoord, rhs.ycoord))
+        return Vector2(
+            displacement(self.xcoord, rhs.xcoord), displacement(self.ycoord, rhs.ycoord)
+        )
 
     def flip(self) -> "Point[T2, T1]":
         """[summary]
@@ -265,8 +266,7 @@ class Point(Generic[T1, T2]):
         Returns:
             [type]: [description]
         """
-        return overlap(self.xcoord, other.xcoord) \
-            and overlap(self.ycoord, other.ycoord)
+        return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
     def contains(self, other) -> bool:
         """[summary]
@@ -277,8 +277,7 @@ class Point(Generic[T1, T2]):
         Returns:
             [type]: [description]
         """
-        return contain(self.xcoord, other.xcoord) \
-            and contain(self.ycoord, other.ycoord)
+        return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
     def hull_with(self, other):
         """[summary]
@@ -290,8 +289,7 @@ class Point(Generic[T1, T2]):
             [type]: [description]
         """
         T = type(self)
-        return T(hull(self.xcoord, other.xcoord),
-                 hull(self.ycoord, other.ycoord))
+        return T(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
     def intersection_with(self, other):
         """[summary]
@@ -317,8 +315,7 @@ class Point(Generic[T1, T2]):
         Returns:
             [type]: [description]
         """
-        return min_dist(self.xcoord, other.xcoord) \
-            + min_dist(self.ycoord, other.ycoord)
+        return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
     def enlarge_with(self, alpha):  # TODO: what is the type?
         """[summary]

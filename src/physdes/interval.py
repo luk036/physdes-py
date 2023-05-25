@@ -586,4 +586,5 @@ def enlarge(lhs, rhs: T):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

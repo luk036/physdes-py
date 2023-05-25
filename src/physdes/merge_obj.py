@@ -7,8 +7,8 @@ from typing import TypeVar, Generic, TYPE_CHECKING
 if TYPE_CHECKING:
     from .interval import Interval
 
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point")
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point")
+T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]")
+T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]")
 
 
 class MergeObj(Generic[T1, T2]):

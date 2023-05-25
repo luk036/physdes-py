@@ -102,8 +102,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
         """
-        return self.xcoord.contains(other.xcoord) \
-            and self.ycoord.contains(other.ycoord)
+        return self.xcoord.contains(other.xcoord) and self.ycoord.contains(other.ycoord)
 
     def width(self) -> int:
         """[summary]
@@ -168,8 +167,7 @@ class VSegment(Point[int, Interval[int]]):
             >>> a.contains(VSegment(6, Interval(33, 38)))
             False
         """
-        return self.xcoord == other.xcoord \
-            and self.ycoord.contains(other.ycoord)
+        return self.xcoord == other.xcoord and self.ycoord.contains(other.ycoord)
 
     def flip(self) -> "HSegment":
         """[summary]
@@ -242,8 +240,7 @@ class HSegment(Point[Interval[int], int]):
             >>> a.contains(HSegment(Interval(33, 38), 6))
             False
         """
-        return self.ycoord == other.ycoord \
-            and self.xcoord.contains(other.xcoord)
+        return self.ycoord == other.ycoord and self.xcoord.contains(other.xcoord)
 
     def flip(self) -> VSegment:
         """[summary]
