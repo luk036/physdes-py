@@ -1,6 +1,6 @@
 # physdes-py
 
-𓊍 Physical Design Python Code
+🏼 Physical Design Python Code
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/luk036/physdes-py)
 ![Python application](https://github.com/luk036/physdes-py/workflows/Python%20application/badge.svg)
@@ -12,15 +12,15 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/physdes-py/badge)](https://www.codefactor.io/repository/github/luk036/physdes-py)
 [![Build status](https://ci.appveyor.com/api/projects/status/f9h5xt1b32mykakg?svg=true)](https://ci.appveyor.com/project/luk036/physdes-py-ku9mp)
 
-## Features
+## ✨ Features
 
 - Rectilinear Polygon support
 
-## See also
+## 👀 See also
 
 - [physdes](https://github.com/luk036/physdes)
 
-## Note
+## 👉 Note
 
 This project has been set up using PyScaffold 3.2.1. For details and usage
 information on PyScaffold see <https://pyscaffold.org/>.
