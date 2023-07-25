@@ -1,7 +1,3 @@
-# physdes-py
-
-🏼 Physical Design Python Code
-
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/luk036/physdes-py)
 ![Python application](https://github.com/luk036/physdes-py/workflows/Python%20application/badge.svg)
 [![codecov](https://codecov.io/gh/luk036/physdes-py/branch/main/graph/badge.svg?token=EIv4D8NlYj)](https://codecov.io/gh/luk036/physdes-py)
@@ -11,6 +7,14 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/6ce78bab65047bfe53d6/maintainability)](https://codeclimate.com/github/luk036/physdes-py/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/luk036/physdes-py/badge)](https://www.codefactor.io/repository/github/luk036/physdes-py)
 [![Build status](https://ci.appveyor.com/api/projects/status/f9h5xt1b32mykakg?svg=true)](https://ci.appveyor.com/project/luk036/physdes-py-ku9mp)
+
+<p align="center">
+  <img src="./rectilinear-shapes-for-vlsi-physical-desgin.svg"/>
+</p>
+
+# physdes-py
+
+🏼 Physical Design Python Code
 
 ## ✨ Features
 
