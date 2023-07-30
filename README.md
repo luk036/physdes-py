@@ -20,7 +20,8 @@
 
 ## 👀 See also
 
-- [physdes](https://github.com/luk036/physdes)
+- [physdes-cpp](https://github.com/luk036/physdes-cpp)
+- [physdes-rs](https://github.com/luk036/physdes-rs)
 
 ## 👉 Note
 
