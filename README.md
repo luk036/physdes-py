@@ -12,7 +12,7 @@
 
 # 🏼 physdes-py
 
-🏼 Physical Design Python Code
+> Physical Design Python Code
 
 ## ✨ Features
 
