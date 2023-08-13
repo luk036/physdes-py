@@ -1,8 +1,8 @@
+from typing import TYPE_CHECKING, Generic, TypeVar
+
 from .interval import enlarge, intersection, min_dist
 from .point import Point
 from .vector2 import Vector2
-
-from typing import TypeVar, Generic, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from .interval import Interval

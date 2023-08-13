@@ -1,8 +1,9 @@
+from itertools import filterfalse, tee
+from typing import Callable, List, Tuple
+
 from .point import Point
 from .skeleton import _logger
 from .vector2 import Vector2
-from itertools import filterfalse, tee
-from typing import List, Callable, Tuple
 
 PointSet = List[Point[int, int]]
 

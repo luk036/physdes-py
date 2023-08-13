@@ -1,12 +1,20 @@
 """
 Rectilinear Point Class
 """
-from .interval import contain, intersection, min_dist, overlap
-from .interval import enlarge, hull, displacement
-from .vector2 import Vector2
+from typing import TYPE_CHECKING, Generic, TypeVar
 
-from typing import TypeVar, Generic, TYPE_CHECKING
 from typing_extensions import Self
+
+from .interval import (
+    contain,
+    displacement,
+    enlarge,
+    hull,
+    intersection,
+    min_dist,
+    overlap,
+)
+from .vector2 import Vector2
 
 if TYPE_CHECKING:
     from .interval import Interval

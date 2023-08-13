@@ -1,8 +1,8 @@
+from itertools import filterfalse, tee
+from typing import Callable, Generic, List, TypeVar
+
 from .point import Point
 from .vector2 import Vector2
-from itertools import filterfalse, tee
-from typing import TypeVar, Generic
-from typing import List, Callable
 
 T = TypeVar("T", int, float)
 PointSet = List[Point[T, T]]

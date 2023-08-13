@@ -28,7 +28,6 @@ def test_RPolygon():
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
-        # print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon(S)
     assert not is_cw
@@ -92,8 +91,6 @@ def test_RPolygon5():
     hgen = halton([3, 2], [7, 11])
     coords = [hgen() for _ in range(50)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
-    # for p1, p2 in zip(S, S[1:] + [S[0]]):
-    #     print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=' ')
     print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
     print('  <polygon points="', end=" ")
     p0 = S[-1]

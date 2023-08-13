@@ -1,5 +1,6 @@
 # from .generic import min_dist, min_dist_change
-from typing import TypeVar, Generic, Union
+from typing import Generic, TypeVar, Union
+
 from typing_extensions import Self
 
 T = TypeVar("T", int, float)
