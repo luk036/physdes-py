@@ -1,3 +1,4 @@
+from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Callable, Generic, List, TypeVar
 
@@ -33,6 +34,7 @@ class Polygon(Generic[T]):
         self._origin += rhs
         return self
 
+    @cached_property
     def signed_area_x2(self) -> T:
         """[summary]
 
@@ -59,7 +61,7 @@ class Polygon(Generic[T]):
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = Polygon(S)
-            >>> P.signed_area_x2()
+            >>> P.signed_area_x2
             110
         """
         assert len(self._vecs) >= 2

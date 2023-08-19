@@ -31,7 +31,7 @@ def test_RPolygon():
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon(S)
     assert not is_cw
-    assert P.signed_area() == 45
+    assert P.signed_area == 45
 
 
 def test_RPolygon2():
@@ -44,7 +44,7 @@ def test_RPolygon2():
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon(S)
     assert is_cw
-    assert P.signed_area() == -1871424
+    assert P.signed_area == -1871424
 
 
 def test_RPolygon3():
@@ -69,7 +69,7 @@ def test_RPolygon3():
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon(S)
     assert not is_anticw
-    assert P.signed_area() == -53
+    assert P.signed_area == -53
 
 
 def test_RPolygon4():
@@ -84,7 +84,7 @@ def test_RPolygon4():
         p0 = p1
     P = RPolygon(S)
     assert is_anticw
-    assert P.signed_area() == 2001024
+    assert P.signed_area == 2001024
 
 
 def test_RPolygon5():
@@ -105,5 +105,5 @@ def test_RPolygon5():
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
     print("</svg>")
     P = RPolygon(S)
-    assert P.signed_area() == -2176416
+    assert P.signed_area == -2176416
     assert point_in_rpolygon(S, Point(qx, qy))

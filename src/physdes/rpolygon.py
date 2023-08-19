@@ -1,3 +1,4 @@
+from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Callable, List, Tuple
 
@@ -47,6 +48,7 @@ class RPolygon:
         self._origin += rhs
         return self
 
+    @cached_property
     def signed_area(self) -> int:
         """[summary]
 
@@ -73,7 +75,7 @@ class RPolygon:
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon(S)
-            >>> P.signed_area()
+            >>> P.signed_area
             54
         """
         assert len(self._vecs) >= 1

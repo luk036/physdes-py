@@ -31,7 +31,7 @@ def test_polygon():
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon(S)
-    assert P.signed_area_x2() == 110
+    assert P.signed_area_x2 == 110
 
 
 def test_ymono_polygon():
@@ -56,7 +56,7 @@ def test_ymono_polygon():
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon(S)
-    assert P.signed_area_x2() == 102
+    assert P.signed_area_x2 == 102
 
 
 def test_xmono_polygon():
@@ -81,7 +81,7 @@ def test_xmono_polygon():
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon(S)
-    assert P.signed_area_x2() == 111
+    assert P.signed_area_x2 == 111
 
 
 def test_polygon2():
@@ -90,7 +90,7 @@ def test_polygon2():
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_ymono_polygon(S)
     P = Polygon(S)
-    assert P.signed_area_x2() == 4074624
+    assert P.signed_area_x2 == 4074624
 
 
 def test_polygon3():
@@ -99,7 +99,7 @@ def test_polygon3():
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_xmono_polygon(S)
     P = Polygon(S)
-    assert P.signed_area_x2() == 3862080
+    assert P.signed_area_x2 == 3862080
 
 
 def test_polygon4():
@@ -118,7 +118,7 @@ def test_polygon4():
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
     print("</svg>")
     P = Polygon(S)
-    assert P.signed_area_x2() == -4449600
+    assert P.signed_area_x2 == -4449600
     assert point_in_polygon(S, Point(qx, qy))
 
 
@@ -130,4 +130,4 @@ def test_polygon4():
 #     for p in S:
 #         print("{},{}".format(p.xcoord, p.ycoord), end=' ')
 #     P = Polygon(S)
-#     assert P.signed_area_x2() == 3198528000
+#     assert P.signed_area_x2 == 3198528000
