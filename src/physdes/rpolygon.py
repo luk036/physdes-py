@@ -28,32 +28,84 @@ class RPolygon:
     _vecs: List[Vector2[int, int]]
 
     def __init__(self, pointset: PointSet) -> None:
-        """[summary]
+        """
+        The function initializes an object with a given point set, setting the origin to the first point and
+        creating a list of vectors by displacing each point from the origin.
+        
+        :param pointset: The `pointset` parameter is of type `PointSet`. It represents a collection of
+        points. The `__init__` method is a constructor that initializes an instance of a class. In this
+        case, it takes a `PointSet` as an argument and assigns the first point in the `
+        :type pointset: PointSet
 
-        Args:
-            pointset (PointSet): [description]
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon(S)
+            >>> print(P._origin)
+            (0, -4)
         """
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2[int, int]) -> "RPolygon":
-        """[summary]
+        """
+        The `__iadd__` method adds a `Vector2` to the `_origin` attribute of an `RPolygon` object and
+        returns the modified object.
+        
+        :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
+        operand that is being added to the current object
+        :type rhs: Vector2[int, int]
+        :return: The method is returning `self`, which is an instance of the `RPolygon` class.
 
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            Self: [description]
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon(S)
+            >>> P += Vector2(1, 1)
+            >>> print(P._origin)
+            (1, -3)
         """
         self._origin += rhs
         return self
 
     @cached_property
     def signed_area(self) -> int:
-        """[summary]
-
-        Returns:
-            int: [description]
+        """
+        The `signed_area` function calculates the signed area of a polygon using the Shoelace formula.
+        :return: The `signed_area` method returns an integer value, which represents the signed area of a
+        polygon.
 
         Examples:
             >>> coords = [
@@ -98,7 +150,9 @@ def partition(pred, iterable):
 
 
 def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
-    """Create a monotone rectilinear polygon for a given point set.
+    """
+    The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
+    where the direction of the polygon depends on the provided direction function.
 
                                        ┌────0
                 ┌──────────4           │    │
@@ -116,14 +170,38 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
                                  │   │
                                  4───┘
 
+    :param lst: A list of points representing a point set
+    :type lst: PointSet
+    :param dir: The `dir` parameter is a callable function that determines the direction in which the
+    points are sorted. It can be either an x-first or y-first function
+    :type dir: Callable
+    :return: The function `create_mono_rpolygon` returns a tuple containing two elements:
+    1. `PointSet`: This is the list of points that make up the monotone rectilinear polygon.
+    2. `bool`: This boolean value indicates whether the polygon is clockwise or anticlockwise, depending
+    on the `dir` parameter passed to the function.
 
-    Args:
-        lst (PointSet): [description]
-        dir (Callable): x- or y-first
-
-    Returns:
-        PointSet: [description]
-        bool: is_clockwise or is_anticlockwise depend on dir <-- Note!!!
+    Examples:
+        >>> coords = [
+        ...     (0, -4),
+        ...     (0, -1),
+        ...     (3, -3),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, 3),
+        ...     (1, 4),
+        ...     (-2, 4),
+        ...     (-2, 2),
+        ...     (-4, 3),
+        ...     (-5, 1),
+        ...     (-6, -2),
+        ...     (-3, -3),
+        ...     (-3, -4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _, is_anticlockwise = create_mono_rpolygon(S, lambda pt: (pt.xcoord, pt.ycoord))
+        >>> is_anticlockwise
+        False
     """
     assert len(lst) >= 2
     _logger.debug("creating_mono_rpolygon begin")
@@ -146,39 +224,84 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
 
 
 def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
-    """Create an x-monotone rectilinear polygon for a given point set.
+    """
+    The function creates an x-monotone rectilinear polygon for a given point set.
+    
+    :param lst: A point set represented as a list of points. Each point has x and y coordinates
+    :type lst: PointSet
+    :return: The function `create_xmono_rpolygon` returns a tuple containing two elements: a `PointSet`
+    and a boolean value is_anticlockwise <-- Note!!!
 
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
-        bool: is_anticlockwise <-- Note!!!
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _, is_anticlockwise = create_xmono_rpolygon(S)
+        >>> is_anticlockwise
+        False
     """
     return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
-    """Create an y-monotone rectilinear polygon for a given point set.
+    """
+    The function creates a y-monotone rectilinear polygon for a given point set.
+    
+    :param lst: A point set represented as a list of points. Each point has x and y coordinates
+    :type lst: PointSet
+    :return: The function `create_ymono_rpolygon` returns a tuple containing two elements: a `PointSet`
+    and a boolean value is_clockwise <-- Note!!!
 
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
-        bool: is_clockwise <-- Note!!!
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _, is_clockwise = create_ymono_rpolygon(S)
+        >>> is_clockwise
+        False
     """
     return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def create_test_rpolygon(lst: PointSet) -> PointSet:
-    """[summary]
-
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
+    """
+    The `create_test_rpolygon` function takes a list of points and returns a new list of points that
+    form a non-crossing polygon.
+    
+    :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
+    `PointSet` has an x-coordinate and a y-coordinate
+    :type lst: PointSet
+    :return: The function `create_test_rpolygon` returns a `PointSet`, which is a collection of points.
 
     Examples:
         >>> coords = [

@@ -13,11 +13,9 @@ from .interval import (
     intersection,
     min_dist,
     overlap,
+    Interval
 )
 from .vector2 import Vector2
-
-if TYPE_CHECKING:
-    from .interval import Interval
 
 T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point")
 T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point")
@@ -32,20 +30,32 @@ class Point(Generic[T1, T2]):
     ycoord: T2
 
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
-        """[summary]
-
-        Args:
-            xcoord ([type]): [description]
-            ycoord ([type]): [description]
         """
-        self.xcoord = xcoord
-        self.ycoord = ycoord
+        The function initializes an object with x and y coordinates.
+        
+        :param xcoord: The parameter `xcoord` is of type `T1` and represents the x-coordinate of a point
+        :type xcoord: T1
+        :param ycoord: The `ycoord` parameter is a variable that represents the y-coordinate of a point.
+        It can be of any type (`T2`)
+        :type ycoord: T2
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> print(a)
+            (3, 4)
+            >>> a3d = Point(a, 5)  # Point in 3d
+            >>> print(a3d)
+            ((3, 4), 5)
+        """
+        self.xcoord: T1 = xcoord
+        self.ycoord: T2 = ycoord
 
     def __str__(self) -> str:
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The __str__ function returns a string representation of a Point object in the format (xcoord,
+        ycoord).
+        :return: The `__str__` method is returning a string representation of the object, which is the
+        coordinates of the point in the format "(x, y)".
 
         Examples:
             >>> a = Point(3, 4)
@@ -58,10 +68,10 @@ class Point(Generic[T1, T2]):
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
     def copy(self) -> Self:
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The `copy` function returns a new instance of the same type as the current object, with the same
+        x and y coordinates.
+        :return: The `copy` method is returning a new instance of the same type as the current object.
 
         Examples:
             >>> a = Point(3, 4)
@@ -77,13 +87,14 @@ class Point(Generic[T1, T2]):
         return T(self.xcoord, self.ycoord)
 
     def __lt__(self, other) -> bool:
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            bool: [description]
+        """
+        The `__lt__` function compares two points based on their x and y coordinates and returns True if
+        the first point is less than the second point.
+        
+        :param other: The `other` parameter represents another instance of the `Point` class that we are
+        comparing to the current instance
+        :return: The `__lt__` method is returning a boolean value indicating whether the current
+        instance is less than the `other` instance.
 
         Examples:
             >>> a = Point(3, 4)
@@ -98,13 +109,13 @@ class Point(Generic[T1, T2]):
         return (self.xcoord, self.ycoord) < (other.xcoord, other.ycoord)
 
     def __le__(self, other) -> bool:
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            bool: [description]
+        """
+        The `__le__` function compares two points and returns True if the first point is less than or
+        equal to the second point based on their x and y coordinates.
+        
+        :param other: The `other` parameter represents another instance of the `Point` class that we are
+        comparing to the current instance
+        :return: The method `__le__` is returning a boolean value.
 
         Examples:
             >>> a = Point(3, 4)
@@ -119,13 +130,15 @@ class Point(Generic[T1, T2]):
         return (self.xcoord, self.ycoord) <= (other.xcoord, other.ycoord)
 
     def __eq__(self, other) -> bool:
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            bool: [description]
+        """
+        The `__eq__` function checks if two points have the same x and y coordinates.
+        
+        :param other: The `other` parameter represents the other object that we are comparing with the
+        current object. In this case, it is used to compare the x and y coordinates of two `Point`
+        objects to determine if they are equal
+        :return: The `__eq__` method is returning a boolean value indicating whether the coordinates of
+        the current point object (`self`) are equal to the coordinates of the other point object
+        (`other`).
 
         Examples:
             >>> a = Point(3, 4)
@@ -140,13 +153,13 @@ class Point(Generic[T1, T2]):
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
     def __iadd__(self, rhs: Vector2) -> Self:
-        """[summary]
-
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `__iadd__` method allows for in-place addition of a `Vector2` object to a `Point` object.
+        
+        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is
+        being added to the current vector
+        :type rhs: Vector2
+        :return: The `self` object is being returned.
 
         Examples:
             >>> a = Point(3, 4)
@@ -164,13 +177,16 @@ class Point(Generic[T1, T2]):
         return self
 
     def __add__(self, rhs: Vector2) -> Self:
-        """[summary]
-
-        Args:
-            rhs ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `__add__` method allows for addition of a `Vector2` object to a `Point` object, resulting in a
+        new `Point` object with updated coordinates.
+        
+        :param rhs: rhs is the right-hand side operand of the addition operation. In this case, it is a
+        Vector2 object that is being added to the current Point object
+        :type rhs: Vector2
+        :return: The `__add__` method is returning a new instance of the same type as `self` (which could be
+        `Point`, `Rectangle`, or any other type). The new instance is created by adding the `x` and `y`
+        coordinates of `self` with the `x` and `y` coordinates of `rhs` (the right-hand side operand).
 
         Examples:
             >>> a = Point(3, 4)
@@ -185,13 +201,14 @@ class Point(Generic[T1, T2]):
         return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
 
     def __isub__(self, rhs: Vector2) -> Self:
-        """[summary]
-
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `__isub__` method subtracts the x and y coordinates of a `Vector2` object from the x and y
+        coordinates of a `Point` object and returns the updated `Point` object.
+        
+        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
+        subtracted from the current vector. In this case, `rhs` is an instance of the `Vector2` class
+        :type rhs: Vector2
+        :return: The method `__isub__` returns `self`.
 
         Examples:
             >>> a = Point(3, 4)
@@ -209,13 +226,16 @@ class Point(Generic[T1, T2]):
         return self
 
     def __sub__(self, rhs: Vector2) -> Self:
-        """[summary]
-
-        Args:
-            rhs (Vector or Point): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `__sub__` method subtracts the x and y coordinates of a given vector or point from the x and y
+        coordinates of the current object and returns a new object of the same type.
+        
+        :param rhs: The parameter `rhs` represents the right-hand side operand of the subtraction operation.
+        It can be either a `Vector2` or a `Point` object
+        :type rhs: Vector2
+        :return: The `__sub__` method returns a new instance of the same type as `self` (which could be
+        `Point`, `Rectangle`, or any other type) with the x and y coordinates subtracted by the
+        corresponding coordinates of `rhs` (another `Vector2` or `Point`).
 
         Examples:
             >>> a = Point(3, 4)
@@ -228,13 +248,14 @@ class Point(Generic[T1, T2]):
         return T(self.xcoord - rhs.x, self.ycoord - rhs.y)
 
     def displace(self, rhs: Self):  # TODO: what is the type?
-        """[summary]
-
-        Args:
-            rhs (Vector or Point): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `displace` function takes a `Vector` or `Point` object as an argument and returns a new
+        `Vector2` object representing the displacement between the two points.
+        
+        :param rhs: The parameter `rhs` is of type `Self`, which means it can be either a `Vector2` or a
+        `Point` object
+        :type rhs: Self
+        :return: The `displace` method is returning a `Vector2` object.
 
         Examples:
             >>> a = Point(3, 4)
@@ -250,63 +271,111 @@ class Point(Generic[T1, T2]):
         )
 
     def flip(self) -> "Point[T2, T1]":
-        """[summary]
-
-        Returns:
-            TPoint[T2, T1]: [description]
+        """
+        The `flip` function returns a new `Point` object with the x and y coordinates swapped.
+        :return: The flip() method returns a new Point object with the x and y coordinates swapped.
 
         Examples:
             >>> a = Point(3, 4)
             >>> print(a.flip())
             (4, 3)
-            >>> r = Point([3, 4], [5, 6])  # Rectangle
+            >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
             >>> print(r.flip())
             ([5, 6], [3, 4])
         """
         return Point(self.ycoord, self.xcoord)
 
     def overlaps(self, other) -> bool:
-        """[summary]
+        """
+        The `overlaps` function checks if two objects overlap by comparing their x and y coordinates.
+        
+        :param other: The `other` parameter represents another object that we want to check for overlap with
+        the current object
+        :return: a boolean value, indicating whether there is an overlap between the coordinates of the two
+        objects.
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        Examples:
+            >>> a = Point(3, 4)
+            >>> b = Point(5, 6)
+            >>> print(a.overlaps(b))
+            False
+            >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
+            >>> print(r.overlaps(a))
+            False
         """
         return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
     def contains(self, other) -> bool:
-        """[summary]
+        """
+        The function checks if the x and y coordinates of one object are contained within the x and y
+        coordinates of another object.
+        
+        :param other: The "other" parameter is an object of the same class as the current object. It
+        represents another instance of the class that we want to check if it is contained within the current
+        instance
+        :return: The `contains` method is returning a boolean value.
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        Examples:
+            >>> a = Point(3, 4)
+            >>> b = Point(5, 6)
+            >>> print(a.contains(b))
+            False
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.contains(a))
+            False
         """
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
     def hull_with(self, other):
-        """[summary]
+        """
+        The `hull_with` function takes another object and returns a new object with the hull of the x and y
+        coordinates of both objects.
+        
+        :param other: The `other` parameter is an object of the same type as `self`. It represents another
+        instance of the class that the `hull_with` method belongs to
+        :return: an instance of the same class as `self` (type `T`). The instance is created using the
+        `hull` function, which takes the x-coordinates and y-coordinates of `self` and `other` as arguments.
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        Examples:
+            >>> a = Point(3, 4)
+            >>> b = Point(5, 6)
+            >>> print(a.hull_with(b))
+            ([3, 5], [4, 6])
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.hull_with(r))
+            ([3, 4], [5, 6])
         """
         T = type(self)
         return T(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
+    # >>> a = Point(3, 4)
+    # >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+    # >>> print(r.intersection_with(a))
     def intersection_with(self, other):
-        """[summary]
+        """
+        The function `intersection_with` takes another object as input and returns a new object that
+        represents the intersection of the x and y coordinates of the two objects.
+        
+        :param other: The "other" parameter is an object of the same type as the current object. It
+        represents another instance of the class that has the same attributes and methods
+        :return: The method `intersection_with` returns an instance of the same class as `self` (i.e.,
+        `type(self)`). The instance is created using the `T` constructor and takes the intersection of
+        the `xcoord` and `ycoord` attributes of `self` and `other`.
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        Examples:
+            >>> a = Point(3, 5)
+            >>> b = Point(4, 6)
+            >>> print(a.intersection_with(a))
+            (3, 5)
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.intersection_with(a))
+            ([3, 3], [5, 5])
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.intersection_with(b))
+            ([4, 4], [5, 5])
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.intersection_with(r))
+            ([3, 4], [5, 6])
         """
         T = type(self)
         return T(
@@ -315,30 +384,57 @@ class Point(Generic[T1, T2]):
         )
 
     def min_dist_with(self, other):
-        """[summary]
+        """
+        The function calculates the minimum distance between two points using their x and y coordinates.
+        
+        :param other: The "other" parameter represents another object or point with which you want to
+        calculate the minimum distance. It is assumed that both the current object (self) and the other
+        object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
+        function calculates the minimum distance between the
+        :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two
+        objects.
 
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        Examples:
+            >>> a = Point(3, 4)
+            >>> b = Point(5, 6)
+            >>> print(a.min_dist_with(b))
+            4
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.min_dist_with(a))
+            0
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.min_dist_with(b))
+            0
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.min_dist_with(r))
+            0        
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
     def enlarge_with(self, alpha):  # TODO: what is the type?
-        """[summary]
-
-        Args:
-            alpha ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `enlarge_with` function takes a parameter `alpha` and returns a new instance of the same type
+        with the x and y coordinates enlarged by `alpha`.
+        
+        :param alpha: The `alpha` parameter is a value that determines the amount by which the coordinates
+        of the point should be enlarged
+        :return: The `enlarge_with` method returns an instance of the same type as `self` with the enlarged
+        coordinates.
 
         Examples:
             >>> a = Point(9, -1)
             >>> r = a.enlarge_with(1)
             >>> print(r)
             ([8, 10], [-2, 0])
+            >>> r = a.enlarge_with(2)
+            >>> print(r)
+            ([7, 11], [-3, 1])
+            >>> r = a.enlarge_with(3)
+            >>> print(r)
+            ([6, 12], [-4, 2])
+            >>> r = a.enlarge_with(4)
+            >>> print(r)
+            ([5, 13], [-5, 3])
         """
         xcoord = enlarge(self.xcoord, alpha)
         ycoord = enlarge(self.ycoord, alpha)

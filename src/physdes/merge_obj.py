@@ -22,26 +22,35 @@ class MergeObj(Generic[T1, T2]):
     impl: Point[T1, T2]
 
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
-        """[summary]
-
-        Args:
-            xcoord ([type]): [description]
-            ycoord ([type]): [description]
+        """
+        The function initializes an object with x and y coordinates and stores them in a Point object.
+        
+        :param xcoord: The parameter `xcoord` represents the x-coordinate of a point in a 2D space. It
+        can be of any type `T1`
+        :type xcoord: T1
+        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a
+        two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
+        :type ycoord: T2
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
             >>> print(a)
             /9, -1/
         """
-        self.impl = Point(xcoord, ycoord)
+        self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
     @staticmethod
     def construct(xcoord: int, ycoord: int) -> "MergeObj[int, int]":
-        """Construct from the real point
-
-        Args:
-            xcoord ([type]): [description]
-            ycoord ([type]): [description]
+        """
+        The function constructs a MergeObj object from the given x and y coordinates.
+        
+        :param xcoord: An integer representing the x-coordinate of the point
+        :type xcoord: int
+        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a Cartesian
+        coordinate system
+        :type ycoord: int
+        :return: an instance of the `MergeObj` class with the `xcoord` and `ycoord` values of the `impl`
+        object.
 
         Examples:
             >>> a = MergeObj.construct(4, 5)
@@ -52,10 +61,12 @@ class MergeObj(Generic[T1, T2]):
         return MergeObj(impl.xcoord, impl.ycoord)
 
     def __str__(self) -> str:
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The `__str__` function returns a string representation of an object, specifically in the format
+        "/xcoord, ycoord/".
+        :return: The method `__str__` returns a string representation of the object. In this case, it
+        returns a string in the format "/xcoord, ycoord/" where xcoord and ycoord are the x and y
+        coordinates of the object.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -65,13 +76,12 @@ class MergeObj(Generic[T1, T2]):
         return "/{self.impl.xcoord}, {self.impl.ycoord}/".format(self=self)
 
     def __eq__(self, other) -> bool:
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            bool: [description]
+        """
+        The `__eq__` function checks if two `MergeObj` instances have the same `impl` attribute.
+        
+        :param other: The `other` parameter represents the object that we are comparing with the current
+        object
+        :return: The `__eq__` method is returning a boolean value.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -87,11 +97,13 @@ class MergeObj(Generic[T1, T2]):
     def __iadd__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
         """Translate by displacement
 
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            [type]: [description]
+        The `__iadd__` method allows a `MergeObj` object to be translated by a given displacement
+        vector.
+        
+        :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector.
+        It is used to specify the displacement that will be added to the current object
+        :type rhs: Vector2
+        :return: The method `__iadd__` returns an instance of the class `MergeObj[T1, T2]`.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -104,13 +116,13 @@ class MergeObj(Generic[T1, T2]):
         return self
 
     def __isub__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
-        """[summary]
-
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The function subtracts the x and y coordinates of a Vector2 object from the x and y coordinates
+        of a MergeObj object.
+        
+        :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector
+        :type rhs: Vector2
+        :return: The method `__isub__` returns an instance of the class `MergeObj[T1, T2]`.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -123,13 +135,12 @@ class MergeObj(Generic[T1, T2]):
         return self
 
     def min_dist_with(self, other) -> int:
-        """minimum rectilinear distance
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
+        
+        :param other: The `other` parameter represents another object with which you want to calculate
+        the minimum rectilinear distance
+        :return: the minimum rectilinear distance between the two objects.
 
         Examples:
             >>> r1 = MergeObj(4 + 5, 4 - 5)
@@ -145,13 +156,15 @@ class MergeObj(Generic[T1, T2]):
         )
 
     def enlarge_with(self, alpha: int):
-        """[summary]
-
-        Args:
-            alpha ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `enlarge_with` function takes an integer `alpha` and returns a new `MergeObj` object with
+        enlarged coordinates.
+        
+        :param alpha: The parameter `alpha` is an integer that represents the factor by which the
+        coordinates of the `MergeObj` object should be enlarged
+        :type alpha: int
+        :return: The `enlarge_with` method is returning a new `MergeObj` object with the enlarged
+        coordinates.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -164,13 +177,14 @@ class MergeObj(Generic[T1, T2]):
         return MergeObj(xcoord, ycoord)  # TODO
 
     def intersection_with(self, other):
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The function calculates the intersection point between two MergeObj objects and returns a new
+        MergeObj object with the coordinates of the intersection point.
+        
+        :param other: The "other" parameter is an object of the same class as the current object. It
+        represents another instance of the MergeObj class that we want to find the intersection with
+        :return: a MergeObj object with the x-coordinate and y-coordinate of the intersection point
+        between the self object and the other object.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -182,13 +196,15 @@ class MergeObj(Generic[T1, T2]):
         return MergeObj(point.xcoord, point.ycoord)
 
     def merge_with(self, other):
-        """[summary]
-
-        Args:
-            other ([type]): [description]
-
-        Returns:
-            [type]: [description]
+        """
+        The `merge_with` function takes another object as input, calculates the minimum distance between
+        the two objects, enlarges the objects based on the calculated distance, finds the intersection
+        of the enlarged objects, and returns a new object with the coordinates of the intersection.
+        
+        :param other: The "other" parameter is an object of the same class as the current object. It
+        represents another instance of the class that we want to merge with the current instance
+        :return: The `merge_with` method returns a new `MergeObj` object with the x-coordinate and
+        y-coordinate of the intersection of the two objects being merged.
 
         Examples:
             >>> s1 = MergeObj(200 + 600, 200 - 600)
