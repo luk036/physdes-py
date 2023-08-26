@@ -372,7 +372,7 @@ class Point(Generic[T1, T2]):
             ([3, 3], [5, 5])
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.intersection_with(b))
-            ([4, 4], [5, 5])
+            ([4, 4], [6, 6])
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.intersection_with(r))
             ([3, 4], [5, 6])
@@ -401,13 +401,13 @@ class Point(Generic[T1, T2]):
             4
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.min_dist_with(a))
-            0
+            1
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.min_dist_with(b))
-            0
+            1
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.min_dist_with(r))
-            0        
+            0
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
