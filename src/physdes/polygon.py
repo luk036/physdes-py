@@ -14,32 +14,83 @@ class Polygon(Generic[T]):
     _vecs: List[Vector2[T, T]]
 
     def __init__(self, pointset: PointSet) -> None:
-        """[summary]
+        """
+        The function initializes an object with a given point set, setting the origin to the first point and
+        creating a list of vectors by displacing each point from the origin.
+        
+        :param pointset: The `pointset` parameter is of type `PointSet`. It is a collection of points that
+        represents a set of vertices. The first element of the `pointset` is considered as the origin point,
+        and the remaining elements are considered as displacement vectors from the origin
+        :type pointset: PointSet
 
-        Args:
-            pointset ([type]): [description]
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon(S)
+            >>> print(P._origin)
+            (0, -4)
         """
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
     def __iadd__(self, rhs: Vector2) -> "Polygon[T]":
-        """[summary]
+        """
+        The `__iadd__` method adds a `Vector2` to the `_origin` attribute of the `Polygon` object and
+        returns itself.
+        
+        :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
+        addition operation
+        :type rhs: Vector2
+        :return: The method is returning `self`, which is an instance of the `Polygon[T]` class.
 
-        Args:
-            rhs (Vector2): [description]
-
-        Returns:
-            Self: [description]
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon(S)
+            >>> P += Vector2(1, 1)
+            >>> print(P._origin)
+            (1, -3)
         """
         self._origin += rhs
         return self
 
     @cached_property
     def signed_area_x2(self) -> T:
-        """[summary]
-
-        Returns:
-            [type]: [description]
+        """
+        The `signed_area_x2` function calculates the signed area of a polygon multiplied by 2.
+        :return: The `signed_area_x2` method returns the signed area of the polygon multiplied by 2.
 
         Examples:
             >>> coords = [
@@ -104,14 +155,50 @@ def partition(pred, iterable):
 
 
 def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
-    """Create a monotone polygon for a given point set.
-
-    Args:
-        lst (PointSet): [description]
-        dir (Callable): x- or y-first
-
-    Returns:
-        PointSet: [description]
+    """
+    The `create_mono_polygon` function creates a monotone polygon for a given point set by partitioning
+    the points based on a direction and sorting them.
+    
+    :param lst: A list of points representing a point set. Each point is represented as a tuple of two
+    integers, (x, y), where x and y are the coordinates of the point
+    :type lst: PointSet
+    :param dir: The `dir` parameter is a callable function that determines the direction in which the
+    points are sorted. It takes a point as input and returns a value that represents the direction. The
+    points are sorted based on this direction
+    :type dir: Callable
+    :return: The `create_mono_polygon` function returns a list of points representing a monotone
+    polygon.
+    :rtype: PointSet
+    
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ...     (-2, 4),
+        ...     (-2, 2),
+        ...     (-4, 3),
+        ...     (-5, 1),
+        ...     (-6, -2),
+        ...     (-3, -3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ...     (-2, 4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _ = create_mono_polygon(S, lambda pt: (pt.ycoord, pt.xcoord))
     """
     assert len(lst) >= 3
 
@@ -125,25 +212,66 @@ def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
 
 
 def create_ymono_polygon(lst: PointSet) -> PointSet:
-    """Create a y-monotone polygon for a given point set.
+    """
+    The function creates a y-monotone polygon from a given point set.
+    
+    :param lst: The parameter `lst` is a `PointSet`, which is a collection of points
+    :type lst: PointSet
+    :return: The function `create_ymono_polygon` returns a `PointSet` object.
 
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _ = create_ymono_polygon(S)
+    
     """
     return create_mono_polygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def create_xmono_polygon(lst: PointSet) -> PointSet:
-    """Create a x-monotone polygon for a given point set.
+    """
+    The function creates a x-monotone polygon from a given point set.
+    
+    :param lst: The parameter `lst` is a `PointSet`, which is a collection of points
+    :type lst: PointSet
+    :return: The function `create_xmono_polygon` returns a `PointSet` object.
 
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
+    Examples:
+        >>> coords = [
+        ...     (-2, 2),
+        ...     (0, -1),
+        ...     (-5, 1),
+        ...     (-2, 4),
+        ...     (0, -4),
+        ...     (-4, 3),
+        ...     (-6, -2),
+        ...     (5, 1),
+        ...     (2, 2),
+        ...     (3, -3),
+        ...     (-3, -3),
+        ...     (3, 3),
+        ...     (-3, -4),
+        ...     (1, 4),
+        ... ]
+        ...
+        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+        >>> _ = create_xmono_polygon(S)
     """
     return create_mono_polygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
@@ -151,11 +279,14 @@ def create_xmono_polygon(lst: PointSet) -> PointSet:
 def create_test_polygon(lst: PointSet) -> PointSet:
     """Create a test polygon for a given point set.
 
-    Args:
-        lst (PointSet): [description]
-
-    Returns:
-        PointSet: [description]
+    The `create_test_polygon` function takes a point set as input and returns a test polygon created
+    from that point set.
+    
+    :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
+    `PointSet` has an `xcoord` and `ycoord` attribute, representing its coordinates
+    :type lst: PointSet
+    :return: The function `create_test_polygon` returns a `PointSet`, which is a list of `Point`
+    objects.
 
     Examples:
         >>> coords = [
@@ -225,7 +356,8 @@ def create_test_polygon(lst: PointSet) -> PointSet:
 
 
 def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
-    """determine if a Point is within a Polygon
+    """
+    The function `point_in_polygon` determines if a given point is within a polygon.
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
     (see URL below) with some minor modifications for integer. It returns
@@ -237,12 +369,14 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
 
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
 
-    Args:
-        pointset ([type]): [description]
-        ptq ([type]): [description]
-
-    Returns:
-        bool: [description]
+    :param pointset: The `pointset` parameter is a list of points that define the vertices of a polygon.
+    Each point in the list is an instance of the `Point` class, which has `xcoord` and `ycoord`
+    attributes representing the x and y coordinates of the point
+    :type pointset: PointSet
+    :param ptq: ptq is a Point object representing the point to be checked if it is within the polygon
+    :type ptq: Point[T, T]
+    :return: a boolean value indicating whether the given point `ptq` is within the polygon defined by
+    the `pointset`.
 
     Examples:
         >>> coords = [
