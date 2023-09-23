@@ -371,7 +371,8 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
 
 
 def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
-    """determine if a Point is within a RPolygon
+    """
+    The function `point_in_rpolygon` determines if a given point is within a given RPolygon.
 
     The code below is from Wm. Randolph Franklin <wrf@ecse.rpi.edu>
     (see URL below) with some minor modifications for rectilinear. It returns
@@ -392,12 +393,15 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
        │     │     │     o────┘    │    │       │
        │     │     │               │    │       │
 
-    Args:
-        pointset (PointSet): [description]
-        ptq (Point[int, int]): [description]
-
-    Returns:
-        bool: [description]
+    :param pointset: The `pointset` parameter is a list of points that define the vertices of the
+    RPolygon. Each point in the list is represented as a `Point` object, which has `xcoord` and `ycoord`
+    attributes representing the x and y coordinates of the point, respectively
+    :type pointset: PointSet
+    :param ptq: ptq is a Point object representing the query point. It has two attributes: xcoord and
+    ycoord, which represent the x and y coordinates of the point, respectively
+    :type ptq: Point[int, int]
+    :return: a boolean value indicating whether the given point `ptq` is within the given RPolygon
+    defined by the `pointset`.
 
     Examples:
         >>> coords = [
@@ -426,8 +430,7 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     for pt1 in pointset:
         if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (
             pt0.ycoord <= ptq.ycoord < pt1.ycoord
-        ):
-            if pt1.xcoord > ptq.xcoord:
+        ) and pt1.xcoord > ptq.xcoord:
                 res = not res
         pt0 = pt1
     return res
