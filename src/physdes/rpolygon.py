@@ -161,7 +161,7 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
            │               │ │    │    │    │
            │               └─3    └────1    │
            │                                │
-      -----0───────┬------------------------┼---- leftmost.ycoord
+      ─ ─ ─0───────┬─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┼ ─ ─ leftmost.ycoord
                    │                        │
                    1────┐                   │
                         │   3────┐  lst1    │
