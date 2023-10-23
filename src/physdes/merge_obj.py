@@ -17,6 +17,27 @@ class MergeObj(Generic[T1, T2]):
 
     A 45 degree rotated point, vertical or horizontal segment, or rectangle
 
+    .. svgbob::
+       :align: center
+
+              .
+            .' `.
+          .'     `.
+        .'    .    `.
+         `.       .'
+           `.   .'
+             `.'
+
+              .
+            .' `.
+          .'     `.
+        .'    .    `.
+         `.    `.    `.
+           `.    `.    `.
+             `.       .'
+               `.   .'
+                 `.'
+
     """
 
     impl: Point[T1, T2]
