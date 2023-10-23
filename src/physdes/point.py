@@ -1,7 +1,7 @@
 """
 Rectilinear Point Class
 """
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import Generic, TypeVar
 
 from typing_extensions import Self
 
@@ -13,7 +13,7 @@ from .interval import (
     intersection,
     min_dist,
     overlap,
-    Interval
+    Interval,
 )
 from .vector2 import Vector2
 
@@ -23,7 +23,7 @@ T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point")
 
 class Point(Generic[T1, T2]):
     """
-    Generic Rectilinear Point class (▪️, ──, │, or 🫱)
+    Generic Rectilinear Point class (▪️, ──, │, or 🔲)
     """
 
     xcoord: T1
@@ -32,7 +32,7 @@ class Point(Generic[T1, T2]):
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """
         The function initializes an object with x and y coordinates.
-        
+
         :param xcoord: The parameter `xcoord` is of type `T1` and represents the x-coordinate of a point
         :type xcoord: T1
         :param ycoord: The `ycoord` parameter is a variable that represents the y-coordinate of a point.
@@ -90,7 +90,7 @@ class Point(Generic[T1, T2]):
         """
         The `__lt__` function compares two points based on their x and y coordinates and returns True if
         the first point is less than the second point.
-        
+
         :param other: The `other` parameter represents another instance of the `Point` class that we are
         comparing to the current instance
         :return: The `__lt__` method is returning a boolean value indicating whether the current
@@ -112,7 +112,7 @@ class Point(Generic[T1, T2]):
         """
         The `__le__` function compares two points and returns True if the first point is less than or
         equal to the second point based on their x and y coordinates.
-        
+
         :param other: The `other` parameter represents another instance of the `Point` class that we are
         comparing to the current instance
         :return: The method `__le__` is returning a boolean value.
@@ -132,7 +132,7 @@ class Point(Generic[T1, T2]):
     def __eq__(self, other) -> bool:
         """
         The `__eq__` function checks if two points have the same x and y coordinates.
-        
+
         :param other: The `other` parameter represents the other object that we are comparing with the
         current object. In this case, it is used to compare the x and y coordinates of two `Point`
         objects to determine if they are equal
@@ -155,7 +155,7 @@ class Point(Generic[T1, T2]):
     def __iadd__(self, rhs: Vector2) -> Self:
         """
         The `__iadd__` method allows for in-place addition of a `Vector2` object to a `Point` object.
-        
+
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is
         being added to the current vector
         :type rhs: Vector2
@@ -180,7 +180,7 @@ class Point(Generic[T1, T2]):
         """
         The `__add__` method allows for addition of a `Vector2` object to a `Point` object, resulting in a
         new `Point` object with updated coordinates.
-        
+
         :param rhs: rhs is the right-hand side operand of the addition operation. In this case, it is a
         Vector2 object that is being added to the current Point object
         :type rhs: Vector2
@@ -204,7 +204,7 @@ class Point(Generic[T1, T2]):
         """
         The `__isub__` method subtracts the x and y coordinates of a `Vector2` object from the x and y
         coordinates of a `Point` object and returns the updated `Point` object.
-        
+
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
         subtracted from the current vector. In this case, `rhs` is an instance of the `Vector2` class
         :type rhs: Vector2
@@ -229,7 +229,7 @@ class Point(Generic[T1, T2]):
         """
         The `__sub__` method subtracts the x and y coordinates of a given vector or point from the x and y
         coordinates of the current object and returns a new object of the same type.
-        
+
         :param rhs: The parameter `rhs` represents the right-hand side operand of the subtraction operation.
         It can be either a `Vector2` or a `Point` object
         :type rhs: Vector2
@@ -251,7 +251,7 @@ class Point(Generic[T1, T2]):
         """
         The `displace` function takes a `Vector` or `Point` object as an argument and returns a new
         `Vector2` object representing the displacement between the two points.
-        
+
         :param rhs: The parameter `rhs` is of type `Self`, which means it can be either a `Vector2` or a
         `Point` object
         :type rhs: Self
@@ -288,7 +288,7 @@ class Point(Generic[T1, T2]):
     def overlaps(self, other) -> bool:
         """
         The `overlaps` function checks if two objects overlap by comparing their x and y coordinates.
-        
+
         :param other: The `other` parameter represents another object that we want to check for overlap with
         the current object
         :return: a boolean value, indicating whether there is an overlap between the coordinates of the two
@@ -309,7 +309,7 @@ class Point(Generic[T1, T2]):
         """
         The function checks if the x and y coordinates of one object are contained within the x and y
         coordinates of another object.
-        
+
         :param other: The "other" parameter is an object of the same class as the current object. It
         represents another instance of the class that we want to check if it is contained within the current
         instance
@@ -330,7 +330,7 @@ class Point(Generic[T1, T2]):
         """
         The `hull_with` function takes another object and returns a new object with the hull of the x and y
         coordinates of both objects.
-        
+
         :param other: The `other` parameter is an object of the same type as `self`. It represents another
         instance of the class that the `hull_with` method belongs to
         :return: an instance of the same class as `self` (type `T`). The instance is created using the
@@ -355,7 +355,7 @@ class Point(Generic[T1, T2]):
         """
         The function `intersection_with` takes another object as input and returns a new object that
         represents the intersection of the x and y coordinates of the two objects.
-        
+
         :param other: The "other" parameter is an object of the same type as the current object. It
         represents another instance of the class that has the same attributes and methods
         :return: The method `intersection_with` returns an instance of the same class as `self` (i.e.,
@@ -386,7 +386,7 @@ class Point(Generic[T1, T2]):
     def min_dist_with(self, other):
         """
         The function calculates the minimum distance between two points using their x and y coordinates.
-        
+
         :param other: The "other" parameter represents another object or point with which you want to
         calculate the minimum distance. It is assumed that both the current object (self) and the other
         object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
@@ -415,7 +415,7 @@ class Point(Generic[T1, T2]):
         """
         The `enlarge_with` function takes a parameter `alpha` and returns a new instance of the same type
         with the x and y coordinates enlarged by `alpha`.
-        
+
         :param alpha: The `alpha` parameter is a value that determines the amount by which the coordinates
         of the point should be enlarged
         :return: The `enlarge_with` method returns an instance of the same type as `self` with the enlarged

@@ -31,7 +31,7 @@ class RPolygon:
         """
         The function initializes an object with a given point set, setting the origin to the first point and
         creating a list of vectors by displacing each point from the origin.
-        
+
         :param pointset: The `pointset` parameter is of type `PointSet`. It represents a collection of
         points. The `__init__` method is a constructor that initializes an instance of a class. In this
         case, it takes a `PointSet` as an argument and assigns the first point in the `
@@ -67,7 +67,7 @@ class RPolygon:
         """
         The `__iadd__` method adds a `Vector2` to the `_origin` attribute of an `RPolygon` object and
         returns the modified object.
-        
+
         :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
         operand that is being added to the current object
         :type rhs: Vector2[int, int]
@@ -226,7 +226,7 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
 def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     """
     The function creates an x-monotone rectilinear polygon for a given point set.
-    
+
     :param lst: A point set represented as a list of points. Each point has x and y coordinates
     :type lst: PointSet
     :return: The function `create_xmono_rpolygon` returns a tuple containing two elements: a `PointSet`
@@ -261,7 +261,7 @@ def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
 def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     """
     The function creates a y-monotone rectilinear polygon for a given point set.
-    
+
     :param lst: A point set represented as a list of points. Each point has x and y coordinates
     :type lst: PointSet
     :return: The function `create_ymono_rpolygon` returns a tuple containing two elements: a `PointSet`
@@ -297,7 +297,7 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     """
     The `create_test_rpolygon` function takes a list of points and returns a new list of points that
     form a non-crossing polygon.
-    
+
     :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
     `PointSet` has an x-coordinate and a y-coordinate
     :type lst: PointSet
@@ -428,9 +428,11 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (
-            pt0.ycoord <= ptq.ycoord < pt1.ycoord
-        ) and pt1.xcoord > ptq.xcoord:
-                res = not res
+        if (
+            (pt1.ycoord <= ptq.ycoord < pt0.ycoord)
+            or (pt0.ycoord <= ptq.ycoord < pt1.ycoord)
+            and pt1.xcoord > ptq.xcoord
+        ):
+            res = not res
         pt0 = pt1
     return res

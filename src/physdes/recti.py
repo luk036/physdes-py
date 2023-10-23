@@ -6,7 +6,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def __init__(self, xcoord: Interval, ycoord: Interval):
         """
         The `__init__` function initializes a Rectangle object with x and y coordinates.
-        
+
         :param xcoord: The x-coordinate interval of the rectangle. It represents the range of x-values that
         the rectangle spans
         :type xcoord: Interval
@@ -81,7 +81,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
         Note:
             Overriding the `flip` function of the `Point` class. The `flip` function of the `Point`
             class is used to flip the x and y coordinates of a `Point` object. The `flip` function of the
-            `Rectangle` class is used to flip the x and y coordinates of a `Rectangle` object. 
+            `Rectangle` class is used to flip the x and y coordinates of a `Rectangle` object.
 
         Examples:
             >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
@@ -96,7 +96,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def contains(self, other: Point) -> bool:
         """
         The `contains` function checks if a given point is contained within a rectangle.
-        
+
         :param other: The `other` parameter can be an instance of the `Point`, `VSegment`, `HSegment`, or
         `Rectangle` class
         :type other: Point
@@ -159,7 +159,7 @@ class VSegment(Point[int, Interval[int]]):
     def contains(self, other: Point) -> bool:
         """
         The `contains` function checks if a given point is contained within a vertical segment.
-        
+
         :param other: The "other" parameter is of type Point. It represents another point that we want to
         check if it is contained within the current point
         :type other: Point
@@ -235,7 +235,7 @@ class HSegment(Point[Interval[int], int]):
         """
         The `contains` function checks if a given object is contained within another object based on their
         coordinates.
-        
+
         :param other: The `other` parameter represents another object that we want to check if it is
         contained within the current object. It can be either a `Point` or a `HSegment` object
         :return: The function `contains` returns a boolean value indicating whether `other` is contained
