@@ -13,6 +13,9 @@ class RPolygon:
     """
     Rectilinear Polygon
 
+    .. svgbob::
+       :align: center
+
                   ┌────1
                   │    │
                   │    │
@@ -154,6 +157,8 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
     The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
     where the direction of the polygon depends on the provided direction function.
 
+    .. svgbob::
+       :align: center
                                        ┌────0
                 ┌──────────4           │    │
                 │   lst2   │           │    │
@@ -383,6 +388,9 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     (See p.243 of [O'Rourke (C)] for a discussion of boundary behavior.)
 
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
+
+    .. svgbob::
+       :align: center
 
        │     │                │    │    │       │
        │     │  o────────┐    │    │    │       │
