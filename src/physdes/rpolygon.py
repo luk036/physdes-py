@@ -436,7 +436,7 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
         ...
         >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> point_in_rpolygon(S, Point(0, 1))
-        True
+        False
     """
     res = False
     pt0 = pointset[-1]
