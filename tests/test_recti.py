@@ -13,20 +13,17 @@ from physdes.recti import Rectangle
 def test_Point():
     a = Point(4, 8)
     b = Point(5, 6)
-
-    # assert(a[0] == 4)  # Point is a NamedTuple
     assert a < b
     assert a <= b
     assert not (a == b)
     assert a != b
     assert b > a
-    assert b >= a
+    assert b >= a    
 
 
 def test_Interval():
     a = Interval(4, 8)
     b = Interval(5, 6)
-
     assert 3 < a
     assert not (a < b)
     assert not (b < a)
@@ -70,7 +67,7 @@ def test_Rectilinear():
 
 #     S = set()  # set of maximal non-overlapped rectangles
 #     L = []  # list of the removed rectangles
-
+#
 #     for r in lst:
 #         if r in S:
 #             L += [r]

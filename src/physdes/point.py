@@ -67,24 +67,24 @@ class Point(Generic[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    def copy(self) -> Self:
-        """
-        The `copy` function returns a new instance of the same type as the current object, with the same
-        x and y coordinates.
-        :return: The `copy` method is returning a new instance of the same type as the current object.
-
-        Examples:
-            >>> a = Point(3, 4)
-            >>> b = a.copy()
-            >>> print(b)
-            (3, 4)
-            >>> a3d = Point(a, 5)  # Point in 3d
-            >>> b3d = a3d.copy()
-            >>> print(b3d)
-            ((3, 4), 5)
-        """
-        T = type(self)  # Type could be Point or Rectangle or others
-        return T(self.xcoord, self.ycoord)
+    # def copy(self) -> Self:
+    #     """
+    #     The `copy` function returns a new instance of the same type as the current object, with the same
+    #     x and y coordinates.
+    #     :return: The `copy` method is returning a new instance of the same type as the current object.
+    #
+    #     Examples:
+    #         >>> a = Point(3, 4)
+    #         >>> b = a.copy()
+    #         >>> print(b)
+    #         (3, 4)
+    #         >>> a3d = Point(a, 5)  # Point in 3d
+    #         >>> b3d = a3d.copy()
+    #         >>> print(b3d)
+    #         ((3, 4), 5)
+    #     """
+    #     T = type(self)  # Type could be Point or Rectangle or others
+    #     return T(self.xcoord, self.ycoord)
 
     def __lt__(self, other) -> bool:
         """
