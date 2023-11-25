@@ -1,4 +1,3 @@
-# from .generic import min_dist, min_dist_change
 from typing import Generic, TypeVar, Union
 
 from typing_extensions import Self

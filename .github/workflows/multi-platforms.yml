@@ -31,6 +31,8 @@ jobs:
         shell: bash -l {0}
         run: |
           conda install pytest
-          pip install -U pip setuptools virtualenv tox
-          tox -e build
-          tox
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install git+https://github.com/luk036/lds-py.git
+          python setup.py develop
+          pytest

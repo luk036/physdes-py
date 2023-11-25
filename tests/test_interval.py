@@ -1,8 +1,7 @@
 from hypothesis import given
 from hypothesis.strategies import integers
 
-from physdes.generic import min_dist
-from physdes.recti import Interval
+from physdes.interval import Interval, min_dist
 
 
 @given(integers(), integers(), integers(), integers(), integers())
