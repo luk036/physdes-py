@@ -85,25 +85,25 @@ class Vector2(Generic[T1, T2]):
         """
         return self.y_
 
-    def copy(self) -> Self:
-        """
-        The `copy` function returns a new instance of the same class with the same values as the original
-        instance.
-        :return: The `copy` method is returning a new instance of the same class (`Self`) with the same `x_`
-        and `y_` attributes.
-
-        Examples:
-            >>> v = Vector2(3, 4)
-            >>> w = v.copy()
-            >>> print(w)
-            <3, 4>
-            >>> v3d = Vector2(v, 5)  # vector in 3d
-            >>> w3d = v3d.copy()
-            >>> print(w3d)
-            <<3, 4>, 5>
-        """
-        T = type(self)
-        return T(self.x_, self.y_)
+    # def copy(self) -> Self:
+    #     """
+    #     The `copy` function returns a new instance of the same class with the same values as the original
+    #     instance.
+    #     :return: The `copy` method is returning a new instance of the same class (`Self`) with the same `x_`
+    #     and `y_` attributes.
+    #
+    #     Examples:
+    #         >>> v = Vector2(3, 4)
+    #         >>> w = v.copy()
+    #         >>> print(w)
+    #         <3, 4>
+    #         >>> v3d = Vector2(v, 5)  # vector in 3d
+    #         >>> w3d = v3d.copy()
+    #         >>> print(w3d)
+    #         <<3, 4>, 5>
+    #     """
+    #     T = type(self)
+    #     return T(self.x_, self.y_)
 
     def cross(self, rhs):
         """

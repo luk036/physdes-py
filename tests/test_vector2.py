@@ -39,3 +39,27 @@ def test_Vector2():
 
     r = Vector2(-b, c)
     assert (p + q) + r == p + (q + r)
+
+
+def test_arithmetic():
+    """
+    The function `test_arithmetic` tests various arithmetic operations on instances of the `Vector2`
+    class.
+    """
+    a = Vector2(3, 5)
+    b = Vector2(5, 7)
+    assert a + b == Vector2(8, 12)
+    assert a - b == Vector2(-2, -2)
+    assert a * 2 == Vector2(6, 10)
+    assert a / 2 == Vector2(1.5, 2.5)
+    assert -a == Vector2(-3, -5)
+    assert a.cross(b) == -4
+
+    a += b
+    assert a == Vector2(8, 12)
+    a -= b
+    assert a == Vector2(3, 5)
+    a *= 2
+    assert a == Vector2(6, 10)
+    a /= 2
+    assert a == Vector2(3, 5)
