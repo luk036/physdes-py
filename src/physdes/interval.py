@@ -14,6 +14,26 @@ def overlap(lhs, rhs) -> bool:
     :param rhs: The parameter `rhs` is the right-hand side of the comparison. It can be any object that
     supports the `overlaps` method or a scalar value
     :return: a boolean value.
+
+    Examples:
+        >>> overlap(1, 1)
+        True
+        >>> overlap(1, 3)
+        False
+        >>> overlap(Interval(1, 2), Interval(2, 3))
+        True
+        >>> overlap(Interval(1, 2), Interval(3, 4))
+        False
+        >>> overlap(Interval(1, 2), 2)
+        True
+        >>> overlap(Interval(1, 2), 4)
+        False
+        >>> overlap(2, Interval(2, 3))
+        True
+        >>> overlap(1, Interval(3, 4))
+        False
+        >>> overlap(1, Interval(1, 2))
+        True
     """
     if hasattr(lhs, "overlaps"):
         return lhs.overlaps(rhs)
@@ -32,6 +52,24 @@ def contain(lhs, rhs) -> bool:
     :param rhs: The `rhs` parameter represents the right-hand side of the comparison. It can be any
     value or object that you want to check if it is contained within the `lhs` object
     :return: a boolean value.
+
+    Examples:
+        >>> contain(1, 1)
+        True
+        >>> contain(1, 3)
+        False
+        >>> contain(Interval(1, 4), Interval(2, 3))
+        True
+        >>> contain(Interval(1, 2), Interval(3, 4))
+        False
+        >>> contain(Interval(1, 2), 2)
+        True
+        >>> contain(Interval(1, 2), 4)
+        False
+        >>> contain(2, Interval(2, 3))
+        False
+        >>> contain(1, Interval(3, 4))
+        False
     """
     if hasattr(lhs, "contains"):
         return lhs.contains(rhs)
@@ -51,6 +89,24 @@ def intersection(lhs, rhs):
     :param rhs: The `rhs` parameter is the second input to the `intersection` function. It represents
     the right-hand side of the intersection operation
     :return: the intersection of `lhs` and `rhs`.
+
+    Examples:
+        >>> print(intersection(1, 1))
+        1
+        >>> print(intersection(Interval(1, 2), Interval(2, 3)))
+        [2, 2]
+        >>> print(intersection(Interval(1, 2), 2))
+        [2, 2]
+        >>> print(intersection(2, Interval(2, 3)))
+        [2, 2]
+        >>> print(intersection(1, Interval(1, 2)))
+        [1, 1]
+        >>> print(intersection(Interval(1, 2), Interval(1, 2)))
+        [1, 2]
+        >>> print(intersection(Interval(1, 2), Interval(2, 3)))
+        [2, 2]
+        >>> print(intersection(Interval(1, 2), 2))
+        [2, 2]
     """
     if hasattr(lhs, "intersection_with"):
         return lhs.intersection_with(rhs)
@@ -71,6 +127,34 @@ def min_dist(lhs, rhs):
     :param rhs: The parameter `rhs` represents the right-hand side value or object that we want to
     compare with the left-hand side value or object `lhs`
     :return: the minimum distance between `lhs` and `rhs`.
+
+    Examples:
+        >>> min_dist(1, 1)
+        0
+        >>> min_dist(1, 3)
+        2
+        >>> min_dist(Interval(1, 2), Interval(2, 3))
+        0
+        >>> min_dist(Interval(1, 2), Interval(3, 4))
+        1
+        >>> min_dist(Interval(1, 2), 2)
+        0
+        >>> min_dist(Interval(1, 2), 4)
+        2
+        >>> min_dist(2, Interval(2, 3))
+        0
+        >>> min_dist(1, Interval(3, 4))
+        2
+        >>> min_dist(1, Interval(1, 2))
+        0
+        >>> min_dist(Interval(1, 2), Interval(1, 2))
+        0
+        >>> min_dist(Interval(1, 2), Interval(2, 3))
+        0
+        >>> min_dist(Interval(1, 2), 2)
+        0
+        >>> min_dist(2, Interval(2, 3))
+        0
     """
     if hasattr(lhs, "min_dist_with"):
         return lhs.min_dist_with(rhs)
@@ -80,22 +164,48 @@ def min_dist(lhs, rhs):
         return abs(lhs - rhs)
 
 
-def min_dist_change(lhs, rhs):
-    """
-    The `min_dist_change` function calculates the minimum distance change between two objects.
-
-    :param lhs: The `lhs` parameter represents the left-hand side value or object that you want to
-    compare
-    :param rhs: The `rhs` parameter represents the right-hand side value or object that we want to
-    compare with the `lhs` parameter
-    :return: The function `min_dist_change` returns the minimum distance change between `lhs` and `rhs`.
-    """
-    if hasattr(lhs, "min_dist_change_with"):
-        return lhs.min_dist_change_with(rhs)
-    elif hasattr(rhs, "min_dist_change_with"):
-        return rhs.min_dist_change_with(lhs)
-    else:  # assume scalar
-        return abs(lhs - rhs)
+# def min_dist_change(lhs, rhs):
+#     """
+#     The `min_dist_change` function calculates the minimum distance change between two objects.
+#
+#     :param lhs: The `lhs` parameter represents the left-hand side value or object that you want to
+#     compare
+#     :param rhs: The `rhs` parameter represents the right-hand side value or object that we want to
+#     compare with the `lhs` parameter
+#     :return: The function `min_dist_change` returns the minimum distance change between `lhs` and `rhs`.
+#
+#     Examples:
+#         >>> min_dist_change(1, 1)
+#         0
+#         >>> min_dist_change(1, 3)
+#         2
+#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
+#         0
+#         >>> min_dist_change(Interval(1, 2), Interval(3, 4))
+#         1
+#         >>> min_dist_change(Interval(1, 2), 2)
+#         0
+#         >>> min_dist_change(Interval(1, 2), 4)
+#         2
+#         >>> min_dist_change(2, Interval(2, 3))
+#         0
+#         >>> min_dist_change(1, Interval(3, 4))
+#         2
+#         >>> min_dist_change(1, Interval(1, 2))
+#         0
+#         >>> min_dist_change(Interval(1, 2), Interval(1, 2))
+#         0
+#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
+#         0
+#         >>> min_dist_change(Interval(1, 2), 2)
+#         0
+#     """
+#     if hasattr(lhs, "min_dist_change_with"):
+#         return lhs.min_dist_change_with(rhs)
+#     elif hasattr(rhs, "min_dist_change_with"):
+#         return rhs.min_dist_change_with(lhs)
+#     else:  # assume scalar
+#         return abs(lhs - rhs)
 
 
 def displacement(lhs, rhs):
@@ -109,6 +219,16 @@ def displacement(lhs, rhs):
     :return: the displacement between `lhs` and `rhs`. If `lhs` has a `displace` method, it calls that
     method passing `rhs` as an argument. Otherwise, it assumes `lhs` is a scalar and returns the
     difference between `lhs` and `rhs`.
+
+    Examples:
+        >>> displacement(1, 1)
+        0
+        >>> displacement(1, 3)
+        -2
+        >>> print(displacement(Interval(1, 2), Interval(2, 3)))
+        [-1, -1]
+        >>> print(displacement(Interval(1, 2), Interval(3, 4)))
+        [-2, -2]
     """
     if hasattr(lhs, "displace"):
         return lhs.displace(rhs)
@@ -134,6 +254,10 @@ class Interval(Generic[T]):
             >>> a = Interval(3, 4)
             >>> print(a)
             [3, 4]
+            >>> print(a.lb)
+            3
+            >>> print(a.ub)
+            4
         """
         self._lb: T = lb
         self._ub: T = ub
@@ -179,20 +303,20 @@ class Interval(Generic[T]):
         """
         return self._ub
 
-    def copy(self) -> Self:
-        """
-        The `copy` function returns a new instance of the same class with the same lower and upper
-        bounds.
-        :return: The `copy` method is returning a new instance of the same class as `self`, with the
-        same lower bound (`_lb`) and upper bound (`_ub`) values.
+    # def copy(self) -> Self:
+    #     """
+    #     The `copy` function returns a new instance of the same class with the same lower and upper
+    #     bounds.
+    #     :return: The `copy` method is returning a new instance of the same class as `self`, with the
+    #     same lower bound (`_lb`) and upper bound (`_ub`) values.
 
-        Examples:
-            >>> a = Interval(3, 4)
-            >>> print(a.copy())
-            [3, 4]
-        """
-        S = type(self)
-        return S(self._lb, self._ub)
+    #     Examples:
+    #         >>> a = Interval(3, 4)
+    #         >>> print(a.copy())
+    #         [3, 4]
+    #     """
+    #     S = type(self)
+    #     return S(self._lb, self._ub)
 
     def length(self) -> T:
         """
@@ -393,6 +517,44 @@ class Interval(Generic[T]):
         """
         S = type(self)
         return S(self.lb - rhs, self.ub - rhs)
+
+    def __imul__(self, rhs: T) -> Self:
+        """
+        The `__imul__` method allows for in-place multiplication of an `Interval` object.
+
+        :param rhs: The parameter `rhs` represents the right-hand side value that is being multiplied to the
+        current object. In this case, it is expected to be of type `T`, which is a generic type
+        :type rhs: T
+        :return: The method `__imul__` returns `self`, which is an instance of the class `Self`.
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a *= 10
+            >>> print(a)
+            [30, 40]
+        """
+        self._lb *= rhs
+        self._ub *= rhs
+        return self
+
+    def __mul__(self, rhs: T) -> Self:
+        """
+        The function overloads the "*" operator to multiply a constant value to the lower and upper bounds of
+        an Interval object.
+
+        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
+        being multiplied to the current object
+        :type rhs: T
+        :return: The method is returning a new instance of the class `S` (which is the same type as
+        `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> print(a * 10)
+            [30, 40]
+        """
+        S = type(self)
+        return S(self.lb * rhs, self.ub * rhs)
 
     def overlaps(self, other: Union[Self, T]) -> bool:
         """
@@ -629,6 +791,8 @@ def enlarge(lhs, rhs: T):
         >>> a = Interval(3, 5)
         >>> print(enlarge(a, 2))
         [1, 7]
+        >>> print(enlarge(a, -1))
+        [4, 4]
     """
     if hasattr(lhs, "enlarge_with"):
         return lhs.enlarge_with(rhs)
