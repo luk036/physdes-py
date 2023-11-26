@@ -18,6 +18,10 @@
 
 - Rectilinear Polygon support
 
+## Depend on
+
+- [lds-gen](https://github.com/luk036/lds-gen) (for testing only)
+
 ## 👀 See also
 
 - [physdes-cpp](https://github.com/luk036/physdes-cpp)

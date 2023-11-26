@@ -1,5 +1,6 @@
 from lds_gen.ilds import Halton
 from physdes.point import Point
+from physdes.vector2 import Vector2
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
@@ -32,6 +33,10 @@ def test_RPolygon():
     P = RPolygon(S)
     assert not is_cw
     assert P.signed_area == 45
+    Q = RPolygon(S)
+    Q += Vector2(4, 5)
+    Q -= Vector2(4, 5)
+    assert Q == P
 
 
 def test_RPolygon2():

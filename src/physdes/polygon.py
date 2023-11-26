@@ -49,6 +49,44 @@ class Polygon(Generic[T]):
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
+    def __eq__(self, rhs: object) -> bool:
+        """
+        The `__eq__` method compares two `Polygon` objects and returns a boolean value indicating whether
+        they are equal or not.
+
+        :param rhs: The parameter `rhs` is of type `object`. It represents the right-hand side of the
+        equality comparison.
+        :type rhs: object
+        :return: The method is returning a boolean value.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon(S)
+            >>> Q = Polygon(S)
+            >>> print(P == Q)
+            True
+        """
+        if not isinstance(rhs, Polygon):
+            return NotImplemented
+        return self._origin == rhs._origin and self._vecs == rhs._vecs
+
     def __iadd__(self, rhs: Vector2) -> "Polygon[T]":
         """
         The `__iadd__` method adds a `Vector2` to the `_origin` attribute of the `Polygon` object and
@@ -86,6 +124,43 @@ class Polygon(Generic[T]):
         self._origin += rhs
         return self
 
+    def __isub__(self, rhs: Vector2) -> "Polygon[T]":
+        """
+        The `__isub__` method subtracts a `Vector2` from the `_origin` attribute of the `Polygon` object
+        and returns itself.
+
+        :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
+        subtraction operation
+        :type rhs: Vector2
+        :return: The method is returning `self`, which is an instance of the `Polygon[T]` class.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon(S)
+            >>> P -= Vector2(1, 1)
+            >>> print(P._origin)
+            (-1, -5)
+        """
+        self._origin -= rhs
+        return self
+        
     @cached_property
     def signed_area_x2(self) -> T:
         """

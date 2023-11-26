@@ -1,5 +1,6 @@
 from lds_gen.ilds import Halton
 from physdes.point import Point
+from physdes.vector2 import Vector2
 from physdes.polygon import (
     Polygon,
     create_test_polygon,
@@ -32,6 +33,10 @@ def test_polygon():
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon(S)
     assert P.signed_area_x2 == 110
+    Q = Polygon(S)
+    Q += Vector2(4, 5)
+    Q -= Vector2(4, 5)
+    assert Q == P
 
 
 def test_ymono_polygon():

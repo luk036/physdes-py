@@ -71,6 +71,44 @@ class RPolygon:
         self._origin = pointset[0]
         self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
 
+    def __eq__(self, other: object) -> bool:
+        """
+        The `__eq__` method is a special method in Python that is used to compare two objects for equality.
+        It takes two parameters, `self` and `other`, and returns a boolean value.
+
+        :param other: The parameter `other` is of type `object`. It represents the object to be compared
+        with the current object.
+        :type other: object
+        :return: The method is returning a boolean value, which indicates whether the two objects are equal.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon(S)
+            >>> Q = RPolygon(S)
+            >>> P == Q
+            True
+        """
+        if not isinstance(other, RPolygon):
+            return NotImplemented
+        return self._origin == other._origin and self._vecs == other._vecs
+
     def __iadd__(self, rhs: Vector2[int, int]) -> "RPolygon":
         """
         The `__iadd__` method adds a `Vector2` to the `_origin` attribute of an `RPolygon` object and
@@ -108,6 +146,43 @@ class RPolygon:
         self._origin += rhs
         return self
 
+    def __isub__(self, rhs: Vector2[int, int]) -> "RPolygon":
+        """
+        The `__isub__` method subtracts a `Vector2` from the `_origin` attribute of an `RPolygon` object
+        and returns the modified object.
+
+        :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
+        operand that is being subtracted from the current object
+        :type rhs: Vector2[int, int]
+        :return: The method is returning `self`, which is an instance of the `RPolygon` class.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon(S)
+            >>> P -= Vector2(1, 1)
+            >>> print(P._origin)
+            (-1, -5)
+        """
+        self._origin -= rhs
+        return self
+            
     @cached_property
     def signed_area(self) -> int:
         """

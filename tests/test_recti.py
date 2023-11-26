@@ -2,7 +2,7 @@ from random import randint
 
 from physdes.interval import Interval
 from physdes.point import Point
-from physdes.recti import Rectangle
+from physdes.recti import Rectangle, VSegment, HSegment
 
 # class my_point(Point):
 #     def __init__(self, xcoord, ycoord, data: float):
@@ -46,9 +46,25 @@ def test_Rectangle():
     xrng1 = Interval(4, 8)
     yrng1 = Interval(5, 7)
     r1 = Rectangle(xrng1, yrng1)
+    assert r1.ll == Point(4, 5)
+    assert r1.ur == Point(8, 7)
+    assert r1.width() == 4
+    assert r1.height() == 2
+    assert r1.area() == 8
+    assert r1.flip() == Rectangle(yrng1, xrng1)
     p = Point(7, 6)
     assert r1.contains(p)
-    # assert r2 in r1
+
+
+def test_segment():
+    rng1 = Interval(4, 8)
+    vseg = VSegment(5, rng1)
+    assert vseg.contains(Point(5, 6))
+    hseg = vseg.flip()
+    assert hseg.contains(Point(6, 5))
+    assert hseg.contains(Point(7, 5))
+    assert hseg == HSegment(rng1, 5)
+    assert hseg.flip() == vseg
 
 
 def test_Rectilinear():
