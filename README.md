@@ -18,9 +18,9 @@
 
 - Rectilinear Polygon support
 
-## Depend on
+## Dependencies
 
-- [lds-gen](https://github.com/luk036/lds-gen) (for testing only)
+- [luk036/lds-gen](https://github.com/luk036/lds-gen) (for testing only)
 
 ## 👀 See also
 
