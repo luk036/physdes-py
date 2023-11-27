@@ -11,8 +11,10 @@ def overlap(lhs, rhs) -> bool:
 
     :param lhs: The `lhs` parameter represents the left-hand side object that we want to check for
     overlap with the `rhs` parameter
+
     :param rhs: The parameter `rhs` is the right-hand side of the comparison. It can be any object that
     supports the `overlaps` method or a scalar value
+
     :return: a boolean value.
 
     Examples:
@@ -49,8 +51,10 @@ def contain(lhs, rhs) -> bool:
 
     :param lhs: The `lhs` parameter represents the left-hand side of the comparison, while the `rhs`
     parameter represents the right-hand side of the comparison
+
     :param rhs: The `rhs` parameter represents the right-hand side of the comparison. It can be any
     value or object that you want to check if it is contained within the `lhs` object
+
     :return: a boolean value.
 
     Examples:
@@ -86,8 +90,10 @@ def intersection(lhs, rhs):
 
     :param lhs: The `lhs` parameter represents the left-hand side of the intersection operation, while
     the `rhs` parameter represents the right-hand side of the intersection operation
+
     :param rhs: The `rhs` parameter is the second input to the `intersection` function. It represents
     the right-hand side of the intersection operation
+
     :return: the intersection of `lhs` and `rhs`.
 
     Examples:
@@ -124,8 +130,10 @@ def min_dist(lhs, rhs):
 
     :param lhs: The `lhs` parameter represents the left-hand side value or object that we want to
     calculate the minimum distance with
+
     :param rhs: The parameter `rhs` represents the right-hand side value or object that we want to
     compare with the left-hand side value or object `lhs`
+
     :return: the minimum distance between `lhs` and `rhs`.
 
     Examples:
@@ -214,8 +222,10 @@ def displacement(lhs, rhs):
 
     :param lhs: The `lhs` parameter represents the left-hand side of the displacement operation. It can
     be either an object that has a `displace` method or a scalar value
+
     :param rhs: The `rhs` parameter represents the displacement value that needs to be subtracted from
     the `lhs` parameter
+
     :return: the displacement between `lhs` and `rhs`. If `lhs` has a `displace` method, it calls that
     method passing `rhs` as an argument. Otherwise, it assumes `lhs` is a scalar and returns the
     difference between `lhs` and `rhs`.
@@ -245,9 +255,12 @@ class Interval(Generic[T]):
 
         :param lb: The `lb` parameter represents the lower bound of the interval. It is of type `T`,
         which means it can be any data type
+
         :type lb: T
+
         :param ub: The `ub` parameter represents the upper bound of the interval. It is the maximum
         value that the interval can take
+
         :type ub: T
 
         Examples:
@@ -264,8 +277,8 @@ class Interval(Generic[T]):
 
     def __str__(self) -> str:
         """
-        The `__str__` function returns a string representation of an Interval object in the format "[lb,
-        ub]".
+        The `__str__` function returns a string representation of an Interval object in the format "[lb, ub]".
+
         :return: The method `__str__` returns a string representation of the object. In this case, it
         returns a string in the format "[lb, ub]", where lb is the lower bound and ub is the upper bound
         of the interval.
@@ -281,6 +294,7 @@ class Interval(Generic[T]):
     def lb(self) -> T:
         """
         The function `lb` returns the lower bound of an interval.
+
         :return: The method is returning the lower bound of the interval.
 
         Examples:
@@ -294,6 +308,7 @@ class Interval(Generic[T]):
     def ub(self) -> T:
         """
         The function `ub` returns the upper bound of an interval.
+
         :return: The method is returning the upper bound of the interval.
 
         Examples:
@@ -309,7 +324,7 @@ class Interval(Generic[T]):
     #     bounds.
     #     :return: The `copy` method is returning a new instance of the same class as `self`, with the
     #     same lower bound (`_lb`) and upper bound (`_ub`) values.
-
+    #
     #     Examples:
     #         >>> a = Interval(3, 4)
     #         >>> print(a.copy())
@@ -322,6 +337,7 @@ class Interval(Generic[T]):
         """
         The function returns the length of a range defined by the upper bound (ub) and lower bound (lb)
         attributes.
+
         :return: The length of the object, which is calculated by subtracting the upper bound (ub) from
         the lower bound (lb).
 
@@ -339,6 +355,7 @@ class Interval(Generic[T]):
         :param other: The "other" parameter represents another object that we are comparing with the
         current object. In this case, it is used to compare two Interval objects and check if they are
         equal
+
         :return: The `__eq__` method is returning a boolean value.
 
         Examples:
@@ -356,6 +373,7 @@ class Interval(Generic[T]):
 
         :param other: The "other" parameter represents the value that the current object is being
         compared to. In this case, it is being compared to the upper bound (ub) of the current object
+
         :return: The code is returning a boolean value indicating whether the upper bound of the current
         interval object is less than the other object.
 
@@ -376,6 +394,7 @@ class Interval(Generic[T]):
 
         :param other: The "other" parameter represents the value that the current object is being
         compared to. In this case, it is being compared to the lower bound (lb) of the current object
+
         :return: The code is returning a boolean value indicating whether the lower bound of the current
         interval object is greater than the other object.
 
@@ -395,6 +414,7 @@ class Interval(Generic[T]):
 
         :param other: The `other` parameter represents another instance of the `Interval` class that we
         are comparing to the current instance
+
         :return: The code is returning a boolean value.
 
         Examples:
@@ -413,6 +433,7 @@ class Interval(Generic[T]):
 
         :param other: The `other` parameter represents another instance of the `Interval` class that we
         are comparing to the current instance
+
         :return: The code is returning a boolean value.
 
         Examples:
@@ -427,8 +448,8 @@ class Interval(Generic[T]):
 
     def __neg__(self) -> Self:
         """
-        The `__neg__` function returns a new instance of the class with the lower and upper bounds
-        negated.
+        The `__neg__` function returns a new instance of the class with the lower and upper bounds negated.
+
         :return: The `__neg__` method returns a new instance of the same class (`S`) with the lower
         bound (`lb`) and upper bound (`ub`) negated.
 
@@ -446,7 +467,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` represents the right-hand side value that is being added to the
         current object. In this case, it is expected to be of type `T`, which is a generic type
+
         :type rhs: T
+
         :return: The method `__iadd__` returns `self`, which is an instance of the class `Self`.
 
         Examples:
@@ -466,7 +489,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
         being added to the current object
+
         :type rhs: T
+
         :return: The method is returning a new instance of the class `S` (which is the same type as
         `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
 
@@ -485,7 +510,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` represents the right-hand side value that will be subtracted
         from the current object. In this case, it is expected to be of type `T`, which is a generic type
+
         :type rhs: T
+
         :return: The method is returning `self`, which is an instance of the class that the method
         belongs to.
 
@@ -506,7 +533,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
         being subtracted from the interval
+
         :type rhs: T
+
         :return: The method is returning a new instance of the class `S` (which is the same type as
         `self`) with the lower bound (`lb`) and upper bound (`ub`) subtracted by `rhs`.
 
@@ -524,7 +553,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` represents the right-hand side value that is being multiplied to the
         current object. In this case, it is expected to be of type `T`, which is a generic type
+
         :type rhs: T
+
         :return: The method `__imul__` returns `self`, which is an instance of the class `Self`.
 
         Examples:
@@ -544,7 +575,9 @@ class Interval(Generic[T]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
         being multiplied to the current object
+
         :type rhs: T
+
         :return: The method is returning a new instance of the class `S` (which is the same type as
         `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
 
@@ -562,7 +595,9 @@ class Interval(Generic[T]):
 
         :param other: The parameter "other" is of type Union[Self, T], which means it can accept either
         an object of the same class as "self" or an object of type "T"
+
         :type other: Union[Self, T]
+
         :return: a boolean value, either True or False.
 
         Examples:
@@ -604,8 +639,7 @@ class Interval(Generic[T]):
         `Interval` object that represents the hull (smallest interval that contains both intervals) of
         the current `Interval` object and the input object.
 
-        :param obj: The `obj` parameter can be either an instance of the same class (`Self`) or a scalar
-        value (`T`)
+        :param obj: The `obj` parameter can be either an instance of the same class (`Self`) or a scalar value (`T`)
         :type obj: Union[Self, T]
         :return: The method `hull_with` returns an `Interval` object.
 
@@ -628,7 +662,9 @@ class Interval(Generic[T]):
 
         :param obj: The `obj` parameter can be either an instance of the `Self` class (which is the same
         class as `self`), or it can be of type `T`, which is a generic type
+
         :type obj: Union[Self, T]
+
         :return: The `intersection_with` method returns an `Interval` object that represents the
         intersection between the current `Interval` object (`self`) and the input object (`obj`).
 
@@ -693,7 +729,9 @@ class Interval(Generic[T]):
 
         :param obj: The `obj` parameter is an object of the same class as the `self` object. It
         represents another interval that will be used to displace the current interval
+
         :type obj: Self
+
         :return: The `displace` method returns an `Interval` object.
 
         Examples:
@@ -734,9 +772,10 @@ class Interval(Generic[T]):
         The `enlarge_with` function takes a value `alpha` and returns a new instance of the same type
         with the lower bound decreased by `alpha` and the upper bound increased by `alpha`.
 
-        :param alpha: The parameter "alpha" represents the amount by which the interval should be
-        enlarged
+        :param alpha: The parameter "alpha" represents the amount by which the interval should be enlarged
+
         :type alpha: T
+
         :return: The method `enlarge_with` returns a new instance of the same class (`Self`) with the
         lower bound decreased by `alpha` and the upper bound increased by `alpha`.
 
@@ -755,8 +794,10 @@ def hull(lhs, rhs):
 
     :param lhs: The `lhs` parameter represents the left-hand side of the operation, while the `rhs`
     parameter represents the right-hand side of the operation
+
     :param rhs: The `rhs` parameter is the right-hand side of the operation. It can be any value or
     object that supports the `hull_with` method
+
     :return: the hull of the input arguments.
 
     Examples:
@@ -783,8 +824,11 @@ def enlarge(lhs, rhs: T):
 
     :param lhs: The `lhs` parameter represents the left-hand side of the operation. It can be either an
     object that has a method `enlarge_with`, or a scalar value
+
     :param rhs: The parameter `rhs` is the value by which the `lhs` object will be enlarged
+
     :type rhs: T
+
     :return: an enlarged interval or scalar value.
 
     Examples:

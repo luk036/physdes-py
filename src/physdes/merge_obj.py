@@ -48,9 +48,12 @@ class MergeObj(Generic[T1, T2]):
 
         :param xcoord: The parameter `xcoord` represents the x-coordinate of a point in a 2D space. It
         can be of any type `T1`
+
         :type xcoord: T1
+
         :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a
         two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
+
         :type ycoord: T2
 
         Examples:
@@ -67,11 +70,9 @@ class MergeObj(Generic[T1, T2]):
 
         :param xcoord: An integer representing the x-coordinate of the point
         :type xcoord: int
-        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a Cartesian
-        coordinate system
+        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a Cartesian coordinate system
         :type ycoord: int
-        :return: an instance of the `MergeObj` class with the `xcoord` and `ycoord` values of the `impl`
-        object.
+        :return: an instance of the `MergeObj` class with the `xcoord` and `ycoord` values of the `impl` object.
 
         Examples:
             >>> a = MergeObj.construct(4, 5)
@@ -85,6 +86,7 @@ class MergeObj(Generic[T1, T2]):
         """
         The `__str__` function returns a string representation of an object, specifically in the format
         "/xcoord, ycoord/".
+
         :return: The method `__str__` returns a string representation of the object. In this case, it
         returns a string in the format "/xcoord, ycoord/" where xcoord and ycoord are the x and y
         coordinates of the object.
@@ -100,8 +102,7 @@ class MergeObj(Generic[T1, T2]):
         """
         The `__eq__` function checks if two `MergeObj` instances have the same `impl` attribute.
 
-        :param other: The `other` parameter represents the object that we are comparing with the current
-        object
+        :param other: The `other` parameter represents the object that we are comparing with the current object
         :return: The `__eq__` method is returning a boolean value.
 
         Examples:
@@ -118,12 +119,13 @@ class MergeObj(Generic[T1, T2]):
     def __iadd__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
         """Translate by displacement
 
-        The `__iadd__` method allows a `MergeObj` object to be translated by a given displacement
-        vector.
+        The `__iadd__` method allows a `MergeObj` object to be translated by a given displacement vector.
 
         :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector.
         It is used to specify the displacement that will be added to the current object
+
         :type rhs: Vector2
+
         :return: The method `__iadd__` returns an instance of the class `MergeObj[T1, T2]`.
 
         Examples:
@@ -161,6 +163,7 @@ class MergeObj(Generic[T1, T2]):
 
         :param other: The `other` parameter represents another object with which you want to calculate
         the minimum rectilinear distance
+
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
@@ -183,9 +186,10 @@ class MergeObj(Generic[T1, T2]):
 
         :param alpha: The parameter `alpha` is an integer that represents the factor by which the
         coordinates of the `MergeObj` object should be enlarged
+
         :type alpha: int
-        :return: The `enlarge_with` method is returning a new `MergeObj` object with the enlarged
-        coordinates.
+
+        :return: The `enlarge_with` method is returning a new `MergeObj` object with the enlarged coordinates.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -204,6 +208,7 @@ class MergeObj(Generic[T1, T2]):
 
         :param other: The "other" parameter is an object of the same class as the current object. It
         represents another instance of the MergeObj class that we want to find the intersection with
+
         :return: a MergeObj object with the x-coordinate and y-coordinate of the intersection point
         between the self object and the other object.
 
@@ -224,6 +229,7 @@ class MergeObj(Generic[T1, T2]):
 
         :param other: The "other" parameter is an object of the same class as the current object. It
         represents another instance of the class that we want to merge with the current instance
+
         :return: The `merge_with` method returns a new `MergeObj` object with the x-coordinate and
         y-coordinate of the intersection of the two objects being merged.
 

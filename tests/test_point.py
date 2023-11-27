@@ -16,7 +16,7 @@ def test_point():
 
 def test_point2():
     a = Point(3, 4)
-    r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+    r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
     assert not r.contains(a)
     assert r.contains(Point(4, 5))
     assert not r.overlaps(a)

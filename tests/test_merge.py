@@ -5,7 +5,7 @@ from physdes.vector2 import Vector2
 
 def test_MergeObj():
     r1 = MergeObj.construct(4, 5)
-    r2 = MergeObj.construct(7, 9) 
+    r2 = MergeObj.construct(7, 9)
     v = Vector2(5, 6)
 
     assert r1 != r2
@@ -25,7 +25,7 @@ def test_merge():
 
 def test_merge_2():
     a = MergeObj(4 + 5, 4 - 5)
-    b = MergeObj(7 + 9, 7 - 9) 
+    b = MergeObj(7 + 9, 7 - 9)
     v = Vector2(2, 3)
     a += v
     a -= v

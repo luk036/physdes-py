@@ -18,7 +18,7 @@ def test_Point():
     assert not (a == b)
     assert a != b
     assert b > a
-    assert b >= a    
+    assert b >= a
 
 
 def test_Interval():

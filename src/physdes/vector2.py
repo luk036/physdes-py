@@ -24,6 +24,7 @@ class Vector2(Generic[T1, T2]):
 
         :param x: The x-coordinate of the vector. It represents the horizontal component of the vector in a
         2D space
+
         :param y: The parameter `y` represents the y-coordinate of the vector. It is used to specify the
         vertical component of the vector
 
@@ -41,6 +42,7 @@ class Vector2(Generic[T1, T2]):
     def __str__(self) -> str:
         """
         The `__str__` function returns a string representation of a Vector2 object in the format "<x, y>".
+
         :return: The `__str__` method is returning a string representation of the vector object.
 
         Examples:
@@ -57,6 +59,7 @@ class Vector2(Generic[T1, T2]):
     def x(self) -> T1:
         """
         The function returns the x-coordinate of a vector.
+
         :return: The method `x` is returning the value of the attribute `x_`.
 
         Examples:
@@ -73,6 +76,7 @@ class Vector2(Generic[T1, T2]):
     def y(self) -> T2:
         """
         The function returns the y-coordinate of a vector.
+
         :return: The method `y` is returning the value of the `y_` attribute.
 
         Examples:
@@ -111,6 +115,7 @@ class Vector2(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents another vector that we
         want to perform the cross product with
+
         :return: The cross product of the two vectors.
 
         Examples:
@@ -128,6 +133,7 @@ class Vector2(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the object that is being
         compared to the current object (`self`) in the `__eq__` method
+
         :return: The `__eq__` method returns a boolean value indicating whether the current object is equal
         to the `rhs` object.
 
@@ -146,6 +152,7 @@ class Vector2(Generic[T1, T2]):
     def __neg__(self) -> Self:
         """
         The `__neg__` function returns a new instance of the same type with the negated x and y values.
+
         :return: The `__neg__` method returns a new instance of the same type as `self`, with the negated
         values of `self.x` and `self.y`.
 
@@ -166,6 +173,7 @@ class Vector2(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the object that is being
         added to the current object. In this case, it is a `Vector2` object
+
         :return: The `__iadd__` method returns `self`, which is an instance of the class.
 
         Examples:
@@ -190,6 +198,7 @@ class Vector2(Generic[T1, T2]):
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the object that is being
         added to the current object. In this case, it is assumed that both `self` and `rhs` are instances of
         the `Vector2` class
+
         :return: The `__add__` method is returning a new instance of the same type as `self` with the x and
         y components added together.
 
@@ -213,6 +222,7 @@ class Vector2(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
         subtracted from the current vector
+
         :return: The method `__isub__` returns an instance of the class `Self`.
 
         Examples:
@@ -236,6 +246,7 @@ class Vector2(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
         subtracted from the current vector
+
         :return: The `__sub__` method is returning a new instance of the same type (`T`) with the x and y
         components subtracted from the corresponding components of the `rhs` object.
 
@@ -259,6 +270,7 @@ class Vector2(Generic[T1, T2]):
 
         :param alpha: The parameter `alpha` represents the scalar value by which the vector's components
         (`x_` and `y_`) will be multiplied
+
         :return: The method `__imul__` returns `self`, which is an instance of the class that the method
         belongs to.
 
@@ -282,6 +294,7 @@ class Vector2(Generic[T1, T2]):
 
         :param alpha: The parameter `alpha` represents a scalar value that will be multiplied with the `x`
         and `y` components of the vector
+
         :return: The method `__mul__` returns a new instance of the same type as `self` with the `x` and `y`
         attributes multiplied by `alpha`.
 
@@ -303,6 +316,7 @@ class Vector2(Generic[T1, T2]):
 
         :param alpha: The parameter `alpha` represents the value by which the `x_` and `y_` attributes of
         the object are divided
+
         :return: The method is returning the updated instance of the class `self` after performing the
         division operation.
 
@@ -322,8 +336,7 @@ class Vector2(Generic[T1, T2]):
 
     def __truediv__(self, alpha) -> Self:
         """
-        The `__truediv__` method divides a vector by a scalar and returns a new vector with the resulting
-        values.
+        The `__truediv__` method divides a vector by a scalar and returns a new vector with the resulting values.
 
         :param alpha: The parameter `alpha` represents the value by which the vector is divided
         :return: The `__truediv__` method returns a new instance of the same type (`T`) with the `x` and `y`

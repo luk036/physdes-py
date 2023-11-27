@@ -43,6 +43,7 @@ class RPolygon:
         :param pointset: The `pointset` parameter is of type `PointSet`. It represents a collection of
         points. The `__init__` method is a constructor that initializes an instance of a class. In this
         case, it takes a `PointSet` as an argument and assigns the first point in the `
+
         :type pointset: PointSet
 
         Examples:
@@ -78,7 +79,9 @@ class RPolygon:
 
         :param other: The parameter `other` is of type `object`. It represents the object to be compared
         with the current object.
+
         :type other: object
+
         :return: The method is returning a boolean value, which indicates whether the two objects are equal.
 
         Examples:
@@ -116,7 +119,9 @@ class RPolygon:
 
         :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
         operand that is being added to the current object
+
         :type rhs: Vector2[int, int]
+
         :return: The method is returning `self`, which is an instance of the `RPolygon` class.
 
         Examples:
@@ -153,7 +158,9 @@ class RPolygon:
 
         :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
         operand that is being subtracted from the current object
+
         :type rhs: Vector2[int, int]
+
         :return: The method is returning `self`, which is an instance of the `RPolygon` class.
 
         Examples:
@@ -182,13 +189,13 @@ class RPolygon:
         """
         self._origin -= rhs
         return self
-            
+
     @cached_property
     def signed_area(self) -> int:
         """
         The `signed_area` function calculates the signed area of a polygon using the Shoelace formula.
-        :return: The `signed_area` method returns an integer value, which represents the signed area of a
-        polygon.
+
+        :return: The `signed_area` method returns an integer value, which represents the signed area of a polygon.
 
         Examples:
             >>> coords = [
@@ -385,7 +392,9 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
 
     :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
     `PointSet` has an x-coordinate and a y-coordinate
+
     :type lst: PointSet
+
     :return: The function `create_test_rpolygon` returns a `PointSet`, which is a collection of points.
 
     Examples:
@@ -484,10 +493,14 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     :param pointset: The `pointset` parameter is a list of points that define the vertices of the
     RPolygon. Each point in the list is represented as a `Point` object, which has `xcoord` and `ycoord`
     attributes representing the x and y coordinates of the point, respectively
+
     :type pointset: PointSet
+
     :param ptq: ptq is a Point object representing the query point. It has two attributes: xcoord and
     ycoord, which represent the x and y coordinates of the point, respectively
+
     :type ptq: Point[int, int]
+
     :return: a boolean value indicating whether the given point `ptq` is within the given RPolygon
     defined by the `pointset`.
 

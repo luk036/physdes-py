@@ -21,6 +21,7 @@ class Polygon(Generic[T]):
         :param pointset: The `pointset` parameter is of type `PointSet`. It is a collection of points that
         represents a set of vertices. The first element of the `pointset` is considered as the origin point,
         and the remaining elements are considered as displacement vectors from the origin
+
         :type pointset: PointSet
 
         Examples:
@@ -56,7 +57,9 @@ class Polygon(Generic[T]):
 
         :param rhs: The parameter `rhs` is of type `object`. It represents the right-hand side of the
         equality comparison.
+
         :type rhs: object
+
         :return: The method is returning a boolean value.
 
         Examples:
@@ -94,7 +97,9 @@ class Polygon(Generic[T]):
 
         :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
         addition operation
+
         :type rhs: Vector2
+
         :return: The method is returning `self`, which is an instance of the `Polygon[T]` class.
 
         Examples:
@@ -131,7 +136,9 @@ class Polygon(Generic[T]):
 
         :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
         subtraction operation
+
         :type rhs: Vector2
+
         :return: The method is returning `self`, which is an instance of the `Polygon[T]` class.
 
         Examples:
@@ -160,11 +167,12 @@ class Polygon(Generic[T]):
         """
         self._origin -= rhs
         return self
-        
+
     @cached_property
     def signed_area_x2(self) -> T:
         """
         The `signed_area_x2` function calculates the signed area of a polygon multiplied by 2.
+
         :return: The `signed_area_x2` method returns the signed area of the polygon multiplied by 2.
 
         Examples:
@@ -211,15 +219,15 @@ def partition(pred, iterable):
 
 # def create_xmono_polygon(lst):
 #     """[summary]
-
+#
 #     Arguments:
 #         lst {[type]} -- [description]
-
+#
 #     Returns:
 #         [type] -- [description]
 #     """
 #     assert len(lst) >= 3
-
+#
 #     leftmost = min(lst)
 #     rightmost = max(lst)
 #     d = rightmost - leftmost
@@ -236,13 +244,17 @@ def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
 
     :param lst: A list of points representing a point set. Each point is represented as a tuple of two
     integers, (x, y), where x and y are the coordinates of the point
+
     :type lst: PointSet
+
     :param dir: The `dir` parameter is a callable function that determines the direction in which the
     points are sorted. It takes a point as input and returns a value that represents the direction. The
     points are sorted based on this direction
+
     :type dir: Callable
-    :return: The `create_mono_polygon` function returns a list of points representing a monotone
-    polygon.
+
+    :return: The `create_mono_polygon` function returns a list of points representing a monotone polygon.
+
     :rtype: PointSet
 
     Examples:
@@ -359,9 +371,10 @@ def create_test_polygon(lst: PointSet) -> PointSet:
 
     :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
     `PointSet` has an `xcoord` and `ycoord` attribute, representing its coordinates
+
     :type lst: PointSet
-    :return: The function `create_test_polygon` returns a `PointSet`, which is a list of `Point`
-    objects.
+
+    :return: The function `create_test_polygon` returns a `PointSet`, which is a list of `Point` objects.
 
     Examples:
         >>> coords = [
@@ -447,9 +460,13 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     :param pointset: The `pointset` parameter is a list of points that define the vertices of a polygon.
     Each point in the list is an instance of the `Point` class, which has `xcoord` and `ycoord`
     attributes representing the x and y coordinates of the point
+
     :type pointset: PointSet
+
     :param ptq: ptq is a Point object representing the point to be checked if it is within the polygon
+
     :type ptq: Point[T, T]
+
     :return: a boolean value indicating whether the given point `ptq` is within the polygon defined by
     the `pointset`.
 

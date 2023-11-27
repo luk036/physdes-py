@@ -9,10 +9,13 @@ class Rectangle(Point[Interval[int], Interval[int]]):
 
         :param xcoord: The x-coordinate interval of the rectangle. It represents the range of x-values that
         the rectangle spans
+
         :type xcoord: Interval
+
         :param ycoord: The `ycoord` parameter represents the interval of values for the y-coordinate of a
         rectangle. It is an instance of the `Interval` class, which represents a range of values. The
         `Interval` class typically has two attributes, `start` and `end`, which define the lower and upper
+
         :type ycoord: Interval
 
         Examples:
@@ -29,8 +32,8 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def ll(self) -> Point[int, int]:
         """
         The `ll` function returns the lower left point of a rectangle.
-        :return: The `ll` method is returning a `Point` object with the lower left coordinates of the
-        rectangle.
+
+        :return: The `ll` method is returning a `Point` object with the lower left coordinates of the rectangle.
 
         Examples:
             >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
@@ -43,8 +46,8 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def ur(self) -> Point[int, int]:
         """
         The `ur` function returns the upper right coordinates of a rectangle.
-        :return: The `ur` method is returning a `Point` object with the upper right coordinates of a
-        rectangle.
+
+        :return: The `ur` method is returning a `Point` object with the upper right coordinates of a rectangle.
 
         Examples:
             >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
@@ -55,10 +58,10 @@ class Rectangle(Point[Interval[int], Interval[int]]):
 
     # def copy(self):
     #     """[summary]
-
+    #
     #     Returns:
     #         [type]: [description]
-
+    #
     #     Examples:
     #         >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
     #         >>> print(a.copy())
@@ -68,15 +71,15 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     #         (([3, 4], [5, 6]), [7, 8])
     #     """
     #     return Rectangle(self.xcoord, self.ycoord)
-
+    #
     # def __eq__(self, rhs) -> bool:
     #     return self.xcoord == rhs.xcoord and self.ycoord == rhs.ycoord
 
     def flip(self) -> "Rectangle":
         """
         The `flip` function returns a new `Rectangle` object with the x and y coordinates swapped.
-        :return: The `flip` method is returning a new `Rectangle` object with the x and y coordinates
-        swapped.
+
+        :return: The `flip` method is returning a new `Rectangle` object with the x and y coordinates swapped.
 
         Note:
             Overriding the `flip` function of the `Point` class. The `flip` function of the `Point`
@@ -99,7 +102,9 @@ class Rectangle(Point[Interval[int], Interval[int]]):
 
         :param other: The `other` parameter can be an instance of the `Point`, `VSegment`, `HSegment`, or
         `Rectangle` class
+
         :type other: Point
+
         :return: The `contains` method is returning a boolean value, indicating whether the given `other`
         object is contained within the current object.
 
@@ -117,6 +122,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def width(self) -> int:
         """
         The `width` function returns the length of the x-coordinate interval of a rectangle.
+
         :return: The `width` method is returning the length of the x-coordinate interval of the rectangle.
 
         Examples:
@@ -129,6 +135,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def height(self) -> int:
         """
         The `height` function returns the length of the y-coordinate interval of a rectangle.
+
         :return: The height of the rectangle, which is the length of the y-coordinate interval.
 
         Examples:
@@ -141,6 +148,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
     def area(self) -> int:
         """
         The `area` function calculates the area of a rectangle using the lengths of its x and y coordinates.
+
         :return: The area of the rectangle, which is an integer.
 
         Examples:
@@ -162,9 +170,10 @@ class VSegment(Point[int, Interval[int]]):
 
         :param other: The "other" parameter is of type Point. It represents another point that we want to
         check if it is contained within the current point
+
         :type other: Point
-        :return: a boolean value, indicating whether the given point `other` is contained within the current
-        point object.
+
+        :return: a boolean value, indicating whether the given point `other` is contained within the current point object.
 
         Examples:
             >>> a = VSegment(5, Interval(30, 40))
@@ -180,6 +189,7 @@ class VSegment(Point[int, Interval[int]]):
     def flip(self) -> "HSegment":
         """
         The `flip` function returns a new `HSegment` object with the x and y coordinates swapped.
+
         :return: The flip() method is returning an instance of the HSegment class.
 
         Note:
@@ -217,10 +227,10 @@ class HSegment(Point[Interval[int], int]):
 
     # def copy(self):
     #     """[summary]
-
+    #
     #     Returns:
     #         [type]: [description]
-
+    #
     #     Examples:
     #         >>> a = HSegment(Interval(3, 4), 5)
     #         >>> print(a.copy())
@@ -238,6 +248,7 @@ class HSegment(Point[Interval[int], int]):
 
         :param other: The `other` parameter represents another object that we want to check if it is
         contained within the current object. It can be either a `Point` or a `HSegment` object
+
         :return: The function `contains` returns a boolean value indicating whether `other` is contained
         within `self`.
 
@@ -255,6 +266,7 @@ class HSegment(Point[Interval[int], int]):
     def flip(self) -> VSegment:
         """
         The `flip` function returns a `VSegment` object with the y-coordinate and x-coordinate swapped.
+
         :return: The flip() method is returning a VSegment object.
 
         Note:

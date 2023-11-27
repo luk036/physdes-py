@@ -34,9 +34,12 @@ class Point(Generic[T1, T2]):
         The function initializes an object with x and y coordinates.
 
         :param xcoord: The parameter `xcoord` is of type `T1` and represents the x-coordinate of a point
+
         :type xcoord: T1
+
         :param ycoord: The `ycoord` parameter is a variable that represents the y-coordinate of a point.
         It can be of any type (`T2`)
+
         :type ycoord: T2
 
         Examples:
@@ -52,8 +55,8 @@ class Point(Generic[T1, T2]):
 
     def __str__(self) -> str:
         """
-        The __str__ function returns a string representation of a Point object in the format (xcoord,
-        ycoord).
+        The __str__ function returns a string representation of a Point object in the format (xcoord, ycoord).
+
         :return: The `__str__` method is returning a string representation of the object, which is the
         coordinates of the point in the format "(x, y)".
 
@@ -93,6 +96,7 @@ class Point(Generic[T1, T2]):
 
         :param other: The `other` parameter represents another instance of the `Point` class that we are
         comparing to the current instance
+
         :return: The `__lt__` method is returning a boolean value indicating whether the current
         instance is less than the `other` instance.
 
@@ -115,6 +119,7 @@ class Point(Generic[T1, T2]):
 
         :param other: The `other` parameter represents another instance of the `Point` class that we are
         comparing to the current instance
+
         :return: The method `__le__` is returning a boolean value.
 
         Examples:
@@ -136,9 +141,9 @@ class Point(Generic[T1, T2]):
         :param other: The `other` parameter represents the other object that we are comparing with the
         current object. In this case, it is used to compare the x and y coordinates of two `Point`
         objects to determine if they are equal
+
         :return: The `__eq__` method is returning a boolean value indicating whether the coordinates of
-        the current point object (`self`) are equal to the coordinates of the other point object
-        (`other`).
+        the current point object (`self`) are equal to the coordinates of the other point object (`other`).
 
         Examples:
             >>> a = Point(3, 4)
@@ -158,7 +163,9 @@ class Point(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is
         being added to the current vector
+
         :type rhs: Vector2
+
         :return: The `self` object is being returned.
 
         Examples:
@@ -183,7 +190,9 @@ class Point(Generic[T1, T2]):
 
         :param rhs: rhs is the right-hand side operand of the addition operation. In this case, it is a
         Vector2 object that is being added to the current Point object
+
         :type rhs: Vector2
+
         :return: The `__add__` method is returning a new instance of the same type as `self` (which could be
         `Point`, `Rectangle`, or any other type). The new instance is created by adding the `x` and `y`
         coordinates of `self` with the `x` and `y` coordinates of `rhs` (the right-hand side operand).
@@ -207,7 +216,9 @@ class Point(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
         subtracted from the current vector. In this case, `rhs` is an instance of the `Vector2` class
+
         :type rhs: Vector2
+
         :return: The method `__isub__` returns `self`.
 
         Examples:
@@ -232,7 +243,9 @@ class Point(Generic[T1, T2]):
 
         :param rhs: The parameter `rhs` represents the right-hand side operand of the subtraction operation.
         It can be either a `Vector2` or a `Point` object
+
         :type rhs: Vector2
+
         :return: The `__sub__` method returns a new instance of the same type as `self` (which could be
         `Point`, `Rectangle`, or any other type) with the x and y coordinates subtracted by the
         corresponding coordinates of `rhs` (another `Vector2` or `Point`).
@@ -252,8 +265,7 @@ class Point(Generic[T1, T2]):
         The `displace` function takes a `Vector` or `Point` object as an argument and returns a new
         `Vector2` object representing the displacement between the two points.
 
-        :param rhs: The parameter `rhs` is of type `Self`, which means it can be either a `Vector2` or a
-        `Point` object
+        :param rhs: The parameter `rhs` is of type `Self`, which means it can be either a `Vector2` or a `Point` object
         :type rhs: Self
         :return: The `displace` method is returning a `Vector2` object.
 
@@ -273,6 +285,7 @@ class Point(Generic[T1, T2]):
     def flip(self) -> "Point[T2, T1]":
         """
         The `flip` function returns a new `Point` object with the x and y coordinates swapped.
+
         :return: The flip() method returns a new Point object with the x and y coordinates swapped.
 
         Examples:
@@ -291,8 +304,8 @@ class Point(Generic[T1, T2]):
 
         :param other: The `other` parameter represents another object that we want to check for overlap with
         the current object
-        :return: a boolean value, indicating whether there is an overlap between the coordinates of the two
-        objects.
+
+        :return: a boolean value, indicating whether there is an overlap between the coordinates of the two objects.
 
         Examples:
             >>> a = Point(3, 4)
@@ -313,6 +326,7 @@ class Point(Generic[T1, T2]):
         :param other: The "other" parameter is an object of the same class as the current object. It
         represents another instance of the class that we want to check if it is contained within the current
         instance
+
         :return: The `contains` method is returning a boolean value.
 
         Examples:
@@ -333,6 +347,7 @@ class Point(Generic[T1, T2]):
 
         :param other: The `other` parameter is an object of the same type as `self`. It represents another
         instance of the class that the `hull_with` method belongs to
+
         :return: an instance of the same class as `self` (type `T`). The instance is created using the
         `hull` function, which takes the x-coordinates and y-coordinates of `self` and `other` as arguments.
 
@@ -358,6 +373,7 @@ class Point(Generic[T1, T2]):
 
         :param other: The "other" parameter is an object of the same type as the current object. It
         represents another instance of the class that has the same attributes and methods
+
         :return: The method `intersection_with` returns an instance of the same class as `self` (i.e.,
         `type(self)`). The instance is created using the `T` constructor and takes the intersection of
         the `xcoord` and `ycoord` attributes of `self` and `other`.
@@ -391,6 +407,7 @@ class Point(Generic[T1, T2]):
         calculate the minimum distance. It is assumed that both the current object (self) and the other
         object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
         function calculates the minimum distance between the
+
         :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two
         objects.
 
@@ -418,6 +435,7 @@ class Point(Generic[T1, T2]):
 
         :param alpha: The `alpha` parameter is a value that determines the amount by which the coordinates
         of the point should be enlarged
+
         :return: The `enlarge_with` method returns an instance of the same type as `self` with the enlarged
         coordinates.
 
