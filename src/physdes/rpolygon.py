@@ -246,6 +246,7 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
 
     .. svgbob::
        :align: center
+
                                        ┌────0
                 ┌──────────4           │    │
                 │   lst2   │           │    │
