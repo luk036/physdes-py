@@ -1,7 +1,5 @@
 from typing import Generic, TypeVar, Union
 
-from typing_extensions import Self
-
 T = TypeVar("T", int, float)
 
 
@@ -318,7 +316,7 @@ class Interval(Generic[T]):
         """
         return self._ub
 
-    # def copy(self) -> Self:
+    # def copy(self) -> "Interval[T]":
     #     """
     #     The `copy` function returns a new instance of the same class with the same lower and upper
     #     bounds.
@@ -446,7 +444,7 @@ class Interval(Generic[T]):
         """
         return not (self.ub < other)
 
-    def __neg__(self) -> Self:
+    def __neg__(self) -> "Interval[T]":
         """
         The `__neg__` function returns a new instance of the class with the lower and upper bounds negated.
 
@@ -461,7 +459,7 @@ class Interval(Generic[T]):
         S = type(self)
         return S(-self.ub, -self.lb)
 
-    def __iadd__(self, rhs: T) -> Self:
+    def __iadd__(self, rhs: T) -> "Interval[T]":
         """
         The `__iadd__` method allows for in-place addition of an `Interval` object.
 
@@ -470,7 +468,7 @@ class Interval(Generic[T]):
 
         :type rhs: T
 
-        :return: The method `__iadd__` returns `self`, which is an instance of the class `Self`.
+        :return: The method `__iadd__` returns `self`, which is an instance of the class `"Interval[T]"`.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -482,7 +480,7 @@ class Interval(Generic[T]):
         self._ub += rhs
         return self
 
-    def __add__(self, rhs: T) -> Self:
+    def __add__(self, rhs: T) -> "Interval[T]":
         """
         The function overloads the "+" operator to add a constant value to the lower and upper bounds of
         an Interval object.
@@ -503,7 +501,7 @@ class Interval(Generic[T]):
         S = type(self)
         return S(self.lb + rhs, self.ub + rhs)
 
-    def __isub__(self, rhs: T) -> Self:
+    def __isub__(self, rhs: T) -> "Interval[T]":
         """
         The function subtracts a value from both the lower and upper bounds of an Interval object and
         returns the modified object.
@@ -526,7 +524,7 @@ class Interval(Generic[T]):
         self._ub -= rhs
         return self
 
-    def __sub__(self, rhs: T) -> Self:
+    def __sub__(self, rhs: T) -> "Interval[T]":
         """
         The function subtracts a value from the lower and upper bounds of an interval and returns a new
         interval.
@@ -547,7 +545,7 @@ class Interval(Generic[T]):
         S = type(self)
         return S(self.lb - rhs, self.ub - rhs)
 
-    def __imul__(self, rhs: T) -> Self:
+    def __imul__(self, rhs: T) -> "Interval[T]":
         """
         The `__imul__` method allows for in-place multiplication of an `Interval` object.
 
@@ -556,7 +554,7 @@ class Interval(Generic[T]):
 
         :type rhs: T
 
-        :return: The method `__imul__` returns `self`, which is an instance of the class `Self`.
+        :return: The method `__imul__` returns `self`, which is an instance of the class `"Interval[T]"`.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -568,7 +566,7 @@ class Interval(Generic[T]):
         self._ub *= rhs
         return self
 
-    def __mul__(self, rhs: T) -> Self:
+    def __mul__(self, rhs: T) -> "Interval[T]":
         """
         The function overloads the "*" operator to multiply a constant value to the lower and upper bounds of
         an Interval object.
@@ -589,14 +587,14 @@ class Interval(Generic[T]):
         S = type(self)
         return S(self.lb * rhs, self.ub * rhs)
 
-    def overlaps(self, other: Union[Self, T]) -> bool:
+    def overlaps(self, other: Union["Interval[T]", T]) -> bool:
         """
         The `overlaps` function checks if two intervals overlap with each other.
 
-        :param other: The parameter "other" is of type Union[Self, T], which means it can accept either
+        :param other: The parameter "other" is of type Union["Interval[T]", T], which means it can accept either
         an object of the same class as "self" or an object of type "T"
 
-        :type other: Union[Self, T]
+        :type other: Union["Interval[T]", T]
 
         :return: a boolean value, either True or False.
 
@@ -609,12 +607,12 @@ class Interval(Generic[T]):
         """
         return not (self < other or other < self)
 
-    def contains(self, obj: Union[Self, T]) -> bool:
+    def contains(self, obj: Union["Interval[T]", T]) -> bool:
         """
         The `contains` function checks if an object is contained within a given interval.
 
         :param obj: The `obj` parameter can be either an instance of the `Interval` class or an integer
-        :type obj: Union[Self, T]
+        :type obj: Union["Interval[T]", T]
         :return: The `contains` method returns a boolean value indicating whether the given object is
         contained within the interval.
 
@@ -633,14 +631,14 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return self.lb <= obj <= self.ub
 
-    def hull_with(self, obj: Union[Self, T]):
+    def hull_with(self, obj: Union["Interval[T]", T]):
         """
         The `hull_with` function takes an object (either an `Interval` or a scalar) and returns a new
         `Interval` object that represents the hull (smallest interval that contains both intervals) of
         the current `Interval` object and the input object.
 
-        :param obj: The `obj` parameter can be either an instance of the same class (`Self`) or a scalar value (`T`)
-        :type obj: Union[Self, T]
+        :param obj: The `obj` parameter can be either an instance of the same class (`"Interval[T]"`) or a scalar value (`T`)
+        :type obj: Union["Interval[T]", T]
         :return: The method `hull_with` returns an `Interval` object.
 
         Examples:
@@ -655,15 +653,15 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
 
-    def intersection_with(self, obj: Union[Self, T]):
+    def intersection_with(self, obj: Union["Interval[T]", T]):
         """
         The `intersection_with` function takes in an object and returns the intersection between the
         object and the current interval.
 
-        :param obj: The `obj` parameter can be either an instance of the `Self` class (which is the same
+        :param obj: The `obj` parameter can be either an instance of the `"Interval[T]"` class (which is the same
         class as `self`), or it can be of type `T`, which is a generic type
 
-        :type obj: Union[Self, T]
+        :type obj: Union["Interval[T]", T]
 
         :return: The `intersection_with` method returns an `Interval` object that represents the
         intersection between the current `Interval` object (`self`) and the input object (`obj`).
@@ -694,12 +692,12 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(obj, obj)
 
-    def min_dist_with(self, obj: Union[Self, T]):
+    def min_dist_with(self, obj: Union["Interval[T]", T]):
         """
         The function calculates the minimum distance between two objects.
 
-        :param obj: The parameter `obj` can be of type `Self` or `T`
-        :type obj: Union[Self, T]
+        :param obj: The parameter `obj` can be of type `"Interval[T]"` or `T`
+        :type obj: Union["Interval[T]", T]
         :return: The function `min_dist_with` returns the minimum distance between the given object
         `obj` and the current object `self`.
 
@@ -722,7 +720,7 @@ class Interval(Generic[T]):
             return min_dist(self.lb, obj)
         return 0
 
-    def displace(self, obj: Self):
+    def displace(self, obj: "Interval[T]"):
         """
         The `displace` function takes an object as an argument and returns a new Interval object with
         the lower and upper bounds displaced by the corresponding bounds of the input object.
@@ -730,7 +728,7 @@ class Interval(Generic[T]):
         :param obj: The `obj` parameter is an object of the same class as the `self` object. It
         represents another interval that will be used to displace the current interval
 
-        :type obj: Self
+        :type obj: "Interval[T]"
 
         :return: The `displace` method returns an `Interval` object.
 
@@ -745,7 +743,7 @@ class Interval(Generic[T]):
         ub = displacement(self.ub, obj.ub)
         return Interval(lb, ub)
 
-    # def min_dist_change_with(self, obj: Union[Self, T]):
+    # def min_dist_change_with(self, obj: Union["Interval[T]", T]):
     #     """[summary]
     #
     #     Args:
@@ -767,7 +765,7 @@ class Interval(Generic[T]):
     #         self._ub = self._lb = obj
     #     return 0
 
-    def enlarge_with(self, alpha: T) -> Self:
+    def enlarge_with(self, alpha: T) -> "Interval[T]":
         """
         The `enlarge_with` function takes a value `alpha` and returns a new instance of the same type
         with the lower bound decreased by `alpha` and the upper bound increased by `alpha`.
@@ -776,7 +774,7 @@ class Interval(Generic[T]):
 
         :type alpha: T
 
-        :return: The method `enlarge_with` returns a new instance of the same class (`Self`) with the
+        :return: The method `enlarge_with` returns a new instance of the same class (`"Interval[T]"`) with the
         lower bound decreased by `alpha` and the upper bound increased by `alpha`.
 
         Examples:

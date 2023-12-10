@@ -3,8 +3,6 @@ Rectilinear Point Class
 """
 from typing import Generic, TypeVar
 
-from typing_extensions import Self
-
 from .interval import (
     contain,
     displacement,
@@ -70,7 +68,7 @@ class Point(Generic[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    # def copy(self) -> Self:
+    # def copy(self) -> "Point[T1, T2]":
     #     """
     #     The `copy` function returns a new instance of the same type as the current object, with the same
     #     x and y coordinates.
@@ -157,7 +155,7 @@ class Point(Generic[T1, T2]):
         """
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
-    def __iadd__(self, rhs: Vector2) -> Self:
+    def __iadd__(self, rhs: Vector2) -> "Point[T1, T2]":
         """
         The `__iadd__` method allows for in-place addition of a `Vector2` object to a `Point` object.
 
@@ -183,7 +181,7 @@ class Point(Generic[T1, T2]):
         self.ycoord += rhs.y
         return self
 
-    def __add__(self, rhs: Vector2) -> Self:
+    def __add__(self, rhs: Vector2) -> "Point[T1, T2]":
         """
         The `__add__` method allows for addition of a `Vector2` object to a `Point` object, resulting in a
         new `Point` object with updated coordinates.
@@ -209,7 +207,7 @@ class Point(Generic[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord + rhs.x, self.ycoord + rhs.y)
 
-    def __isub__(self, rhs: Vector2) -> Self:
+    def __isub__(self, rhs: Vector2) -> "Point[T1, T2]":
         """
         The `__isub__` method subtracts the x and y coordinates of a `Vector2` object from the x and y
         coordinates of a `Point` object and returns the updated `Point` object.
@@ -236,7 +234,7 @@ class Point(Generic[T1, T2]):
         self.ycoord -= rhs.y
         return self
 
-    def __sub__(self, rhs: Vector2) -> Self:
+    def __sub__(self, rhs: Vector2) -> "Point[T1, T2]":
         """
         The `__sub__` method subtracts the x and y coordinates of a given vector or point from the x and y
         coordinates of the current object and returns a new object of the same type.
@@ -260,13 +258,13 @@ class Point(Generic[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord - rhs.x, self.ycoord - rhs.y)
 
-    def displace(self, rhs: Self):  # TODO: what is the type?
+    def displace(self, rhs: "Point[T1, T2]"):  # TODO: what is the type?
         """
         The `displace` function takes a `Vector` or `Point` object as an argument and returns a new
         `Vector2` object representing the displacement between the two points.
 
-        :param rhs: The parameter `rhs` is of type `Self`, which means it can be either a `Vector2` or a `Point` object
-        :type rhs: Self
+        :param rhs: The parameter `rhs` is of type `"Point[T1, T2]"`, which means it can be either a `Vector2` or a `Point` object
+        :type rhs: "Point[T1, T2]"
         :return: The `displace` method is returning a `Vector2` object.
 
         Examples:
