@@ -208,39 +208,6 @@ class HSegment(Point[Interval[int], int]):
     Represents a HSegment.
     """
 
-    # def __init__(self, xcoord, ycoord):
-    #     """[summary]
-    #
-    #     Args:
-    #         xcoord ([type]): [description]
-    #         ycoord ([type]): [description]
-    #
-    #     Examples:
-    #         >>> a = HSegment(Interval(3, 4), 5)
-    #         >>> print(a)
-    #         ([3, 4], 5)
-    #         >>> a3d = HSegment(a, 7)  # HSegment in 3d
-    #         >>> print(a3d)
-    #         (([3, 4], 5), 7)
-    #     """
-    #     Point.__init__(self, xcoord, ycoord)
-
-    # def copy(self):
-    #     """[summary]
-    #
-    #     Returns:
-    #         [type]: [description]
-    #
-    #     Examples:
-    #         >>> a = HSegment(Interval(3, 4), 5)
-    #         >>> print(a.copy())
-    #         ([3, 4], 5)
-    #         >>> a3d = HSegment(a, 7)  # HSegment in 3d
-    #         >>> print(a3d.copy())
-    #         (([3, 4], 5), 7)
-    #     """
-    #     return HSegment(self.xcoord, self.ycoord)
-
     def contains(self, other) -> bool:
         """
         The `contains` function checks if a given object is contained within another object based on their
