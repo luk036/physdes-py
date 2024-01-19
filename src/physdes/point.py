@@ -4,6 +4,7 @@ Rectilinear Point Class
 from typing import Generic, TypeVar
 
 from .interval import (
+    Interval,
     contain,
     displacement,
     enlarge,
@@ -11,7 +12,6 @@ from .interval import (
     intersection,
     min_dist,
     overlap,
-    Interval,
 )
 from .vector2 import Vector2
 

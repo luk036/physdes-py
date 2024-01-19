@@ -1,17 +1,16 @@
 import pytest
-
 from hypothesis import given
 from hypothesis.strategies import integers
 
 from physdes.interval import (
     Interval,
-    min_dist,
-    overlap,
     contain,
-    intersection,
-    hull,
     displacement,
     enlarge,
+    hull,
+    intersection,
+    min_dist,
+    overlap,
 )
 
 
@@ -70,8 +69,8 @@ def test_interval2():
 
 def test_arithmetic():
     a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
+    # b = Interval(5, 7)
+    # c = Interval(7, 8)
     assert a + 1 == Interval(4, 6)
     assert a - 1 == Interval(2, 4)
     assert a * 2 == Interval(6, 10)
@@ -203,8 +202,8 @@ def test_displacement():
 
 def test_enlarge():
     a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
+    # b = Interval(5, 7)
+    # c = Interval(7, 8)
     assert a.enlarge_with(2) == Interval(1, 7)
     assert enlarge(a, 2) == Interval(1, 7)
 

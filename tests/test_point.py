@@ -1,5 +1,3 @@
-import pytest
-
 from physdes.interval import Interval
 from physdes.point import Point
 from physdes.vector2 import Vector2

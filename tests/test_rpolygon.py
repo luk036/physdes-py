@@ -1,6 +1,6 @@
 from lds_gen.ilds import Halton
+
 from physdes.point import Point
-from physdes.vector2 import Vector2
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
@@ -8,6 +8,7 @@ from physdes.rpolygon import (
     create_ymono_rpolygon,
     point_in_rpolygon,
 )
+from physdes.vector2 import Vector2
 
 
 def test_RPolygon():

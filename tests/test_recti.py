@@ -2,7 +2,7 @@ from random import randint
 
 from physdes.interval import Interval
 from physdes.point import Point
-from physdes.recti import Rectangle, VSegment, HSegment
+from physdes.recti import HSegment, Rectangle, VSegment
 
 # class my_point(Point):
 #     def __init__(self, xcoord, ycoord, data: float):
