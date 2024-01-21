@@ -200,9 +200,13 @@ class Polygon(Generic[T]):
         """
         assert len(self._vecs) >= 2
         vecs = self._vecs
-        res = vecs[0].x * vecs[1].y - vecs[-1].x * vecs[-2].y
-        for v0, v1, v2 in zip(vecs[:-2], vecs[1:-1], vecs[2:]):
-            res += v1.x * (v2.y - v0.y)
+        vec0 = vecs[0]
+        vec1 = vecs[1]
+        res = vec0.x * vec1.y - vecs[-1].x * vecs[-2].y
+        for vec2 in vecs[2:]:
+            res += vec1.x * (vec2.y - vec0.y)
+            vec0 = vec1
+            vec1 = vec2
         return res
 
     def is_rectilinear(self):

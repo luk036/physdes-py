@@ -222,9 +222,11 @@ class RPolygon:
         """
         assert len(self._vecs) >= 1
         vecs = self._vecs
-        res = vecs[0].x * vecs[0].y
-        for vec0, vec1 in zip(vecs[:-1], vecs[1:]):
+        vec0 = vecs[0]
+        res = vec0.x * vec0.y
+        for vec1 in vecs[1:]:
             res += vec1.x * (vec1.y - vec0.y)
+            vec0 = vec1
         return res
 
     def to_polygon(self):
