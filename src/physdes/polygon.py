@@ -199,11 +199,11 @@ class Polygon(Generic[T]):
             110
         """
         assert len(self._vecs) >= 2
-        vecs = self._vecs
-        vec0 = vecs[0]
-        vec1 = vecs[1]
-        res = vec0.x * vec1.y - vecs[-1].x * vecs[-2].y
-        for vec2 in vecs[2:]:
+        itr = iter(self._vecs)
+        vec0 = next(itr)
+        vec1 = next(itr)
+        res = vec0.x * vec1.y - self._vecs[-1].x * self._vecs[-2].y
+        for vec2 in itr:
             res += vec1.x * (vec2.y - vec0.y)
             vec0 = vec1
             vec1 = vec2

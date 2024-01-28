@@ -221,10 +221,10 @@ class RPolygon:
             54
         """
         assert len(self._vecs) >= 1
-        vecs = self._vecs
-        vec0 = vecs[0]
+        itr = iter(self._vecs)
+        vec0 = next(itr)
         res = vec0.x * vec0.y
-        for vec1 in vecs[1:]:
+        for vec1 in itr:
             res += vec1.x * (vec1.y - vec0.y)
             vec0 = vec1
         return res
