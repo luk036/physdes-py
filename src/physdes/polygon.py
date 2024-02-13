@@ -19,8 +19,8 @@ class Polygon(Generic[T]):
         creating a list of vectors by displacing each point from the origin.
 
         :param pointset: The `pointset` parameter is of type `PointSet`. It is a collection of points that
-        represents a set of vertices. The first element of the `pointset` is considered as the origin point,
-        and the remaining elements are considered as displacement vectors from the origin
+            represents a set of vertices. The first element of the `pointset` is considered as the origin point,
+            and the remaining elements are considered as displacement vectors from the origin
 
         :type pointset: PointSet
 
@@ -96,7 +96,7 @@ class Polygon(Generic[T]):
         returns itself.
 
         :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
-        addition operation
+            addition operation
 
         :type rhs: Vector2
 
@@ -135,7 +135,7 @@ class Polygon(Generic[T]):
         and returns itself.
 
         :param rhs: The parameter `rhs` is of type `Vector2`. It represents the right-hand side of the
-        subtraction operation
+            subtraction operation
 
         :type rhs: Vector2
 
@@ -247,13 +247,13 @@ def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
     the points based on a direction and sorting them.
 
     :param lst: A list of points representing a point set. Each point is represented as a tuple of two
-    integers, (x, y), where x and y are the coordinates of the point
+        integers, (x, y), where x and y are the coordinates of the point
 
     :type lst: PointSet
 
     :param dir: The `dir` parameter is a callable function that determines the direction in which the
-    points are sorted. It takes a point as input and returns a value that represents the direction. The
-    points are sorted based on this direction
+        points are sorted. It takes a point as input and returns a value that represents the direction. The
+        points are sorted based on this direction
 
     :type dir: Callable
 
@@ -374,7 +374,7 @@ def create_test_polygon(lst: PointSet) -> PointSet:
     from that point set.
 
     :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
-    `PointSet` has an `xcoord` and `ycoord` attribute, representing its coordinates
+        `PointSet` has an `xcoord` and `ycoord` attribute, representing its coordinates
 
     :type lst: PointSet
 
@@ -462,8 +462,8 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     See http://www.faqs.org/faqs/graphics/algorithms-faq/ Subject 2.03
 
     :param pointset: The `pointset` parameter is a list of points that define the vertices of a polygon.
-    Each point in the list is an instance of the `Point` class, which has `xcoord` and `ycoord`
-    attributes representing the x and y coordinates of the point
+        Each point in the list is an instance of the `Point` class, which has `xcoord` and `ycoord`
+        attributes representing the x and y coordinates of the point
 
     :type pointset: PointSet
 
@@ -472,7 +472,7 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     :type ptq: Point[T, T]
 
     :return: a boolean value indicating whether the given point `ptq` is within the polygon defined by
-    the `pointset`.
+        the `pointset`.
 
     Examples:
         >>> coords = [

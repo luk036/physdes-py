@@ -41,8 +41,8 @@ class RPolygon:
         creating a list of vectors by displacing each point from the origin.
 
         :param pointset: The `pointset` parameter is of type `PointSet`. It represents a collection of
-        points. The `__init__` method is a constructor that initializes an instance of a class. In this
-        case, it takes a `PointSet` as an argument and assigns the first point in the `
+            points. The `__init__` method is a constructor that initializes an instance of a class. In this
+            case, it takes a `PointSet` as an argument and assigns the first point in the `
 
         :type pointset: PointSet
 
@@ -78,7 +78,7 @@ class RPolygon:
         It takes two parameters, `self` and `other`, and returns a boolean value.
 
         :param other: The parameter `other` is of type `object`. It represents the object to be compared
-        with the current object.
+            with the current object.
 
         :type other: object
 
@@ -118,7 +118,7 @@ class RPolygon:
         returns the modified object.
 
         :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
-        operand that is being added to the current object
+            operand that is being added to the current object
 
         :type rhs: Vector2[int, int]
 
@@ -157,7 +157,7 @@ class RPolygon:
         and returns the modified object.
 
         :param rhs: The parameter `rhs` is of type `Vector2[int, int]`. It represents the right-hand side
-        operand that is being subtracted from the current object
+            operand that is being subtracted from the current object
 
         :type rhs: Vector2[int, int]
 
@@ -268,12 +268,12 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
     :param lst: A list of points representing a point set
     :type lst: PointSet
     :param dir: The `dir` parameter is a callable function that determines the direction in which the
-    points are sorted. It can be either an x-first or y-first function
+        points are sorted. It can be either an x-first or y-first function
     :type dir: Callable
     :return: The function `create_mono_rpolygon` returns a tuple containing two elements:
-    1. `PointSet`: This is the list of points that make up the monotone rectilinear polygon.
-    2. `bool`: This boolean value indicates whether the polygon is clockwise or anticlockwise, depending
-    on the `dir` parameter passed to the function.
+        1. `PointSet`: This is the list of points that make up the monotone rectilinear polygon.
+        2. `bool`: This boolean value indicates whether the polygon is clockwise or anticlockwise, depending
+        on the `dir` parameter passed to the function.
 
     Examples:
         >>> coords = [
@@ -325,7 +325,7 @@ def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     :param lst: A point set represented as a list of points. Each point has x and y coordinates
     :type lst: PointSet
     :return: The function `create_xmono_rpolygon` returns a tuple containing two elements: a `PointSet`
-    and a boolean value is_anticlockwise <-- Note!!!
+        and a boolean value is_anticlockwise <-- Note!!!
 
     Examples:
         >>> coords = [
@@ -360,7 +360,7 @@ def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
     :param lst: A point set represented as a list of points. Each point has x and y coordinates
     :type lst: PointSet
     :return: The function `create_ymono_rpolygon` returns a tuple containing two elements: a `PointSet`
-    and a boolean value is_clockwise <-- Note!!!
+        and a boolean value is_clockwise <-- Note!!!
 
     Examples:
         >>> coords = [
@@ -394,7 +394,7 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     form a non-crossing polygon.
 
     :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
-    `PointSet` has an x-coordinate and a y-coordinate
+        `PointSet` has an x-coordinate and a y-coordinate
 
     :type lst: PointSet
 
@@ -494,18 +494,18 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
        │     │     │               │    │       │
 
     :param pointset: The `pointset` parameter is a list of points that define the vertices of the
-    RPolygon. Each point in the list is represented as a `Point` object, which has `xcoord` and `ycoord`
-    attributes representing the x and y coordinates of the point, respectively
+        RPolygon. Each point in the list is represented as a `Point` object, which has `xcoord` and `ycoord`
+        attributes representing the x and y coordinates of the point, respectively
 
     :type pointset: PointSet
 
     :param ptq: ptq is a Point object representing the query point. It has two attributes: xcoord and
-    ycoord, which represent the x and y coordinates of the point, respectively
+        ycoord, which represent the x and y coordinates of the point, respectively
 
     :type ptq: Point[int, int]
 
     :return: a boolean value indicating whether the given point `ptq` is within the given RPolygon
-    defined by the `pointset`.
+        defined by the `pointset`.
 
     Examples:
         >>> coords = [

@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from .interval import enlarge, intersection, min_dist
+from .interval import enlarge
+from .generic import intersection, min_dist
 from .point import Point
 from .vector2 import Vector2
 
@@ -47,12 +48,12 @@ class MergeObj(Generic[T1, T2]):
         The function initializes an object with x and y coordinates and stores them in a Point object.
 
         :param xcoord: The parameter `xcoord` represents the x-coordinate of a point in a 2D space. It
-        can be of any type `T1`
+            can be of any type `T1`
 
         :type xcoord: T1
 
         :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a
-        two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
+            two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
 
         :type ycoord: T2
 
@@ -88,8 +89,8 @@ class MergeObj(Generic[T1, T2]):
         "/xcoord, ycoord/".
 
         :return: The method `__str__` returns a string representation of the object. In this case, it
-        returns a string in the format "/xcoord, ycoord/" where xcoord and ycoord are the x and y
-        coordinates of the object.
+            returns a string in the format "/xcoord, ycoord/" where xcoord and ycoord are the x and y
+            coordinates of the object.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -122,7 +123,7 @@ class MergeObj(Generic[T1, T2]):
         The `__iadd__` method allows a `MergeObj` object to be translated by a given displacement vector.
 
         :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector.
-        It is used to specify the displacement that will be added to the current object
+            It is used to specify the displacement that will be added to the current object
 
         :type rhs: Vector2
 
@@ -162,7 +163,7 @@ class MergeObj(Generic[T1, T2]):
         The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
 
         :param other: The `other` parameter represents another object with which you want to calculate
-        the minimum rectilinear distance
+            the minimum rectilinear distance
 
         :return: the minimum rectilinear distance between the two objects.
 
@@ -185,7 +186,7 @@ class MergeObj(Generic[T1, T2]):
         enlarged coordinates.
 
         :param alpha: The parameter `alpha` is an integer that represents the factor by which the
-        coordinates of the `MergeObj` object should be enlarged
+            coordinates of the `MergeObj` object should be enlarged
 
         :type alpha: int
 
@@ -207,10 +208,10 @@ class MergeObj(Generic[T1, T2]):
         MergeObj object with the coordinates of the intersection point.
 
         :param other: The "other" parameter is an object of the same class as the current object. It
-        represents another instance of the MergeObj class that we want to find the intersection with
+            represents another instance of the MergeObj class that we want to find the intersection with
 
         :return: a MergeObj object with the x-coordinate and y-coordinate of the intersection point
-        between the self object and the other object.
+            between the self object and the other object.
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
@@ -228,10 +229,10 @@ class MergeObj(Generic[T1, T2]):
         of the enlarged objects, and returns a new object with the coordinates of the intersection.
 
         :param other: The "other" parameter is an object of the same class as the current object. It
-        represents another instance of the class that we want to merge with the current instance
+            represents another instance of the class that we want to merge with the current instance
 
         :return: The `merge_with` method returns a new `MergeObj` object with the x-coordinate and
-        y-coordinate of the intersection of the two objects being merged.
+            y-coordinate of the intersection of the two objects being merged.
 
         Examples:
             >>> s1 = MergeObj(200 + 600, 200 - 600)

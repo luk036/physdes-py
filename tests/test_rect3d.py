@@ -1,7 +1,8 @@
 from hypothesis import given
 from hypothesis.strategies import integers
 
-from physdes.interval import Interval, min_dist, overlap
+from physdes.generic import overlap
+from physdes.interval import Interval, min_dist
 from physdes.recti import Point, Rectangle
 from physdes.vector2 import Vector2
 

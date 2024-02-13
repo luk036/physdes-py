@@ -8,13 +8,13 @@ class Rectangle(Point[Interval[int], Interval[int]]):
         The `__init__` function initializes a Rectangle object with x and y coordinates.
 
         :param xcoord: The x-coordinate interval of the rectangle. It represents the range of x-values that
-        the rectangle spans
+            the rectangle spans
 
         :type xcoord: Interval
 
         :param ycoord: The `ycoord` parameter represents the interval of values for the y-coordinate of a
-        rectangle. It is an instance of the `Interval` class, which represents a range of values. The
-        `Interval` class typically has two attributes, `start` and `end`, which define the lower and upper
+            rectangle. It is an instance of the `Interval` class, which represents a range of values. The
+            `Interval` class typically has two attributes, `start` and `end`, which define the lower and upper
 
         :type ycoord: Interval
 
@@ -101,12 +101,12 @@ class Rectangle(Point[Interval[int], Interval[int]]):
         The `contains` function checks if a given point is contained within a rectangle.
 
         :param other: The `other` parameter can be an instance of the `Point`, `VSegment`, `HSegment`, or
-        `Rectangle` class
+            `Rectangle` class
 
         :type other: Point
 
         :return: The `contains` method is returning a boolean value, indicating whether the given `other`
-        object is contained within the current object.
+            object is contained within the current object.
 
         Examples:
             >>> a = Rectangle(Interval(30, 40), Interval(50, 60))
@@ -169,7 +169,7 @@ class VSegment(Point[int, Interval[int]]):
         The `contains` function checks if a given point is contained within a vertical segment.
 
         :param other: The "other" parameter is of type Point. It represents another point that we want to
-        check if it is contained within the current point
+            check if it is contained within the current point
 
         :type other: Point
 
@@ -214,10 +214,10 @@ class HSegment(Point[Interval[int], int]):
         coordinates.
 
         :param other: The `other` parameter represents another object that we want to check if it is
-        contained within the current object. It can be either a `Point` or a `HSegment` object
+            contained within the current object. It can be either a `Point` or a `HSegment` object
 
         :return: The function `contains` returns a boolean value indicating whether `other` is contained
-        within `self`.
+            within `self`.
 
         Examples:
             >>> a = HSegment(Interval(30, 40), 5)

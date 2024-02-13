@@ -1,247 +1,7 @@
 from typing import Generic, TypeVar, Union
+from .generic import min_dist, displacement
 
 T = TypeVar("T", int, float)
-
-
-def overlap(lhs, rhs) -> bool:
-    """
-    The `overlap` function checks if two objects have an overlapping property or are equal.
-
-    :param lhs: The `lhs` parameter represents the left-hand side object that we want to check for
-    overlap with the `rhs` parameter
-
-    :param rhs: The parameter `rhs` is the right-hand side of the comparison. It can be any object that
-    supports the `overlaps` method or a scalar value
-
-    :return: a boolean value.
-
-    Examples:
-        >>> overlap(1, 1)
-        True
-        >>> overlap(1, 3)
-        False
-        >>> overlap(Interval(1, 2), Interval(2, 3))
-        True
-        >>> overlap(Interval(1, 2), Interval(3, 4))
-        False
-        >>> overlap(Interval(1, 2), 2)
-        True
-        >>> overlap(Interval(1, 2), 4)
-        False
-        >>> overlap(2, Interval(2, 3))
-        True
-        >>> overlap(1, Interval(3, 4))
-        False
-        >>> overlap(1, Interval(1, 2))
-        True
-    """
-    if hasattr(lhs, "overlaps"):
-        return lhs.overlaps(rhs)
-    elif hasattr(rhs, "overlaps"):
-        return rhs.overlaps(lhs)
-    else:  # assume scalar
-        return lhs == rhs
-
-
-def contain(lhs, rhs) -> bool:
-    """
-    The `contain` function checks if one object contains another object.
-
-    :param lhs: The `lhs` parameter represents the left-hand side of the comparison, while the `rhs`
-    parameter represents the right-hand side of the comparison
-
-    :param rhs: The `rhs` parameter represents the right-hand side of the comparison. It can be any
-    value or object that you want to check if it is contained within the `lhs` object
-
-    :return: a boolean value.
-
-    Examples:
-        >>> contain(1, 1)
-        True
-        >>> contain(1, 3)
-        False
-        >>> contain(Interval(1, 4), Interval(2, 3))
-        True
-        >>> contain(Interval(1, 2), Interval(3, 4))
-        False
-        >>> contain(Interval(1, 2), 2)
-        True
-        >>> contain(Interval(1, 2), 4)
-        False
-        >>> contain(2, Interval(2, 3))
-        False
-        >>> contain(1, Interval(3, 4))
-        False
-    """
-    if hasattr(lhs, "contains"):
-        return lhs.contains(rhs)
-    elif hasattr(rhs, "contains"):
-        return False
-    else:  # assume scalar
-        return lhs == rhs
-
-
-def intersection(lhs, rhs):
-    """
-    The `intersection` function returns the intersection of two objects if they have an
-    `intersection_with` method, otherwise it returns the objects themselves if they are equal.
-
-    :param lhs: The `lhs` parameter represents the left-hand side of the intersection operation, while
-    the `rhs` parameter represents the right-hand side of the intersection operation
-
-    :param rhs: The `rhs` parameter is the second input to the `intersection` function. It represents
-    the right-hand side of the intersection operation
-
-    :return: the intersection of `lhs` and `rhs`.
-
-    Examples:
-        >>> print(intersection(1, 1))
-        1
-        >>> print(intersection(Interval(1, 2), Interval(2, 3)))
-        [2, 2]
-        >>> print(intersection(Interval(1, 2), 2))
-        [2, 2]
-        >>> print(intersection(2, Interval(2, 3)))
-        [2, 2]
-        >>> print(intersection(1, Interval(1, 2)))
-        [1, 1]
-        >>> print(intersection(Interval(1, 2), Interval(1, 2)))
-        [1, 2]
-        >>> print(intersection(Interval(1, 2), Interval(2, 3)))
-        [2, 2]
-        >>> print(intersection(Interval(1, 2), 2))
-        [2, 2]
-    """
-    if hasattr(lhs, "intersection_with"):
-        return lhs.intersection_with(rhs)
-    elif hasattr(rhs, "intersection_with"):
-        return rhs.intersection_with(lhs)
-    else:  # assume scalar
-        assert lhs == rhs
-        return lhs
-
-
-def min_dist(lhs, rhs):
-    """
-    The `min_dist` function calculates the minimum distance between two objects, using their
-    `min_dist_with` method if available, or by subtracting them if they are scalars.
-
-    :param lhs: The `lhs` parameter represents the left-hand side value or object that we want to
-    calculate the minimum distance with
-
-    :param rhs: The parameter `rhs` represents the right-hand side value or object that we want to
-    compare with the left-hand side value or object `lhs`
-
-    :return: the minimum distance between `lhs` and `rhs`.
-
-    Examples:
-        >>> min_dist(1, 1)
-        0
-        >>> min_dist(1, 3)
-        2
-        >>> min_dist(Interval(1, 2), Interval(2, 3))
-        0
-        >>> min_dist(Interval(1, 2), Interval(3, 4))
-        1
-        >>> min_dist(Interval(1, 2), 2)
-        0
-        >>> min_dist(Interval(1, 2), 4)
-        2
-        >>> min_dist(2, Interval(2, 3))
-        0
-        >>> min_dist(1, Interval(3, 4))
-        2
-        >>> min_dist(1, Interval(1, 2))
-        0
-        >>> min_dist(Interval(1, 2), Interval(1, 2))
-        0
-        >>> min_dist(Interval(1, 2), Interval(2, 3))
-        0
-        >>> min_dist(Interval(1, 2), 2)
-        0
-        >>> min_dist(2, Interval(2, 3))
-        0
-    """
-    if hasattr(lhs, "min_dist_with"):
-        return lhs.min_dist_with(rhs)
-    elif hasattr(rhs, "min_dist_with"):
-        return rhs.min_dist_with(lhs)
-    else:  # assume scalar
-        return abs(lhs - rhs)
-
-
-# def min_dist_change(lhs, rhs):
-#     """
-#     The `min_dist_change` function calculates the minimum distance change between two objects.
-#
-#     :param lhs: The `lhs` parameter represents the left-hand side value or object that you want to
-#     compare
-#     :param rhs: The `rhs` parameter represents the right-hand side value or object that we want to
-#     compare with the `lhs` parameter
-#     :return: The function `min_dist_change` returns the minimum distance change between `lhs` and `rhs`.
-#
-#     Examples:
-#         >>> min_dist_change(1, 1)
-#         0
-#         >>> min_dist_change(1, 3)
-#         2
-#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(3, 4))
-#         1
-#         >>> min_dist_change(Interval(1, 2), 2)
-#         0
-#         >>> min_dist_change(Interval(1, 2), 4)
-#         2
-#         >>> min_dist_change(2, Interval(2, 3))
-#         0
-#         >>> min_dist_change(1, Interval(3, 4))
-#         2
-#         >>> min_dist_change(1, Interval(1, 2))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(1, 2))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
-#         0
-#         >>> min_dist_change(Interval(1, 2), 2)
-#         0
-#     """
-#     if hasattr(lhs, "min_dist_change_with"):
-#         return lhs.min_dist_change_with(rhs)
-#     elif hasattr(rhs, "min_dist_change_with"):
-#         return rhs.min_dist_change_with(lhs)
-#     else:  # assume scalar
-#         return abs(lhs - rhs)
-
-
-def displacement(lhs, rhs):
-    """
-    The `displacement` function calculates the displacement between two objects or scalars.
-
-    :param lhs: The `lhs` parameter represents the left-hand side of the displacement operation. It can
-    be either an object that has a `displace` method or a scalar value
-
-    :param rhs: The `rhs` parameter represents the displacement value that needs to be subtracted from
-    the `lhs` parameter
-
-    :return: the displacement between `lhs` and `rhs`. If `lhs` has a `displace` method, it calls that
-    method passing `rhs` as an argument. Otherwise, it assumes `lhs` is a scalar and returns the
-    difference between `lhs` and `rhs`.
-
-    Examples:
-        >>> displacement(1, 1)
-        0
-        >>> displacement(1, 3)
-        -2
-        >>> print(displacement(Interval(1, 2), Interval(2, 3)))
-        [-1, -1]
-        >>> print(displacement(Interval(1, 2), Interval(3, 4)))
-        [-2, -2]
-    """
-    if hasattr(lhs, "displace"):
-        return lhs.displace(rhs)
-    else:  # assume scalar
-        return lhs - rhs
 
 
 class Interval(Generic[T]):
@@ -252,12 +12,12 @@ class Interval(Generic[T]):
         The function initializes an Interval object with lower bound `lb` and upper bound `ub`.
 
         :param lb: The `lb` parameter represents the lower bound of the interval. It is of type `T`,
-        which means it can be any data type
+            which means it can be any data type
 
         :type lb: T
 
         :param ub: The `ub` parameter represents the upper bound of the interval. It is the maximum
-        value that the interval can take
+            value that the interval can take
 
         :type ub: T
 
@@ -278,8 +38,8 @@ class Interval(Generic[T]):
         The `__str__` function returns a string representation of an Interval object in the format "[lb, ub]".
 
         :return: The method `__str__` returns a string representation of the object. In this case, it
-        returns a string in the format "[lb, ub]", where lb is the lower bound and ub is the upper bound
-        of the interval.
+            returns a string in the format "[lb, ub]", where lb is the lower bound and ub is the upper bound
+            of the interval.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -321,7 +81,7 @@ class Interval(Generic[T]):
     #     The `copy` function returns a new instance of the same class with the same lower and upper
     #     bounds.
     #     :return: The `copy` method is returning a new instance of the same class as `self`, with the
-    #     same lower bound (`_lb`) and upper bound (`_ub`) values.
+    #         same lower bound (`_lb`) and upper bound (`_ub`) values.
     #
     #     Examples:
     #         >>> a = Interval(3, 4)
@@ -337,7 +97,7 @@ class Interval(Generic[T]):
         attributes.
 
         :return: The length of the object, which is calculated by subtracting the upper bound (ub) from
-        the lower bound (lb).
+            the lower bound (lb).
 
         Examples:
             >>> a = Interval(3, 4)
@@ -351,8 +111,8 @@ class Interval(Generic[T]):
         The function checks if two Interval objects have the same lower and upper bounds.
 
         :param other: The "other" parameter represents another object that we are comparing with the
-        current object. In this case, it is used to compare two Interval objects and check if they are
-        equal
+            current object. In this case, it is used to compare two Interval objects and check if they are
+            equal
 
         :return: The `__eq__` method is returning a boolean value.
 
@@ -370,10 +130,10 @@ class Interval(Generic[T]):
         True if the upper bound of the current object is less than the other object.
 
         :param other: The "other" parameter represents the value that the current object is being
-        compared to. In this case, it is being compared to the upper bound (ub) of the current object
+            compared to. In this case, it is being compared to the upper bound (ub) of the current object
 
         :return: The code is returning a boolean value indicating whether the upper bound of the current
-        interval object is less than the other object.
+            interval object is less than the other object.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -391,10 +151,10 @@ class Interval(Generic[T]):
         True if the lower bound of the current object is greater than the other object.
 
         :param other: The "other" parameter represents the value that the current object is being
-        compared to. In this case, it is being compared to the lower bound (lb) of the current object
+            compared to. In this case, it is being compared to the lower bound (lb) of the current object
 
         :return: The code is returning a boolean value indicating whether the lower bound of the current
-        interval object is greater than the other object.
+            interval object is greater than the other object.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -411,7 +171,7 @@ class Interval(Generic[T]):
         The function returns True if the current interval is less than or equal to the the other interval.
 
         :param other: The `other` parameter represents another instance of the `Interval` class that we
-        are comparing to the current instance
+            are comparing to the current instance
 
         :return: The code is returning a boolean value.
 
@@ -430,7 +190,7 @@ class Interval(Generic[T]):
         The function returns True if the current interval is greater than or equal to the the other interval.
 
         :param other: The `other` parameter represents another instance of the `Interval` class that we
-        are comparing to the current instance
+            are comparing to the current instance
 
         :return: The code is returning a boolean value.
 
@@ -449,7 +209,7 @@ class Interval(Generic[T]):
         The `__neg__` function returns a new instance of the class with the lower and upper bounds negated.
 
         :return: The `__neg__` method returns a new instance of the same class (`S`) with the lower
-        bound (`lb`) and upper bound (`ub`) negated.
+            bound (`lb`) and upper bound (`ub`) negated.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -464,7 +224,7 @@ class Interval(Generic[T]):
         The `__iadd__` method allows for in-place addition of an `Interval` object.
 
         :param rhs: The parameter `rhs` represents the right-hand side value that is being added to the
-        current object. In this case, it is expected to be of type `T`, which is a generic type
+            current object. In this case, it is expected to be of type `T`, which is a generic type
 
         :type rhs: T
 
@@ -486,12 +246,12 @@ class Interval(Generic[T]):
         an Interval object.
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
-        being added to the current object
+            being added to the current object
 
         :type rhs: T
 
         :return: The method is returning a new instance of the class `S` (which is the same type as
-        `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
+            `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -507,12 +267,12 @@ class Interval(Generic[T]):
         returns the modified object.
 
         :param rhs: The parameter `rhs` represents the right-hand side value that will be subtracted
-        from the current object. In this case, it is expected to be of type `T`, which is a generic type
+            from the current object. In this case, it is expected to be of type `T`, which is a generic type
 
         :type rhs: T
 
         :return: The method is returning `self`, which is an instance of the class that the method
-        belongs to.
+            belongs to.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -530,12 +290,12 @@ class Interval(Generic[T]):
         interval.
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
-        being subtracted from the interval
+            being subtracted from the interval
 
         :type rhs: T
 
         :return: The method is returning a new instance of the class `S` (which is the same type as
-        `self`) with the lower bound (`lb`) and upper bound (`ub`) subtracted by `rhs`.
+            `self`) with the lower bound (`lb`) and upper bound (`ub`) subtracted by `rhs`.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -550,7 +310,7 @@ class Interval(Generic[T]):
         The `__imul__` method allows for in-place multiplication of an `Interval` object.
 
         :param rhs: The parameter `rhs` represents the right-hand side value that is being multiplied to the
-        current object. In this case, it is expected to be of type `T`, which is a generic type
+            current object. In this case, it is expected to be of type `T`, which is a generic type
 
         :type rhs: T
 
@@ -572,12 +332,12 @@ class Interval(Generic[T]):
         an Interval object.
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
-        being multiplied to the current object
+            being multiplied to the current object
 
         :type rhs: T
 
         :return: The method is returning a new instance of the class `S` (which is the same type as
-        `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
+            `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
 
         Examples:
             >>> a = Interval(3, 4)
@@ -592,7 +352,7 @@ class Interval(Generic[T]):
         The `overlaps` function checks if two intervals overlap with each other.
 
         :param other: The parameter "other" is of type Union["Interval[T]", T], which means it can accept either
-        an object of the same class as "self" or an object of type "T"
+            an object of the same class as "self" or an object of type "T"
 
         :type other: Union["Interval[T]", T]
 
@@ -614,7 +374,7 @@ class Interval(Generic[T]):
         :param obj: The `obj` parameter can be either an instance of the `Interval` class or an integer
         :type obj: Union["Interval[T]", T]
         :return: The `contains` method returns a boolean value indicating whether the given object is
-        contained within the interval.
+            contained within the interval.
 
         Examples:
             >>> a = Interval(3, 8)
@@ -659,12 +419,12 @@ class Interval(Generic[T]):
         object and the current interval.
 
         :param obj: The `obj` parameter can be either an instance of the `"Interval[T]"` class (which is the same
-        class as `self`), or it can be of type `T`, which is a generic type
+            class as `self`), or it can be of type `T`, which is a generic type
 
         :type obj: Union["Interval[T]", T]
 
         :return: The `intersection_with` method returns an `Interval` object that represents the
-        intersection between the current `Interval` object (`self`) and the input object (`obj`).
+            intersection between the current `Interval` object (`self`) and the input object (`obj`).
 
         Examples:
             >>> a = Interval(3, 8)
@@ -699,7 +459,7 @@ class Interval(Generic[T]):
         :param obj: The parameter `obj` can be of type `"Interval[T]"` or `T`
         :type obj: Union["Interval[T]", T]
         :return: The function `min_dist_with` returns the minimum distance between the given object
-        `obj` and the current object `self`.
+            `obj` and the current object `self`.
 
         Examples:
             >>> a = Interval(3, 5)
@@ -726,7 +486,7 @@ class Interval(Generic[T]):
         the lower and upper bounds displaced by the corresponding bounds of the input object.
 
         :param obj: The `obj` parameter is an object of the same class as the `self` object. It
-        represents another interval that will be used to displace the current interval
+            represents another interval that will be used to displace the current interval
 
         :type obj: "Interval[T]"
 
@@ -775,7 +535,7 @@ class Interval(Generic[T]):
         :type alpha: T
 
         :return: The method `enlarge_with` returns a new instance of the same class (`"Interval[T]"`) with the
-        lower bound decreased by `alpha` and the upper bound increased by `alpha`.
+            lower bound decreased by `alpha` and the upper bound increased by `alpha`.
 
         Examples:
             >>> a = Interval(3, 5)
@@ -791,10 +551,10 @@ def hull(lhs, rhs):
     The `hull` function calculates the convex hull of two objects.
 
     :param lhs: The `lhs` parameter represents the left-hand side of the operation, while the `rhs`
-    parameter represents the right-hand side of the operation
+        parameter represents the right-hand side of the operation
 
     :param rhs: The `rhs` parameter is the right-hand side of the operation. It can be any value or
-    object that supports the `hull_with` method
+        object that supports the `hull_with` method
 
     :return: the hull of the input arguments.
 
@@ -815,13 +575,13 @@ def hull(lhs, rhs):
         return Interval(min(lhs, rhs), max(lhs, rhs))
 
 
-def enlarge(lhs, rhs: T):
+def enlarge(lhs, rhs):
     """
     The `enlarge` function takes two arguments, `lhs` and `rhs`, and returns the result of enlarging
     `lhs` by `rhs`.
 
     :param lhs: The `lhs` parameter represents the left-hand side of the operation. It can be either an
-    object that has a method `enlarge_with`, or a scalar value
+        object that has a method `enlarge_with`, or a scalar value
 
     :param rhs: The parameter `rhs` is the value by which the `lhs` object will be enlarged
 

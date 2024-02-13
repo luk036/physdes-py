@@ -2,22 +2,23 @@
 Rectilinear Point Class
 """
 
-from typing import Generic, TypeVar
+from typing import Generic, TypeVar, TYPE_CHECKING, Any
 
-from .interval import (
-    Interval,
+from .generic import (
     contain,
     displacement,
-    enlarge,
-    hull,
     intersection,
     min_dist,
     overlap,
 )
+from .interval import enlarge, hull
 from .vector2 import Vector2
 
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point")
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point")
+if TYPE_CHECKING:
+    from .interval import Interval
+
+T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point[Any, Any]")
+T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point[Any, Any]")
 
 
 class Point(Generic[T1, T2]):
@@ -37,7 +38,7 @@ class Point(Generic[T1, T2]):
         :type xcoord: T1
 
         :param ycoord: The `ycoord` parameter is a variable that represents the y-coordinate of a point.
-        It can be of any type (`T2`)
+            It can be of any type (`T2`)
 
         :type ycoord: T2
 
@@ -57,7 +58,7 @@ class Point(Generic[T1, T2]):
         The __str__ function returns a string representation of a Point object in the format (xcoord, ycoord).
 
         :return: The `__str__` method is returning a string representation of the object, which is the
-        coordinates of the point in the format "(x, y)".
+            coordinates of the point in the format "(x, y)".
 
         Examples:
             >>> a = Point(3, 4)
@@ -94,10 +95,10 @@ class Point(Generic[T1, T2]):
         the first point is less than the second point.
 
         :param other: The `other` parameter represents another instance of the `Point` class that we are
-        comparing to the current instance
+            comparing to the current instance
 
         :return: The `__lt__` method is returning a boolean value indicating whether the current
-        instance is less than the `other` instance.
+            instance is less than the `other` instance.
 
         Examples:
             >>> a = Point(3, 4)
@@ -117,7 +118,7 @@ class Point(Generic[T1, T2]):
         equal to the second point based on their x and y coordinates.
 
         :param other: The `other` parameter represents another instance of the `Point` class that we are
-        comparing to the current instance
+            comparing to the current instance
 
         :return: The method `__le__` is returning a boolean value.
 
@@ -138,11 +139,11 @@ class Point(Generic[T1, T2]):
         The `__eq__` function checks if two points have the same x and y coordinates.
 
         :param other: The `other` parameter represents the other object that we are comparing with the
-        current object. In this case, it is used to compare the x and y coordinates of two `Point`
-        objects to determine if they are equal
+            current object. In this case, it is used to compare the x and y coordinates of two `Point`
+            objects to determine if they are equal
 
         :return: The `__eq__` method is returning a boolean value indicating whether the coordinates of
-        the current point object (`self`) are equal to the coordinates of the other point object (`other`).
+            the current point object (`self`) are equal to the coordinates of the other point object (`other`).
 
         Examples:
             >>> a = Point(3, 4)
@@ -161,7 +162,7 @@ class Point(Generic[T1, T2]):
         The `__iadd__` method allows for in-place addition of a `Vector2` object to a `Point` object.
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is
-        being added to the current vector
+            being added to the current vector
 
         :type rhs: Vector2
 
@@ -188,13 +189,13 @@ class Point(Generic[T1, T2]):
         new `Point` object with updated coordinates.
 
         :param rhs: rhs is the right-hand side operand of the addition operation. In this case, it is a
-        Vector2 object that is being added to the current Point object
+            Vector2 object that is being added to the current Point object
 
         :type rhs: Vector2
 
         :return: The `__add__` method is returning a new instance of the same type as `self` (which could be
-        `Point`, `Rectangle`, or any other type). The new instance is created by adding the `x` and `y`
-        coordinates of `self` with the `x` and `y` coordinates of `rhs` (the right-hand side operand).
+            `Point`, `Rectangle`, or any other type). The new instance is created by adding the `x` and `y`
+            coordinates of `self` with the `x` and `y` coordinates of `rhs` (the right-hand side operand).
 
         Examples:
             >>> a = Point(3, 4)
@@ -214,7 +215,7 @@ class Point(Generic[T1, T2]):
         coordinates of a `Point` object and returns the updated `Point` object.
 
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
-        subtracted from the current vector. In this case, `rhs` is an instance of the `Vector2` class
+            subtracted from the current vector. In this case, `rhs` is an instance of the `Vector2` class
 
         :type rhs: Vector2
 
@@ -241,13 +242,13 @@ class Point(Generic[T1, T2]):
         coordinates of the current object and returns a new object of the same type.
 
         :param rhs: The parameter `rhs` represents the right-hand side operand of the subtraction operation.
-        It can be either a `Vector2` or a `Point` object
+            It can be either a `Vector2` or a `Point` object
 
         :type rhs: Vector2
 
         :return: The `__sub__` method returns a new instance of the same type as `self` (which could be
-        `Point`, `Rectangle`, or any other type) with the x and y coordinates subtracted by the
-        corresponding coordinates of `rhs` (another `Vector2` or `Point`).
+            `Point`, `Rectangle`, or any other type) with the x and y coordinates subtracted by the
+            corresponding coordinates of `rhs` (another `Vector2` or `Point`).
 
         Examples:
             >>> a = Point(3, 4)
@@ -291,6 +292,7 @@ class Point(Generic[T1, T2]):
             >>> a = Point(3, 4)
             >>> print(a.flip())
             (4, 3)
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
             >>> print(r.flip())
             ([5, 6], [3, 4])
@@ -302,7 +304,7 @@ class Point(Generic[T1, T2]):
         The `overlaps` function checks if two objects overlap by comparing their x and y coordinates.
 
         :param other: The `other` parameter represents another object that we want to check for overlap with
-        the current object
+            the current object
 
         :return: a boolean value, indicating whether there is an overlap between the coordinates of the two objects.
 
@@ -311,6 +313,7 @@ class Point(Generic[T1, T2]):
             >>> b = Point(5, 6)
             >>> print(a.overlaps(b))
             False
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
             >>> print(r.overlaps(a))
             False
@@ -323,8 +326,8 @@ class Point(Generic[T1, T2]):
         coordinates of another object.
 
         :param other: The "other" parameter is an object of the same class as the current object. It
-        represents another instance of the class that we want to check if it is contained within the current
-        instance
+            represents another instance of the class that we want to check if it is contained within the current
+            instance
 
         :return: The `contains` method is returning a boolean value.
 
@@ -333,6 +336,7 @@ class Point(Generic[T1, T2]):
             >>> b = Point(5, 6)
             >>> print(a.contains(b))
             False
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.contains(a))
             False
@@ -345,16 +349,17 @@ class Point(Generic[T1, T2]):
         coordinates of both objects.
 
         :param other: The `other` parameter is an object of the same type as `self`. It represents another
-        instance of the class that the `hull_with` method belongs to
+            instance of the class that the `hull_with` method belongs to
 
         :return: an instance of the same class as `self` (type `T`). The instance is created using the
-        `hull` function, which takes the x-coordinates and y-coordinates of `self` and `other` as arguments.
+            `hull` function, which takes the x-coordinates and y-coordinates of `self` and `other` as arguments.
 
         Examples:
             >>> a = Point(3, 4)
             >>> b = Point(5, 6)
             >>> print(a.hull_with(b))
             ([3, 5], [4, 6])
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.hull_with(r))
             ([3, 4], [5, 6])
@@ -371,17 +376,18 @@ class Point(Generic[T1, T2]):
         represents the intersection of the x and y coordinates of the two objects.
 
         :param other: The "other" parameter is an object of the same type as the current object. It
-        represents another instance of the class that has the same attributes and methods
+            represents another instance of the class that has the same attributes and methods
 
         :return: The method `intersection_with` returns an instance of the same class as `self` (i.e.,
-        `type(self)`). The instance is created using the `T` constructor and takes the intersection of
-        the `xcoord` and `ycoord` attributes of `self` and `other`.
+            `type(self)`). The instance is created using the `T` constructor and takes the intersection of
+            the `xcoord` and `ycoord` attributes of `self` and `other`.
 
         Examples:
             >>> a = Point(3, 5)
             >>> b = Point(4, 6)
             >>> print(a.intersection_with(a))
             (3, 5)
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.intersection_with(a))
             ([3, 3], [5, 5])
@@ -403,18 +409,18 @@ class Point(Generic[T1, T2]):
         The function calculates the minimum distance between two points using their x and y coordinates.
 
         :param other: The "other" parameter represents another object or point with which you want to
-        calculate the minimum distance. It is assumed that both the current object (self) and the other
-        object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
-        function calculates the minimum distance between the
+            calculate the minimum distance. It is assumed that both the current object (self) and the other
+            object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
+            function calculates the minimum distance between the
 
-        :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two
-        objects.
+        :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two objects.
 
         Examples:
             >>> a = Point(3, 4)
             >>> b = Point(5, 6)
             >>> print(a.min_dist_with(b))
             4
+            >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.min_dist_with(a))
             1
@@ -433,10 +439,10 @@ class Point(Generic[T1, T2]):
         with the x and y coordinates enlarged by `alpha`.
 
         :param alpha: The `alpha` parameter is a value that determines the amount by which the coordinates
-        of the point should be enlarged
+            of the point should be enlarged
 
         :return: The `enlarge_with` method returns an instance of the same type as `self` with the enlarged
-        coordinates.
+            coordinates.
 
         Examples:
             >>> a = Point(9, -1)

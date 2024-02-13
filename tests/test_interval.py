@@ -2,15 +2,17 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers
 
-from physdes.interval import (
-    Interval,
+from physdes.generic import (
     contain,
     displacement,
-    enlarge,
-    hull,
     intersection,
     min_dist,
     overlap,
+)
+from physdes.interval import (
+    Interval,
+    enlarge,
+    hull,
 )
 
 
