@@ -1,6 +1,7 @@
 """
 Rectilinear Point Class
 """
+
 from typing import Generic, TypeVar
 
 from .interval import (

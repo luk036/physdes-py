@@ -1,6 +1,7 @@
 """
 Vector2 Class
 """
+
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 if TYPE_CHECKING:
