@@ -33,6 +33,9 @@ class Interval(Generic[T]):
         self._lb: T = lb
         self._ub: T = ub
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.lb}, {self.ub}"
+
     def __str__(self) -> str:
         """
         The `__str__` function returns a string representation of an Interval object in the format "[lb, ub]".

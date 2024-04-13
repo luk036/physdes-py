@@ -83,6 +83,9 @@ class MergeObj(Generic[T1, T2]):
         impl = Point(xcoord + ycoord, xcoord - ycoord)
         return MergeObj(impl.xcoord, impl.ycoord)
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord}"
+
     def __str__(self) -> str:
         """
         The `__str__` function returns a string representation of an object, specifically in the format
@@ -97,7 +100,7 @@ class MergeObj(Generic[T1, T2]):
             >>> print(a)
             /9, -1/
         """
-        return "/{self.impl.xcoord}, {self.impl.ycoord}/".format(self=self)
+        return f"/{self.impl.xcoord}, {self.impl.ycoord}/"
 
     def __eq__(self, other) -> bool:
         """

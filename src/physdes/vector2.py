@@ -38,6 +38,9 @@ class Vector2(Generic[T1, T2]):
         self.x_ = x
         self.y_ = y
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.x}, {self.y}"
+
     def __str__(self) -> str:
         """
         The `__str__` function returns a string representation of a Vector2 object in the format "<x, y>".
