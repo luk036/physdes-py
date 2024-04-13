@@ -1,5 +1,6 @@
 from typing import Generic, TypeVar, Union
-from .generic import min_dist, displacement
+
+from .generic import displacement, min_dist
 
 T = TypeVar("T", int, float)
 

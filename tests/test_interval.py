@@ -2,18 +2,8 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers
 
-from physdes.generic import (
-    contain,
-    displacement,
-    intersection,
-    min_dist,
-    overlap,
-)
-from physdes.interval import (
-    Interval,
-    enlarge,
-    hull,
-)
+from physdes.generic import contain, displacement, intersection, min_dist, overlap
+from physdes.interval import Interval, enlarge, hull
 
 
 @given(integers(), integers(), integers(), integers(), integers())
