@@ -2,15 +2,9 @@
 Rectilinear Point Class
 """
 
-from typing import Generic, TypeVar, TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
-from .generic import (
-    contain,
-    displacement,
-    intersection,
-    min_dist,
-    overlap,
-)
+from .generic import contain, displacement, intersection, min_dist, overlap
 from .interval import enlarge, hull
 from .vector2 import Vector2
 

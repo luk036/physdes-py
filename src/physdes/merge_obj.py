@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from .interval import enlarge
 from .generic import intersection, min_dist
+from .interval import enlarge
 from .point import Point
 from .vector2 import Vector2
 
