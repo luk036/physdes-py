@@ -80,6 +80,9 @@ class Interval(Generic[T]):
         """
         return self._ub
 
+    def is_invalid(self) -> bool:
+        return self.lb > self.ub
+
     # def copy(self) -> "Interval[T]":
     #     """
     #     The `copy` function returns a new instance of the same class with the same lower and upper
@@ -417,9 +420,9 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
 
-    def intersection_with(self, obj: Union["Interval[T]", T]):
+    def intersect_with(self, obj: Union["Interval[T]", T]):
         """
-        The `intersection_with` function takes in an object and returns the intersection between the
+        The `intersect_with` function takes in an object and returns the intersection between the
         object and the current interval.
 
         :param obj: The `obj` parameter can be either an instance of the `"Interval[T]"` class (which is the same
@@ -427,34 +430,34 @@ class Interval(Generic[T]):
 
         :type obj: Union["Interval[T]", T]
 
-        :return: The `intersection_with` method returns an `Interval` object that represents the
+        :return: The `intersect_with` method returns an `Interval` object that represents the
             intersection between the current `Interval` object (`self`) and the input object (`obj`).
 
         Examples:
             >>> a = Interval(3, 8)
-            >>> print(a.intersection_with(4))
+            >>> print(a.intersect_with(4))
             [4, 4]
-            >>> print(a.intersection_with(Interval(4, 7)))
+            >>> print(a.intersect_with(Interval(4, 7)))
             [4, 7]
-            >>> print(a.intersection_with(Interval(6, 9)))
+            >>> print(a.intersect_with(Interval(6, 9)))
             [6, 8]
-            >>> print(a.intersection_with(Interval(3, 5)))
+            >>> print(a.intersect_with(Interval(3, 5)))
             [3, 5]
-            >>> print(a.intersection_with(Interval(5, 7)))
+            >>> print(a.intersect_with(Interval(5, 7)))
             [5, 7]
-            >>> print(a.intersection_with(Interval(3, 6)))
+            >>> print(a.intersect_with(Interval(3, 6)))
             [3, 6]
-            >>> print(a.intersection_with(Interval(5, 8)))
+            >>> print(a.intersect_with(Interval(5, 8)))
             [5, 8]
-            >>> print(a.intersection_with(Interval(3, 7)))
+            >>> print(a.intersect_with(Interval(3, 7)))
             [3, 7]
         """
         # `a` can be an Interval or int
-        assert self.overlaps(obj)
+        # assert self.overlaps(obj)
         if isinstance(obj, Interval):
             return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
         else:  # assume scalar
-            return Interval(obj, obj)
+            return Interval(max(self.lb, obj), min(self.ub, obj))
 
     def min_dist_with(self, obj: Union["Interval[T]", T]):
         """
@@ -524,7 +527,7 @@ class Interval(Generic[T]):
     #         return min_dist_change(self._lb, obj)
     #     S = type(self)
     #     if isinstance(obj, S):
-    #         self = obj = self.intersection_with(obj)  # what???
+    #         self = obj = self.intersect_with(obj)  # what???
     #     else:  # assume scalar
     #         self._ub = self._lb = obj
     #     return 0

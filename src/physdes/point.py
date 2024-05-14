@@ -366,33 +366,33 @@ class Point(Generic[T1, T2]):
 
     # >>> a = Point(3, 4)
     # >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
-    # >>> print(r.intersection_with(a))
-    def intersection_with(self, other):
+    # >>> print(r.intersect_with(a))
+    def intersect_with(self, other):
         """
-        The function `intersection_with` takes another object as input and returns a new object that
+        The function `intersect_with` takes another object as input and returns a new object that
         represents the intersection of the x and y coordinates of the two objects.
 
         :param other: The "other" parameter is an object of the same type as the current object. It
             represents another instance of the class that has the same attributes and methods
 
-        :return: The method `intersection_with` returns an instance of the same class as `self` (i.e.,
+        :return: The method `intersect_with` returns an instance of the same class as `self` (i.e.,
             `type(self)`). The instance is created using the `T` constructor and takes the intersection of
             the `xcoord` and `ycoord` attributes of `self` and `other`.
 
         Examples:
             >>> a = Point(3, 5)
             >>> b = Point(4, 6)
-            >>> print(a.intersection_with(a))
+            >>> print(a.intersect_with(a))
             (3, 5)
             >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
-            >>> print(r.intersection_with(a))
+            >>> print(r.intersect_with(a))
             ([3, 3], [5, 5])
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
-            >>> print(r.intersection_with(b))
+            >>> print(r.intersect_with(b))
             ([4, 4], [6, 6])
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
-            >>> print(r.intersection_with(r))
+            >>> print(r.intersect_with(r))
             ([3, 4], [5, 6])
         """
         T = type(self)

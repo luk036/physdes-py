@@ -54,7 +54,7 @@ def test_Interval_3D():
     assert (a - v) + v == a
 
     assert a.contains(b)
-    assert a.intersection_with(b) == b
+    assert a.intersect_with(b) == b
     assert not b.contains(a)
     assert a.overlaps(b)
     assert b.overlaps(a)

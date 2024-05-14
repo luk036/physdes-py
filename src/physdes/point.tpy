@@ -102,7 +102,7 @@ class Point:
         """
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
-    def intersection_with(self, other):
+    def intersect_with(self, other):
         """[summary]
 
         Args:

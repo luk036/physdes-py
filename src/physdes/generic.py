@@ -81,7 +81,7 @@ def contain(lhs, rhs) -> bool:
 def intersection(lhs, rhs):
     """
     The `intersection` function returns the intersection of two objects if they have an
-    `intersection_with` method, otherwise it returns the objects themselves if they are equal.
+    `intersect_with` method, otherwise it returns the objects themselves if they are equal.
 
     :param lhs: The `lhs` parameter represents the left-hand side of the intersection operation, while
         the `rhs` parameter represents the right-hand side of the intersection operation
@@ -110,10 +110,10 @@ def intersection(lhs, rhs):
         >>> print(intersection(Interval(1, 2), 2))
         [2, 2]
     """
-    if hasattr(lhs, "intersection_with"):
-        return lhs.intersection_with(rhs)
-    elif hasattr(rhs, "intersection_with"):
-        return rhs.intersection_with(lhs)
+    if hasattr(lhs, "intersect_with"):
+        return lhs.intersect_with(rhs)
+    elif hasattr(rhs, "intersect_with"):
+        return rhs.intersect_with(lhs)
     else:  # assume scalar
         assert lhs == rhs
         return lhs

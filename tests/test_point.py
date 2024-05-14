@@ -20,7 +20,7 @@ def test_point2():
     assert not r.overlaps(a)
     assert r.overlaps(Point(4, 5))
     assert r.overlaps(Point(4, 6))
-    assert r.intersection_with(Point(4, 5)) == Point(Interval(4, 4), Interval(5, 5))
+    assert r.intersect_with(Point(4, 5)) == Point(Interval(4, 4), Interval(5, 5))
 
 
 def test_transform():

@@ -34,9 +34,9 @@ def test_interval():
 
     assert a.contains(4)
     assert a.contains(8)
-    assert a.intersection_with(8) == Interval(8, 8)
+    assert a.intersect_with(8) == Interval(8, 8)
     assert a.contains(b)
-    assert a.intersection_with(b) == b
+    assert a.intersect_with(b) == b
     assert not b.contains(a)
     assert a.overlaps(b)
     assert b.overlaps(a)
@@ -121,17 +121,15 @@ def test_intersection():
     a = Interval(3, 5)
     b = Interval(5, 7)
     c = Interval(7, 8)
-    assert a.intersection_with(b) == Interval(5, 5)
-    assert b.intersection_with(c) == Interval(7, 7)
-    with pytest.raises(AssertionError):
-        a.intersection_with(c)
+    assert a.intersect_with(b) == Interval(5, 5)
+    assert b.intersect_with(c) == Interval(7, 7)
+    assert a.intersect_with(c).is_invalid()
     assert intersection(a, b) == Interval(5, 5)
     assert intersection(b, c) == Interval(7, 7)
 
     d = 4
-    assert a.intersection_with(d) == Interval(4, 4)
-    with pytest.raises(AssertionError):
-        assert a.intersection_with(6)
+    assert a.intersect_with(d) == Interval(4, 4)
+    assert a.intersect_with(6).is_invalid()
 
     assert intersection(a, d) == Interval(4, 4)
     assert intersection(d, a) == Interval(4, 4)
@@ -229,13 +227,13 @@ def test_enlarge():
 
 #     # print(max(Interval(3, 4), 7))
 #     # print(min(Interval(8, 9), 8))
-#     # print(a.intersection_with(Interval(7, 8)))
+#     # print(a.intersect_with(Interval(7, 8)))
 
 #     # The following depends on how max() and min() are implemented!!!!
-#     assert a.intersection_with(Interval(7, 8)) == Interval(7, Interval(8, 9))
+#     assert a.intersect_with(Interval(7, 8)) == Interval(7, Interval(8, 9))
 
 #     assert a.contains(b)
-#     assert a.intersection_with(b) == b
+#     assert a.intersect_with(b) == b
 #     assert not b.contains(a)
 #     assert a.overlaps(b)
 #     assert b.overlaps(a)

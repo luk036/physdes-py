@@ -44,10 +44,10 @@ def intersection(lhs, rhs):
     Returns:
         [type]: [description]
     """
-    if hasattr(lhs, "intersection_with"):
-        return lhs.intersection_with(rhs)
-    elif hasattr(rhs, "intersection_with"):
-        return rhs.intersection_with(lhs)
+    if hasattr(lhs, "intersect_with"):
+        return lhs.intersect_with(rhs)
+    elif hasattr(rhs, "intersect_with"):
+        return rhs.intersect_with(lhs)
     else:  # assume scalar
         assert lhs == rhs
         return lhs

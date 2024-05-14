@@ -34,5 +34,5 @@ def test_merge_2():
     assert r1 == MergeObj(Interval(6, 12), Interval(-4, 2))
     r2 = b.enlarge_with(4)
     assert r2 == MergeObj(Interval(12, 20), Interval(-6, 2))
-    r3 = r1.intersection_with(r2)
+    r3 = r1.intersect_with(r2)
     assert r3 == MergeObj(Interval(12, 12), Interval(-4, 2))

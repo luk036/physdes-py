@@ -205,7 +205,7 @@ class MergeObj(Generic[T1, T2]):
         ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
         return MergeObj(xcoord, ycoord)  # TODO
 
-    def intersection_with(self, other):
+    def intersect_with(self, other):
         """
         The function calculates the intersection point between two MergeObj objects and returns a new
         MergeObj object with the coordinates of the intersection point.
@@ -218,11 +218,11 @@ class MergeObj(Generic[T1, T2]):
 
         Examples:
             >>> a = MergeObj(4 + 5, 4 - 5)
-            >>> r = a.intersection_with(a)
+            >>> r = a.intersect_with(a)
             >>> print(r)
             /9, -1/
         """
-        point = self.impl.intersection_with(other.impl)  # TODO
+        point = self.impl.intersect_with(other.impl)  # TODO
         return MergeObj(point.xcoord, point.ycoord)
 
     def merge_with(self, other):
