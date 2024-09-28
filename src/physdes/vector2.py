@@ -1,5 +1,23 @@
 """
 Vector2 Class
+
+This code defines a Vector2 class, which represents a two-dimensional vector in mathematics or physics. A vector is an object that has both magnitude and direction, typically represented by x and y coordinates in a 2D space.
+
+The purpose of this code is to provide a reusable structure for working with 2D vectors, along with various operations that can be performed on them. This class can be used in applications like game development, physics simulations, or any scenario where 2D vector calculations are needed.
+
+The Vector2 class takes two inputs when creating a new instance: x and y coordinates. These can be integers, floats, or even other Vector2 objects, allowing for flexible use in different contexts.
+
+The class produces Vector2 objects as outputs, which can be printed, compared, or used in further calculations. It also provides methods for common vector operations like addition, subtraction, multiplication by a scalar, and division by a scalar.
+
+To achieve its purpose, the Vector2 class uses Python's object-oriented programming features. It defines several methods that overload standard operators (like +, -, *, and /), allowing vector objects to be manipulated intuitively. For example, you can add two vectors simply by using the + operator between them.
+
+The class includes important logic flows for vector operations. Addition and subtraction are performed component-wise, meaning the x and y values are added or subtracted separately. Multiplication and division by a scalar apply the operation to both x and y components. There's also a cross product method, which calculates a special type of multiplication between two vectors.
+
+The Vector2 class also implements comparison operations, allowing vectors to be checked for equality. It provides a string representation of the vector for easy printing and debugging.
+
+An interesting feature of this class is its use of generic types, allowing it to work with different numeric types (like integers or floats) or even nested Vector2 objects. This makes the class very flexible and usable in a wide range of scenarios.
+
+Overall, this Vector2 class provides a comprehensive toolkit for working with 2D vectors, encapsulating the mathematical concepts and operations into an easy-to-use Python class. It's designed to be intuitive for beginners while also offering advanced features for more complex use cases.
 """
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar

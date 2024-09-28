@@ -1,3 +1,28 @@
+"""
+Polygon Module (src\physdes\polygon.py)
+
+This code defines a Polygon class and related functions for working with polygons in a 2D space. The purpose of this module is to provide tools for creating, manipulating, and analyzing polygons.
+
+The Polygon class represents a polygon using a list of points (vertices). It takes a list of Point objects as input when creating a new Polygon. The class provides methods for basic operations like adding or subtracting vectors from the polygon (which moves it), calculating its area, and comparing polygons for equality.
+
+The module also includes several functions for creating special types of polygons:
+
+1. create_mono_polygon: Creates a monotone polygon, which means the polygon is sorted in a specific direction.
+2. create_ymono_polygon: Creates a y-monotone polygon, sorted based on y-coordinates.
+3. create_xmono_polygon: Creates an x-monotone polygon, sorted based on x-coordinates.
+4. create_test_polygon: Creates a test polygon with a specific shape for testing purposes.
+
+One of the key functions in this module is point_in_polygon, which determines whether a given point is inside a polygon. This function takes a list of points representing the polygon and a single point to check. It returns a boolean value: True if the point is inside the polygon, and False if it's outside.
+
+The point_in_polygon function uses a clever algorithm called the ray-casting algorithm. It works by imagining a horizontal line (ray) extending from the point to the right. It then counts how many times this line intersects with the edges of the polygon. If the number of intersections is odd, the point is inside the polygon; if it's even, the point is outside.
+
+Throughout the code, there are several important data transformations happening. For example, when creating a Polygon, the input points are converted into vectors relative to the first point (the origin). This makes it easier to perform calculations and transformations on the polygon.
+
+The module uses generic types (T) for coordinates, allowing it to work with both integer and floating-point coordinates. This flexibility makes the code more versatile and reusable in different contexts.
+
+Overall, this module provides a comprehensive set of tools for working with polygons, from basic creation and manipulation to more complex operations like determining if a point is inside a polygon. It's designed to be flexible and efficient, making it useful for various applications involving 2D geometry.
+"""
+
 from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Callable, Generic, List, TypeVar

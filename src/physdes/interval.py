@@ -1,3 +1,25 @@
+"""
+Interval Class
+
+This code defines an Interval class, which represents a range of numbers with a lower bound and an upper bound. The purpose of this class is to provide a way to work with intervals of numbers, allowing various operations and comparisons to be performed on them.
+
+The Interval class takes two inputs when creating an instance: a lower bound (lb) and an upper bound (ub). These can be either integers or floating-point numbers. The class then stores these values and provides methods to access and manipulate them.
+
+The main outputs of this class are the results of various operations on intervals, such as checking if two intervals overlap, finding the intersection between intervals, or calculating the minimum distance between intervals.
+
+The class achieves its purpose by implementing a variety of methods that perform calculations and comparisons on the lower and upper bounds of the intervals. For example, the overlaps method checks if two intervals have any numbers in common, while the contains method determines if a given number or interval is entirely within another interval.
+
+Some important logic flows in this code include:
+
+1. Comparison operations: The class implements methods like __lt__, __gt__, __le__, and __ge__ to compare intervals with other intervals or single numbers.
+2. Arithmetic operations: Methods like __add__, __sub__, and __mul__ allow intervals to be added, subtracted, or multiplied by scalar values.
+3. Set-like operations: The hull_with method finds the smallest interval that contains both the current interval and another interval or number, while intersect_with finds the overlap between two intervals.
+
+The code also includes utility functions outside the class, such as hull and enlarge, which can work with both Interval objects and scalar values. These functions provide a more flexible way to perform operations on intervals and numbers.
+
+Overall, this Interval class provides a comprehensive set of tools for working with ranges of numbers, which can be useful in various applications such as scheduling, resource allocation, or numerical analysis. It allows programmers to easily manipulate and compare intervals without having to manually handle the lower and upper bounds separately.
+"""
+
 from typing import Generic, TypeVar, Union
 
 from .generic import displacement, min_dist

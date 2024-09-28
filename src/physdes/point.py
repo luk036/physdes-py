@@ -1,5 +1,26 @@
 """
-Rectilinear Point Class
+Point Class
+
+This code defines a Point class, which represents a point in a 2D coordinate system. The purpose of this class is to provide a way to work with points, perform operations on them, and compare them with other points or geometric shapes.
+
+The Point class takes two inputs when creating a new point: xcoord and ycoord. These represent the x and y coordinates of the point, respectively. The class is designed to be flexible, allowing these coordinates to be integers, floats, intervals, or even other Point objects (for higher-dimensional points).
+
+The class doesn't produce a specific output on its own, but it provides many methods that can be used to manipulate points or get information about them. For example, you can add or subtract vectors from points, check if points overlap or contain each other, find the distance between points, and more.
+
+The Point class achieves its purpose by storing the x and y coordinates and providing a set of methods to work with these coordinates. It uses operator overloading to make it easy to perform arithmetic operations with points, such as addition and subtraction. It also includes comparison methods to determine the relative positions of points.
+
+Some important operations in the class include:
+
+1. Adding and subtracting vectors from points
+2. Checking if points overlap or contain each other
+3. Finding the minimum Manhattan distance between points
+4. Creating a hull (bounding box) that contains two points
+5. Finding the intersection of two points or shapes
+6. Enlarging a point to create a rectangle around it
+
+The class uses type hints and generics to make it flexible and usable with different types of coordinates. It also includes many helper methods that use functions from other modules (like generic, interval, and vector2) to perform calculations and comparisons.
+
+Overall, this Point class provides a comprehensive set of tools for working with points in a 2D space, making it easier for programmers to handle geometric calculations and manipulations in their code.
 """
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar
@@ -403,12 +424,12 @@ class Point(Generic[T1, T2]):
 
     def min_dist_with(self, other):
         """
-        The function calculates the minimum distance between two points using their x and y coordinates.
+        The function calculates the minimum Manhattan distance between two points using their x and y coordinates.
 
         :param other: The "other" parameter represents another object or point with which you want to
-            calculate the minimum distance. It is assumed that both the current object (self) and the other
+            calculate the minimum Manhattan distance. It is assumed that both the current object (self) and the other
             object have attributes xcoord and ycoord, which represent their respective x and y coordinates. The
-            function calculates the minimum distance between the
+            function calculates the minimum Manhattan distance between the
 
         :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two objects.
 
