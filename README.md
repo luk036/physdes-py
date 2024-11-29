@@ -5,7 +5,7 @@
   <img src="./rectilinear-shapes-for-vlsi-physical-desgin.svg"/>
 </p>
 
-# 🏼 physdes-py
+# 🧱 physdes-py
 
 > Physical Design Python Code
 
