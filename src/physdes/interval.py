@@ -601,7 +601,7 @@ def hull(lhs, rhs):
     elif hasattr(rhs, "hull_with"):
         return rhs.hull_with(lhs)
     else:  # assume scalar
-        return Interval(min(lhs, rhs), max(lhs, rhs))
+        return Interval(lhs, rhs) if lhs < rhs else Interval(rhs, lhs)
 
 
 def enlarge(lhs, rhs):
