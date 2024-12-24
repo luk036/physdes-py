@@ -1,4 +1,4 @@
-"""
+r"""
 Generic Operations for Physical Design (src\physdes\generic.py)
 
 This code defines a set of generic operations that are commonly used in physical design calculations. These operations are designed to work with different types of objects, including simple numbers (scalars) and more complex objects like intervals.
@@ -19,7 +19,6 @@ The code also includes many examples (in the form of doctests) to show how each 
 
 Overall, this code provides a flexible set of tools for performing common operations in physical design calculations, capable of working with both simple numbers and more complex geometric objects.
 """
-
 
 def overlap(lhs, rhs) -> bool:
     """

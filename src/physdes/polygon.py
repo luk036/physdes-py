@@ -1,4 +1,4 @@
-"""
+r"""
 Polygon Module (src\physdes\polygon.py)
 
 This code defines a Polygon class and related functions for working with polygons in a 2D space. The purpose of this module is to provide tools for creating, manipulating, and analyzing polygons.

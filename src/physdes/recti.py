@@ -1,4 +1,4 @@
-"""
+r"""
 Rectangle and Segment Classes (src\physdes\recti.py)
 
 This code defines classes for working with rectangles and line segments in a 2D coordinate system. The main purpose is to provide a way to represent and manipulate these geometric shapes in a program.
