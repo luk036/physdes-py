@@ -1,4 +1,4 @@
-"""
+r"""
 Vector2 Class
 
 This code defines a Vector2 class, which represents a two-dimensional vector in mathematics or physics. A vector is an object that has both magnitude and direction, typically represented by x and y coordinates in a 2D space.
