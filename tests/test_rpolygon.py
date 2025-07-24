@@ -1,4 +1,5 @@
 from lds_gen.ilds import Halton
+import pytest
 
 from physdes.point import Point
 from physdes.rpolygon import (
@@ -38,6 +39,8 @@ def test_RPolygon():
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
     assert Q == P
+    with pytest.raises(NotImplementedError):
+        P.to_polygon()
 
 
 def test_RPolygon2():

@@ -255,7 +255,7 @@ class RPolygon:
 
     def to_polygon(self):
         """@todo"""
-        pass
+        raise NotImplementedError
 
 
 def partition(pred, iterable):

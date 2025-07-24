@@ -13,6 +13,7 @@ def test_MergeObj():
     # assert not overlap(r1, r2)
     assert r1.min_dist_with(r2) == 7
     assert min_dist(r1, r2) == 7
+    assert repr(r1) == "MergeObj(9, -1)"
 
 
 def test_merge():
@@ -36,3 +37,10 @@ def test_merge_2():
     assert r2 == MergeObj(Interval(12, 20), Interval(-6, 2))
     r3 = r1.intersect_with(r2)
     assert r3 == MergeObj(Interval(12, 12), Interval(-4, 2))
+
+
+def test_merge_3():
+    s1 = MergeObj(1, 1)
+    s2 = MergeObj(3, 3)
+    m1 = s1.merge_with(s2)
+    assert m1 == MergeObj(Interval(2, 2), Interval(2, 2))

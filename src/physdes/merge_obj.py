@@ -106,7 +106,7 @@ class MergeObj(Generic[T1, T2]):
         return MergeObj(impl.xcoord, impl.ycoord)
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord}"
+        return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord})"
 
     def __str__(self) -> str:
         """
