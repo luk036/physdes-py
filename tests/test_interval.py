@@ -5,20 +5,25 @@ from physdes.generic import contain, displacement, intersection, min_dist, overl
 from physdes.interval import Interval, enlarge, hull
 
 
-@given(integers(min_value=-1000, max_value=1000), integers(min_value=-1000, max_value=1000))
+@given(
+    integers(min_value=-1000, max_value=1000), integers(min_value=-1000, max_value=1000)
+)
 def test_interval_hypo(a1: int, a2: int):
     a = Interval(min(a1, a2), max(a1, a2))
     assert a.lb <= a.ub
 
 
 def test_interval_arithmetic_hypo():
-    @given(integers(min_value=-1000, max_value=1000), integers(min_value=0, max_value=1000), integers(min_value=-1000, max_value=1000))
+    @given(
+        integers(min_value=-1000, max_value=1000),
+        integers(min_value=0, max_value=1000),
+        integers(min_value=-1000, max_value=1000),
+    )
     def test_add_sub(a1, a2, v):
         a = Interval(min(a1, a2), max(a1, a2))
         assert (a + v) - v == a
 
     test_add_sub()
-
 
 
 def test_interval():
