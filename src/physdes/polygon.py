@@ -234,9 +234,29 @@ class Polygon(Generic[T]):
             vec1 = vec2
         return res
 
-    def is_rectilinear(self):
-        """@todo"""
-        pass
+    def is_rectilinear(self) -> bool:
+        """
+        The `is_rectilinear` function checks if a polygon is rectilinear.
+
+        :return: The `is_rectilinear` method returns a boolean value.
+
+        Examples:
+            >>> coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+            >>> S = [Point(x, y) for x, y in coords]
+            >>> P = Polygon(S)
+            >>> P.is_rectilinear()
+            True
+            >>> coords = [(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5)]
+            >>> S = [Point(x, y) for x, y in coords]
+            >>> P = Polygon(S)
+            >>> P.is_rectilinear()
+            False
+        """
+        pointset = [self._origin] + [self._origin + vec for vec in self._vecs]
+        return all(
+            p1.xcoord == p2.xcoord or p1.ycoord == p2.ycoord
+            for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
+        )
 
 
 def partition(pred, iterable):

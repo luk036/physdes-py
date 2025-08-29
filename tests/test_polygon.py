@@ -137,3 +137,17 @@ def test_polygon4():
 #         print("{},{}".format(p.xcoord, p.ycoord), end=' ')
 #     P = Polygon(S)
 #     assert P.signed_area_x2 == 3198528000
+
+
+def test_is_rectilinear():
+    # Create a rectilinear polygon
+    rectilinear_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+    rectilinear_points = [Point(x, y) for x, y in rectilinear_coords]
+    rectilinear_polygon = Polygon(rectilinear_points)
+    assert rectilinear_polygon.is_rectilinear() is True
+
+    # Create a non-rectilinear polygon
+    non_rectilinear_coords = [(0, 0), (1, 1), (2, 0)]
+    non_rectilinear_points = [Point(x, y) for x, y in non_rectilinear_coords]
+    non_rectilinear_polygon = Polygon(non_rectilinear_points)
+    assert non_rectilinear_polygon.is_rectilinear() is False
