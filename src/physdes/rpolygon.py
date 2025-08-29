@@ -267,7 +267,10 @@ class RPolygon:
         new_pointset.append(current_pt)
 
         for next_pt in pointset[1:]:
-            if current_pt.xcoord != next_pt.xcoord and current_pt.ycoord != next_pt.ycoord:
+            if (
+                current_pt.xcoord != next_pt.xcoord
+                and current_pt.ycoord != next_pt.ycoord
+            ):
                 # Add intermediate point for non-rectilinear segment
                 new_pointset.append(Point(next_pt.xcoord, current_pt.ycoord))
             new_pointset.append(next_pt)
@@ -275,7 +278,10 @@ class RPolygon:
 
         # Closing segment
         first_pt = pointset[0]
-        if current_pt.xcoord != first_pt.xcoord and current_pt.ycoord != first_pt.ycoord:
+        if (
+            current_pt.xcoord != first_pt.xcoord
+            and current_pt.ycoord != first_pt.ycoord
+        ):
             new_pointset.append(Point(first_pt.xcoord, current_pt.ycoord))
 
         return Polygon(new_pointset)

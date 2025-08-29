@@ -1,4 +1,3 @@
-import pytest
 from lds_gen.ilds import Halton
 
 from physdes.point import Point
