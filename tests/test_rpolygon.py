@@ -2,6 +2,7 @@ import pytest
 from lds_gen.ilds import Halton
 
 from physdes.point import Point
+from physdes.polygon import Polygon
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
@@ -39,8 +40,6 @@ def test_RPolygon():
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
     assert Q == P
-    with pytest.raises(NotImplementedError):
-        P.to_polygon()
 
 
 def test_RPolygon2():
@@ -116,3 +115,16 @@ def test_RPolygon5():
     P = RPolygon(S)
     assert P.signed_area == -2176416
     assert point_in_rpolygon(S, Point(qx, qy))
+
+
+def test_to_polygon():
+    coords = [(0, 0), (10, 10), (5, 5)]
+    point_set = [Point(x, y) for x, y in coords]
+    r_poly = RPolygon(point_set)
+    poly = r_poly.to_polygon()
+
+    expected_coords = [(0, 0), (10, 0), (10, 10), (5, 10), (5, 5), (0, 5)]
+    expected_point_set = [Point(x, y) for x, y in expected_coords]
+    expected_poly = Polygon(expected_point_set)
+
+    assert poly == expected_poly

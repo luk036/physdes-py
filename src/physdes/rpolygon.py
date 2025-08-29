@@ -29,6 +29,7 @@ from typing import Callable, List, Tuple
 from .point import Point
 from .skeleton import _logger
 from .vector2 import Vector2
+from .polygon import Polygon
 
 PointSet = List[Point[int, int]]
 
@@ -253,9 +254,31 @@ class RPolygon:
             vec0 = vec1
         return res
 
-    def to_polygon(self):
-        """@todo"""
-        raise NotImplementedError
+    def to_polygon(self) -> Polygon:
+        """
+        The `to_polygon` function converts a rectilinear polygon to a standard polygon.
+
+        :return: A `Polygon` object representing the converted polygon.
+        """
+        pointset = [self._origin] + [self._origin + v for v in self._vecs]
+
+        new_pointset: PointSet = []
+        current_pt = pointset[0]
+        new_pointset.append(current_pt)
+
+        for next_pt in pointset[1:]:
+            if current_pt.xcoord != next_pt.xcoord and current_pt.ycoord != next_pt.ycoord:
+                # Add intermediate point for non-rectilinear segment
+                new_pointset.append(Point(next_pt.xcoord, current_pt.ycoord))
+            new_pointset.append(next_pt)
+            current_pt = next_pt
+
+        # Closing segment
+        first_pt = pointset[0]
+        if current_pt.xcoord != first_pt.xcoord and current_pt.ycoord != first_pt.ycoord:
+            new_pointset.append(Point(first_pt.xcoord, current_pt.ycoord))
+
+        return Polygon(new_pointset)
 
 
 def partition(pred, iterable):
