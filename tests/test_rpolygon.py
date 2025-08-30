@@ -32,10 +32,10 @@ def test_RPolygon():
     )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
-    P = RPolygon(S)
+    P = RPolygon.from_pointset(S)
     assert not is_cw
     assert P.signed_area == 45
-    Q = RPolygon(S)
+    Q = RPolygon.from_pointset(S)
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
     assert Q == P
@@ -49,7 +49,7 @@ def test_RPolygon2():
     )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
-    P = RPolygon(S)
+    P = RPolygon.from_pointset(S)
     assert is_cw
     assert P.signed_area == -1871424
 
@@ -74,7 +74,7 @@ def test_RPolygon3():
     )
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
-    P = RPolygon(S)
+    P = RPolygon.from_pointset(S)
     assert not is_anticw
     assert P.signed_area == -53
 
@@ -89,7 +89,7 @@ def test_RPolygon4():
     for p1 in S:
         print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
         p0 = p1
-    P = RPolygon(S)
+    P = RPolygon.from_pointset(S)
     assert is_anticw
     assert P.signed_area == 2001024
 
@@ -111,7 +111,7 @@ def test_RPolygon5():
     qx, qy = hgen.pop()
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
     print("</svg>")
-    P = RPolygon(S)
+    P = RPolygon.from_pointset(S)
     assert P.signed_area == -2176416
     assert point_in_rpolygon(S, Point(qx, qy))
 
@@ -119,11 +119,11 @@ def test_RPolygon5():
 def test_to_polygon():
     coords = [(0, 0), (10, 10), (5, 5)]
     point_set = [Point(x, y) for x, y in coords]
-    r_poly = RPolygon(point_set)
+    r_poly = RPolygon.from_pointset(point_set)
     poly = r_poly.to_polygon()
 
     expected_coords = [(0, 0), (10, 0), (10, 10), (5, 10), (5, 5), (0, 5)]
     expected_point_set = [Point(x, y) for x, y in expected_coords]
-    expected_poly = Polygon(expected_point_set)
+    expected_poly = Polygon.from_pointset(expected_point_set)
 
     assert poly == expected_poly

@@ -60,7 +60,38 @@ class RPolygon:
     _origin: Point[int, int]
     _vecs: List[Vector2[int, int]]
 
-    def __init__(self, pointset: PointSet) -> None:
+    def __init__(self, origin, vecs) -> None:
+        """
+        The function initializes an object with the given first point and a given vector set.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Vector2(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon(Point(400, 500), S)
+            >>> print(P._origin)
+            (400, 500)
+        """
+        self._origin = origin
+        self._vecs = vecs
+
+    @classmethod
+    def from_pointset(cls, pointset: PointSet):
         """
         The function initializes an object with a given point set, setting the origin to the first point and
         creating a list of vectors by displacing each point from the origin.
@@ -90,12 +121,13 @@ class RPolygon:
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon(S)
+            >>> P = RPolygon.from_pointset(S)
             >>> print(P._origin)
             (0, -4)
         """
-        self._origin = pointset[0]
-        self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
+        origin = pointset[0]
+        vecs = list(vtx.displace(origin) for vtx in pointset[1:])
+        return cls(origin, vecs)
 
     def __eq__(self, other: object) -> bool:
         """
@@ -128,8 +160,8 @@ class RPolygon:
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon(S)
-            >>> Q = RPolygon(S)
+            >>> P = RPolygon.from_pointset(S)
+            >>> Q = RPolygon.from_pointset(S)
             >>> P == Q
             True
         """
@@ -168,7 +200,7 @@ class RPolygon:
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon(S)
+            >>> P = RPolygon.from_pointset(S)
             >>> P += Vector2(1, 1)
             >>> print(P._origin)
             (1, -3)
@@ -207,7 +239,7 @@ class RPolygon:
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon(S)
+            >>> P = RPolygon.from_pointset(S)
             >>> P -= Vector2(1, 1)
             >>> print(P._origin)
             (-1, -5)
@@ -241,7 +273,7 @@ class RPolygon:
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon(S)
+            >>> P = RPolygon.from_pointset(S)
             >>> P.signed_area
             54
         """
@@ -260,31 +292,22 @@ class RPolygon:
 
         :return: A `Polygon` object representing the converted polygon.
         """
-        pointset = [self._origin] + [self._origin + v for v in self._vecs]
+        new_vecs = []
+        current_pt = Vector2(0, 0)
 
-        new_pointset: PointSet = []
-        current_pt = pointset[0]
-        new_pointset.append(current_pt)
-
-        for next_pt in pointset[1:]:
-            if (
-                current_pt.xcoord != next_pt.xcoord
-                and current_pt.ycoord != next_pt.ycoord
-            ):
+        for next_pt in self._vecs:
+            if current_pt.x != next_pt.x and current_pt.y != next_pt.y:
                 # Add intermediate point for non-rectilinear segment
-                new_pointset.append(Point(next_pt.xcoord, current_pt.ycoord))
-            new_pointset.append(next_pt)
+                new_vecs.append(Vector2(next_pt.x, current_pt.y))
+            new_vecs.append(next_pt)
             current_pt = next_pt
 
         # Closing segment
-        first_pt = pointset[0]
-        if (
-            current_pt.xcoord != first_pt.xcoord
-            and current_pt.ycoord != first_pt.ycoord
-        ):
-            new_pointset.append(Point(first_pt.xcoord, current_pt.ycoord))
+        first_pt = Vector2(0, 0)
+        if current_pt.x != first_pt.x and current_pt.y != first_pt.y:
+            new_vecs.append(Vector2(first_pt.x, current_pt.y))
 
-        return Polygon(new_pointset)
+        return Polygon(self._origin, new_vecs)
 
 
 def partition(pred, iterable):

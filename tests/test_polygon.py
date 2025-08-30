@@ -32,9 +32,9 @@ def test_polygon():
     S = create_test_polygon(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 110
-    Q = Polygon(S)
+    Q = Polygon.from_pointset(S)
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
     assert Q == P
@@ -61,7 +61,7 @@ def test_ymono_polygon():
     S = create_ymono_polygon(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 102
 
 
@@ -86,7 +86,7 @@ def test_xmono_polygon():
     S = create_xmono_polygon(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 111
 
 
@@ -95,7 +95,7 @@ def test_polygon2():
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_ymono_polygon(S)
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 4074624
 
 
@@ -104,7 +104,7 @@ def test_polygon3():
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_xmono_polygon(S)
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 3862080
 
 
@@ -123,7 +123,7 @@ def test_polygon4():
     qx, qy = hgen.pop()
     print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
     print("</svg>")
-    P = Polygon(S)
+    P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == -4449600
     assert point_in_polygon(S, Point(qx, qy))
 
@@ -135,7 +135,7 @@ def test_polygon4():
 #     S = create_ymono_polygon(S)
 #     for p in S:
 #         print("{},{}".format(p.xcoord, p.ycoord), end=' ')
-#     P = Polygon(S)
+#     P = Polygon.from_pointset(S)
 #     assert P.signed_area_x2 == 3198528000
 
 
@@ -143,11 +143,31 @@ def test_is_rectilinear():
     # Create a rectilinear polygon
     rectilinear_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     rectilinear_points = [Point(x, y) for x, y in rectilinear_coords]
-    rectilinear_polygon = Polygon(rectilinear_points)
+    rectilinear_polygon = Polygon.from_pointset(rectilinear_points)
     assert rectilinear_polygon.is_rectilinear() is True
 
     # Create a non-rectilinear polygon
     non_rectilinear_coords = [(0, 0), (1, 1), (2, 0)]
     non_rectilinear_points = [Point(x, y) for x, y in non_rectilinear_coords]
-    non_rectilinear_polygon = Polygon(non_rectilinear_points)
+    non_rectilinear_polygon = Polygon.from_pointset(non_rectilinear_points)
     assert non_rectilinear_polygon.is_rectilinear() is False
+
+
+def test_is_convex():
+    # Test case 1: Convex polygon
+    convex_coords = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    convex_points = [Point(x, y) for x, y in convex_coords]
+    convex_polygon = Polygon.from_pointset(convex_points)
+    assert convex_polygon.is_convex() is True
+
+    # Test case 2: Non-convex polygon
+    non_convex_coords = [(0, 0), (2, 0), (1, 1), (2, 2), (0, 2)]
+    non_convex_points = [Point(x, y) for x, y in non_convex_coords]
+    non_convex_polygon = Polygon.from_pointset(non_convex_points)
+    assert non_convex_polygon.is_convex() is False
+
+    # Test case 3: Triangle (always convex)
+    triangle_coords = [(0, 0), (2, 0), (1, 2)]
+    triangle_points = [Point(x, y) for x, y in triangle_coords]
+    triangle = Polygon.from_pointset(triangle_points)
+    assert triangle.is_convex() is True

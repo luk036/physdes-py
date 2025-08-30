@@ -38,7 +38,38 @@ class Polygon(Generic[T]):
     _origin: Point[T, T]
     _vecs: List[Vector2[T, T]]
 
-    def __init__(self, pointset: PointSet) -> None:
+    def __init__(self, origin, vecs) -> None:
+        """
+        The function initializes an object with the given first point and a given vector set.
+
+        Examples:
+            >>> coords = [
+            ...     (0, -4),
+            ...     (0, -1),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
+            ...     (-2, 4),
+            ...     (-2, 2),
+            ...     (-4, 3),
+            ...     (-5, 1),
+            ...     (-6, -2),
+            ...     (-3, -3),
+            ...     (-3, -4),
+            ... ]
+            ...
+            >>> S = [Vector2(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon(Point(400, 500), S)
+            >>> print(P._origin)
+            (400, 500)
+        """
+        self._origin = origin
+        self._vecs = vecs
+
+    @classmethod
+    def from_pointset(cls, pointset: PointSet):
         """
         The function initializes an object with a given point set, setting the origin to the first point and
         creating a list of vectors by displacing each point from the origin.
@@ -68,12 +99,13 @@ class Polygon(Generic[T]):
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> print(P._origin)
             (0, -4)
         """
-        self._origin = pointset[0]
-        self._vecs = list(vtx.displace(self._origin) for vtx in pointset[1:])
+        origin = pointset[0]
+        vecs = list(vtx.displace(origin) for vtx in pointset[1:])
+        return cls(origin, vecs)
 
     def __eq__(self, rhs: object) -> bool:
         """
@@ -106,8 +138,8 @@ class Polygon(Generic[T]):
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = Polygon(S)
-            >>> Q = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
+            >>> Q = Polygon.from_pointset(S)
             >>> print(P == Q)
             True
         """
@@ -146,7 +178,7 @@ class Polygon(Generic[T]):
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> P += Vector2(1, 1)
             >>> print(P._origin)
             (1, -3)
@@ -185,7 +217,7 @@ class Polygon(Generic[T]):
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> P -= Vector2(1, 1)
             >>> print(P._origin)
             (-1, -5)
@@ -219,7 +251,7 @@ class Polygon(Generic[T]):
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> P.signed_area_x2
             110
         """
@@ -243,20 +275,55 @@ class Polygon(Generic[T]):
         Examples:
             >>> coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
             >>> S = [Point(x, y) for x, y in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> P.is_rectilinear()
             True
             >>> coords = [(0, 0), (0, 1), (1, 1), (1, 0), (0.5, 0.5)]
             >>> S = [Point(x, y) for x, y in coords]
-            >>> P = Polygon(S)
+            >>> P = Polygon.from_pointset(S)
             >>> P.is_rectilinear()
             False
         """
-        pointset = [self._origin] + [self._origin + vec for vec in self._vecs]
+        pointset = [Vector2(0, 0)] + self._vecs
         return all(
-            p1.xcoord == p2.xcoord or p1.ycoord == p2.ycoord
-            for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
+            v1.x == v2.x or v1.y == v2.y
+            for v1, v2 in zip(pointset, pointset[1:] + [pointset[0]])
         )
+
+    def is_convex(self) -> bool:
+        """
+        Check if the polygon is convex.
+
+        A polygon is convex if all its interior angles are less than or equal to 180 degrees.
+        This can be determined by checking the cross product of consecutive edges. If all cross
+        products have the same sign, the polygon is convex.
+
+        :return: True if the polygon is convex, False otherwise.
+        """
+        if len(self._vecs) < 1:
+            return False  # A polygon must have at least 3 points to be convex
+
+        if len(self._vecs) == 2:
+            return True  # A triangle to be convex
+
+        # Compute the cross product of the first three vectors to determine the initial sign
+        v0 = self._vecs[-1]
+        v2 = self._vecs[1]
+        cross_product_sign = -v0.x * v2.y + v0.y * v2.x
+
+        # Check the cross product of all consecutive edges
+        pointset = [Vector2(0, 0)] + self._vecs + [Vector2(0, 0)]
+        for i in range(1, len(pointset) - 1):
+            v0 = pointset[i - 1]
+            v1 = pointset[i]
+            v2 = pointset[i + 1]
+            current_cross_product = (v1.x - v0.x) * (v2.y - v1.y) - (v1.y - v0.y) * (
+                v2.x - v1.x
+            )
+            if (cross_product_sign > 0) != (current_cross_product > 0):
+                return False
+
+        return True
 
 
 def partition(pred, iterable):
