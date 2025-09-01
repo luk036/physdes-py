@@ -290,6 +290,35 @@ class Polygon(Generic[T]):
             for v1, v2 in zip(pointset, pointset[1:] + [pointset[0]])
         )
 
+    def is_clockwise(self) -> bool:
+        """
+        Check if the polygon is clockwise.
+
+        :return: True if the polygon is clockwise, False otherwise.
+        """
+        pointset = [self._origin] + [self._origin + v for v in self._vecs]
+
+        # Find the lowest-leftmost point
+        min_idx = 0
+        for i in range(1, len(pointset)):
+            if pointset[i].ycoord < pointset[min_idx].ycoord or (
+                pointset[i].ycoord == pointset[min_idx].ycoord
+                and pointset[i].xcoord < pointset[min_idx].xcoord
+            ):
+                min_idx = i
+
+        # Get previous and next vertices
+        p_prev = pointset[min_idx - 1]
+        p = pointset[min_idx]
+        p_next = pointset[(min_idx + 1) % len(pointset)]
+
+        # Calculate cross product
+        cross_product = (p.xcoord - p_prev.xcoord) * (p_next.ycoord - p.ycoord) - (
+            p.ycoord - p_prev.ycoord
+        ) * (p_next.xcoord - p.xcoord)
+
+        return cross_product < 0
+
     def is_convex(self) -> bool:
         """
         Check if the polygon is convex.

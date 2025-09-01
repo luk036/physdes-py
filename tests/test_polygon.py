@@ -171,3 +171,16 @@ def test_is_convex():
     triangle_points = [Point(x, y) for x, y in triangle_coords]
     triangle = Polygon.from_pointset(triangle_points)
     assert triangle.is_convex() is True
+
+def test_is_clockwise():
+    # Clockwise polygon
+    clockwise_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+    clockwise_points = [Point(x, y) for x, y in clockwise_coords]
+    clockwise_polygon = Polygon.from_pointset(clockwise_points)
+    assert clockwise_polygon.is_clockwise() is True
+
+    # Counter-clockwise polygon
+    counter_clockwise_coords = [(0, 0), (1, 0), (1, 1), (0, 1)]
+    counter_clockwise_points = [Point(x, y) for x, y in counter_clockwise_coords]
+    counter_clockwise_polygon = Polygon.from_pointset(counter_clockwise_points)
+    assert counter_clockwise_polygon.is_clockwise() is False
