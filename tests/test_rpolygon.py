@@ -35,6 +35,7 @@ def test_RPolygon():
     P = RPolygon.from_pointset(S)
     assert not is_cw
     assert P.signed_area == 45
+    assert P.is_anticlockwise()
     Q = RPolygon.from_pointset(S)
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
@@ -52,6 +53,8 @@ def test_RPolygon2():
     P = RPolygon.from_pointset(S)
     assert is_cw
     assert P.signed_area == -1871424
+    assert not P.is_anticlockwise()
+
 
 
 def test_RPolygon3():
@@ -77,6 +80,8 @@ def test_RPolygon3():
     P = RPolygon.from_pointset(S)
     assert not is_anticw
     assert P.signed_area == -53
+    assert not P.is_anticlockwise()
+
 
 
 def test_RPolygon4():
@@ -92,6 +97,7 @@ def test_RPolygon4():
     P = RPolygon.from_pointset(S)
     assert is_anticw
     assert P.signed_area == 2001024
+    assert P.is_anticlockwise()
 
 
 def test_RPolygon5():
@@ -113,6 +119,7 @@ def test_RPolygon5():
     print("</svg>")
     P = RPolygon.from_pointset(S)
     assert P.signed_area == -2176416
+    assert not P.is_anticlockwise()
     assert point_in_rpolygon(S, Point(qx, qy))
 
 

@@ -34,6 +34,7 @@ def test_polygon():
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 110
+    assert P.is_anticlockwise()
     Q = Polygon.from_pointset(S)
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
@@ -63,6 +64,7 @@ def test_ymono_polygon():
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 102
+    assert P.is_anticlockwise()
 
 
 def test_xmono_polygon():
@@ -88,6 +90,7 @@ def test_xmono_polygon():
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 111
+    assert P.is_anticlockwise()
 
 
 def test_polygon2():
@@ -172,15 +175,16 @@ def test_is_convex():
     triangle = Polygon.from_pointset(triangle_points)
     assert triangle.is_convex() is True
 
-def test_is_clockwise():
+
+def test_is_anticlockwise():
     # Clockwise polygon
     clockwise_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     clockwise_points = [Point(x, y) for x, y in clockwise_coords]
     clockwise_polygon = Polygon.from_pointset(clockwise_points)
-    assert clockwise_polygon.is_clockwise() is True
+    assert clockwise_polygon.is_anticlockwise() is False
 
     # Counter-clockwise polygon
     counter_clockwise_coords = [(0, 0), (1, 0), (1, 1), (0, 1)]
     counter_clockwise_points = [Point(x, y) for x, y in counter_clockwise_coords]
     counter_clockwise_polygon = Polygon.from_pointset(counter_clockwise_points)
-    assert counter_clockwise_polygon.is_clockwise() is False
+    assert counter_clockwise_polygon.is_anticlockwise() is True

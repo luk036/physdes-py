@@ -286,6 +286,29 @@ class RPolygon:
             vec0 = vec1
         return res
 
+    def is_anticlockwise(self) -> bool:
+        """
+        Check if the polygon is clockwise.
+
+        :return: True if the polygon is clockwise, False otherwise.
+        """
+        pointset = [Vector2(0, 0)] + self._vecs
+
+        if len(pointset) < 2:
+            raise ValueError("RPolygon must have at least 2 points")
+
+        # Find the point with minimum coordinates (bottom-left point)
+        min_point = min(pointset, key=lambda pt: (pt.x, pt.y))
+        min_index = pointset.index(min_point)
+
+        # Get the previous and next points in the polygon (with wrap-around)
+        n = len(pointset)
+        prev_point = pointset[(min_index - 1) % n]
+        current_point = pointset[min_index]
+
+        # Calculate vectors and cross product
+        return prev_point.y > current_point.y
+
     def to_polygon(self) -> Polygon:
         """
         The `to_polygon` function converts a rectilinear polygon to a standard polygon.

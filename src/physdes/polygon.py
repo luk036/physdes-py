@@ -290,36 +290,31 @@ class Polygon(Generic[T]):
             for v1, v2 in zip(pointset, pointset[1:] + [pointset[0]])
         )
 
-    def is_clockwise(self) -> bool:
+    def is_anticlockwise(self) -> bool:
         """
         Check if the polygon is clockwise.
 
         :return: True if the polygon is clockwise, False otherwise.
         """
-        pointset = [self._origin] + [self._origin + v for v in self._vecs]
+        pointset = [Vector2(0, 0)] + self._vecs
 
-        # Find the lowest-leftmost point
-        min_idx = 0
-        for i in range(1, len(pointset)):
-            if pointset[i].ycoord < pointset[min_idx].ycoord or (
-                pointset[i].ycoord == pointset[min_idx].ycoord
-                and pointset[i].xcoord < pointset[min_idx].xcoord
-            ):
-                min_idx = i
+        if len(pointset) < 3:
+            raise ValueError("Polygon must have at least 3 points")
 
-        # Get previous and next vertices
-        p_prev = pointset[min_idx - 1]
-        p = pointset[min_idx]
-        p_next = pointset[(min_idx + 1) % len(pointset)]
+        # Find the point with minimum coordinates (bottom-left point)
+        min_point = min(pointset, key=lambda pt: (pt.x, pt.y))
+        min_index = pointset.index(min_point)
 
-        # Calculate cross product
-        cross_product = (p.xcoord - p_prev.xcoord) * (p_next.ycoord - p.ycoord) - (
-            p.ycoord - p_prev.ycoord
-        ) * (p_next.xcoord - p.xcoord)
+        # Get the previous and next points in the polygon (with wrap-around)
+        n = len(pointset)
+        prev_point = pointset[(min_index - 1) % n]
+        current_point = pointset[min_index]
+        next_point = pointset[(min_index + 1) % n]
 
-        return cross_product < 0
+        # Calculate vectors and cross product
+        return (current_point - prev_point).cross(next_point - current_point) > 0
 
-    def is_convex(self) -> bool:
+    def is_convex(self, is_anticlockwise=None) -> bool:
         """
         Check if the polygon is convex.
 
@@ -335,22 +330,25 @@ class Polygon(Generic[T]):
         if len(self._vecs) == 2:
             return True  # A triangle to be convex
 
-        # Compute the cross product of the first three vectors to determine the initial sign
-        v0 = self._vecs[-1]
-        v2 = self._vecs[1]
-        cross_product_sign = -v0.x * v2.y + v0.y * v2.x
+        if is_anticlockwise is None:
+            is_anticlockwise = self.is_anticlockwise()
+
 
         # Check the cross product of all consecutive edges
-        pointset = [Vector2(0, 0)] + self._vecs + [Vector2(0, 0)]
-        for i in range(1, len(pointset) - 1):
-            v0 = pointset[i - 1]
-            v1 = pointset[i]
-            v2 = pointset[i + 1]
-            current_cross_product = (v1.x - v0.x) * (v2.y - v1.y) - (v1.y - v0.y) * (
-                v2.x - v1.x
-            )
-            if (cross_product_sign > 0) != (current_cross_product > 0):
-                return False
+        pointset = [self._vecs[-1], Vector2(0, 0)] + self._vecs + [Vector2(0, 0)]
+
+        if is_anticlockwise:
+            for i in range(1, len(pointset) - 1):
+                v1 = pointset[i] - pointset[i - 1]
+                v2 = pointset[i + 1] - pointset[i]
+                if v1.cross(v2) < 0:
+                    return False
+        else:
+            for i in range(1, len(pointset) - 1):
+                v1 = pointset[i] - pointset[i - 1]
+                v2 = pointset[i + 1] - pointset[i]
+                if v1.cross(v2) > 0:
+                    return False
 
         return True
 
@@ -652,3 +650,36 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
                     res = not res
         pt0 = pt1
     return res
+
+
+def polygon_is_clockwise(pointset: PointSet) -> bool:
+    """
+    Determines if a polygon represented by a list of points is oriented clockwise.
+
+    Args:
+        pointset: The list of points representing the polygon.
+
+    Returns:
+        True if the polygon is oriented clockwise, False otherwise.
+    """
+    if len(pointset) < 3:
+        raise ValueError("Polygon must have at least 3 points")
+
+    # Find the point with minimum coordinates (bottom-left point)
+    min_point = min(pointset, key=lambda pt: (pt.xcoord, pt.ycoord))
+    min_index = pointset.index(min_point)
+
+    # Get the previous and next points in the polygon (with wrap-around)
+    n = len(pointset)
+    prev_index = (min_index - 1) % n
+    next_index = (min_index + 1) % n
+
+    prev_point = pointset[prev_index]
+    current_point = pointset[min_index]
+    next_point = pointset[next_index]
+
+    # Calculate vectors and cross product
+    vec1 = current_point.displace(prev_point)
+    vec2 = next_point.displace(current_point)
+
+    return vec1.cross(vec2) < 0
