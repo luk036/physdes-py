@@ -1,4 +1,5 @@
 from lds_gen.ilds import Halton
+import pytest
 
 from physdes.point import Point
 from physdes.polygon import Polygon
@@ -11,6 +12,7 @@ from physdes.rpolygon import (
     rpolygon_is_ymonotone,
     rpolygon_is_convex,
     point_in_rpolygon,
+    rpolygon_is_monotone,
 )
 from physdes.vector2 import Vector2
 
@@ -145,3 +147,42 @@ def test_to_polygon():
     expected_poly = Polygon.from_pointset(expected_point_set)
 
     assert poly == expected_poly
+
+def test_rpolygon_eq_different_type():
+    coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+    points = [Point(x, y) for x, y in coords]
+    rpolygon = RPolygon.from_pointset(points)
+    assert (rpolygon == 1) is False
+
+def test_is_anticlockwise_less_than_2_points():
+    with pytest.raises(ValueError):
+        coords = [(0, 0)]
+        points = [Point(x, y) for x, y in coords]
+        rpolygon = RPolygon.from_pointset(points)
+        rpolygon.is_anticlockwise()
+
+def test_to_polygon_non_rectilinear():
+    coords = [(0, 0), (1, 1), (2, 0)]
+    points = [Point(x, y) for x, y in coords]
+    rpolygon = RPolygon.from_pointset(points)
+    polygon = rpolygon.to_polygon()
+    # The expected polygon should have extra points to make it rectilinear
+    expected_coords = [(0, 0), (1, 0), (1, 1), (2, 1), (2, 0)]
+    expected_points = [Point(x, y) for x, y in expected_coords]
+    expected_polygon = Polygon.from_pointset(expected_points)
+    assert polygon._vecs == expected_polygon._vecs
+
+def test_create_test_rpolygon_vec_lt_0():
+    coords = [(0, 10), (10, 0), (5, 6)]
+    points = [Point(x, y) for x, y in coords]
+    create_test_rpolygon(points)
+
+def test_rpolygon_is_monotone_small_list():
+    coords = [(0, 0), (1, 1)]
+    points = [Point(x, y) for x, y in coords]
+    assert rpolygon_is_monotone(points, lambda p: (p.xcoord, p.ycoord)) is True
+
+def test_rpolygon_is_monotone_break():
+    coords = [(0, 0), (3, 1), (1, 2), (2, 3)]
+    points = [Point(x, y) for x, y in coords]
+    assert rpolygon_is_monotone(points, lambda p: (p.xcoord, p.ycoord)) is False

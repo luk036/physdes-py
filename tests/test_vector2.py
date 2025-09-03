@@ -1,5 +1,7 @@
 from hypothesis import given
 from hypothesis.strategies import integers
+import subprocess
+import sys
 
 from physdes.vector2 import Vector2
 
@@ -63,3 +65,15 @@ def test_arithmetic():
     assert a == Vector2(6, 10)
     a /= 2
     assert a == Vector2(3, 5)
+
+def test_repr():
+    v = Vector2(3, 5)
+    assert repr(v) == "Vector2(3, 5)"
+
+def test_main_run_as_script():
+    """CLI Tests"""
+    result = subprocess.run(
+        [sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True
+    )
+    assert "<3.0, 4.5>" in result.stdout
+    assert "<<6.0, 9.0>, 10.0>" in result.stdout

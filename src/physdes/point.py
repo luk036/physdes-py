@@ -69,7 +69,7 @@ class Point(Generic[T1, T2]):
         self.ycoord: T2 = ycoord
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({self.xcoord}, {self.ycoord}"
+        return f"{self.__class__.__name__}({self.xcoord}, {self.ycoord})"
 
     def __str__(self) -> str:
         """

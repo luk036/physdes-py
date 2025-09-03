@@ -60,3 +60,16 @@ def test_min_dist():
     a = Point(3, 5)
     b = Point(5, 7)
     assert a.min_dist_with(b) == 4
+
+def test_repr():
+    a = Point(3, 5)
+    assert repr(a) == "Point(3, 5)"
+
+def test_lt():
+    a = Point(3, 5)
+    b = Point(5, 7)
+    c = Point(3, 7)
+    assert (a < b) is True
+    assert (a < c) is True
+    assert (b < a) is False
+    assert (c < a) is False

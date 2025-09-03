@@ -569,23 +569,28 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
 def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
     if len(lst) <= 3:
         return True
-    min_point = min(lst, key=dir)
-    min_index = lst.index(min_point)
-    point_set = lst[min_index:] + lst[:min_index] # create a list starts woth min_point
-    n = len(point_set)
-    for i in range(n - 1):
-        current_loc = dir(point_set[i])[0]
-        next_loc = dir(point_set[i + 1])[0]
-        if current_loc > next_loc:
-            break
-    else:
-        return True
-    
-    for j in range(i, n - 1):
-        current_loc = dir(point_set[j])[0]
-        next_loc = dir(point_set[j + 1])[0]
-        if current_loc < next_loc:
+
+    min_index, _ = min(enumerate(lst), key=lambda it: dir(it[1]))
+    max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
+
+    n = len(lst)
+
+    # Chain from min to max
+    i = min_index
+    while i != max_index:
+        next_i = (i + 1) % n
+        if dir(lst[i])[0] > dir(lst[next_i])[0]:
             return False
+        i = next_i
+
+    # Chain from max to min
+    i = max_index
+    while i != min_index:
+        next_i = (i + 1) % n
+        if dir(lst[i])[0] < dir(lst[next_i])[0]:
+            return False
+        i = next_i
+
     return True
 
 

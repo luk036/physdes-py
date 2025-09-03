@@ -1,4 +1,5 @@
 from lds_gen.ilds import Halton
+import pytest
 
 from physdes.point import Point
 from physdes.polygon import (
@@ -9,6 +10,7 @@ from physdes.polygon import (
     polygon_is_xmonotone,
     polygon_is_ymonotone,
     point_in_polygon,
+    polygon_is_clockwise,
 )
 from physdes.vector2 import Vector2
 
@@ -201,3 +203,71 @@ def test_is_anticlockwise():
     counter_clockwise_points = [Point(x, y) for x, y in counter_clockwise_coords]
     counter_clockwise_polygon = Polygon.from_pointset(counter_clockwise_points)
     assert counter_clockwise_polygon.is_anticlockwise() is True
+
+def test_polygon_eq_different_type():
+    coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
+    points = [Point(x, y) for x, y in coords]
+    polygon = Polygon.from_pointset(points)
+    assert (polygon == 1) is False
+
+def test_is_convex_clockwise():
+    # Convex clockwise polygon
+    convex_coords = [(0, 0), (0, 2), (2, 2), (2, 0)]
+    convex_points = [Point(x, y) for x, y in convex_coords]
+    convex_polygon = Polygon.from_pointset(convex_points)
+    assert convex_polygon.is_convex(False) is True
+
+    # Non-convex clockwise polygon
+    non_convex_coords = [(0, 0), (0, 2), (1, 1), (2, 2), (2, 0)]
+    non_convex_points = [Point(x, y) for x, y in non_convex_coords]
+    non_convex_polygon = Polygon.from_pointset(non_convex_points)
+    assert non_convex_polygon.is_convex(False) is False
+
+def test_point_in_polygon_missed_branches():
+    coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
+    pointset = [Point(x, y) for x, y in coords]
+    # Test case where ptq.ycoord == pt0.ycoord
+    assert point_in_polygon(pointset, Point(5, 10)) is False
+    # Test case where ptq.ycoord == pt1.ycoord
+    assert point_in_polygon(pointset, Point(5, 0)) is True # because of the strict inequality
+    # Test case where det == 0 (point on edge)
+    assert point_in_polygon(pointset, Point(5, 0)) is True
+
+def test_polygon_is_clockwise_less_than_3_points():
+    with pytest.raises(ValueError):
+        coords = [(0, 0), (0, 1)]
+        points = [Point(x, y) for x, y in coords]
+        polygon_is_clockwise(points)
+
+def test_is_anticlockwise_less_than_3_points():
+    with pytest.raises(ValueError):
+        coords = [(0, 0), (0, 1)]
+        points = [Point(x, y) for x, y in coords]
+        polygon = Polygon.from_pointset(points)
+        polygon.is_anticlockwise()
+
+def test_is_convex_more():
+    # Non-convex anti-clockwise polygon
+    non_convex_coords = [(0, 0), (2, 0), (1, 1), (2, 2), (0, 2)]
+    non_convex_points = [Point(x, y) for x, y in non_convex_coords]
+    non_convex_polygon = Polygon.from_pointset(non_convex_points)
+    assert non_convex_polygon.is_convex(True) is False
+
+    # Convex anti-clockwise polygon
+    convex_coords = [(0, 0), (2, 0), (2, 2), (0, 2)]
+    convex_points = [Point(x, y) for x, y in convex_coords]
+    convex_polygon = Polygon.from_pointset(convex_points)
+    assert convex_polygon.is_convex(True) is True
+
+def test_point_in_polygon_more():
+    # Create a polygon that will trigger the missed branches
+    coords = [(0, 0), (10, 5), (0, 10)]
+    pointset = [Point(x, y) for x, y in coords]
+    
+    # This should trigger `det > 0`
+    assert point_in_polygon(pointset, Point(1, 5)) is True
+    
+    # Create a clockwise polygon to trigger `det < 0`
+    coords_cw = [(0, 0), (0, 10), (10, 5)]
+    pointset_cw = [Point(x, y) for x, y in coords_cw]
+    assert point_in_polygon(pointset_cw, Point(1, 5)) is True
