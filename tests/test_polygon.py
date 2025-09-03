@@ -6,6 +6,8 @@ from physdes.polygon import (
     create_test_polygon,
     create_xmono_polygon,
     create_ymono_polygon,
+    polygon_is_xmonotone,
+    polygon_is_ymonotone,
     point_in_polygon,
 )
 from physdes.vector2 import Vector2
@@ -60,6 +62,9 @@ def test_ymono_polygon():
     ]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_ymono_polygon(S)
+    assert polygon_is_ymonotone(S)
+    assert not polygon_is_xmonotone(S)
+
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
@@ -86,6 +91,8 @@ def test_xmono_polygon():
     ]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_xmono_polygon(S)
+    assert polygon_is_xmonotone(S)
+    assert not polygon_is_ymonotone(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
@@ -100,6 +107,9 @@ def test_polygon2():
     S = create_ymono_polygon(S)
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 4074624
+    assert P.is_anticlockwise()
+    assert polygon_is_ymonotone(S)
+    assert not polygon_is_xmonotone(S)
 
 
 def test_polygon3():
@@ -109,6 +119,9 @@ def test_polygon3():
     S = create_xmono_polygon(S)
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 3862080
+    assert P.is_anticlockwise()
+    assert polygon_is_xmonotone(S)
+    assert not polygon_is_ymonotone(S)
 
 
 def test_polygon4():
@@ -161,13 +174,13 @@ def test_is_convex():
     convex_coords = [(0, 0), (2, 0), (2, 2), (0, 2)]
     convex_points = [Point(x, y) for x, y in convex_coords]
     convex_polygon = Polygon.from_pointset(convex_points)
-    assert convex_polygon.is_convex() is True
+    assert convex_polygon.is_convex(True) is True
 
     # Test case 2: Non-convex polygon
     non_convex_coords = [(0, 0), (2, 0), (1, 1), (2, 2), (0, 2)]
     non_convex_points = [Point(x, y) for x, y in non_convex_coords]
     non_convex_polygon = Polygon.from_pointset(non_convex_points)
-    assert non_convex_polygon.is_convex() is False
+    assert non_convex_polygon.is_convex(True) is False
 
     # Test case 3: Triangle (always convex)
     triangle_coords = [(0, 0), (2, 0), (1, 2)]

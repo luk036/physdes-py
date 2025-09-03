@@ -7,6 +7,9 @@ from physdes.rpolygon import (
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
+    rpolygon_is_xmonotone,
+    rpolygon_is_ymonotone,
+    rpolygon_is_convex,
     point_in_rpolygon,
 )
 from physdes.vector2 import Vector2
@@ -44,15 +47,19 @@ def test_RPolygon():
 
 def test_RPolygon2():
     hgen = Halton([3, 2], [7, 11])
-    coords = [hgen.pop() for _ in range(20)]
+    coords = [hgen.pop() for _ in range(40)]
     S, is_cw = create_ymono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
+    assert rpolygon_is_ymonotone(S)
+    assert not rpolygon_is_xmonotone(S)
+    assert not rpolygon_is_convex(S)
+
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon.from_pointset(S)
     assert is_cw
-    assert P.signed_area == -1871424
+    assert P.signed_area == -2234304
     assert not P.is_anticlockwise()
 
 
@@ -75,6 +82,10 @@ def test_RPolygon3():
     S, is_anticw = create_xmono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
+    assert rpolygon_is_xmonotone(S)
+    assert not rpolygon_is_ymonotone(S)
+    assert not rpolygon_is_convex(S)
+
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon.from_pointset(S)

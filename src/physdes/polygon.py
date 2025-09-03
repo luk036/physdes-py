@@ -324,11 +324,11 @@ class Polygon(Generic[T]):
 
         :return: True if the polygon is convex, False otherwise.
         """
-        if len(self._vecs) < 1:
+        if len(self._vecs) < 2:
             return False  # A polygon must have at least 3 points to be convex
 
         if len(self._vecs) == 2:
-            return True  # A triangle to be convex
+            return True  # A triangle must be convex
 
         if is_anticlockwise is None:
             is_anticlockwise = self.is_anticlockwise()
@@ -584,6 +584,37 @@ def create_test_polygon(lst: PointSet) -> PointSet:
         lstc = sorted(lst5, reverse=True)
         lstd = sorted(lst6, key=dir1, reverse=True)
     return lsta + lstb + lstc + lstd
+
+
+def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
+    if len(lst) <= 3:
+        return True
+    min_point = min(lst, key=dir)
+    min_index = lst.index(min_point)
+    point_set = lst[min_index:] + lst[:min_index] # create a list starts woth min_point
+    n = len(point_set)
+    for i in range(n - 1):
+        current_loc = dir(point_set[i])[0]
+        next_loc = dir(point_set[i + 1])[0]
+        if current_loc > next_loc:
+            break
+    else:
+        return True
+    
+    for j in range(i, n - 1):
+        current_loc = dir(point_set[j])[0]
+        next_loc = dir(point_set[j + 1])[0]
+        if current_loc < next_loc:
+            return False
+    return True
+
+
+def polygon_is_xmonotone(lst: PointSet) -> bool:
+    return polygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord) )
+
+
+def polygon_is_ymonotone(lst: PointSet) -> bool:
+    return polygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord) )
 
 
 def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
