@@ -684,7 +684,7 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     return res
 
 
-def polygon_is_clockwise(pointset: PointSet) -> bool:
+def polygon_is_anticlockwise(pointset: PointSet) -> bool:
     """
     Determines if a polygon represented by a list of points is oriented clockwise.
 
@@ -715,4 +715,4 @@ def polygon_is_clockwise(pointset: PointSet) -> bool:
     vec1 = current_point.displace(prev_point)
     vec2 = next_point.displace(current_point)
 
-    return vec1.cross(vec2) < 0
+    return vec1.cross(vec2) > 0

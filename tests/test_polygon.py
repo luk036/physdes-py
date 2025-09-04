@@ -10,7 +10,7 @@ from physdes.polygon import (
     polygon_is_xmonotone,
     polygon_is_ymonotone,
     point_in_polygon,
-    polygon_is_clockwise,
+    polygon_is_anticlockwise,
 )
 from physdes.vector2 import Vector2
 
@@ -34,6 +34,7 @@ def test_polygon():
     ]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_test_polygon(S)
+    assert polygon_is_anticlockwise(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
@@ -66,6 +67,7 @@ def test_ymono_polygon():
     S = create_ymono_polygon(S)
     assert polygon_is_ymonotone(S)
     assert not polygon_is_xmonotone(S)
+    assert polygon_is_anticlockwise(S)
 
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
@@ -95,6 +97,7 @@ def test_xmono_polygon():
     S = create_xmono_polygon(S)
     assert polygon_is_xmonotone(S)
     assert not polygon_is_ymonotone(S)
+    assert polygon_is_anticlockwise(S)
     for p in S:
         print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
@@ -107,11 +110,12 @@ def test_polygon2():
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_ymono_polygon(S)
+    assert polygon_is_ymonotone(S)
+    assert not polygon_is_xmonotone(S)
+    assert polygon_is_anticlockwise(S)
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 4074624
     assert P.is_anticlockwise()
-    assert polygon_is_ymonotone(S)
-    assert not polygon_is_xmonotone(S)
 
 
 def test_polygon3():
@@ -119,11 +123,12 @@ def test_polygon3():
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_xmono_polygon(S)
+    assert polygon_is_xmonotone(S)
+    assert not polygon_is_ymonotone(S)
+    assert polygon_is_anticlockwise(S)
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 3862080
     assert P.is_anticlockwise()
-    assert polygon_is_xmonotone(S)
-    assert not polygon_is_ymonotone(S)
 
 
 def test_polygon4():
@@ -233,11 +238,11 @@ def test_point_in_polygon_missed_branches():
     # Test case where det == 0 (point on edge)
     assert point_in_polygon(pointset, Point(5, 0)) is True
 
-def test_polygon_is_clockwise_less_than_3_points():
+def test_polygon_is_anticlockwise_less_than_3_points():
     with pytest.raises(ValueError):
         coords = [(0, 0), (0, 1)]
         points = [Point(x, y) for x, y in coords]
-        polygon_is_clockwise(points)
+        polygon_is_anticlockwise(points)
 
 def test_is_anticlockwise_less_than_3_points():
     with pytest.raises(ValueError):
