@@ -66,9 +66,11 @@ def test_arithmetic():
     a /= 2
     assert a == Vector2(3, 5)
 
+
 def test_repr():
     v = Vector2(3, 5)
     assert repr(v) == "Vector2(3, 5)"
+
 
 def test_main_run_as_script():
     """CLI Tests"""

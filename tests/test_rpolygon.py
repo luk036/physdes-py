@@ -65,7 +65,6 @@ def test_RPolygon2():
     assert not P.is_anticlockwise()
 
 
-
 def test_RPolygon3():
     coords = [
         (-2, 2),
@@ -94,7 +93,6 @@ def test_RPolygon3():
     assert not is_anticw
     assert P.signed_area == -53
     assert not P.is_anticlockwise()
-
 
 
 def test_RPolygon4():
@@ -148,11 +146,13 @@ def test_to_polygon():
 
     assert poly == expected_poly
 
+
 def test_rpolygon_eq_different_type():
     coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     points = [Point(x, y) for x, y in coords]
     rpolygon = RPolygon.from_pointset(points)
     assert (rpolygon == 1) is False
+
 
 def test_is_anticlockwise_less_than_2_points():
     with pytest.raises(ValueError):
@@ -160,6 +160,7 @@ def test_is_anticlockwise_less_than_2_points():
         points = [Point(x, y) for x, y in coords]
         rpolygon = RPolygon.from_pointset(points)
         rpolygon.is_anticlockwise()
+
 
 def test_to_polygon_non_rectilinear():
     coords = [(0, 0), (1, 1), (2, 0)]
@@ -172,15 +173,18 @@ def test_to_polygon_non_rectilinear():
     expected_polygon = Polygon.from_pointset(expected_points)
     assert polygon._vecs == expected_polygon._vecs
 
+
 def test_create_test_rpolygon_vec_lt_0():
     coords = [(0, 10), (10, 0), (5, 6)]
     points = [Point(x, y) for x, y in coords]
     create_test_rpolygon(points)
 
+
 def test_rpolygon_is_monotone_small_list():
     coords = [(0, 0), (1, 1)]
     points = [Point(x, y) for x, y in coords]
     assert rpolygon_is_monotone(points, lambda p: (p.xcoord, p.ycoord)) is True
+
 
 def test_rpolygon_is_monotone_break():
     coords = [(0, 0), (3, 1), (1, 2), (2, 3)]

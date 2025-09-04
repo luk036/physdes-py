@@ -595,11 +595,11 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
 
 def rpolygon_is_xmonotone(lst: PointSet) -> bool:
-    return rpolygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord) )
+    return rpolygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def rpolygon_is_ymonotone(lst: PointSet) -> bool:
-    return rpolygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord) )
+    return rpolygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def rpolygon_is_convex(lst: PointSet) -> bool:

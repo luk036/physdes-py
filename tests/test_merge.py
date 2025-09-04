@@ -45,6 +45,7 @@ def test_merge_3():
     m1 = s1.merge_with(s2)
     assert m1 == MergeObj(Interval(2, 2), Interval(2, 2))
 
+
 def test_repr():
     a = MergeObj(9, -1)
     assert repr(a) == "MergeObj(9, -1)"

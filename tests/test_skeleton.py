@@ -26,6 +26,7 @@ def test_main(capsys):
     captured = capsys.readouterr()
     assert "The 7-th Fibonacci number is 13" in captured.out
 
+
 def test_main_run_as_script():
     """CLI Tests"""
     result = subprocess.run(

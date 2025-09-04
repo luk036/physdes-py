@@ -316,7 +316,9 @@ class Polygon(Generic[T]):
             raise ValueError("Polygon must have at least 3 points")
 
         # Find the point with minimum coordinates (bottom-left point)
-        min_index, min_point = min(enumerate(pointset), key=lambda it: (it[1].x, it[1].y))
+        min_index, min_point = min(
+            enumerate(pointset), key=lambda it: (it[1].x, it[1].y)
+        )
 
         # Get the previous and next points in the polygon (with wrap-around)
         n = len(pointset)
@@ -371,9 +373,6 @@ def partition(pred, iterable):
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
     return filter(pred, t1), filterfalse(pred, t2)
-
-
-
 
 
 def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
@@ -611,11 +610,11 @@ def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
 
 def polygon_is_xmonotone(lst: PointSet) -> bool:
-    return polygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord) )
+    return polygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def polygon_is_ymonotone(lst: PointSet) -> bool:
-    return polygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord) )
+    return polygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
