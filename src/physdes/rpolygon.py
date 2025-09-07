@@ -837,3 +837,51 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
                 vi = vnext
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
+
+
+def rpolygon_make_convex_hull(pointset: PointSet) -> PointSet:
+    n = len(pointset)
+    if n < 3:
+        raise ValueError("Polygon must have at least 3 points")
+    if n == 3:
+        return pointset
+
+    # Find the point with minimum coordinates (bottom-left point)
+    min_index, min_point = min(
+        enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord)
+    )
+    # Find the point with maximum coordinates (bottom-left point)
+    max_index, _ = max(enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord))
+
+    # Get the previous and next points in the polygon (with wrap-around)
+    prev_index = (min_index - 1) % n
+    prev_point = pointset[prev_index]
+    current_point = min_point
+
+    prev_point = pointset[(min_index - 1) % n]
+    current_point = min_point
+    is_anticlockwise = prev_point.ycoord > current_point.ycoord
+
+    rdll = RDllist(n)
+
+    def process(start: int, stop: int, cmp: Callable) -> None:
+        vlink = rdll[start].next
+        while id(vlink) != id(rdll[stop]):
+            vnext = vlink.next
+            vprev = vlink.prev
+            vec1 = pointset[vlink.data].displace(pointset[vprev.data])
+            vec2 = pointset[vnext.data].displace(pointset[vlink.data])
+            if cmp(vec1.cross(vec2)):
+                vlink.detach()
+                vlink = vprev
+            else:
+                vlink = vnext
+
+    if is_anticlockwise:
+        process(min_index, max_index, lambda a: a <= 0)
+        process(max_index, min_index, lambda a: a <= 0)
+    else:
+        process(min_index, max_index, lambda a: a >= 0)
+        process(max_index, min_index, lambda a: a >= 0)
+
+    return [min_point] + [pointset[v.data] for v in rdll.from_node(min_index)]

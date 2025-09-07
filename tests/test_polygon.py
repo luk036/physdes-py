@@ -333,4 +333,4 @@ def test_convex_hull():
 
     print("</svg>")
 
-    assert polygon_is_anticlockwise(C)
+    assert not polygon_is_anticlockwise(C)

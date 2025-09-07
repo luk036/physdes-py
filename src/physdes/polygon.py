@@ -739,21 +739,27 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
     vec2 = next_point.displace(current_point)
 
     is_anticlockwise = vec1.cross(vec2) > 0
-    rdll = RDllist(n, not is_anticlockwise)
 
-    def process(start: int, stop: int) -> None:
+    rdll = RDllist(n)
+
+    def process(start: int, stop: int, cmp: Callable) -> None:
         vlink = rdll[start].next
         while id(vlink) != id(rdll[stop]):
             vnext = vlink.next
             vprev = vlink.prev
             vec1 = pointset[vlink.data].displace(pointset[vprev.data])
             vec2 = pointset[vnext.data].displace(pointset[vlink.data])
-            if vec1.cross(vec2) <= 0:
+            if cmp(vec1.cross(vec2)):
                 vlink.detach()
                 vlink = vprev
             else:
                 vlink = vnext
 
-    process(min_index, max_index)
-    process(max_index, min_index)
+    if is_anticlockwise:
+        process(min_index, max_index, lambda a: a <= 0)
+        process(max_index, min_index, lambda a: a <= 0)
+    else:
+        process(min_index, max_index, lambda a: a >= 0)
+        process(max_index, min_index, lambda a: a >= 0)
+
     return [min_point] + [pointset[v.data] for v in rdll.from_node(min_index)]

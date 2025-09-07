@@ -42,6 +42,10 @@ def test_RPolygon():
     P = RPolygon.from_pointset(S)
     assert is_cw
     assert not P.is_anticlockwise()
+    G = P.to_polygon()
+    assert P.signed_area * 2 == G.signed_area_x2
+    assert P.signed_area < 0
+
     Q = RPolygon.from_pointset(S)
     Q += Vector2(4, 5)
     Q -= Vector2(4, 5)
@@ -61,6 +65,10 @@ def test_RPolygon2():
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
     P = RPolygon.from_pointset(S)
+    G = P.to_polygon()
+    assert P.signed_area * 2 == G.signed_area_x2
+    assert P.signed_area > 0
+
     assert not is_cw
     assert P.is_anticlockwise()
 
