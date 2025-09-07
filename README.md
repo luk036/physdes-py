@@ -15,6 +15,7 @@
 
 ## Dependencies
 
+- [luk036/lds-gen](https://github.com/luk036/mywheel)
 - [luk036/lds-gen](https://github.com/luk036/lds-gen) (for testing only)
 
 ## 👀 See also
