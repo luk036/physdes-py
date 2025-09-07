@@ -29,6 +29,8 @@ from typing import Callable, Generic, List, TypeVar
 
 from .point import Point
 from .vector2 import Vector2
+from .rdllist import RDllist
+from mywheel.dllist import Dllink
 
 T = TypeVar("T", int, float)
 PointSet = List[Point[T, T]]
@@ -352,20 +354,15 @@ class Polygon(Generic[T]):
         # Check the cross product of all consecutive edges
         pointset = [self._vecs[-1], Vector2(0, 0)] + self._vecs + [Vector2(0, 0)]
 
-        if is_anticlockwise:
+        def check(cmp: Callable) -> bool:
             for i in range(1, len(pointset) - 1):
                 v1 = pointset[i] - pointset[i - 1]
                 v2 = pointset[i + 1] - pointset[i]
-                if v1.cross(v2) < 0:
+                if cmp(v1.cross(v2)):
                     return False
-        else:
-            for i in range(1, len(pointset) - 1):
-                v1 = pointset[i] - pointset[i - 1]
-                v2 = pointset[i + 1] - pointset[i]
-                if v1.cross(v2) > 0:
-                    return False
+            return True
 
-        return True
+        return check(lambda a: a < 0) if is_anticlockwise else check(lambda a: a > 0)
 
 
 def partition(pred, iterable):
@@ -587,26 +584,23 @@ def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
     min_index, _ = min(enumerate(lst), key=lambda it: dir(it[1]))
     max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
+    rdll = RDllist(len(lst))
 
-    n = len(lst)
+    def voilate(start: int, stop: int, cmp: Callable) -> bool:
+        vi = rdll[start]
+        while id(vi) != id(rdll[stop]):
+            vnext = vi.next
+            if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
+                return True
+            vi = vnext
+        return False
 
     # Chain from min to max
-    i = min_index
-    while i != max_index:
-        next_i = (i + 1) % n
-        if dir(lst[i])[0] > dir(lst[next_i])[0]:
-            return False
-        i = next_i
+    if voilate(min_index, max_index, lambda a, b: a > b):
+        return False
 
     # Chain from max to min
-    i = max_index
-    while i != min_index:
-        next_i = (i + 1) % n
-        if dir(lst[i])[0] < dir(lst[next_i])[0]:
-            return False
-        i = next_i
-
-    return True
+    return not voilate(max_index, min_index, lambda a, b: a < b)
 
 
 def polygon_is_xmonotone(lst: PointSet) -> bool:
@@ -693,7 +687,9 @@ def polygon_is_anticlockwise(pointset: PointSet) -> bool:
     Returns:
         True if the polygon is oriented clockwise, False otherwise.
     """
-    if len(pointset) < 3:
+    n = len(pointset)
+
+    if n < 3:
         raise ValueError("Polygon must have at least 3 points")
 
     # Find the point with minimum coordinates (bottom-left point)
@@ -715,3 +711,50 @@ def polygon_is_anticlockwise(pointset: PointSet) -> bool:
     vec2 = next_point.displace(current_point)
 
     return vec1.cross(vec2) > 0
+
+
+def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
+    n = len(pointset)
+    if n < 3:
+        raise ValueError("Polygon must have at least 3 points")
+    if n == 3:
+        return pointset
+
+    # Find the point with minimum coordinates (bottom-left point)
+    min_index, min_point = min(
+        enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord)
+    )
+    # Find the point with maximum coordinates (bottom-left point)
+    max_index, _ = max(enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord))
+
+    # Get the previous and next points in the polygon (with wrap-around)
+    prev_index = (min_index - 1) % n
+    next_index = (min_index + 1) % n
+
+    prev_point = pointset[prev_index]
+    current_point = min_point
+    next_point = pointset[next_index]
+
+    # Calculate vectors and cross product
+    vec1 = current_point.displace(prev_point)
+    vec2 = next_point.displace(current_point)
+
+    is_anticlockwise = vec1.cross(vec2) > 0
+    rdll = RDllist(n, not is_anticlockwise)
+
+    def process(start: int, stop: int) -> None:
+        vlink = rdll[start].next
+        while id(vlink) != id(rdll[stop]):
+            vnext = vlink.next
+            vprev = vlink.prev
+            vec1 = pointset[vlink.data].displace(pointset[vprev.data])
+            vec2 = pointset[vnext.data].displace(pointset[vlink.data])
+            if vec1.cross(vec2) <= 0:
+                vlink.detach()
+                vlink = vprev
+            else:
+                vlink = vnext
+
+    process(min_index, max_index)
+    process(max_index, min_index)
+    return [min_point] + [pointset[v.data] for v in rdll.from_node(min_index)]

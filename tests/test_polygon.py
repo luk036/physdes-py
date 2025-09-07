@@ -11,6 +11,7 @@ from physdes.polygon import (
     polygon_is_ymonotone,
     point_in_polygon,
     polygon_is_anticlockwise,
+    polygon_make_convex_hull,
 )
 from physdes.vector2 import Vector2
 
@@ -285,3 +286,51 @@ def test_point_in_polygon_more():
     coords_cw = [(0, 0), (0, 10), (10, 5)]
     pointset_cw = [Point(x, y) for x, y in coords_cw]
     assert point_in_polygon(pointset_cw, Point(1, 5)) is True
+
+
+def test_make_convex_hull():
+    coords = [
+        (-2, 5),
+        (-4, 2),
+        (-2, -4),
+        (6, -3),
+        (5, 0),
+        (4, 2),
+        (3, 3),
+        (1, 4),
+        (7, 5),
+        (2, 6),
+    ]
+    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    assert polygon_is_anticlockwise(S)
+    C = polygon_make_convex_hull(S)
+    for p in C:
+        print("({},{})".format(p.xcoord, p.ycoord), end=" ")
+    assert polygon_is_anticlockwise(C)
+
+
+def test_convex_hull():
+    hgen = Halton([3, 2], [7, 11])
+    coords = [hgen.pop() for _ in range(50)]
+    S = create_test_polygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    C = polygon_make_convex_hull(S)
+
+    print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
+
+    print('  <polygon points="', end=" ")
+    for p in C:
+        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
+    print('"')
+    print('  fill="#C0D088" stroke="black" opacity="0.3" />')
+
+    print('  <polygon points="', end=" ")
+    for p in S:
+        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
+    print('"')
+    print('  fill="#88C0D0" stroke="black" opacity="0.5" />')
+    for p in S:
+        print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
+
+    print("</svg>")
+
+    assert polygon_is_anticlockwise(C)

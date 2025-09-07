@@ -30,6 +30,7 @@ from .point import Point
 from .skeleton import _logger
 from .vector2 import Vector2
 from .polygon import Polygon
+from .rdllist import RDllist
 
 PointSet = List[Point[int, int]]
 
@@ -298,13 +299,14 @@ class RPolygon:
             raise ValueError("RPolygon must have at least 2 points")
 
         # Find the point with minimum coordinates (bottom-left point)
-        min_point = min(pointset, key=lambda pt: (pt.x, pt.y))
-        min_index = pointset.index(min_point)
+        min_index, min_point = min(
+            enumerate(pointset), key=lambda it: (it[1].x, it[1].y)
+        )
 
         # Get the previous and next points in the polygon (with wrap-around)
         n = len(pointset)
         prev_point = pointset[(min_index - 1) % n]
-        current_point = pointset[min_index]
+        current_point = min_point
 
         # Calculate vectors and cross product
         return prev_point.y > current_point.y
@@ -403,7 +405,7 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
     # Use x-monotone as notation
     leftmost = min(lst, key=dir)
     rightmost = max(lst, key=dir)
-    is_anticlockwise = dir(leftmost)[1] > dir(rightmost)[1]
+    is_anticlockwise = dir(leftmost)[1] < dir(rightmost)[1]
 
     def r2l(pt) -> bool:
         return dir(pt)[1] <= dir(leftmost)[1]
@@ -572,26 +574,23 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
     min_index, _ = min(enumerate(lst), key=lambda it: dir(it[1]))
     max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
+    rdll = RDllist(len(lst))
 
-    n = len(lst)
+    def voilate(start: int, stop: int, cmp: Callable) -> bool:
+        vi = rdll[start]
+        while id(vi) != id(rdll[stop]):
+            vnext = vi.next
+            if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
+                return True
+            vi = vnext
+        return False
 
     # Chain from min to max
-    i = min_index
-    while i != max_index:
-        next_i = (i + 1) % n
-        if dir(lst[i])[0] > dir(lst[next_i])[0]:
-            return False
-        i = next_i
+    if voilate(min_index, max_index, lambda a, b: a > b):
+        return False
 
     # Chain from max to min
-    i = max_index
-    while i != min_index:
-        next_i = (i + 1) % n
-        if dir(lst[i])[0] < dir(lst[next_i])[0]:
-            return False
-        i = next_i
-
-    return True
+    return not voilate(max_index, min_index, lambda a, b: a < b)
 
 
 def rpolygon_is_xmonotone(lst: PointSet) -> bool:
@@ -679,3 +678,162 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
             res = not res
         pt0 = pt1
     return res
+
+
+def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
+    if len(lst) <= 3:
+        return lst
+
+    min_index, min_point = min(
+        enumerate(lst), key=lambda it: (it[1].xcoord, it[1].ycoord)
+    )
+    max_index, _ = max(enumerate(lst), key=lambda it: (it[1].xcoord, it[1].ycoord))
+
+    # Get the previous and next points in the polygon (with wrap-around)
+    rdll = RDllist(len(lst))
+    vmin = rdll[min_index]
+    vmax = rdll[max_index]
+
+    vi = vmin
+    if is_anticlockwise:
+        # Chain from min to max
+        while id(vi) != id(vmax):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].xcoord > lst[vnext.data].xcoord:
+                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
+                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+        # Chain from max to min
+        vi = vmax
+        while id(vi) != id(vmin):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].xcoord < lst[vnext.data].xcoord:
+                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
+                #     lst[vi.next.data].ycoord = lst[vi.data].ycoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+    else:
+        # Chain from min to max
+        while id(vi) != id(vmax):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].xcoord > lst[vnext.data].xcoord:
+                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
+                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+        # Chain from max to min
+        vi = vmax
+        while id(vi) != id(vmin):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].xcoord < lst[vnext.data].xcoord:
+                # if lst[vi.prev.data].xcoord > lst[vnext.data].xcoord:
+                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+
+    return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
+
+
+def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
+    n = len(lst)
+    if n <= 3:
+        return lst
+
+    min_index, min_point = min(
+        enumerate(lst), key=lambda it: (it[1].ycoord, it[1].xcoord)
+    )
+    max_index, _ = max(enumerate(lst), key=lambda it: (it[1].ycoord, it[1].xcoord))
+
+    # Get the previous and next points in the polygon (with wrap-around)
+    rdll = RDllist(n)
+    vmin = rdll[min_index]
+    vmax = rdll[max_index]
+
+    vi = vmin
+    if is_anticlockwise:
+        # Chain from min to max
+        while id(vi) != id(vmax):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].ycoord > lst[vnext.data].ycoord:
+                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
+                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+        # Chain from max to min
+        vi = vmax
+        while id(vi) != id(vmin):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].ycoord < lst[vnext.data].ycoord:
+                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
+                #     lst[vi.next.data].xcoord = lst[vi.data].xcoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+    else:
+        # Chain from min to max
+        while id(vi) != id(vmax):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].ycoord > lst[vnext.data].ycoord:
+                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
+                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+        # Chain from max to min
+        vi = vmax
+        while id(vi) != id(vmin):
+            vnext = vi.next
+            vprev = vi.prev
+            if lst[vi.data].ycoord < lst[vnext.data].ycoord:
+                # if lst[vi.prev.data].ycoord > lst[vnext.data].ycoord:
+                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
+                vi.detach()
+                vi = vprev
+            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
+                vi.detach()
+                vi = vprev
+            else:
+                vi = vnext
+
+    return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
