@@ -30,7 +30,6 @@ from typing import Callable, Generic, List, TypeVar
 from .point import Point
 from .vector2 import Vector2
 from .rdllist import RDllist
-from mywheel.dllist import Dllink
 
 T = TypeVar("T", int, float)
 PointSet = List[Point[T, T]]
