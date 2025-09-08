@@ -40,11 +40,11 @@ def test_RPolygon():
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon.from_pointset(S)
-    assert is_cw
-    assert not P.is_anticlockwise()
+    assert not is_cw
+    assert P.is_anticlockwise()
     G = P.to_polygon()
     assert P.signed_area * 2 == G.signed_area_x2
-    assert P.signed_area < 0
+    assert P.signed_area > 0
 
     Q = RPolygon.from_pointset(S)
     Q += Vector2(4, 5)
@@ -67,10 +67,10 @@ def test_RPolygon2():
     P = RPolygon.from_pointset(S)
     G = P.to_polygon()
     assert P.signed_area * 2 == G.signed_area_x2
-    assert P.signed_area > 0
+    assert P.signed_area < 0
 
-    assert not is_cw
-    assert P.is_anticlockwise()
+    assert is_cw
+    assert not P.is_anticlockwise()
 
 
 def test_RPolygon3():
@@ -265,7 +265,7 @@ def test_rpolygon_make_ymonotone_hull():
     for p in S:
         print('  <circle cx="{}" cy="{}" r="1" />'.format(p.xcoord, p.ycoord))
 
-    C = rpolygon_make_ymonotone_hull(S, True)
+    C = rpolygon_make_ymonotone_hull(S, False)
     print('  <polygon points="', end=" ")
     p0 = C[-1]
     for p1 in C:
@@ -281,7 +281,7 @@ def test_rpolygon_make_ymonotone_hull():
 
 def test_rpolygon_make_convex_hull():
     hgen = Halton([3, 2], [7, 11])
-    coords = [hgen.pop() for _ in range(12)]
+    coords = [hgen.pop() for _ in range(100)]
     S, is_anticlockwise = create_xmono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )

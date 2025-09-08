@@ -342,7 +342,7 @@ def partition(pred, iterable):
     return filter(pred, t1), filterfalse(pred, t2)
 
 
-def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
+def create_mono_rpolygon(lst: PointSet, dir: Callable, cmp: Callable) -> Tuple[PointSet, bool]:
     """
     The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
     where the direction of the polygon depends on the provided direction function.
@@ -395,9 +395,9 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
         ... ]
         ...
         >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-        >>> _, is_anticlockwise = create_mono_rpolygon(S, lambda pt: (pt.xcoord, pt.ycoord))
+        >>> _, is_anticlockwise = create_mono_rpolygon(S, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b)
         >>> is_anticlockwise
-        False
+        True
     """
     assert len(lst) >= 2
     _logger.debug("creating_mono_rpolygon begin")
@@ -405,7 +405,7 @@ def create_mono_rpolygon(lst: PointSet, dir: Callable) -> Tuple[PointSet, bool]:
     # Use x-monotone as notation
     leftmost = min(lst, key=dir)
     rightmost = max(lst, key=dir)
-    is_anticlockwise = dir(leftmost)[1] < dir(rightmost)[1]
+    is_anticlockwise = cmp(dir(leftmost)[1], dir(rightmost)[1])
 
     def r2l(pt) -> bool:
         return dir(pt)[1] <= dir(leftmost)[1]
@@ -449,9 +449,9 @@ def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> _, is_anticlockwise = create_xmono_rpolygon(S)
         >>> is_anticlockwise
-        False
+        True
     """
-    return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord))
+    return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b)
 
 
 def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
@@ -486,7 +486,7 @@ def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> is_clockwise
         False
     """
-    return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord))
+    return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord), lambda a, b: a > b)
 
 
 def create_test_rpolygon(lst: PointSet) -> PointSet:
@@ -691,77 +691,42 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
     # Get the previous and next points in the polygon (with wrap-around)
     rdll = RDllist(len(lst))
-    vmin = rdll[min_index]
-    vmax = rdll[max_index]
 
-    vi = vmin
+    def process(start: int, stop: int, cmp: Callable, cmp2: Callable) -> None:
+        vcurr = rdll[start]
+        vmax = rdll[stop]
+        while id(vcurr) != id(vmax):
+            vnext = vcurr.next
+            vprev = vcurr.prev
+            p0 = lst[vprev.data]
+            p1 = lst[vcurr.data]
+            p2 = lst[vnext.data]
+            if cmp(p1.xcoord, p2.xcoord) or cmp(p0.xcoord, p1.xcoord):
+                area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+                if cmp2(area_diff):
+                    vcurr.detach()
+                    vcurr = vprev
+                else:
+                    vcurr = vnext
+            else:
+                vcurr = vnext
+
     if is_anticlockwise:
         # Chain from min to max
-        while id(vi) != id(vmax):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].xcoord > lst[vnext.data].xcoord:
-                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
-                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(min_index, max_index, lambda x, y: x >= y, lambda a: a >= 0)
         # Chain from max to min
-        vi = vmax
-        while id(vi) != id(vmin):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].xcoord < lst[vnext.data].xcoord:
-                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
-                #     lst[vi.next.data].ycoord = lst[vi.data].ycoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(max_index, min_index, lambda x, y: x <= y, lambda a: a >= 0)
     else:
         # Chain from min to max
-        while id(vi) != id(vmax):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].xcoord > lst[vnext.data].xcoord:
-                # if lst[vi.prev.data].xcoord < lst[vnext.data].xcoord:
-                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(min_index, max_index, lambda x, y: x >= y, lambda a: a <= 0)
         # Chain from max to min
-        vi = vmax
-        while id(vi) != id(vmin):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].xcoord < lst[vnext.data].xcoord:
-                # if lst[vi.prev.data].xcoord > lst[vnext.data].xcoord:
-                #     lst[vi.prev.data].ycoord = lst[vi.data].ycoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].xcoord == lst[vnext.data].xcoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(max_index, min_index, lambda x, y: x <= y, lambda a: a <= 0)
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 
 
 def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
-    n = len(lst)
-    if n <= 3:
+    if len(lst) <= 3:
         return lst
 
     min_index, min_point = min(
@@ -770,118 +735,41 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
     max_index, _ = max(enumerate(lst), key=lambda it: (it[1].ycoord, it[1].xcoord))
 
     # Get the previous and next points in the polygon (with wrap-around)
-    rdll = RDllist(n)
-    vmin = rdll[min_index]
-    vmax = rdll[max_index]
+    rdll = RDllist(len(lst))
 
-    vi = vmin
+    def process(start: int, stop: int, cmp: Callable, cmp2: Callable) -> None:
+        vcurr = rdll[start]
+        vmax = rdll[stop]
+        while id(vcurr) != id(vmax):
+            vnext = vcurr.next
+            vprev = vcurr.prev
+            p0 = lst[vprev.data]
+            p1 = lst[vcurr.data]
+            p2 = lst[vnext.data]
+            if cmp(p1.ycoord, p2.ycoord) or cmp(p0.ycoord, p1.ycoord):
+                area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+                if cmp2(area_diff):
+                    vcurr.detach()
+                    vcurr = vprev
+                else:
+                    vcurr = vnext
+            else:
+                vcurr = vnext
+
     if is_anticlockwise:
         # Chain from min to max
-        while id(vi) != id(vmax):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].ycoord > lst[vnext.data].ycoord:
-                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
-                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(min_index, max_index, lambda x, y: x >= y, lambda a: a >= 0)
         # Chain from max to min
-        vi = vmax
-        while id(vi) != id(vmin):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].ycoord < lst[vnext.data].ycoord:
-                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
-                #     lst[vi.next.data].xcoord = lst[vi.data].xcoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(max_index, min_index, lambda x, y: x <= y, lambda a: a >= 0)
     else:
         # Chain from min to max
-        while id(vi) != id(vmax):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].ycoord > lst[vnext.data].ycoord:
-                # if lst[vi.prev.data].ycoord < lst[vnext.data].ycoord:
-                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(min_index, max_index, lambda x, y: x >= y, lambda a: a <= 0)
         # Chain from max to min
-        vi = vmax
-        while id(vi) != id(vmin):
-            vnext = vi.next
-            vprev = vi.prev
-            if lst[vi.data].ycoord < lst[vnext.data].ycoord:
-                # if lst[vi.prev.data].ycoord > lst[vnext.data].ycoord:
-                #     lst[vi.prev.data].xcoord = lst[vi.data].xcoord
-                vi.detach()
-                vi = vprev
-            elif lst[vi.data].ycoord == lst[vnext.data].ycoord:
-                vi.detach()
-                vi = vprev
-            else:
-                vi = vnext
+        process(max_index, min_index, lambda x, y: x <= y, lambda a: a <= 0)
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 
 
-def rpolygon_make_convex_hull(pointset: PointSet) -> PointSet:
-    n = len(pointset)
-    if n < 3:
-        raise ValueError("Polygon must have at least 3 points")
-    if n == 3:
-        return pointset
-
-    # Find the point with minimum coordinates (bottom-left point)
-    min_index, min_point = min(
-        enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord)
-    )
-    # Find the point with maximum coordinates (bottom-left point)
-    max_index, _ = max(enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord))
-
-    # Get the previous and next points in the polygon (with wrap-around)
-    prev_index = (min_index - 1) % n
-    prev_point = pointset[prev_index]
-    current_point = min_point
-
-    prev_point = pointset[(min_index - 1) % n]
-    current_point = min_point
-    is_anticlockwise = prev_point.ycoord > current_point.ycoord
-
-    rdll = RDllist(n)
-
-    def process(start: int, stop: int, cmp: Callable) -> None:
-        vlink = rdll[start].next
-        while id(vlink) != id(rdll[stop]):
-            vnext = vlink.next
-            vprev = vlink.prev
-            vec1 = pointset[vlink.data].displace(pointset[vprev.data])
-            vec2 = pointset[vnext.data].displace(pointset[vlink.data])
-            if cmp(vec1.cross(vec2)):
-                vlink.detach()
-                vlink = vprev
-            else:
-                vlink = vnext
-
-    if is_anticlockwise:
-        process(min_index, max_index, lambda a: a <= 0)
-        process(max_index, min_index, lambda a: a <= 0)
-    else:
-        process(min_index, max_index, lambda a: a >= 0)
-        process(max_index, min_index, lambda a: a >= 0)
-
-    return [min_point] + [pointset[v.data] for v in rdll.from_node(min_index)]
+def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:
+    S = rpolygon_make_xmonotone_hull(pointset, is_anticlockwise)
+    return rpolygon_make_ymonotone_hull(S, is_anticlockwise)
