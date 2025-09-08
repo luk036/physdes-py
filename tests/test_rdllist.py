@@ -1,6 +1,7 @@
 import pytest
 from physdes.rdllist import RDllist, RDllIterator
 
+
 def test_rdllist_init():
     """
     Test initialization of RDllist.
@@ -11,6 +12,7 @@ def test_rdllist_init():
         assert dll[i].data == i
         assert dll[i].next.data == (i + 1) % 5
         assert dll[i].prev.data == (i - 1 + 5) % 5
+
 
 def test_rdllist_init_reverse():
     """
@@ -23,6 +25,7 @@ def test_rdllist_init_reverse():
         assert dll[i].next.data == (i - 1 + 5) % 5
         assert dll[i].prev.data == (i + 1) % 5
 
+
 def test_rdllist_getitem():
     """
     Test __getitem__ of RDllist.
@@ -33,6 +36,7 @@ def test_rdllist_getitem():
     with pytest.raises(IndexError):
         _ = dll[5]
 
+
 def test_rdllist_iter():
     """
     Test __iter__ of RDllist.
@@ -42,6 +46,7 @@ def test_rdllist_iter():
     assert isinstance(it, RDllIterator)
     data = [node.data for node in it]
     assert data == [1, 2, 3, 4]
+
 
 def test_rdllist_from_node():
     """

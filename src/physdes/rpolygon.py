@@ -24,7 +24,8 @@ Overall, this code provides a set of tools for working with rectilinear polygons
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Optional
+from mywheel.dllist import Dllink
 
 from .point import Point
 from .skeleton import _logger
@@ -342,7 +343,9 @@ def partition(pred, iterable):
     return filter(pred, t1), filterfalse(pred, t2)
 
 
-def create_mono_rpolygon(lst: PointSet, dir: Callable, cmp: Callable) -> Tuple[PointSet, bool]:
+def create_mono_rpolygon(
+    lst: PointSet, dir: Callable, cmp: Callable
+) -> Tuple[PointSet, bool]:
     """
     The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
     where the direction of the polygon depends on the provided direction function.
@@ -451,7 +454,9 @@ def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> is_anticlockwise
         True
     """
-    return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b)
+    return create_mono_rpolygon(
+        lst, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b
+    )
 
 
 def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
@@ -486,7 +491,9 @@ def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> is_clockwise
         False
     """
-    return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord), lambda a, b: a > b)
+    return create_mono_rpolygon(
+        lst, lambda pt: (pt.ycoord, pt.xcoord), lambda a, b: a > b
+    )
 
 
 def create_test_rpolygon(lst: PointSet) -> PointSet:
@@ -773,3 +780,73 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:
     S = rpolygon_make_xmonotone_hull(pointset, is_anticlockwise)
     return rpolygon_make_ymonotone_hull(S, is_anticlockwise)
+
+
+def rpolygon_cut_convex_recur(
+    start_index: int, lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+) -> PointSet:
+    def process(
+        start: int, cmp2: Callable
+    ) -> Optional[Tuple[Dllink[int], Dllink[int]]]:
+        n = len(lst)
+        vcurr = rdll[start]
+        vstop = vcurr
+        while True:
+            vnext = vcurr.next
+            vprev = vcurr.prev
+            p0 = lst[vprev.data]
+            p1 = lst[vcurr.data]
+            p2 = lst[vnext.data]
+            area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+            if cmp2(area_diff):
+                # cut
+                vi = vnext.next
+                min_value = 10000000000000000000
+                vertical = None
+                v_min = vcurr
+                while id(vi) != id(vprev):
+                    vec_i = lst[vi.data].displace(p1)
+                    if abs(vec_i.y_) < min_value:
+                        min_value = abs(vec_i.y_)
+                        v_min = vi
+                        vertical = True
+                    if abs(vec_i.x_) < min_value:
+                        min_value = abs(vec_i.x_)
+                        v_min = vi
+                        vertical = False
+                    vi = vi.next
+                p_min = lst[v_min.data]
+                rdll.cycle.append(Dllink(n))
+                new_node = rdll[n]
+                if vertical:
+                    new_node.next = vcurr.next
+                    new_node.prev = v_min.prev
+                    v_min.prev.next = new_node
+                    vcurr.next.prev = new_node
+                    vcurr.next = v_min
+                    v_min.prev = vcurr
+                    new_point = Point(p_min.xcoord, p1.ycoord)
+                else:
+                    new_node.prev = vcurr.prev
+                    new_node.next = v_min.next
+                    v_min.next.prev = new_node
+                    vcurr.prev.next = new_node
+                    vcurr.prev = v_min
+                    v_min.next = vcurr
+                    new_point = Point(p1.xcoord, p_min.ycoord)
+                lst.append(new_point)
+                return vcurr, v_min
+            vcurr = vnext
+            if id(vcurr) == id(vstop):
+                break
+        return None
+
+    result = process(
+        start_index, lambda a: a >= 0 if is_anticlockwise else lambda a: a <= 0
+    )
+    if result:
+        a, b = result
+        P1 = rpolygon_cut_convex_recur(a.data, lst, is_anticlockwise, rdll)
+        P2 = rpolygon_cut_convex_recur(a.data, lst, is_anticlockwise, rdll)
+        return P1 + P2
+    return []

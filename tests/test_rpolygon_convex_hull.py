@@ -13,9 +13,7 @@ from physdes.rpolygon import (
 def test_rpolygon_make_convex_hull():
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(100)]
-    S = create_test_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     assert not rpolygon_is_xmonotone(S)
     assert not rpolygon_is_ymonotone(S)
 
