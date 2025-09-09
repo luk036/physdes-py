@@ -783,13 +783,19 @@ def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> Poi
 
 
 def rpolygon_cut_convex_recur(
-    start_index: int, lst: PointSet, is_anticlockwise: bool, rdll: RDllist
-) -> PointSet:
+    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+) -> List[List[int]]:
+    v2 = v1.next
+    v3 = v2.next
+    if id(v3) == id(v1):  # rectangle
+        return [[v1.data, v2.data]]
+    if id(v3.next) == id(v1):  # monotone
+        return [[v1.data, v2.data, v3.data]]
+
     def process(
-        start: int, cmp2: Callable
+        vcurr: Dllink[int], cmp2: Callable
     ) -> Optional[Tuple[Dllink[int], Dllink[int]]]:
         n = len(lst)
-        vcurr = rdll[start]
         vstop = vcurr
         while True:
             vnext = vcurr.next
@@ -839,14 +845,23 @@ def rpolygon_cut_convex_recur(
             vcurr = vnext
             if id(vcurr) == id(vstop):
                 break
-        return None
+        return None  # convex
 
-    result = process(
-        start_index, lambda a: a >= 0 if is_anticlockwise else lambda a: a <= 0
-    )
+    result = process(v1, lambda a: a >= 0 if is_anticlockwise else lambda a: a <= 0)
     if result:
         a, b = result
-        P1 = rpolygon_cut_convex_recur(a.data, lst, is_anticlockwise, rdll)
-        P2 = rpolygon_cut_convex_recur(a.data, lst, is_anticlockwise, rdll)
-        return P1 + P2
-    return []
+        L1 = rpolygon_cut_convex_recur(a, lst, is_anticlockwise, rdll)
+        L2 = rpolygon_cut_convex_recur(b, lst, is_anticlockwise, rdll)
+        return L1 + L2
+    L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
+    return [L]
+
+
+def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
+    rdll = RDllist(len(lst))
+    L = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
+    res = list()
+    for item in L:
+        P = [lst[i] for i in item]
+        res.append(P)
+    return res
