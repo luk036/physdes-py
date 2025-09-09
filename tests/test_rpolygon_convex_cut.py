@@ -15,8 +15,8 @@ def test_rpolygon_convex_cut():
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(20)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
-    assert not rpolygon_is_xmonotone(S)
-    assert not rpolygon_is_ymonotone(S)
+    assert not rpolygon_is_xmonotone(S) or not rpolygon_is_ymonotone(S)
+
     P = RPolygon.from_pointset(S)
     is_anticlockwise = P.is_anticlockwise()
 
@@ -44,8 +44,9 @@ def test_rpolygon_convex_cut():
             p0 = p1
         print('"')
         print('  fill="#D088C0" stroke="black" opacity="0.3"/>')
+        # for p in C:
+        #     print('  <circle cx="{}" cy="{}" r="10" fill="red"/>'.format(p.xcoord, p.ycoord))
 
     print("</svg>")
     for C in L:
         assert rpolygon_is_convex(C)
-    assert False

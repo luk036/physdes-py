@@ -788,14 +788,13 @@ def rpolygon_cut_convex_recur(
     v2 = v1.next
     v3 = v2.next
     if id(v3) == id(v1):  # rectangle
-        return [[v1.data, v2.data]]
+        L = [v1.data, v2.data]
+        return [L]
     if id(v3.next) == id(v1):  # monotone
-        return [[v1.data, v2.data, v3.data]]
+        L = [v1.data, v2.data, v3.data]
+        return [L]
 
-    def process(
-        vcurr: Dllink[int], cmp2: Callable
-    ) -> Optional[Tuple[Dllink[int], Dllink[int]]]:
-        n = len(lst)
+    def find_nonconvex_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
         vstop = vcurr
         while True:
             vnext = vcurr.next
@@ -804,57 +803,72 @@ def rpolygon_cut_convex_recur(
             p1 = lst[vcurr.data]
             p2 = lst[vnext.data]
             area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
-            if cmp2(area_diff):
-                # cut
-                vi = vnext.next
-                min_value = 10000000000000000000
-                vertical = None
-                v_min = vcurr
-                while id(vi) != id(vprev):
-                    vec_i = lst[vi.data].displace(p1)
-                    if abs(vec_i.y_) < min_value:
-                        min_value = abs(vec_i.y_)
-                        v_min = vi
-                        vertical = True
-                    if abs(vec_i.x_) < min_value:
-                        min_value = abs(vec_i.x_)
-                        v_min = vi
-                        vertical = False
-                    vi = vi.next
-                p_min = lst[v_min.data]
-                rdll.cycle.append(Dllink(n))
-                new_node = rdll[n]
-                if vertical:
-                    new_node.next = vcurr.next
-                    new_node.prev = v_min.prev
-                    v_min.prev.next = new_node
-                    vcurr.next.prev = new_node
-                    vcurr.next = v_min
-                    v_min.prev = vcurr
-                    new_point = Point(p_min.xcoord, p1.ycoord)
-                else:
-                    new_node.prev = vcurr.prev
-                    new_node.next = v_min.next
-                    v_min.next.prev = new_node
-                    vcurr.prev.next = new_node
-                    vcurr.prev = v_min
-                    v_min.next = vcurr
-                    new_point = Point(p1.xcoord, p_min.ycoord)
-                lst.append(new_point)
-                return vcurr, v_min
+            v1 = p1.displace(p0)
+            v2 = p2.displace(p1)
+            if v1.x_ * v2.x_ < 0 or v1.y_ * v2.y_ < 0:
+                if cmp2(area_diff):
+                    # print("<-- area: {}".format(area_diff))
+                    # print("<-- ({}, {}), ({}, {}), ({}, {})/>".format(p0.xcoord, p0.ycoord, p1.xcoord, p1.ycoord, p2.xcoord, p2.ycoord))
+                    return vcurr
             vcurr = vnext
             if id(vcurr) == id(vstop):
                 break
         return None  # convex
 
-    result = process(v1, lambda a: a >= 0 if is_anticlockwise else lambda a: a <= 0)
-    if result:
-        a, b = result
-        L1 = rpolygon_cut_convex_recur(a, lst, is_anticlockwise, rdll)
-        L2 = rpolygon_cut_convex_recur(b, lst, is_anticlockwise, rdll)
-        return L1 + L2
-    L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
-    return [L]
+    vcurr = find_nonconvex_point(v1, lambda a: a > 0) if is_anticlockwise else find_nonconvex_point(v1, lambda a: a < 0)
+
+    if vcurr is None: # convex
+        L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
+        return [L]
+
+    def find_min_dist_point(vcurr: Dllink[int]) -> Tuple[Dllink[int], bool]:
+        vnext = vcurr.next
+        vprev = vcurr.prev
+        vi = vnext.next
+        min_value = 10000000000000000000
+        vertical = True
+        v_min = vcurr
+        p1 = lst[vcurr.data]
+        while id(vi) != id(vprev):
+            vec_i = lst[vi.data].displace(p1)
+            if abs(vec_i.x_) < min_value:
+                min_value = abs(vec_i.x_)
+                v_min = vi
+                vertical = True
+            if abs(vec_i.y_) < min_value:
+                min_value = abs(vec_i.y_)
+                v_min = vi
+                vertical = False
+            vi = vi.next
+        return v_min, vertical
+
+    v_min, vertical = find_min_dist_point(vcurr)
+    n = len(lst)
+    p_min = lst[v_min.data]
+    p1 = lst[vcurr.data]
+    rdll.cycle.append(Dllink(n))
+    new_node = rdll[n]
+    if vertical:
+        new_node.next = vcurr.next
+        new_node.prev = v_min.prev
+        v_min.prev.next = new_node
+        vcurr.next.prev = new_node
+        vcurr.next = v_min
+        v_min.prev = vcurr
+        new_point = Point(p_min.xcoord, p1.ycoord)
+    else:
+        new_node.prev = vcurr.prev
+        new_node.next = v_min.next
+        v_min.next.prev = new_node
+        vcurr.prev.next = new_node
+        vcurr.prev = v_min
+        v_min.next = vcurr
+        new_point = Point(p1.xcoord, p_min.ycoord)
+    lst.append(new_point)
+
+    L1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
+    L2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
+    return L1 + L2
 
 
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:

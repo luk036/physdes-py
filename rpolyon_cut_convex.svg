@@ -21,16 +21,12 @@
   <circle cx="1458" cy="512" r="10" />
   <circle cx="1620" cy="320" r="10" />
   <circle cx="1944" cy="128" r="10" />
-  <polygon points=" 1296,1536 567,1536 567,1920 1296,1920 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
-  <polygon points=" 81,64 162,64 162,576 81,576 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
-  <polygon points=" 1296,1920 891,1920 891,1600 1296,1600 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
-  <polygon points=" 162,64 324,64 324,384 162,384 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
-  <polygon points=" 1296,1600 1053,1600 1053,1408 1296,1408 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
-  <polygon points=" 1296,1408 1215,1408 1215,1792 1296,1792 "
-  fill="#D088C0" stroke="black" opacity="0.3"/>
+  <polygon points=" 1701,1280 1053,1280 1053,1408 1215,1408 1215,1792 1539,1792 1539,1664 1701,1664 "
+  fill="red" stroke="black" opacity="0.3"/>
+  <polygon points=" 891,1600 1053,1600 1053,1280 2025,1280 2025,1088 729,1088 729,1024 486,1024 486,768 324,768 324,384 162,384 162,576 81,576 81,1152 243,1152 243,1536 567,1536 567,1920 891,1920 "
+  fill="yellow" stroke="black" opacity="0.3"/>
+  <polygon points=" 810,640 1458,640 1458,512 1620,512 1620,320 1944,320 1944,128 1296,128 1296,64 972,64 972,256 810,256 "
+  fill="blue" stroke="black" opacity="0.3"/>
+  <polygon points=" 1782,896 1458,896 1458,640 729,640 729,1088 1782,1088 "
+  fill="green" stroke="black" opacity="0.3"/>
 </svg>
