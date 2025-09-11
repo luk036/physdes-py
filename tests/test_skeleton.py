@@ -1,6 +1,7 @@
-import pytest
 import subprocess
 import sys
+
+import pytest
 
 from physdes.skeleton import fib, main
 

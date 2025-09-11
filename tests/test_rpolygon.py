@@ -1,5 +1,5 @@
-from lds_gen.ilds import Halton
 import pytest
+from lds_gen.ilds import Halton
 
 from physdes.point import Point
 from physdes.polygon import Polygon
@@ -8,11 +8,11 @@ from physdes.rpolygon import (
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
+    point_in_rpolygon,
+    rpolygon_is_convex,
+    rpolygon_is_monotone,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
-    rpolygon_is_monotone,
-    rpolygon_is_convex,
-    point_in_rpolygon,
     rpolygon_make_xmonotone_hull,
     rpolygon_make_ymonotone_hull,
 )

@@ -3,9 +3,9 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 from physdes.rpolygon import (
     create_test_rpolygon,
+    rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
-    rpolygon_is_convex,
     rpolygon_make_convex_hull,
 )
 

@@ -4,16 +4,16 @@ from physdes.point import Point
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
+    rpolygon_cut_convex,
+    rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
-    rpolygon_is_convex,
-    rpolygon_cut_convex,
 )
 
 
 def test_rpolygon_convex_cut():
     hgen = Halton([3, 2], [7, 11])
-    coords = [hgen.pop() for _ in range(20)]
+    coords = [hgen.pop() for _ in range(30)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     assert not rpolygon_is_xmonotone(S) or not rpolygon_is_ymonotone(S)
 
@@ -50,3 +50,4 @@ def test_rpolygon_convex_cut():
     print("</svg>")
     for C in L:
         assert rpolygon_is_convex(C)
+    assert False

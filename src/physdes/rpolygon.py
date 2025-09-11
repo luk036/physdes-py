@@ -24,14 +24,15 @@ Overall, this code provides a set of tools for working with rectilinear polygons
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, List, Tuple, Optional
+from typing import Callable, List, Optional, Tuple
+
 from mywheel.dllist import Dllink
 
 from .point import Point
-from .skeleton import _logger
-from .vector2 import Vector2
 from .polygon import Polygon
 from .rdllist import RDllist
+from .skeleton import _logger
+from .vector2 import Vector2
 
 PointSet = List[Point[int, int]]
 
@@ -794,7 +795,9 @@ def rpolygon_cut_convex_recur(
         L = [v1.data, v2.data, v3.data]
         return [L]
 
-    def find_nonconvex_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
+    def find_nonconvex_point(
+        vcurr: Dllink[int], cmp2: Callable
+    ) -> Optional[Dllink[int]]:
         vstop = vcurr
         while True:
             vnext = vcurr.next
@@ -815,9 +818,13 @@ def rpolygon_cut_convex_recur(
                 break
         return None  # convex
 
-    vcurr = find_nonconvex_point(v1, lambda a: a > 0) if is_anticlockwise else find_nonconvex_point(v1, lambda a: a < 0)
+    vcurr = (
+        find_nonconvex_point(v1, lambda a: a > 0)
+        if is_anticlockwise
+        else find_nonconvex_point(v1, lambda a: a < 0)
+    )
 
-    if vcurr is None: # convex
+    if vcurr is None:  # convex
         L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
         return [L]
 
@@ -828,17 +835,26 @@ def rpolygon_cut_convex_recur(
         min_value = 10000000000000000000
         vertical = True
         v_min = vcurr
-        p1 = lst[vcurr.data]
+        pcurr = lst[vcurr.data]
         while id(vi) != id(vprev):
-            vec_i = lst[vi.data].displace(p1)
-            if abs(vec_i.x_) < min_value:
-                min_value = abs(vec_i.x_)
-                v_min = vi
-                vertical = True
-            if abs(vec_i.y_) < min_value:
-                min_value = abs(vec_i.y_)
-                v_min = vi
-                vertical = False
+            p0 = lst[vi.prev.data]
+            p1 = lst[vi.data]
+            p2 = lst[vi.next.data]
+            vec_i = p1.displace(pcurr)
+            if (p0.ycoord <= pcurr.ycoord <= p1.ycoord) or (
+                p1.ycoord <= pcurr.ycoord <= p0.ycoord
+            ):
+                if abs(vec_i.x_) < min_value:
+                    min_value = abs(vec_i.x_)
+                    v_min = vi
+                    vertical = True
+            if (p2.xcoord <= pcurr.xcoord <= p1.xcoord) or (
+                p1.xcoord <= pcurr.xcoord <= p2.xcoord
+            ):
+                if abs(vec_i.y_) < min_value:
+                    min_value = abs(vec_i.y_)
+                    v_min = vi
+                    vertical = False
             vi = vi.next
         return v_min, vertical
 

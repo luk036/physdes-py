@@ -1,4 +1,5 @@
-from typing import TypeVar, List
+from typing import List, TypeVar
+
 from mywheel.dllist import Dllink
 
 T = TypeVar("T")

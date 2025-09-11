@@ -1,7 +1,8 @@
-from hypothesis import given
-from hypothesis.strategies import integers
 import subprocess
 import sys
+
+from hypothesis import given
+from hypothesis.strategies import integers
 
 from physdes.vector2 import Vector2
 

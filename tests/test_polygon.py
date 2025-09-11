@@ -1,5 +1,5 @@
-from lds_gen.ilds import Halton
 import pytest
+from lds_gen.ilds import Halton
 
 from physdes.point import Point
 from physdes.polygon import (
@@ -7,10 +7,10 @@ from physdes.polygon import (
     create_test_polygon,
     create_xmono_polygon,
     create_ymono_polygon,
-    polygon_is_xmonotone,
-    polygon_is_ymonotone,
     point_in_polygon,
     polygon_is_anticlockwise,
+    polygon_is_xmonotone,
+    polygon_is_ymonotone,
     polygon_make_convex_hull,
 )
 from physdes.vector2 import Vector2
