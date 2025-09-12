@@ -50,4 +50,3 @@ def test_rpolygon_convex_cut():
     print("</svg>")
     for C in L:
         assert rpolygon_is_convex(C)
-    assert False
