@@ -287,25 +287,11 @@ class Polygon(Generic[T]):
             >>> P.is_rectilinear()
             False
         """
-        if not self._vecs:
-            return True
+        pointset = [Vector2(0, 0)] + self._vecs
+        return all(
+            p1.x == p2.x or p1.y == p2.y for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
+        )
 
-        # Check from origin to vecs[0]
-        if self._vecs[0].x != 0 and self._vecs[0].y != 0:
-            return False
-
-        # Check between vecs
-        for i in range(len(self._vecs) - 1):
-            v1 = self._vecs[i]
-            v2 = self._vecs[i + 1]
-            if v1.x != v2.x and v1.y != v2.y:
-                return False
-
-        # Check from vecs[-1] to origin
-        if self._vecs[-1].x != 0 and self._vecs[-1].y != 0:
-            return False
-
-        return True
 
     def is_anticlockwise(self) -> bool:
         """
@@ -342,28 +328,25 @@ class Polygon(Generic[T]):
 
         :return: True if the polygon is convex, False otherwise.
         """
-        N = len(self._vecs) + 1
-        if N < 3:
-            return False  # A polygon must have at least 3 points to be convex
-
-        if N == 3:
-            return True  # A triangle must be convex
+        if len(self._vecs) < 3:
+            return True  # A polygon with less than 3 points is considered convex
 
         if is_anticlockwise is None:
             is_anticlockwise = self.is_anticlockwise()
 
+        pointset = [Vector2(0, 0)] + self._vecs
         # Check the cross product of all consecutive edges
-        pointset = [self._vecs[-1], Vector2(0, 0)] + self._vecs + [Vector2(0, 0)]
+        if is_anticlockwise:
+            return all(
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) >= 0
+                for i in range(len(pointset) - 1)
+            )
+        else:
+            return all(
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) <= 0
+                for i in range(len(pointset) - 1)
+            )
 
-        def check(cmp: Callable) -> bool:
-            for i in range(1, len(pointset) - 1):
-                v1 = pointset[i] - pointset[i - 1]
-                v2 = pointset[i + 1] - pointset[i]
-                if cmp(v1.cross(v2)):
-                    return False
-            return True
-
-        return check(lambda a: a < 0) if is_anticlockwise else check(lambda a: a > 0)
 
 
 def partition(pred, iterable):
@@ -431,7 +414,7 @@ def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
     lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(min_pt)) <= 0, lst)
     lst1 = sorted(lst1, key=dir)
     lst2 = sorted(lst2, key=dir, reverse=True)
-    return lst1 + lst2
+    return list(lst1) + list(lst2)
 
 
 def create_ymono_polygon(lst: PointSet) -> PointSet:
