@@ -25,7 +25,9 @@ Overall, this module provides a comprehensive set of tools for working with poly
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, Generic, List, TypeVar
+from typing import Callable, Generic, List, TypeVar, Tuple
+
+from mywheel.dllist import Dllink
 
 from .point import Point
 from .rdllist import RDllist
@@ -676,7 +678,7 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     return res
 
 
-def polygon_is_anticlockwise(pointset: PointSet) -> bool:
+def polygon_is_anticlockwise_info(pointset: PointSet) -> Tuple[bool, int]:
     """
     Determines if a polygon represented by a list of points is oriented clockwise.
 
@@ -709,7 +711,11 @@ def polygon_is_anticlockwise(pointset: PointSet) -> bool:
     vec1 = current_point.displace(prev_point)
     vec2 = next_point.displace(current_point)
 
-    return vec1.cross(vec2) > 0
+    return vec1.cross(vec2) > 0, min_index
+
+
+def polygon_is_anticlockwise(pointset: PointSet) -> bool:
+    return polygon_is_anticlockwise_info(pointset)[0]
 
 
 def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
@@ -719,32 +725,16 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
     if n == 3:
         return pointset
 
-    # Find the point with minimum coordinates (bottom-left point)
-    min_index, min_point = min(
-        enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord)
-    )
     # Find the point with maximum coordinates (bottom-left point)
     max_index, _ = max(enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord))
 
-    # Get the previous and next points in the polygon (with wrap-around)
-    prev_index = (min_index - 1) % n
-    next_index = (min_index + 1) % n
-
-    prev_point = pointset[prev_index]
-    current_point = min_point
-    next_point = pointset[next_index]
-
-    # Calculate vectors and cross product
-    vec1 = current_point.displace(prev_point)
-    vec2 = next_point.displace(current_point)
-
-    is_anticlockwise = vec1.cross(vec2) > 0
+    is_anticlockwise, min_index = polygon_is_anticlockwise_info(pointset)
 
     rdll = RDllist(n)
 
-    def process(start: int, stop: int, cmp: Callable) -> None:
-        vlink = rdll[start].next
-        while id(vlink) != id(rdll[stop]):
+    def process(v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable) -> None:
+        vlink = v_start.next
+        while id(vlink) != id(v_stop):
             vnext = vlink.next
             vprev = vlink.prev
             vec1 = pointset[vlink.data].displace(pointset[vprev.data])
@@ -755,11 +745,13 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
             else:
                 vlink = vnext
 
+    v_min = rdll[min_index]
+    v_max = rdll[max_index]
     if is_anticlockwise:
-        process(min_index, max_index, lambda a: a <= 0)
-        process(max_index, min_index, lambda a: a <= 0)
+        process(v_min, v_max, lambda a: a <= 0)
+        process(v_max, v_min, lambda a: a <= 0)
     else:
-        process(min_index, max_index, lambda a: a >= 0)
-        process(max_index, min_index, lambda a: a >= 0)
+        process(v_min, v_max, lambda a: a >= 0)
+        process(v_max, v_min, lambda a: a >= 0)
 
-    return [min_point] + [pointset[v.data] for v in rdll.from_node(min_index)]
+    return [pointset[min_index]] + [pointset[v.data] for v in rdll.from_node(min_index)]

@@ -22,6 +22,7 @@ The code also includes helper functions like partition, which is used to split a
 Overall, this code provides a set of tools for working with rectilinear polygons, allowing programmers to create, analyze, and manipulate these shapes in various ways. It's designed to be flexible and efficient, making it useful for applications in computational geometry, computer graphics, or any field that requires working with polygonal shapes.
 """
 
+from enum import Enum
 from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Callable, List, Optional, Tuple
@@ -498,81 +499,34 @@ def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
 
 
 def create_test_rpolygon(lst: PointSet) -> PointSet:
-    """
-    The `create_test_rpolygon` function takes a list of points and returns a new list of points that
-    form a non-crossing polygon.
+    def dir_x(pt):
+        return (pt.xcoord, pt.ycoord)
 
-    :param lst: The parameter `lst` is a `PointSet`, which is a collection of points. Each point in the
-        `PointSet` has an x-coordinate and a y-coordinate
-
-    :type lst: PointSet
-
-    :return: The function `create_test_rpolygon` returns a `PointSet`, which is a collection of points.
-
-    Examples:
-        >>> coords = [
-        ...     (-2, 2),
-        ...     (0, -1),
-        ...     (-5, 1),
-        ...     (-2, 4),
-        ...     (0, -4),
-        ...     (-4, 3),
-        ...     (-6, -2),
-        ...     (5, 1),
-        ...     (2, 2),
-        ...     (3, -3),
-        ...     (-3, -3),
-        ...     (3, 3),
-        ...     (-3, -4),
-        ...     (1, 4),
-        ... ]
-        ...
-        >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-        >>> S = create_test_rpolygon(S)
-        >>> for p in S:
-        ...     print("{},".format(p))
-        ...
-        (0, -4),
-        (0, -1),
-        (3, -3),
-        (5, 1),
-        (2, 2),
-        (3, 3),
-        (1, 4),
-        (-2, 4),
-        (-2, 2),
-        (-4, 3),
-        (-5, 1),
-        (-6, -2),
-        (-3, -3),
-        (-3, -4),
-    """
-
-    def dir(pt):
+    def dir_y(pt):
         return (pt.ycoord, pt.xcoord)
 
-    max_pt = max(lst, key=dir)
-    min_pt = min(lst, key=dir)
+    max_pt = max(lst, key=dir_y)
+    min_pt = min(lst, key=dir_y)
     vec = max_pt.displace(min_pt)
 
     lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(min_pt)) < 0, lst)
     lst1 = list(lst1)  # note!!!!
     lst2 = list(lst2)  # note!!!!
-    max_pt1 = max(lst1)
+    max_pt1 = max(lst1, key=dir_x)
     lst3, lst4 = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
-    min_pt2 = min(lst2)
+    min_pt2 = min(lst2, key=dir_x)
     lst5, lst6 = partition(lambda pt: pt.ycoord > min_pt2.ycoord, lst2)
 
     if vec.x < 0:
-        lsta = sorted(lst6, reverse=True)
-        lstb = sorted(lst5, key=dir)
-        lstc = sorted(lst4)
-        lstd = sorted(lst3, key=dir, reverse=True)
+        lsta = sorted(lst6, key=dir_x, reverse=True)
+        lstb = sorted(lst5, key=dir_y)
+        lstc = sorted(lst4, key=dir_x)
+        lstd = sorted(lst3, key=dir_y, reverse=True)
     else:
-        lsta = sorted(lst3)
-        lstb = sorted(lst4, key=dir)
-        lstc = sorted(lst5, reverse=True)
-        lstd = sorted(lst6, key=dir, reverse=True)
+        lsta = sorted(lst3, key=dir_x)
+        lstb = sorted(lst4, key=dir_y)
+        lstc = sorted(lst5, key=dir_x, reverse=True)
+        lstd = sorted(lst6, key=dir_y, reverse=True)
     return lsta + lstb + lstc + lstd
 
 
@@ -583,10 +537,11 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
     min_index, _ = min(enumerate(lst), key=lambda it: dir(it[1]))
     max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
     rdll = RDllist(len(lst))
+    v_min = rdll[min_index]
+    v_max = rdll[max_index]
 
-    def voilate(start: int, stop: int, cmp: Callable) -> bool:
-        vi = rdll[start]
-        while id(vi) != id(rdll[stop]):
+    def voilate(vi: Dllink[int], v_stop: Dllink[int], cmp: Callable) -> bool:
+        while id(vi) != id(v_stop):
             vnext = vi.next
             if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
                 return True
@@ -594,11 +549,11 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
         return False
 
     # Chain from min to max
-    if voilate(min_index, max_index, lambda a, b: a > b):
+    if voilate(v_min, v_max, lambda a, b: a > b):
         return False
 
     # Chain from max to min
-    return not voilate(max_index, min_index, lambda a, b: a < b)
+    return not voilate(v_max, v_min, lambda a, b: a < b)
 
 
 def rpolygon_is_xmonotone(lst: PointSet) -> bool:
@@ -699,11 +654,13 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
     # Get the previous and next points in the polygon (with wrap-around)
     rdll = RDllist(len(lst))
+    v_min = rdll[min_index]
+    v_max = rdll[max_index]
 
-    def process(start: int, stop: int, cmp: Callable, cmp2: Callable) -> None:
-        vcurr = rdll[start]
-        vmax = rdll[stop]
-        while id(vcurr) != id(vmax):
+    def process(
+        vcurr: Dllink[int], vstop: Dllink[int], cmp: Callable, cmp2: Callable
+    ) -> None:
+        while id(vcurr) != id(vstop):
             vnext = vcurr.next
             vprev = vcurr.prev
             p0 = lst[vprev.data]
@@ -721,14 +678,14 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
     if is_anticlockwise:
         # Chain from min to max
-        process(min_index, max_index, lambda x, y: x >= y, lambda a: a >= 0)
+        process(v_min, v_max, lambda x, y: x >= y, lambda a: a >= 0)
         # Chain from max to min
-        process(max_index, min_index, lambda x, y: x <= y, lambda a: a >= 0)
+        process(v_max, v_min, lambda x, y: x <= y, lambda a: a >= 0)
     else:
         # Chain from min to max
-        process(min_index, max_index, lambda x, y: x >= y, lambda a: a <= 0)
+        process(v_min, v_max, lambda x, y: x >= y, lambda a: a <= 0)
         # Chain from max to min
-        process(max_index, min_index, lambda x, y: x <= y, lambda a: a <= 0)
+        process(v_max, v_min, lambda x, y: x <= y, lambda a: a <= 0)
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 
@@ -744,11 +701,13 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
     # Get the previous and next points in the polygon (with wrap-around)
     rdll = RDllist(len(lst))
+    v_min = rdll[min_index]
+    v_max = rdll[max_index]
 
-    def process(start: int, stop: int, cmp: Callable, cmp2: Callable) -> None:
-        vcurr = rdll[start]
-        vmax = rdll[stop]
-        while id(vcurr) != id(vmax):
+    def process(
+        vcurr: Dllink[int], vstop: Dllink[int], cmp: Callable, cmp2: Callable
+    ) -> None:
+        while id(vcurr) != id(vstop):
             vnext = vcurr.next
             vprev = vcurr.prev
             p0 = lst[vprev.data]
@@ -766,19 +725,41 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
     if is_anticlockwise:
         # Chain from min to max
-        process(min_index, max_index, lambda x, y: x >= y, lambda a: a >= 0)
+        process(v_min, v_max, lambda x, y: x >= y, lambda a: a >= 0)
         # Chain from max to min
-        process(max_index, min_index, lambda x, y: x <= y, lambda a: a >= 0)
+        process(v_max, v_min, lambda x, y: x <= y, lambda a: a >= 0)
     else:
         # Chain from min to max
-        process(min_index, max_index, lambda x, y: x >= y, lambda a: a <= 0)
+        process(v_min, v_max, lambda x, y: x >= y, lambda a: a <= 0)
         # Chain from max to min
-        process(max_index, min_index, lambda x, y: x <= y, lambda a: a <= 0)
+        process(v_max, v_min, lambda x, y: x <= y, lambda a: a <= 0)
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 
 
 def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:
+    """
+    .. svgbob::
+       :align: center
+
+                                           v_max
+                           ┌~~~~~~~~~~~┌────o
+                           :           │    │
+                ┌──────────o           │    │
+                │          │           │    │
+           ┌────o          │ ┌────x    │    │
+           │               │ │    │    │    │
+           │               └─x    └────x    │
+           │                                │
+           o───────┐                        │
+        v_min      │                        │
+                   o────┐                   │
+                        │   x────┐          │
+                        │   │    │          │
+                        o───┘~~~~+   o──────┘
+                                 │   │
+                                 o───┘
+    """
     S = rpolygon_make_xmonotone_hull(pointset, is_anticlockwise)
     return rpolygon_make_ymonotone_hull(S, is_anticlockwise)
 
@@ -786,6 +767,26 @@ def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> Poi
 def rpolygon_cut_convex_recur(
     v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
 ) -> List[List[int]]:
+    """
+    .. svgbob::
+       :align: center
+                                            p0 (p_min, vertical = True)
+                                       ┌────o
+                ┌──────────o           │    │
+                │          │      p2   │    │
+           ┌────o          └──────o    │    │
+           │                      │    │    │
+           │                      └────o~~~~o p_new
+           │                           p1   │
+           o───────┐                        │
+                   │                        │
+                   o────┐                   │
+                        +~~~o────┐          │
+                        │   │    │          │
+                        o───┘    │   o──────┘
+                                 │   │
+                                 o───┘
+    """
     v2 = v1.next
     v3 = v2.next
     if id(v3) == id(v1):  # rectangle
@@ -795,9 +796,7 @@ def rpolygon_cut_convex_recur(
         L = [v1.data, v2.data, v3.data]
         return [L]
 
-    def find_nonconvex_point(
-        vcurr: Dllink[int], cmp2: Callable
-    ) -> Optional[Dllink[int]]:
+    def find_concave_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
         vstop = vcurr
         while True:
             vnext = vcurr.next
@@ -819,9 +818,9 @@ def rpolygon_cut_convex_recur(
         return None  # convex
 
     vcurr = (
-        find_nonconvex_point(v1, lambda a: a > 0)
+        find_concave_point(v1, lambda a: a > 0)
         if is_anticlockwise
-        else find_nonconvex_point(v1, lambda a: a < 0)
+        else find_concave_point(v1, lambda a: a < 0)
     )
 
     if vcurr is None:  # convex
@@ -871,7 +870,7 @@ def rpolygon_cut_convex_recur(
         vcurr.next.prev = new_node
         vcurr.next = v_min
         v_min.prev = vcurr
-        new_point = Point(p_min.xcoord, p1.ycoord)
+        p_new = Point(p_min.xcoord, p1.ycoord)
     else:
         new_node.prev = vcurr.prev
         new_node.next = v_min.next
@@ -879,8 +878,8 @@ def rpolygon_cut_convex_recur(
         vcurr.prev.next = new_node
         vcurr.prev = v_min
         v_min.next = vcurr
-        new_point = Point(p1.xcoord, p_min.ycoord)
-    lst.append(new_point)
+        p_new = Point(p1.xcoord, p_min.ycoord)
+    lst.append(p_new)
 
     L1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
     L2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
@@ -890,6 +889,162 @@ def rpolygon_cut_convex_recur(
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
     rdll = RDllist(len(lst))
     L = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
+    res = list()
+    for item in L:
+        P = [lst[i] for i in item]
+        res.append(P)
+    return res
+
+
+class VertexType(Enum):
+    TypeA = 0  # 270, explicit
+    TypeB = 1  # 270, implicit
+
+
+Vertex_Info = Tuple[Dllink[int], VertexType, Point[int, int]]
+
+
+def rpolygon_rectanglar_cover_recur(
+    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+) -> List[List[int]]:
+    """
+    .. svgbob::
+       :align: center
+
+                  p_new
+                ┌──────────o
+                │          │
+           ┌────o~~+       └──────o
+           │    :  :              │
+           │    :  :              └─────────o
+           │    :  :                        │
+           o────+──┐                        │
+          p1       │                        │
+                   o────┐                   │
+                  p2    o────────┐          │
+                                 │          │
+                                 │   o──────┘
+                                 │   │
+                                 o───┘
+
+    """
+    v2 = v1.next
+    if id(v2.next) == id(v1):  # rectangle
+        L = [v1.data, v2.data]
+        return [L]
+
+    def find_concave_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Vertex_Info]:
+        vstop = vcurr
+        while True:
+            vnext = vcurr.next
+            p1 = lst[vcurr.data]
+            p2 = lst[vnext.data]
+            turn = (p2.ycoord - p1.ycoord) * (p2.xcoord - p1.xcoord)
+            if cmp2(turn):
+                # print("<-- area: {}".format(area_diff))
+                # print("<-- ({}, {}), ({}, {}), ({}, {})/>".format(p0.xcoord, p0.ycoord, p1.xcoord, p1.ycoord, p2.xcoord, p2.ycoord))
+                return vcurr, VertexType.TypeB, Point(p2.xcoord, p1.ycoord)
+            vprev = vcurr.prev
+            p0 = lst[vprev.data]
+            turn = -(p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+            if cmp2(turn):
+                return vcurr, VertexType.TypeA, lst[vcurr.data]
+            vcurr = vnext
+            if id(vcurr) == id(vstop):
+                break
+        return None  # convex
+
+    result = (
+        find_concave_point(v1, lambda a: a > 0)
+        if is_anticlockwise
+        else find_concave_point(v1, lambda a: a < 0)
+    )
+
+    if result is None:  # convex
+        L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
+        return [L]
+
+    # vcurr, vtype = result
+
+    def find_min_dist_point_A(curr: Vertex_Info) -> Vertex_Info:
+        vcurr, _, pcurr = curr
+        vi = vcurr.next
+        min_value = 10000000000000000000
+        v_min_type = VertexType.TypeA
+        v_min = vcurr
+        p_min = pcurr
+        while id(vi) != id(vcurr):
+            piA = lst[vi.data]
+            min_dist = piA.min_dist_with(pcurr)
+            if min_value > min_dist:
+                min_value = min_dist
+                v_min = vi
+                v_min_type = VertexType.TypeA
+                p_min = piA
+            vnext = vi.next
+            pnext = lst[vnext.data]
+            piB = Point(piA.xcoord, pnext.ycoord)
+            min_dist = piB.min_dist_with(pcurr)
+            if min_value > min_dist:
+                min_value = min_dist
+                v_min = vi
+                v_min_type = VertexType.TypeB
+                p_min = piB
+            vi = vnext
+        return v_min, v_min_type, p_min
+
+    def find_min_dist_point_B(curr: Vertex_Info) -> Vertex_Info:
+        vcurr, _, pcurr = curr
+        vi = vcurr.next
+        min_value = 10000000000000000000
+        v_min_type = VertexType.TypeA
+        v_min = vcurr
+        p_min = pcurr
+        while id(vi) != id(vcurr):
+            piA = lst[vi.data]
+            min_dist = piA.min_dist_with(pcurr)
+            if min_value > min_dist:
+                min_value = min_dist
+                v_min = vi
+                v_min_type = VertexType.TypeA
+                p_min = piA
+            vi = vi.next
+        return v_min, v_min_type, p_min
+
+    vcurr, vtype, _ = result
+    v_min, v_min_type, _ = find_min_dist_point_A(result) if vtype == VertexType.TypeA else find_min_dist_point_B(result)
+    n = len(lst)
+    p_min = lst[v_min.data]
+    p1 = lst[vcurr.data]
+    rdll.cycle.append(Dllink(n))
+    new_node = rdll[n]
+    if vertical:
+        new_node.next = vcurr.next
+        new_node.prev = v_min.prev
+        v_min.prev.next = new_node
+        vcurr.next.prev = new_node
+        vcurr.next = v_min
+        v_min.prev = vcurr
+        p_new = Point(p_min.xcoord, p1.ycoord)
+    else:
+        new_node.prev = vcurr.prev
+        new_node.next = v_min.next
+        v_min.next.prev = new_node
+        vcurr.prev.next = new_node
+        vcurr.prev = v_min
+        v_min.next = vcurr
+        p_new = Point(p1.xcoord, p_min.ycoord)
+    lst.append(p_new)
+
+    L1 = rpolygon_rectanglar_cover_recur(vcurr, lst, is_anticlockwise, rdll)
+    L2 = rpolygon_rectanglar_cover_recur(new_node, lst, is_anticlockwise, rdll)
+    return L1 + L2
+
+
+def rpolygon_rectanglar_cover(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
+    assert rpolygon_is_convex(lst)
+    rdll = RDllist(len(lst))
+    L = rpolygon_rectanglar_cover_recur(rdll[0], lst, is_anticlockwise, rdll)
     res = list()
     for item in L:
         P = [lst[i] for i in item]
