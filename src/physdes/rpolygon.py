@@ -1012,7 +1012,11 @@ def rpolygon_rectanglar_cover_recur(
         return v_min, v_min_type, p_min
 
     vcurr, vtype, _ = result
-    v_min, v_min_type, _ = find_min_dist_point_A(result) if vtype == VertexType.TypeA else find_min_dist_point_B(result)
+    v_min, v_min_type, _ = (
+        find_min_dist_point_A(result)
+        if vtype == VertexType.TypeA
+        else find_min_dist_point_B(result)
+    )
     n = len(lst)
     p_min = lst[v_min.data]
     p1 = lst[vcurr.data]
