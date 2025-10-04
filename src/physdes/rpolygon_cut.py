@@ -70,7 +70,9 @@ def rpolygon_cut_convex_recur(
         L = [v1.data, v2.data, v3.data]
         return [L]
 
-    def _find_concave_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
+    def _find_concave_point(
+        vcurr: Dllink[int], cmp2: Callable
+    ) -> Optional[Dllink[int]]:
         vstop = vcurr
         while True:
             vnext = vcurr.next
@@ -166,7 +168,9 @@ def rpolygon_cut_explicit_recur(
         L = [v1.data, v2.data]
         return [L]
 
-    def find_explicit_concave_point(vstart: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
+    def find_explicit_concave_point(
+        vstart: Dllink[int], cmp2: Callable
+    ) -> Optional[Dllink[int]]:
         vcurr = vstart
         while True:
             vnext = vcurr.next

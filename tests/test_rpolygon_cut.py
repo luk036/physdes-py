@@ -7,7 +7,7 @@ from physdes.rpolygon import (
     rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
-    rpolygon_make_convex_hull
+    rpolygon_make_convex_hull,
 )
 from physdes.rpolygon_cut import rpolygon_cut_explicit
 
