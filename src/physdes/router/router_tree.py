@@ -170,7 +170,6 @@ class GlobalRoutingTree:
         self.next_terminal_id += 1
 
         terminal_node = RoutingNode(terminal_id, "terminal", x, y)
-        self.nodes[terminal_id] = terminal_node
 
         if parent_id is None:
             # If no parent specified, find the nearest node
@@ -183,6 +182,8 @@ class GlobalRoutingTree:
                 parent_node.add_child(terminal_node)
             else:
                 raise ValueError(f"Parent node {parent_id} not found")
+        
+        self.nodes[terminal_id] = terminal_node
 
         return terminal_id
 
