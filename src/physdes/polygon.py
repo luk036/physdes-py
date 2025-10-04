@@ -298,6 +298,20 @@ class Polygon(Generic[T]):
         Check if the polygon is clockwise.
 
         :return: True if the polygon is clockwise, False otherwise.
+
+        Examples:
+            >>> from .point import Point
+            >>> from .polygon import Polygon
+            >>> coords = [
+            ...     (0, 0),
+            ...     (1, 0),
+            ...     (1, 1),
+            ...     (0, 1),
+            ... ]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon.from_pointset(S)
+            >>> P.is_anticlockwise()
+            True
         """
         pointset = [Vector2(0, 0)] + self._vecs
 
@@ -327,6 +341,20 @@ class Polygon(Generic[T]):
         products have the same sign, the polygon is convex.
 
         :return: True if the polygon is convex, False otherwise.
+
+        Examples:
+            >>> from .point import Point
+            >>> from .polygon import Polygon
+            >>> coords = [
+            ...     (0, 0),
+            ...     (1, 0),
+            ...     (1, 1),
+            ...     (0, 1),
+            ... ]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = Polygon.from_pointset(S)
+            >>> P.is_convex()
+            True
         """
         if len(self._vecs) < 3:
             return True  # A polygon with less than 3 points is considered convex
@@ -564,6 +592,22 @@ def create_test_polygon(lst: PointSet) -> PointSet:
 
 
 def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
+    """
+    Check if a polygon is monotone in a given direction.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :param dir: A function that extracts the coordinates for the desired direction.
+    :return: True if the polygon is monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)]
+        >>> polygon_is_monotone(lst, lambda p: (p.xcoord, p.ycoord))
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
+        >>> polygon_is_monotone(lst, lambda p: (p.xcoord, p.ycoord))
+        False
+    """
     if len(lst) <= 3:
         return True
 
@@ -589,10 +633,40 @@ def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
 
 def polygon_is_xmonotone(lst: PointSet) -> bool:
+    """
+    Check if a polygon is x-monotone.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :return: True if the polygon is x-monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)]
+        >>> polygon_is_xmonotone(lst)
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
+        >>> polygon_is_xmonotone(lst)
+        False
+    """
     return polygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def polygon_is_ymonotone(lst: PointSet) -> bool:
+    """
+    Check if a polygon is y-monotone.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :return: True if the polygon is y-monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)]
+        >>> polygon_is_ymonotone(lst)
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(1, 0), Point(0, 1)]
+        >>> polygon_is_ymonotone(lst)
+        False
+    """
     return polygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
@@ -671,6 +745,12 @@ def polygon_is_anticlockwise_info(pointset: PointSet) -> Tuple[bool, int]:
 
     Returns:
         True if the polygon is oriented clockwise, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> pointset = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)]
+        >>> polygon_is_anticlockwise_info(pointset)
+        (True, 0)
     """
     n = len(pointset)
 
@@ -699,10 +779,41 @@ def polygon_is_anticlockwise_info(pointset: PointSet) -> Tuple[bool, int]:
 
 
 def polygon_is_anticlockwise(pointset: PointSet) -> bool:
+    """
+    Determines if a polygon represented by a list of points is oriented anticlockwise.
+
+    Args:
+        pointset: The list of points representing the polygon.
+
+    Returns:
+        True if the polygon is oriented anticlockwise, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> pointset = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1)]
+        >>> polygon_is_anticlockwise(pointset)
+        True
+    """
     return polygon_is_anticlockwise_info(pointset)[0]
 
 
 def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
+    """
+    Computes the convex hull of a set of points.
+
+    Args:
+        pointset: A list of points.
+
+    Returns:
+        A list of points representing the convex hull of the input points.
+
+    Examples:
+        >>> from .point import Point
+        >>> pointset = [Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1), Point(0.5, 0.5)]
+        >>> hull = polygon_make_convex_hull(pointset)
+        >>> len(hull)
+        4
+    """
     n = len(pointset)
     if n < 3:
         raise ValueError("Polygon must have at least 3 points")

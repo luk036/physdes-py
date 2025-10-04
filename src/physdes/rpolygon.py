@@ -294,6 +294,20 @@ class RPolygon:
         Check if the polygon is clockwise.
 
         :return: True if the polygon is clockwise, False otherwise.
+
+        Examples:
+            >>> from .point import Point
+            >>> from .rpolygon import RPolygon
+            >>> coords = [
+            ...     (0, 0),
+            ...     (0, 1),
+            ...     (1, 1),
+            ...     (1, 0),
+            ... ]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon.from_pointset(S)
+            >>> P.is_anticlockwise()
+            True
         """
         pointset = [Vector2(0, 0)] + self._vecs
 
@@ -318,6 +332,21 @@ class RPolygon:
         The `to_polygon` function converts a rectilinear polygon to a standard polygon.
 
         :return: A `Polygon` object representing the converted polygon.
+
+        Examples:
+            >>> from .point import Point
+            >>> from .rpolygon import RPolygon
+            >>> coords = [
+            ...     (0, 0),
+            ...     (0, 1),
+            ...     (1, 1),
+            ...     (1, 0),
+            ... ]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> P = RPolygon.from_pointset(S)
+            >>> polygon = P.to_polygon()
+            >>> polygon.signed_area()
+            1
         """
         new_vecs = []
         current_pt = Vector2(0, 0)
@@ -530,6 +559,22 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
 
 
 def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
+    """
+    Check if a rectilinear polygon is monotone in a given direction.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :param dir: A function that extracts the coordinates for the desired direction.
+    :return: True if the polygon is monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(0, 1), Point(1, 1), Point(1, 0)]
+        >>> rpolygon_is_monotone(lst, lambda p: (p.xcoord, p.ycoord))
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
+        >>> rpolygon_is_monotone(lst, lambda p: (p.xcoord, p.ycoord))
+        False
+    """
     if len(lst) <= 3:
         return True
 
@@ -556,14 +601,59 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
 
 
 def rpolygon_is_xmonotone(lst: PointSet) -> bool:
+    """
+    Check if a rectilinear polygon is x-monotone.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :return: True if the polygon is x-monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(0, 1), Point(1, 1), Point(1, 0)]
+        >>> rpolygon_is_xmonotone(lst)
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
+        >>> rpolygon_is_xmonotone(lst)
+        False
+    """
     return rpolygon_is_monotone(lst, lambda pt: (pt.xcoord, pt.ycoord))
 
 
 def rpolygon_is_ymonotone(lst: PointSet) -> bool:
+    """
+    Check if a rectilinear polygon is y-monotone.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :return: True if the polygon is y-monotone, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(0, 1), Point(1, 1), Point(1, 0)]
+        >>> rpolygon_is_ymonotone(lst)
+        True
+        >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
+        >>> rpolygon_is_ymonotone(lst)
+        False
+    """
     return rpolygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
 
 def rpolygon_is_convex(lst: PointSet) -> bool:
+    """
+    Check if a rectilinear polygon is convex.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :return: True if the polygon is convex, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(0, 1), Point(1, 1), Point(1, 0)]
+        >>> rpolygon_is_convex(lst)
+        True
+        >>> lst = [Point(0, 0), Point(0, 2), Point(1, 2), Point(1, 1), Point(2, 1), Point(2, 0)]
+        >>> rpolygon_is_convex(lst)
+        False
+    """
     return rpolygon_is_xmonotone(lst) and rpolygon_is_ymonotone(lst)
 
 
@@ -643,6 +733,20 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
 
 
 def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
+    """
+    Create the x-monotone hull of a rectilinear polygon.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :param is_anticlockwise: True if the polygon is anticlockwise, False otherwise.
+    :return: A list of points representing the x-monotone hull.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 2), Point(2, 1)]
+        >>> hull = rpolygon_make_xmonotone_hull(lst, False)
+        >>> len(hull)
+        3
+    """
     if len(lst) <= 3:
         return lst
 
@@ -690,6 +794,20 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
 
 def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
+    """
+    Create the y-monotone hull of a rectilinear polygon.
+
+    :param lst: A list of points representing the vertices of the polygon.
+    :param is_anticlockwise: True if the polygon is anticlockwise, False otherwise.
+    :return: A list of points representing the y-monotone hull.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 2), Point(2, 1)]
+        >>> hull = rpolygon_make_ymonotone_hull(lst, False)
+        >>> len(hull)
+        3
+    """
     if len(lst) <= 3:
         return lst
 
@@ -738,26 +856,18 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
 
 def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:
     """
-    .. svgbob::
-       :align: center
+    Create the convex hull of a rectilinear polygon.
 
-                                           v_max
-                           ┌~~~~~~~~~~~┌────o
-                           :           │    │
-                ┌──────────o           │    │
-                │          │           │    │
-           ┌────o          │ ┌────x    │    │
-           │               │ │    │    │    │
-           │               └─x    └────x    │
-           │                                │
-           o───────┐                        │
-        v_min      │                        │
-                   o────┐                   │
-                        │   x────┐          │
-                        │   │    │          │
-                        o───┘~~~~+   o──────┘
-                                 │   │
-                                 o───┘
+    :param pointset: A list of points representing the vertices of the polygon.
+    :param is_anticlockwise: True if the polygon is anticlockwise, False otherwise.
+    :return: A list of points representing the convex hull.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 2), Point(2, 1)]
+        >>> hull = rpolygon_make_convex_hull(lst, False)
+        >>> len(hull)
+        3
     """
     S = rpolygon_make_xmonotone_hull(pointset, is_anticlockwise)
     return rpolygon_make_ymonotone_hull(S, is_anticlockwise)

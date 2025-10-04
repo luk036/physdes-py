@@ -16,25 +16,82 @@ class RoutingNode:
         self.delay = 0.0
 
     def add_child(self, child_node):
-        """Add a child node to this node."""
+        """Add a child node to this node.
+
+        Examples:
+            >>> parent = RoutingNode("p1", "steiner")
+            >>> child = RoutingNode("c1", "terminal")
+            >>> parent.add_child(child)
+            >>> len(parent.children)
+            1
+            >>> child.parent == parent
+            True
+        """
         child_node.parent = self
         self.children.append(child_node)
 
     def remove_child(self, child_node):
-        """Remove a child node."""
+        """Remove a child node.
+
+        Examples:
+            >>> parent = RoutingNode("p1", "steiner")
+            >>> child = RoutingNode("c1", "terminal")
+            >>> parent.add_child(child)
+            >>> parent.remove_child(child)
+            >>> len(parent.children)
+            0
+            >>> child.parent is None
+            True
+        """
         if child_node in self.children:
             self.children.remove(child_node)
             child_node.parent = None
 
     def get_position(self) -> Tuple[float, float]:
+        """Get the position of the node.
+
+        Returns:
+            A tuple of (x, y) coordinates.
+
+        Examples:
+            >>> node = RoutingNode("n1", "terminal", 10, 20)
+            >>> node.get_position()
+            (10, 20)
+        """
         return (self.x, self.y)
 
     def manhattan_distance(self, other_node) -> float:
-        """Calculate Manhattan distance to another node."""
+        """Calculate Manhattan distance to another node.
+
+        Args:
+            other_node: The other node to calculate the distance to.
+
+        Returns:
+            The Manhattan distance.
+
+        Examples:
+            >>> node1 = RoutingNode("n1", "terminal", 0, 0)
+            >>> node2 = RoutingNode("n2", "terminal", 3, 4)
+            >>> node1.manhattan_distance(node2)
+            7.0
+        """
         return abs(self.x - other_node.x) + abs(self.y - other_node.y)
 
     def euclidean_distance(self, other_node) -> float:
-        """Calculate Euclidean distance to another node."""
+        """Calculate Euclidean distance to another node.
+
+        Args:
+            other_node: The other node to calculate the distance to.
+
+        Returns:
+            The Euclidean distance.
+
+        Examples:
+            >>> node1 = RoutingNode("n1", "terminal", 0, 0)
+            >>> node2 = RoutingNode("n2", "terminal", 3, 4)
+            >>> node1.euclidean_distance(node2)
+            5.0
+        """
         return math.sqrt((self.x - other_node.x) ** 2 + (self.y - other_node.y) ** 2)
 
     def __str__(self):
@@ -53,7 +110,24 @@ class GlobalRoutingTree:
         self.next_terminal_id = 1
 
     def insert_steiner_node(self, x: float, y: float, parent_id: str = None) -> str:
-        """Insert a new Steiner node into the routing tree."""
+        """Insert a new Steiner node into the routing tree.
+
+        Args:
+            x: The x-coordinate of the new node.
+            y: The y-coordinate of the new node.
+            parent_id: The ID of the parent node. If None, connect to the source.
+
+        Returns:
+            The ID of the new Steiner node.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> steiner_id = tree.insert_steiner_node(1, 1)
+            >>> steiner_id
+            'steiner_1'
+            >>> tree.nodes[steiner_id].parent == tree.source
+            True
+        """
         steiner_id = f"steiner_{self.next_steiner_id}"
         self.next_steiner_id += 1
 
@@ -74,7 +148,24 @@ class GlobalRoutingTree:
         return steiner_id
 
     def insert_terminal_node(self, x: float, y: float, parent_id: str = None) -> str:
-        """Insert a new terminal (sink) node into the routing tree."""
+        """Insert a new terminal (sink) node into the routing tree.
+
+        Args:
+            x: The x-coordinate of the new node.
+            y: The y-coordinate of the new node.
+            parent_id: The ID of the parent node. If None, find the nearest node.
+
+        Returns:
+            The ID of the new terminal node.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> terminal_id = tree.insert_terminal_node(1, 1)
+            >>> terminal_id
+            'terminal_1'
+            >>> tree.nodes[terminal_id].parent == tree.source
+            True
+        """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
@@ -103,7 +194,30 @@ class GlobalRoutingTree:
         branch_start_id: str,
         branch_end_id: str,
     ) -> str:
-        """Insert a new node on an existing branch between two nodes."""
+        """Insert a new node on an existing branch between two nodes.
+
+        Args:
+            new_node_type: The type of the new node ('steiner' or 'terminal').
+            x: The x-coordinate of the new node.
+            y: The y-coordinate of the new node.
+            branch_start_id: The ID of the starting node of the branch.
+            branch_end_id: The ID of the ending node of the branch.
+
+        Returns:
+            The ID of the new node.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> new_id = tree.insert_node_on_branch("steiner", 1.5, 1.5, s1, t1)
+            >>> new_id
+            'steiner_2'
+            >>> tree.nodes[new_id].parent.id == s1
+            True
+            >>> tree.nodes[t1].parent.id == new_id
+            True
+        """
         if branch_start_id not in self.nodes or branch_end_id not in self.nodes:
             raise ValueError("One or both branch nodes not found")
 
@@ -156,7 +270,18 @@ class GlobalRoutingTree:
         return nearest_node
 
     def calculate_wirelength(self) -> float:
-        """Calculate total wirelength of the routing tree."""
+        """Calculate total wirelength of the routing tree.
+
+        Returns:
+            The total wirelength.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> tree.calculate_wirelength()
+            2.0
+        """
         total_length = 0.0
 
         def traverse(node: RoutingNode):
@@ -180,7 +305,28 @@ class GlobalRoutingTree:
         return result
 
     def find_path_to_source(self, node_id: str) -> List[RoutingNode]:
-        """Find the path from a node back to the source."""
+        """Find the path from a node back to the source.
+
+        Args:
+            node_id: The ID of the node to find the path from.
+
+        Returns:
+            A list of nodes representing the path from the source to the given node.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> path = tree.find_path_to_source(t1)
+            >>> len(path)
+            3
+            >>> path[0].id
+            'source'
+            >>> path[1].id
+            'steiner_1'
+            >>> path[2].id
+            'terminal_1'
+        """
         if node_id not in self.nodes:
             raise ValueError(f"Node {node_id} not found")
 
@@ -194,15 +340,48 @@ class GlobalRoutingTree:
         return path[::-1]  # Reverse to get source to node
 
     def get_all_terminals(self) -> List[RoutingNode]:
-        """Get all terminal nodes in the tree."""
+        """Get all terminal nodes in the tree.
+
+        Returns:
+            A list of all terminal nodes.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> t1 = tree.insert_terminal_node(1, 1)
+            >>> t2 = tree.insert_terminal_node(2, 2)
+            >>> terminals = tree.get_all_terminals()
+            >>> len(terminals)
+            2
+        """
         return [node for node in self.nodes.values() if node.type == "terminal"]
 
     def get_all_steiner_nodes(self) -> List[RoutingNode]:
-        """Get all Steiner nodes in the tree."""
+        """Get all Steiner nodes in the tree.
+
+        Returns:
+            A list of all Steiner nodes.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> s2 = tree.insert_steiner_node(2, 2)
+            >>> steiners = tree.get_all_steiner_nodes()
+            >>> len(steiners)
+            2
+        """
         return [node for node in self.nodes.values() if node.type == "steiner"]
 
     def optimize_steiner_points(self):
-        """Simple optimization to remove unnecessary Steiner points."""
+        """Simple optimization to remove unnecessary Steiner points.
+
+        Examples:
+            >>> tree = GlobalRoutingTree()
+            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> tree.optimize_steiner_points()
+            >>> len(tree.get_all_steiner_nodes())
+            0
+        """
         steiner_nodes = self.get_all_steiner_nodes()
 
         for steiner in steiner_nodes:

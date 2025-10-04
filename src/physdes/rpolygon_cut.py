@@ -131,6 +131,16 @@ def rpolygon_cut_convex_recur(
 
 
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
+    """
+    Cuts a rectilinear polygon into a set of convex rectilinear polygons.
+
+    Examples:
+        >>> from .point import Point
+        >>> lst = [Point(0, 0), Point(1, 2), Point(2, 1)]
+        >>> hull = rpolygon_cut_convex(lst, False)
+        >>> len(hull)
+        1
+    """
     rdll = RDllist(len(lst))
     L = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
     res = list()
@@ -226,6 +236,9 @@ def rpolygon_cut_explicit_recur(
 
 
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
+    """
+    Cuts a rectilinear polygon into a set of convex rectilinear polygons.
+    """
     rdll = RDllist(len(lst))
     L = rpolygon_cut_explicit_recur(rdll[0], lst, is_anticlockwise, rdll)
     res = list()
