@@ -262,7 +262,7 @@ def displacement(lhs, rhs):
         [-2, -2]
         >>> from physdes.point import Point
         >>> print(displacement(Point(1, 2), Point(3, 4)))
-        (-2, -2)
+        <-2, -2>
     """
     if hasattr(lhs, "displace"):
         return lhs.displace(rhs)

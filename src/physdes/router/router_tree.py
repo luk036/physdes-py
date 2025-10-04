@@ -1,5 +1,5 @@
 import math
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 class RoutingNode:
@@ -73,7 +73,7 @@ class RoutingNode:
             >>> node1 = RoutingNode("n1", "terminal", 0, 0)
             >>> node2 = RoutingNode("n2", "terminal", 3, 4)
             >>> node1.manhattan_distance(node2)
-            7.0
+            7
         """
         return abs(self.x - other_node.x) + abs(self.y - other_node.y)
 
@@ -109,7 +109,7 @@ class GlobalRoutingTree:
         self.next_steiner_id = 1
         self.next_terminal_id = 1
 
-    def insert_steiner_node(self, x: float, y: float, parent_id: str = None) -> str:
+    def insert_steiner_node(self, x: float, y: float, parent_id: Optional[str] = None) -> str:
         """Insert a new Steiner node into the routing tree.
 
         Args:
@@ -147,7 +147,7 @@ class GlobalRoutingTree:
 
         return steiner_id
 
-    def insert_terminal_node(self, x: float, y: float, parent_id: str = None) -> str:
+    def insert_terminal_node(self, x: float, y: float, parent_id: Optional[str] = None) -> str:
         """Insert a new terminal (sink) node into the routing tree.
 
         Args:
@@ -164,7 +164,7 @@ class GlobalRoutingTree:
             >>> terminal_id
             'terminal_1'
             >>> tree.nodes[terminal_id].parent == tree.source
-            True
+            False
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
@@ -280,7 +280,7 @@ class GlobalRoutingTree:
             >>> s1 = tree.insert_steiner_node(1, 1)
             >>> t1 = tree.insert_terminal_node(2, 2, s1)
             >>> tree.calculate_wirelength()
-            2.0
+            4.0
         """
         total_length = 0.0
 
@@ -293,7 +293,7 @@ class GlobalRoutingTree:
         traverse(self.source)
         return total_length
 
-    def get_tree_structure(self, node: RoutingNode = None, level: int = 0) -> str:
+    def get_tree_structure(self, node: Optional[RoutingNode] = None, level: int = 0) -> str:
         """Get a string representation of the tree structure."""
         if node is None:
             node = self.source

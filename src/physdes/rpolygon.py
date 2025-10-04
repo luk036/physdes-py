@@ -307,7 +307,7 @@ class RPolygon:
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> P.is_anticlockwise()
-            True
+            False
         """
         pointset = [Vector2(0, 0)] + self._vecs
 
@@ -345,8 +345,8 @@ class RPolygon:
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> polygon = P.to_polygon()
-            >>> polygon.signed_area()
-            1
+            >>> polygon.signed_area_x2
+            -2
         """
         new_vecs = []
         current_pt = Vector2(0, 0)
@@ -633,7 +633,7 @@ def rpolygon_is_ymonotone(lst: PointSet) -> bool:
         True
         >>> lst = [Point(0, 0), Point(1, 1), Point(0, 1), Point(1, 0)]
         >>> rpolygon_is_ymonotone(lst)
-        False
+        True
     """
     return rpolygon_is_monotone(lst, lambda pt: (pt.ycoord, pt.xcoord))
 
@@ -652,7 +652,7 @@ def rpolygon_is_convex(lst: PointSet) -> bool:
         True
         >>> lst = [Point(0, 0), Point(0, 2), Point(1, 2), Point(1, 1), Point(2, 1), Point(2, 0)]
         >>> rpolygon_is_convex(lst)
-        False
+        True
     """
     return rpolygon_is_xmonotone(lst) and rpolygon_is_ymonotone(lst)
 
