@@ -22,7 +22,7 @@ The code also includes helper functions like partition, which is used to split a
 Overall, this code provides a set of tools for working with rectilinear polygons, allowing programmers to create, analyze, and manipulate these shapes in various ways. It's designed to be flexible and efficient, making it useful for applications in computational geometry, computer graphics, or any field that requires working with polygonal shapes.
 """
 
-from enum import Enum
+# from enum import Enum
 from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Callable, List, Optional, Tuple
@@ -281,14 +281,13 @@ class RPolygon:
             >>> P.signed_area
             54
         """
-        assert len(self._vecs) >= 1
-        itr = iter(self._vecs)
-        vec0 = next(itr)
-        res = vec0.x * vec0.y
-        for vec1 in itr:
-            res += vec1.x * (vec1.y - vec0.y)
-            vec0 = vec1
-        return res
+        if len(self._vecs) < 1:
+            return 0
+        vec0 = self._vecs[0]
+        return sum(
+            [v1.x * (v1.y - v0.y) for v0, v1 in zip(self._vecs[:-1], self._vecs[1:])],
+            vec0.x * vec0.y,
+        )
 
     def is_anticlockwise(self) -> bool:
         """
@@ -764,144 +763,12 @@ def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> Poi
     return rpolygon_make_ymonotone_hull(S, is_anticlockwise)
 
 
-def rpolygon_cut_convex_recur(
-    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
-) -> List[List[int]]:
-    """
-    .. svgbob::
-       :align: center
-                                            p0 (p_min, vertical = True)
-                                       ┌────o
-                ┌──────────o           │    │
-                │          │      p2   │    │
-           ┌────o          └──────o    │    │
-           │                      │    │    │
-           │                      └────o~~~~o p_new
-           │                           p1   │
-           o───────┐                        │
-                   │                        │
-                   o────┐                   │
-                        +~~~o────┐          │
-                        │   │    │          │
-                        o───┘    │   o──────┘
-                                 │   │
-                                 o───┘
-    """
-    v2 = v1.next
-    v3 = v2.next
-    if id(v3) == id(v1):  # rectangle
-        L = [v1.data, v2.data]
-        return [L]
-    if id(v3.next) == id(v1):  # monotone
-        L = [v1.data, v2.data, v3.data]
-        return [L]
-
-    def find_concave_point(vcurr: Dllink[int], cmp2: Callable) -> Optional[Dllink[int]]:
-        vstop = vcurr
-        while True:
-            vnext = vcurr.next
-            vprev = vcurr.prev
-            p0 = lst[vprev.data]
-            p1 = lst[vcurr.data]
-            p2 = lst[vnext.data]
-            area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
-            v1 = p1.displace(p0)
-            v2 = p2.displace(p1)
-            if v1.x_ * v2.x_ < 0 or v1.y_ * v2.y_ < 0:
-                if cmp2(area_diff):
-                    # print("<-- area: {}".format(area_diff))
-                    # print("<-- ({}, {}), ({}, {}), ({}, {})/>".format(p0.xcoord, p0.ycoord, p1.xcoord, p1.ycoord, p2.xcoord, p2.ycoord))
-                    return vcurr
-            vcurr = vnext
-            if id(vcurr) == id(vstop):
-                break
-        return None  # convex
-
-    vcurr = (
-        find_concave_point(v1, lambda a: a > 0)
-        if is_anticlockwise
-        else find_concave_point(v1, lambda a: a < 0)
-    )
-
-    if vcurr is None:  # convex
-        L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
-        return [L]
-
-    def find_min_dist_point(vcurr: Dllink[int]) -> Tuple[Dllink[int], bool]:
-        vnext = vcurr.next
-        vprev = vcurr.prev
-        vi = vnext.next
-        min_value = 10000000000000000000
-        vertical = True
-        v_min = vcurr
-        pcurr = lst[vcurr.data]
-        while id(vi) != id(vprev):
-            p0 = lst[vi.prev.data]
-            p1 = lst[vi.data]
-            p2 = lst[vi.next.data]
-            vec_i = p1.displace(pcurr)
-            if (p0.ycoord <= pcurr.ycoord <= p1.ycoord) or (
-                p1.ycoord <= pcurr.ycoord <= p0.ycoord
-            ):
-                if abs(vec_i.x_) < min_value:
-                    min_value = abs(vec_i.x_)
-                    v_min = vi
-                    vertical = True
-            if (p2.xcoord <= pcurr.xcoord <= p1.xcoord) or (
-                p1.xcoord <= pcurr.xcoord <= p2.xcoord
-            ):
-                if abs(vec_i.y_) < min_value:
-                    min_value = abs(vec_i.y_)
-                    v_min = vi
-                    vertical = False
-            vi = vi.next
-        return v_min, vertical
-
-    v_min, vertical = find_min_dist_point(vcurr)
-    n = len(lst)
-    p_min = lst[v_min.data]
-    p1 = lst[vcurr.data]
-    rdll.cycle.append(Dllink(n))
-    new_node = rdll[n]
-    if vertical:
-        new_node.next = vcurr.next
-        new_node.prev = v_min.prev
-        v_min.prev.next = new_node
-        vcurr.next.prev = new_node
-        vcurr.next = v_min
-        v_min.prev = vcurr
-        p_new = Point(p_min.xcoord, p1.ycoord)
-    else:
-        new_node.prev = vcurr.prev
-        new_node.next = v_min.next
-        v_min.next.prev = new_node
-        vcurr.prev.next = new_node
-        vcurr.prev = v_min
-        v_min.next = vcurr
-        p_new = Point(p1.xcoord, p_min.ycoord)
-    lst.append(p_new)
-
-    L1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
-    L2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
-    return L1 + L2
+# class VertexType(Enum):
+#     TypeA = 0  # 270, explicit
+#     TypeB = 1  # 270, implicit
 
 
-def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
-    rdll = RDllist(len(lst))
-    L = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
-    res = list()
-    for item in L:
-        P = [lst[i] for i in item]
-        res.append(P)
-    return res
-
-
-class VertexType(Enum):
-    TypeA = 0  # 270, explicit
-    TypeB = 1  # 270, implicit
-
-
-Vertex_Info = Tuple[Dllink[int], VertexType, Point[int, int]]
+# Vertex_Info = Tuple[Dllink[int], VertexType, Point[int, int]]
 
 
 # def rpolygon_rectanglar_cover_recur(

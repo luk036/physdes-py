@@ -289,9 +289,9 @@ class Polygon(Generic[T]):
         """
         pointset = [Vector2(0, 0)] + self._vecs
         return all(
-            p1.x == p2.x or p1.y == p2.y for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
+            p1.x == p2.x or p1.y == p2.y
+            for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
         )
-
 
     def is_anticlockwise(self) -> bool:
         """
@@ -338,15 +338,16 @@ class Polygon(Generic[T]):
         # Check the cross product of all consecutive edges
         if is_anticlockwise:
             return all(
-                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) >= 0
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i])
+                >= 0
                 for i in range(len(pointset) - 1)
             )
         else:
             return all(
-                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) <= 0
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i])
+                <= 0
                 for i in range(len(pointset) - 1)
             )
-
 
 
 def partition(pred, iterable):

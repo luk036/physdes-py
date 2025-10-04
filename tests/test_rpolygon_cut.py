@@ -7,17 +7,20 @@ from physdes.rpolygon import (
     rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
+    rpolygon_make_convex_hull
 )
-from physdes.rpolygon_cut import rpolygon_cut_convex
+from physdes.rpolygon_cut import rpolygon_cut_explicit
 
-def test_rpolygon_convex_cut():
+
+def test_rpolygon_cut_explicit():
     hgen = Halton([3, 2], [7, 11])
-    coords = [hgen.pop() for _ in range(5)]
-    S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
-    assert not rpolygon_is_xmonotone(S) or not rpolygon_is_ymonotone(S)
+    coords = [hgen.pop() for _ in range(10)]
+    S0 = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    assert not rpolygon_is_xmonotone(S0) or not rpolygon_is_ymonotone(S0)
 
-    P = RPolygon.from_pointset(S)
+    P = RPolygon.from_pointset(S0)
     is_anticlockwise = P.is_anticlockwise()
+    S = rpolygon_make_convex_hull(S0, is_anticlockwise)
 
     print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
 
@@ -31,7 +34,7 @@ def test_rpolygon_convex_cut():
     for p in S:
         print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
 
-    L = rpolygon_cut_convex(S, is_anticlockwise)
+    L = rpolygon_cut_explicit(S, is_anticlockwise)
     for C in L:
         print('  <polygon points="', end=" ")
         p0 = C[-1]
