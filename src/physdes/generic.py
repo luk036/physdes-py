@@ -192,6 +192,12 @@ def min_dist(lhs, rhs):
         return abs(lhs - rhs)
 
 
+def nearest(lhs, rhs):
+    if hasattr(lhs, "nearest_to"):
+        return lhs.nearest_to(rhs)
+    else:  # assume scalar
+        return lhs
+
 # def min_dist_change(lhs, rhs):
 #     """
 #     The `min_dist_change` function calculates the minimum Manhattan distance change between two objects.

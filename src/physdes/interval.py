@@ -509,6 +509,27 @@ class Interval(Generic[T]):
             return min_dist(self.lb, obj)
         return 0
 
+
+    def nearest_to(self, obj: T) -> T:
+        """
+        Return the nearest position with respect to obj
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> print(a.nearest_to(8))
+            5
+            >>> print(a.nearest_to(0))
+            3
+            >>> print(a.nearest_to(4))
+            4
+        """
+        if self < obj:
+            return self.ub
+        if obj < self:
+            return self.lb
+        return obj
+
+
     def displace(self, obj: "Interval[T]"):
         """
         The `displace` function takes an object as an argument and returns a new Interval object with

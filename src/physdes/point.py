@@ -25,7 +25,7 @@ Overall, this Point class provides a comprehensive set of tools for working with
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
-from .generic import contain, displacement, intersection, min_dist, overlap
+from .generic import contain, displacement, intersection, min_dist, overlap, nearest
 from .interval import enlarge, hull
 from .vector2 import Vector2
 
@@ -385,9 +385,6 @@ class Point(Generic[T1, T2]):
         T = type(self)
         return T(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
-    # >>> a = Point(3, 4)
-    # >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
-    # >>> print(r.intersect_with(a))
     def intersect_with(self, other):
         """
         The function `intersect_with` takes another object as input and returns a new object that
@@ -450,6 +447,27 @@ class Point(Generic[T1, T2]):
             0
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
+
+
+    def nearest_to(self, other: "Point[int, int]") -> "Point[int, int]":
+        """
+        The function calculates the nearest point to a point using their x and y coordinates.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> b = Point(5, 6)
+            >>> print(a.nearest_to(b))
+            (3, 4)
+            >>> from physdes.interval import Interval
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.nearest_to(a))
+            (3, 5)
+            >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
+            >>> print(r.nearest_to(b))
+            (4, 6)
+        """
+        return Point(nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord))
+
 
     def enlarge_with(self, alpha):  # TODO: what is the type?
         """
