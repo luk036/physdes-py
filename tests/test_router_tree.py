@@ -1,5 +1,4 @@
 import pytest
-import math
 from physdes.router.router_tree import RoutingNode, GlobalRoutingTree
 
 # Tests for RoutingNode

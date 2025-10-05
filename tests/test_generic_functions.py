@@ -1,4 +1,3 @@
-import pytest
 from physdes.generic import overlap, contain, intersection, min_dist, nearest, displacement
 from physdes.interval import Interval
 from physdes.point import Point

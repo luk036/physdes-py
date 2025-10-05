@@ -25,7 +25,7 @@ Overall, this code provides a set of tools for working with rectilinear polygons
 # from enum import Enum
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, List, Optional, Tuple
+from typing import Callable, List, Tuple
 
 from mywheel.dllist import Dllink
 
