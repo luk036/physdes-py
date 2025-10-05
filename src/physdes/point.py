@@ -127,6 +127,8 @@ class Point(Generic[T1, T2]):
             >>> b3d = Point(b, 1)  # Point in 3d
             >>> a3d > b3d
             False
+            >>> b > a
+            True
         """
         return (self.xcoord, self.ycoord) < (other.xcoord, other.ycoord)
 
@@ -149,6 +151,8 @@ class Point(Generic[T1, T2]):
             >>> b3d = Point(b, 1)  # Point in 3d
             >>> a3d >= b3d
             False
+            >>> b >= a
+            True
         """
         return (self.xcoord, self.ycoord) <= (other.xcoord, other.ycoord)
 
@@ -171,6 +175,8 @@ class Point(Generic[T1, T2]):
             >>> a3d = Point(a, 5)  # Point in 3d
             >>> b3d = Point(b, 1)  # Point in 3d
             >>> a3d != b3d
+            True
+            >>> a != b
             True
         """
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
@@ -295,6 +301,10 @@ class Point(Generic[T1, T2]):
             (-2, -2)
             >>> print(a.displace(b))
             <5, 6>
+            >>> c = Point(1, 1)
+            >>> d = Point(3, 4)
+            >>> print(d.displace(c))
+            <2, 3>
         """
         return Vector2(
             displacement(self.xcoord, rhs.xcoord), displacement(self.ycoord, rhs.ycoord)
@@ -331,6 +341,10 @@ class Point(Generic[T1, T2]):
             >>> b = Point(5, 6)
             >>> print(a.overlaps(b))
             False
+            >>> c = Point(3, 4)
+            >>> d = Point(3, 4)
+            >>> print(c.overlaps(d))
+            True
             >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
             >>> print(r.overlaps(a))
@@ -354,6 +368,10 @@ class Point(Generic[T1, T2]):
             >>> b = Point(5, 6)
             >>> print(a.contains(b))
             False
+            >>> c = Point(3, 4)
+            >>> d = Point(3, 4)
+            >>> print(c.contains(d))
+            True
             >>> from physdes.interval import Interval
             >>> r = Point(Interval(3, 4), Interval(5, 6)) # Rectangle
             >>> print(r.contains(a))

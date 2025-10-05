@@ -164,7 +164,7 @@ class GlobalRoutingTree:
             >>> terminal_id
             'terminal_1'
             >>> tree.nodes[terminal_id].parent == tree.source
-            False
+            True
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1

@@ -103,6 +103,19 @@ class Interval(Generic[T]):
         return self._ub
 
     def is_invalid(self) -> bool:
+        """
+        Check if the interval is invalid (lower bound is greater than upper bound).
+
+        :return: True if the interval is invalid, False otherwise.
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> a.is_invalid()
+            False
+            >>> b = Interval(4, 3)
+            >>> b.is_invalid()
+            True
+        """
         return self.lb > self.ub
 
     # def copy(self) -> "Interval[T]":
@@ -150,6 +163,10 @@ class Interval(Generic[T]):
             >>> b = Interval(3, 5)
             >>> a == b
             False
+            >>> c = Interval(3, 4)
+            >>> d = Interval(3, 4)
+            >>> c == d
+            True
         """
         return (self.lb, self.ub) == (other.lb, other.ub)
 
@@ -170,6 +187,12 @@ class Interval(Generic[T]):
             >>> a < b
             False
             >>> b < a
+            False
+            >>> Interval(1, 2) < Interval(3, 4)
+            True
+            >>> Interval(3, 4) < Interval(1, 2)
+            False
+            >>> Interval(1, 5) < Interval(2, 3)
             False
         """
         return self.ub < other
@@ -192,6 +215,12 @@ class Interval(Generic[T]):
             False
             >>> b > a
             False
+            >>> Interval(3, 4) > Interval(1, 2)
+            True
+            >>> Interval(1, 2) > Interval(3, 4)
+            False
+            >>> Interval(2, 3) > Interval(1, 5)
+            False
         """
         return self.lb > other
 
@@ -211,6 +240,12 @@ class Interval(Generic[T]):
             True
             >>> b <= a
             True
+            >>> Interval(1, 2) <= Interval(3, 4)
+            True
+            >>> Interval(3, 4) <= Interval(1, 2)
+            False
+            >>> Interval(1, 5) <= Interval(2, 3)
+            True
         """
         return not (other < self.lb)
 
@@ -229,6 +264,12 @@ class Interval(Generic[T]):
             >>> a >= b
             True
             >>> b >= a
+            True
+            >>> Interval(3, 4) >= Interval(1, 2)
+            True
+            >>> Interval(1, 2) >= Interval(3, 4)
+            False
+            >>> Interval(2, 3) >= Interval(1, 5)
             True
         """
         return not (self.ub < other)
@@ -393,6 +434,10 @@ class Interval(Generic[T]):
             True
             >>> a.overlaps(Interval(6, 9))
             False
+            >>> Interval(1, 5).overlaps(Interval(5, 7))
+            True
+            >>> Interval(1, 5).overlaps(Interval(0, 1))
+            True
         """
         return not (self < other or other < self)
 
@@ -413,6 +458,10 @@ class Interval(Generic[T]):
             True
             >>> a.contains(Interval(6, 9))
             False
+            >>> a.contains(3)
+            True
+            >>> a.contains(8)
+            True
         """
         # `obj` can be an Interval or int
         if isinstance(obj, Interval):
@@ -436,6 +485,8 @@ class Interval(Generic[T]):
             [3, 8]
             >>> print(a.hull_with(Interval(6, 9)))
             [3, 9]
+            >>> print(a.hull_with(Interval(0, 2)))
+            [0, 8]
         """
         if isinstance(obj, Interval):
             return Interval(min(self.lb, obj.lb), max(self.ub, obj.ub))
@@ -473,6 +524,8 @@ class Interval(Generic[T]):
             [5, 8]
             >>> print(a.intersect_with(Interval(3, 7)))
             [3, 7]
+            >>> print(a.intersect_with(Interval(0, 2)))
+            [3, 2]
         """
         # `a` can be an Interval or int
         # assert self.overlaps(obj)
@@ -502,6 +555,8 @@ class Interval(Generic[T]):
             0
             >>> print(a.min_dist_with(Interval(5, 7)))
             0
+            >>> print(a.min_dist_with(Interval(0, 2)))
+            1
         """
         if self < obj:
             return min_dist(self.ub, obj)

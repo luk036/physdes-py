@@ -143,6 +143,14 @@ class Vector2(Generic[T1, T2]):
             >>> w = Vector2(5, 6)
             >>> v.cross(w)
             -2
+            >>> v_parallel = Vector2(3, 4)
+            >>> w_parallel = Vector2(6, 8)
+            >>> v_parallel.cross(w_parallel)
+            0
+            >>> v_positive = Vector2(1, 0)
+            >>> w_positive = Vector2(0, 1)
+            >>> v_positive.cross(w_positive)
+            1
         """
         return self.x_ * rhs.y_ - rhs.x_ * self.y_
 
@@ -165,6 +173,10 @@ class Vector2(Generic[T1, T2]):
             >>> v3d = Vector2(v, 5)  # vector in 3d
             >>> w3d = Vector2(w, 6)  # vector in 3d
             >>> v3d == w3d
+            False
+            >>> v_diff = Vector2(1, 2)
+            >>> w_diff = Vector2(3, 4)
+            >>> v_diff == w_diff
             False
         """
         return (self.x_, self.y_) == (rhs.x_, rhs.y_)
@@ -205,6 +217,10 @@ class Vector2(Generic[T1, T2]):
             >>> v3d += Vector2(v, 1)
             >>> print(v3d)
             <<16, 20>, 6>
+            >>> v_nested = Vector2(Vector2(1, 2), 3)
+            >>> v_nested += Vector2(Vector2(4, 5), 6)
+            >>> print(v_nested)
+            <<5, 7>, 9>
         """
         self.x_ += rhs.x
         self.y_ += rhs.y
@@ -231,6 +247,10 @@ class Vector2(Generic[T1, T2]):
             >>> w3d = Vector2(w, 1)
             >>> print(v3d + w3d)
             <<8, 10>, 6>
+            >>> v_nested = Vector2(Vector2(1, 2), 3)
+            >>> w_nested = Vector2(Vector2(4, 5), 6)
+            >>> print(v_nested + w_nested)
+            <<5, 7>, 9>
         """
         T = type(self)
         return T(self.x + rhs.x, self.y + rhs.y)
@@ -254,6 +274,10 @@ class Vector2(Generic[T1, T2]):
             >>> v3d -= Vector2(v, 1)
             >>> print(v3d)
             <<0, 0>, 4>
+            >>> v_nested = Vector2(Vector2(5, 7), 9)
+            >>> v_nested -= Vector2(Vector2(4, 5), 6)
+            >>> print(v_nested)
+            <<1, 2>, 3>
         """
         self.x_ -= rhs.x
         self.y_ -= rhs.y
@@ -279,6 +303,10 @@ class Vector2(Generic[T1, T2]):
             >>> w3d = Vector2(w, 1)
             >>> print(v3d - w3d)
             <<-2, -2>, 4>
+            >>> v_nested = Vector2(Vector2(5, 7), 9)
+            >>> w_nested = Vector2(Vector2(4, 5), 6)
+            >>> print(v_nested - w_nested)
+            <<1, 2>, 3>
         """
         T = type(self)
         return T(self.x - rhs.x, self.y - rhs.y)
@@ -303,6 +331,10 @@ class Vector2(Generic[T1, T2]):
             >>> v3d *= 2
             >>> print(v3d)
             <<12, 16>, 10>
+            >>> v_nested = Vector2(Vector2(1, 2), 3)
+            >>> v_nested *= 2
+            >>> print(v_nested)
+            <<2, 4>, 6>
         """
         self.x_ *= alpha
         self.y_ *= alpha
@@ -325,6 +357,9 @@ class Vector2(Generic[T1, T2]):
             >>> v3d = Vector2(v, 5)  # vector in 3d
             >>> print(v3d * 2)
             <<6, 8>, 10>
+            >>> v_nested = Vector2(Vector2(1, 2), 3)
+            >>> print(v_nested * 2)
+            <<2, 4>, 6>
         """
         T = type(self)
         return T(self.x * alpha, self.y * alpha)
@@ -349,6 +384,10 @@ class Vector2(Generic[T1, T2]):
             >>> v3d /= 0.5
             >>> print(v3d)
             <<6.0, 9.0>, 10.0>
+            >>> v_nested = Vector2(Vector2(2.0, 4.0), 6.0)
+            >>> v_nested /= 2.0
+            >>> print(v_nested)
+            <<1.0, 2.0>, 3.0>
         """
         self.x_ /= alpha
         self.y_ /= alpha
@@ -369,6 +408,9 @@ class Vector2(Generic[T1, T2]):
             >>> v3d = Vector2(v, 5)  # vector in 3d
             >>> print(v3d / 2.0)
             <<3.0, 4.5>, 2.5>
+            >>> v_nested = Vector2(Vector2(2.0, 4.0), 6.0)
+            >>> print(v_nested / 2.0)
+            <<1.0, 2.0>, 3.0>
         """
         T = type(self)
         return T(self.x / alpha, self.y / alpha)
