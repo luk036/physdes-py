@@ -41,9 +41,10 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
 def rpolygon_cut_convex_recur(
     v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
 ) -> List[List[int]]:
-    """
+    r"""
     .. svgbob::
        :align: center
+
                                             p0 (p_min, vertical = True)
                                        ┌────o
                 ┌──────────o           │    │
@@ -153,10 +154,9 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
 def rpolygon_cut_explicit_recur(
     v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
 ) -> List[List[int]]:
-    """
+    r"""
     .. svgbob::
        :align: center
-
 
                 ┌──────────o
                 │          │
