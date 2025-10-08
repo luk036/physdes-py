@@ -466,7 +466,6 @@ class Point(Generic[T1, T2]):
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
-
     def nearest_to(self, other: "Point[int, int]") -> "Point[int, int]":
         """
         The function calculates the nearest point to a point using their x and y coordinates.
@@ -484,8 +483,9 @@ class Point(Generic[T1, T2]):
             >>> print(r.nearest_to(b))
             (4, 6)
         """
-        return Point(nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord))
-
+        return Point(
+            nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
+        )
 
     def enlarge_with(self, alpha):  # TODO: what is the type?
         """

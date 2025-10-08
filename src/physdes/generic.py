@@ -198,6 +198,7 @@ def nearest(lhs, rhs):
     else:  # assume scalar
         return lhs
 
+
 # def min_dist_change(lhs, rhs):
 #     """
 #     The `min_dist_change` function calculates the minimum Manhattan distance change between two objects.

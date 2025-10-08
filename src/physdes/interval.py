@@ -564,7 +564,6 @@ class Interval(Generic[T]):
             return min_dist(self.lb, obj)
         return 0
 
-
     def nearest_to(self, obj: T) -> T:
         """
         Return the nearest position with respect to obj
@@ -583,7 +582,6 @@ class Interval(Generic[T]):
         if obj < self:
             return self.lb
         return obj
-
 
     def displace(self, obj: "Interval[T]"):
         """

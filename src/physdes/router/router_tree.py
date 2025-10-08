@@ -109,7 +109,9 @@ class GlobalRoutingTree:
         self.next_steiner_id = 1
         self.next_terminal_id = 1
 
-    def insert_steiner_node(self, x: float, y: float, parent_id: Optional[str] = None) -> str:
+    def insert_steiner_node(
+        self, x: float, y: float, parent_id: Optional[str] = None
+    ) -> str:
         """Insert a new Steiner node into the routing tree.
 
         Args:
@@ -147,7 +149,9 @@ class GlobalRoutingTree:
 
         return steiner_id
 
-    def insert_terminal_node(self, x: float, y: float, parent_id: Optional[str] = None) -> str:
+    def insert_terminal_node(
+        self, x: float, y: float, parent_id: Optional[str] = None
+    ) -> str:
         """Insert a new terminal (sink) node into the routing tree.
 
         Args:
@@ -182,7 +186,7 @@ class GlobalRoutingTree:
                 parent_node.add_child(terminal_node)
             else:
                 raise ValueError(f"Parent node {parent_id} not found")
-        
+
         self.nodes[terminal_id] = terminal_node
 
         return terminal_id
@@ -294,7 +298,9 @@ class GlobalRoutingTree:
         traverse(self.source)
         return total_length
 
-    def get_tree_structure(self, node: Optional[RoutingNode] = None, level: int = 0) -> str:
+    def get_tree_structure(
+        self, node: Optional[RoutingNode] = None, level: int = 0
+    ) -> str:
         """Get a string representation of the tree structure."""
         if node is None:
             node = self.source

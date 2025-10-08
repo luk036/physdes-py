@@ -1,6 +1,7 @@
 import pytest
 from physdes.router.router_tree import RoutingNode, GlobalRoutingTree
 
+
 # Tests for RoutingNode
 class TestRoutingNode:
     def test_init(self):
@@ -65,6 +66,7 @@ class TestRoutingNode:
         node2 = RoutingNode("s1", "steiner", 5, 5)
         assert str(node2) == "SteinerNode(s1, (5, 5))"
 
+
 # Tests for GlobalRoutingTree
 class TestGlobalRoutingTree:
     def test_init(self):
@@ -108,7 +110,7 @@ class TestGlobalRoutingTree:
     def test_insert_terminal_node_nearest(self):
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(10, 10)
-        t1_id = tree.insert_terminal_node(11, 11) # Should connect to s1_id
+        t1_id = tree.insert_terminal_node(11, 11)  # Should connect to s1_id
         assert t1_id == "terminal_1"
         assert tree.nodes[t1_id].parent.id == tree.nodes[s1_id].id
         assert tree.nodes[s1_id].children[0] == tree.nodes[t1_id]
@@ -151,21 +153,25 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(0, 0)
         s2_id = tree.insert_steiner_node(2, 2)
-        with pytest.raises(ValueError, match=f"{s2_id} is not a direct child of {s1_id}"):
+        with pytest.raises(
+            ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
+        ):
             tree.insert_node_on_branch("steiner", 1, 1, s1_id, s2_id)
 
     def test_insert_node_on_branch_invalid_node_type(self):
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(0, 0)
         s2_id = tree.insert_steiner_node(2, 2, s1_id)
-        with pytest.raises(ValueError, match="Node type must be 'steiner' or 'terminal'"):
+        with pytest.raises(
+            ValueError, match="Node type must be 'steiner' or 'terminal'"
+        ):
             tree.insert_node_on_branch("invalid_type", 1, 1, s1_id, s2_id)
 
     def test_find_nearest_node(self):
         tree = GlobalRoutingTree((0, 0))
         s1_id = tree.insert_steiner_node(10, 10)
         s2_id = tree.insert_steiner_node(20, 20)
-        _t1_id = tree.insert_terminal_node(5, 5, s1_id) # Connected to s1
+        _t1_id = tree.insert_terminal_node(5, 5, s1_id)  # Connected to s1
 
         nearest_to_origin = tree._find_nearest_node(1, 1)
         assert nearest_to_origin == tree.source
@@ -185,7 +191,7 @@ class TestGlobalRoutingTree:
         # Total = 4
         assert tree.calculate_wirelength() == 4.0
 
-        tree2 = GlobalRoutingTree((0,0))
+        tree2 = GlobalRoutingTree((0, 0))
         s1 = tree2.insert_steiner_node(1, 0)
         s2 = tree2.insert_steiner_node(1, 1, s1)
         _t1 = tree2.insert_terminal_node(0, 1, s2)
@@ -200,9 +206,9 @@ class TestGlobalRoutingTree:
         s1 = tree.insert_steiner_node(1, 1)
         _t1 = tree.insert_terminal_node(2, 2, s1)
         expected_structure = (
-            "SourceNode(source, (0, 0))\n" +
-            "  SteinerNode(steiner_1, (1, 1))\n" +
-            "    TerminalNode(terminal_1, (2, 2))\n"
+            "SourceNode(source, (0, 0))\n"
+            + "  SteinerNode(steiner_1, (1, 1))\n"
+            + "    TerminalNode(terminal_1, (2, 2))\n"
         )
         assert tree.get_tree_structure() == expected_structure
 
@@ -263,11 +269,11 @@ class TestGlobalRoutingTree:
         _t2_id_2 = tree2.insert_terminal_node(0, 2, s1_id_2)
         assert len(tree2.get_all_steiner_nodes()) == 1
         tree2.optimize_steiner_points()
-        assert len(tree2.get_all_steiner_nodes()) == 1 # s1_id_2 should not be removed
+        assert len(tree2.get_all_steiner_nodes()) == 1  # s1_id_2 should not be removed
 
         # Test with a steiner node that should not be removed (no parent - source)
         tree3 = GlobalRoutingTree()
-        _s1_id_3 = tree3.insert_steiner_node(1, 1) # Connected to source
+        _s1_id_3 = tree3.insert_steiner_node(1, 1)  # Connected to source
         assert len(tree3.get_all_steiner_nodes()) == 1
         tree3.optimize_steiner_points()
-        assert len(tree3.get_all_steiner_nodes()) == 1 # s1_id_3 should not be removed
+        assert len(tree3.get_all_steiner_nodes()) == 1  # s1_id_3 should not be removed
