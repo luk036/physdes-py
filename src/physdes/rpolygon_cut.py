@@ -1,3 +1,4 @@
+import math
 from typing import Callable, List, Optional, Tuple
 from mywheel.dllist import Dllink
 from .point import Point
@@ -10,7 +11,7 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
     vnext = vcurr.next
     vprev = vcurr.prev
     vi = vnext.next
-    min_value = 10000000000000000000
+    min_value = math.inf
     vertical = True
     v_min = vcurr
     pcurr = lst[vcurr.data]
