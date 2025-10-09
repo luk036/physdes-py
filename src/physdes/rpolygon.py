@@ -754,7 +754,9 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     return res
 
 
-def rpolygon_make_monotone_hull(lst: PointSet, is_anticlockwise: bool, dir: Callable) -> PointSet:
+def rpolygon_make_monotone_hull(
+    lst: PointSet, is_anticlockwise: bool, dir: Callable
+) -> PointSet:
     """
     Create the x-monotone hull of a rectilinear polygon.
 
@@ -781,7 +783,11 @@ def rpolygon_make_monotone_hull(lst: PointSet, is_anticlockwise: bool, dir: Call
     v_max = rdll[max_index]
 
     def process(
-        vcurr: Dllink[int], vstop: Dllink[int], cmp: Callable, cmp2: Callable, dir: Callable
+        vcurr: Dllink[int],
+        vstop: Dllink[int],
+        cmp: Callable,
+        cmp2: Callable,
+        dir: Callable,
     ) -> None:
         while id(vcurr) != id(vstop):
             vnext = vcurr.next
@@ -828,7 +834,9 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
         >>> len(hull)
         3
     """
-    return rpolygon_make_monotone_hull(lst, is_anticlockwise, lambda p: (p.xcoord, p.ycoord))
+    return rpolygon_make_monotone_hull(
+        lst, is_anticlockwise, lambda p: (p.xcoord, p.ycoord)
+    )
 
 
 def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
@@ -846,7 +854,9 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
         >>> len(hull)
         3
     """
-    return rpolygon_make_monotone_hull(lst, is_anticlockwise, lambda p: (p.ycoord, p.xcoord))
+    return rpolygon_make_monotone_hull(
+        lst, is_anticlockwise, lambda p: (p.ycoord, p.xcoord)
+    )
 
 
 def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:
