@@ -1,5 +1,5 @@
 import pytest
-from physdes.router.router_tree import RoutingNode, GlobalRoutingTree
+from physdes.router.routing_tree import RoutingNode, GlobalRoutingTree
 
 
 # Tests for RoutingNode
