@@ -1,25 +1,47 @@
 r"""
 Rectangle and Segment Classes (src\physdes\recti.py)
 
-This code defines classes for working with rectangles and line segments in a 2D coordinate system. The main purpose is to provide a way to represent and manipulate these geometric shapes in a program.
+This code defines classes for working with rectangles and line segments in a 2D coordinate
+system. The main purpose is to provide a way to represent and manipulate these geometric
+shapes in a program.
 
-The code introduces three main classes: Rectangle, VSegment (vertical segment), and HSegment (horizontal segment). These classes are built on top of more basic classes like Point and Interval, which are imported at the beginning of the file.
+The code introduces three main classes: Rectangle, VSegment (vertical segment), and
+HSegment (horizontal segment). These classes are built on top of more basic classes like
+Point and Interval, which are imported at the beginning of the file.
 
-The Rectangle class represents a rectangular shape. It takes two inputs when created: an x-coordinate interval and a y-coordinate interval. These intervals define the boundaries of the rectangle. For example, you could create a rectangle from x-coordinates 3 to 4 and y-coordinates 5 to 6.
+The Rectangle class represents a rectangular shape. It takes two inputs when created: an
+x-coordinate interval and a y-coordinate interval. These intervals define the boundaries
+of the rectangle. For example, you could create a rectangle from x-coordinates 3 to 4 and
+y-coordinates 5 to 6.
 
-The Rectangle class provides several useful methods. You can get the lower-left and upper-right corners of the rectangle, check if a point or another rectangle is inside it, calculate its width, height, and area, and even flip it (swap its x and y coordinates).
+The Rectangle class provides several useful methods. You can get the lower-left and
+upper-right corners of the rectangle, check if a point or another rectangle is inside it,
+calculate its width, height, and area, and even flip it (swap its x and y coordinates).
 
-The VSegment and HSegment classes represent vertical and horizontal line segments, respectively. A VSegment is defined by a single x-coordinate and a y-coordinate interval, while an HSegment is defined by an x-coordinate interval and a single y-coordinate.
+The VSegment and HSegment classes represent vertical and horizontal line segments,
+respectively. A VSegment is defined by a single x-coordinate and a y-coordinate interval,
+while an HSegment is defined by an x-coordinate interval and a single y-coordinate.
 
-These segment classes also have methods to check if they contain a point or another segment, and to flip themselves (turning a vertical segment into a horizontal one, or vice versa).
+These segment classes also have methods to check if they contain a point or another
+segment, and to flip themselves (turning a vertical segment into a horizontal one, or
+vice versa).
 
-The code achieves its purpose by using object-oriented programming principles. Each class encapsulates the data and behavior related to its specific geometric shape. The classes inherit from a Point class, which allows them to reuse some common functionality.
+The code achieves its purpose by using object-oriented programming principles. Each class
+encapsulates the data and behavior related to its specific geometric shape. The classes
+inherit from a Point class, which allows them to reuse some common functionality.
 
-An important aspect of the logic is how the classes use the Interval class to represent ranges of coordinates. This allows for easy checking of whether one range contains another, which is crucial for the "contains" methods in each class.
+An important aspect of the logic is how the classes use the Interval class to represent
+ranges of coordinates. This allows for easy checking of whether one range contains
+another, which is crucial for the "contains" methods in each class.
 
-The code doesn't produce any output on its own. Instead, it provides a set of tools (the classes and their methods) that a programmer can use to work with rectangles and line segments in their own programs. For example, you could use these classes to implement a simple drawing program or to solve geometric problems.
+The code doesn't produce any output on its own. Instead, it provides a set of tools (the
+classes and their methods) that a programmer can use to work with rectangles and line
+segments in their own programs. For example, you could use these classes to implement a
+simple drawing program or to solve geometric problems.
 
-Overall, this code provides a foundation for working with basic 2D geometric shapes in a structured and object-oriented way, making it easier to perform common operations on these shapes in more complex programs.
+Overall, this code provides a foundation for working with basic 2D geometric shapes in a
+structured and object-oriented way, making it easier to perform common operations on
+these shapes in more complex programs.
 """
 
 from .interval import Interval

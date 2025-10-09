@@ -171,7 +171,7 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree((0, 0))
         s1_id = tree.insert_steiner_node(10, 10)
         s2_id = tree.insert_steiner_node(20, 20)
-        _t1_id = tree.insert_terminal_node(5, 5, s1_id)  # Connected to s1
+        _ = tree.insert_terminal_node(5, 5, s1_id)  # Connected to s1
 
         nearest_to_origin = tree._find_nearest_node(1, 1)
         assert nearest_to_origin == tree.source
@@ -185,7 +185,7 @@ class TestGlobalRoutingTree:
     def test_calculate_wirelength(self):
         tree = GlobalRoutingTree()
         s1 = tree.insert_steiner_node(1, 1)
-        _t1 = tree.insert_terminal_node(2, 2, s1)
+        _ = tree.insert_terminal_node(2, 2, s1)
         # source(0,0) -> s1(1,1) = 2
         # s1(1,1) -> t1(2,2) = 2
         # Total = 4
@@ -194,7 +194,7 @@ class TestGlobalRoutingTree:
         tree2 = GlobalRoutingTree((0, 0))
         s1 = tree2.insert_steiner_node(1, 0)
         s2 = tree2.insert_steiner_node(1, 1, s1)
-        _t1 = tree2.insert_terminal_node(0, 1, s2)
+        _ = tree2.insert_terminal_node(0, 1, s2)
         # source(0,0) -> s1(1,0) = 1
         # s1(1,0) -> s2(1,1) = 1
         # s2(1,1) -> t1(0,1) = 1
@@ -204,7 +204,7 @@ class TestGlobalRoutingTree:
     def test_get_tree_structure(self):
         tree = GlobalRoutingTree()
         s1 = tree.insert_steiner_node(1, 1)
-        _t1 = tree.insert_terminal_node(2, 2, s1)
+        _ = tree.insert_terminal_node(2, 2, s1)
         expected_structure = (
             "SourceNode(source, (0, 0))\n"
             + "  SteinerNode(steiner_1, (1, 1))\n"
@@ -227,9 +227,9 @@ class TestGlobalRoutingTree:
 
     def test_get_all_terminals(self):
         tree = GlobalRoutingTree()
-        _t1 = tree.insert_terminal_node(1, 1)
+        _ = tree.insert_terminal_node(1, 1)
         s1 = tree.insert_steiner_node(2, 2)
-        _t2 = tree.insert_terminal_node(3, 3, s1)
+        _ = tree.insert_terminal_node(3, 3, s1)
         terminals = tree.get_all_terminals()
         assert len(terminals) == 2
         terminal_ids = {node.id for node in terminals}
@@ -238,9 +238,9 @@ class TestGlobalRoutingTree:
 
     def test_get_all_steiner_nodes(self):
         tree = GlobalRoutingTree()
-        _s1 = tree.insert_steiner_node(1, 1)
+        _ = tree.insert_steiner_node(1, 1)
         t1 = tree.insert_terminal_node(2, 2)
-        _s2 = tree.insert_steiner_node(3, 3, t1)
+        _ = tree.insert_steiner_node(3, 3, t1)
         steiner_nodes = tree.get_all_steiner_nodes()
         assert len(steiner_nodes) == 2
         steiner_ids = {node.id for node in steiner_nodes}
@@ -265,15 +265,15 @@ class TestGlobalRoutingTree:
         # Test with a steiner node that should not be removed (multiple children)
         tree2 = GlobalRoutingTree()
         s1_id_2 = tree2.insert_steiner_node(1, 1)
-        _t1_id_2 = tree2.insert_terminal_node(2, 2, s1_id_2)
-        _t2_id_2 = tree2.insert_terminal_node(0, 2, s1_id_2)
+        _ = tree2.insert_terminal_node(2, 2, s1_id_2)
+        _ = tree2.insert_terminal_node(0, 2, s1_id_2)
         assert len(tree2.get_all_steiner_nodes()) == 1
         tree2.optimize_steiner_points()
         assert len(tree2.get_all_steiner_nodes()) == 1  # s1_id_2 should not be removed
 
         # Test with a steiner node that should not be removed (no parent - source)
         tree3 = GlobalRoutingTree()
-        _s1_id_3 = tree3.insert_steiner_node(1, 1)  # Connected to source
+        _ = tree3.insert_steiner_node(1, 1)  # Connected to source
         assert len(tree3.get_all_steiner_nodes()) == 1
         tree3.optimize_steiner_points()
         assert len(tree3.get_all_steiner_nodes()) == 1  # s1_id_3 should not be removed

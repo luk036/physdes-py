@@ -1,25 +1,47 @@
 """
 RPolygon Class and Related Functions
 
-This code defines a class called RPolygon (Rectilinear Polygon) and several related functions for working with polygons. The purpose of this code is to provide tools for creating, manipulating, and analyzing rectilinear polygons, which are polygons with sides that are either horizontal or vertical.
+This code defines a class called RPolygon (Rectilinear Polygon) and several related
+    functions for working with polygons. The purpose of this code is to provide tools
+    for creating, manipulating, and analyzing rectilinear polygons, which are polygons
+    with sides that are either horizontal or vertical.
 
-The main input for this code is a set of points, typically represented as a list of Point objects. Each Point object has x and y coordinates. The code can take these points and create an RPolygon object, which represents a rectilinear polygon.
+The main input for this code is a set of points, typically represented as a list of
+    Point objects. Each Point object has x and y coordinates. The code can take these
+    points and create an RPolygon object, which represents a rectilinear polygon.
 
-The outputs of this code vary depending on which functions are used. Some functions return new polygons, while others return information about existing polygons, such as whether a point is inside the polygon or the signed area of the polygon.
+The outputs of this code vary depending on which functions are used. Some functions
+    return new polygons, while others return information about existing polygons, such
+    as whether a point is inside the polygon or the signed area of the polygon.
 
-The RPolygon class achieves its purpose by storing the polygon as an origin point and a list of vectors. This representation allows for efficient manipulation and analysis of the polygon. The class includes methods for comparing polygons, moving polygons, and calculating properties like the signed area.
+The RPolygon class achieves its purpose by storing the polygon as an origin point
+    and a list of vectors. This representation allows for efficient manipulation and
+    analysis of the polygon. The class includes methods for comparing polygons, moving
+    polygons, and calculating properties like the signed area.
 
 Some important logic flows in this code include:
 
-1. Creating monotone polygons (polygons that are monotone in either the x or y direction) using the create_mono_rpolygon function. This function sorts the input points and arranges them to form a valid monotone polygon.
+1. Creating monotone polygons (polygons that are monotone in either the x or y
+    direction) using the create_mono_rpolygon function. This function sorts the input
+    points and arranges them to form a valid monotone polygon.
 
-2. Determining if a point is inside a polygon using the point_in_rpolygon function. This function uses a ray-casting algorithm to check if a given point is inside the polygon.
+2. Determining if a point is inside a polygon using the point_in_rpolygon function.
+    This function uses a ray-casting algorithm to check if a given point is inside the
+    polygon.
 
-3. Calculating the signed area of a polygon using the signed_area method. This method uses the Shoelace formula to compute the area, which can be positive or negative depending on the orientation of the polygon.
+3. Calculating the signed area of a polygon using the signed_area method. This method
+    uses the Shoelace formula to compute the area, which can be positive or negative
+    depending on the orientation of the polygon.
 
-The code also includes helper functions like partition, which is used to split a list of points based on a given condition. This is useful in creating monotone polygons and in other polygon manipulation tasks.
+The code also includes helper functions like partition, which is used to split a list
+of points based on a given condition. This is useful in creating monotone polygons and
+in other polygon manipulation tasks.
 
-Overall, this code provides a set of tools for working with rectilinear polygons, allowing programmers to create, analyze, and manipulate these shapes in various ways. It's designed to be flexible and efficient, making it useful for applications in computational geometry, computer graphics, or any field that requires working with polygonal shapes.
+Overall, this code provides a set of tools for working with rectilinear polygons,
+    allowing programmers to create, analyze, and manipulate these shapes in various
+    ways. It's designed to be flexible and efficient, making it useful for applications
+    in computational geometry, computer graphics, or any field that requires working
+    with polygonal shapes.
 """
 
 # from enum import Enum
@@ -66,7 +88,7 @@ class RPolygon:
 
     def __init__(self, origin, vecs) -> None:
         """
-        The function initializes an object with the given first point and a given vector set.
+        Initializes an RPolygon object with an origin point and a list of vectors.
 
         Examples:
             >>> coords = [

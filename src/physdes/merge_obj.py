@@ -1,23 +1,39 @@
 """
 MergeObj Class
 
-This code defines a class called MergeObj, which represents a geometric object in a 2D space. The purpose of this class is to handle operations on points, segments, or regions that are rotated 45 degrees. It's designed to work with different types of coordinates, such as integers, floats, or intervals.
+This code defines a class called MergeObj, which represents a geometric object in a 2D space.
+The purpose of this class is to handle operations on points, segments, or regions that are
+rotated 45 degrees. It's designed to work with different types of coordinates, such as
+integers, floats, or intervals.
 
-The MergeObj class takes two inputs when creating an object: xcoord and ycoord. These represent the coordinates of the object in the rotated space. The class doesn't produce a specific output on its own, but it provides various methods to manipulate and interact with these objects.
+The MergeObj class takes two inputs when creating an object: xcoord and ycoord. These
+represent the coordinates of the object in the rotated space. The class doesn't produce a
+specific output on its own, but it provides various methods to manipulate and interact
+with these objects.
 
-The class achieves its purpose by storing the coordinates in a Point object and providing methods to perform operations like translation, enlargement, intersection, and merging with other MergeObj instances. It uses a 45-degree rotated coordinate system, which allows for easier calculations in certain geometric operations.
+The class achieves its purpose by storing the coordinates in a Point object and providing
+methods to perform operations like translation, enlargement, intersection, and merging
+with other MergeObj instances. It uses a 45-degree rotated coordinate system, which allows
+for easier calculations in certain geometric operations.
 
 Some important logic flows in this code include:
 
 1. The constructor (init) creates a Point object with the given coordinates.
-2. The construct method creates a MergeObj from regular x and y coordinates by rotating them 45 degrees.
-3. The translation methods (iadd and isub) move the object by adding or subtracting vector components.
-4. The min_dist_with method calculates the minimum rectilinear distance between two MergeObj instances.
+2. The construct method creates a MergeObj from regular x and y coordinates by rotating
+   them 45 degrees.
+3. The translation methods (iadd and isub) move the object by adding or subtracting
+   vector components.
+4. The min_dist_with method calculates the minimum rectilinear distance between two
+   MergeObj instances.
 5. The enlarge_with method creates a new MergeObj with enlarged coordinates.
 6. The intersect_with method finds the intersection point between two MergeObj instances.
-7. The merge_with method combines two MergeObj instances by enlarging them based on their distance and finding their intersection.
+7. The merge_with method combines two MergeObj instances by enlarging them based on their
+   distance and finding their intersection.
 
-These operations allow for complex geometric manipulations, which can be useful in various applications such as computer graphics, game development, or computational geometry. The class provides a high-level interface for working with these rotated geometric objects, abstracting away some of the more complex mathematical calculations.
+These operations allow for complex geometric manipulations, which can be useful in various
+applications such as computer graphics, game development, or computational geometry. The
+class provides a high-level interface for working with these rotated geometric objects,
+abstracting away some of the more complex mathematical calculations.
 """
 
 from typing import TYPE_CHECKING, Generic, TypeVar
