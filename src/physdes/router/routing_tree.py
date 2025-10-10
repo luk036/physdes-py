@@ -1,6 +1,7 @@
 import math
 from typing import List, Tuple, Optional
 from enum import Enum, auto
+from physdes.point import Point
 
 
 class NodeType(Enum):
@@ -13,11 +14,12 @@ class NodeType(Enum):
 class RoutingNode:
     """Represents a node in the global routing tree."""
 
-    def __init__(self, node_id: str, node_type: NodeType, x: int = 0, y: int = 0):
+    def __init__(self, node_id: str, node_type: NodeType, pt: Point[int, int] = Point(0, 0)):
         self.id = node_id
         self.type = node_type
-        self.x = x
-        self.y = y
+        self.pt = pt
+        # self.x = x
+        # self.y = y
         self.children = []
         self.parent = None
         self.capacitance = 0.0
@@ -55,7 +57,7 @@ class RoutingNode:
             self.children.remove(child_node)
             child_node.parent = None
 
-    def get_position(self) -> Tuple[int, int]:
+    def get_position(self) -> Point[int, int]:
         """Get the position of the node.
 
         Returns:
@@ -66,7 +68,7 @@ class RoutingNode:
             >>> node.get_position()
             (10, 20)
         """
-        return (self.x, self.y)
+        return self.pt
 
     def manhattan_distance(self, other_node) -> int:
         """Calculate Manhattan distance to another node.
@@ -83,36 +85,19 @@ class RoutingNode:
             >>> node1.manhattan_distance(node2)
             7
         """
-        return abs(self.x - other_node.x) + abs(self.y - other_node.y)
-
-    def euclidean_distance(self, other_node) -> float:
-        """Calculate Euclidean distance to another node.
-
-        Args:
-            other_node: The other node to calculate the distance to.
-
-        Returns:
-            The Euclidean distance.
-
-        Examples:
-            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, 0, 0)
-            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, 3, 4)
-            >>> node1.euclidean_distance(node2)
-            5.0
-        """
-        return math.sqrt((self.x - other_node.x) ** 2 + (self.y - other_node.y) ** 2)
+        return self.pt.min_dist_with(other_node.pt)
 
     def __str__(self):
         type_name = self.type.name.capitalize()
-        return f"{type_name}Node({self.id}, ({self.x}, {self.y}))"
+        return f"{type_name}Node({self.id}, ({self.pt.xcoord}, {self.pt.ycoord}))"
 
 
 class GlobalRoutingTree:
     """Global routing tree that supports Steiner node and terminal node insertion."""
 
-    def __init__(self, source_position: Tuple[int, int] = (0, 0)):
+    def __init__(self, source_position: Point[int, int] = Point(0, 0)):
         self.source = RoutingNode(
-            "source", NodeType.SOURCE, source_position[0], source_position[1]
+            "source", NodeType.SOURCE, source_position
         )
         self.nodes = {"source": self.source}
         self.next_steiner_id = 1
@@ -142,7 +127,7 @@ class GlobalRoutingTree:
         steiner_id = f"steiner_{self.next_steiner_id}"
         self.next_steiner_id += 1
 
-        steiner_node = RoutingNode(steiner_id, NodeType.STEINER, x, y)
+        steiner_node = RoutingNode(steiner_id, NodeType.STEINER, Point(x, y))
         self.nodes[steiner_id] = steiner_node
 
         if parent_id is None:
@@ -158,8 +143,25 @@ class GlobalRoutingTree:
 
         return steiner_id
 
+    def _find_nearest_node(self, pt: Point[int, int]) -> RoutingNode:
+        """Find the nearest node to the given coordinates."""
+        if not self.nodes:
+            return self.source
+
+        target_node = RoutingNode("temp", NodeType.STEINER, pt)
+        nearest_node = self.source
+        min_distance = self.source.manhattan_distance(target_node)
+
+        for node in self.nodes.values():
+            distance = node.manhattan_distance(target_node)
+            if distance < min_distance:
+                min_distance = distance
+                nearest_node = node
+
+        return nearest_node
+
     def insert_terminal_node(
-        self, x: int, y: int, parent_id: Optional[str] = None
+        self, pt: Point[int, int], parent_id: Optional[str] = None
     ) -> str:
         """Insert a new terminal (sink) node into the routing tree.
 
@@ -182,11 +184,11 @@ class GlobalRoutingTree:
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
-        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, x, y)
+        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
         if parent_id is None:
             # If no parent specified, find the nearest node
-            nearest_node = self._find_nearest_node(x, y)
+            nearest_node = self._find_nearest_node(pt)
             nearest_node.add_child(terminal_node)
         else:
             # Connect to specified parent
@@ -254,7 +256,7 @@ class GlobalRoutingTree:
         else:
             raise ValueError("Node type must be NodeType.STEINER or NodeType.TERMINAL")
 
-        new_node = RoutingNode(node_id, new_node_type, x, y)
+        new_node = RoutingNode(node_id, new_node_type, Point(x, y))
         self.nodes[node_id] = new_node
 
         # Remove direct connection between start and end
@@ -266,22 +268,70 @@ class GlobalRoutingTree:
 
         return node_id
 
-    def _find_nearest_node(self, x: int, y: int) -> RoutingNode:
-        """Find the nearest node to the given coordinates."""
+    def _find_nearest_insertion(self, pt: Point[int, int]) -> Tuple[Optional[RoutingNode], RoutingNode]:
+        """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
-            return self.source
+            return None, self.source
 
-        target_node = RoutingNode("temp", NodeType.STEINER, x, y)
         nearest_node = self.source
-        min_distance = self.source.manhattan_distance(target_node)
+        parent_node = None
+        min_distance = self.source.pt.min_dist_with(pt)
 
-        for node in self.nodes.values():
-            distance = node.manhattan_distance(target_node)
-            if distance < min_distance:
-                min_distance = distance
-                nearest_node = node
+        def traverse(node: RoutingNode):
+            nonlocal nearest_node
+            nonlocal parent_node
+            nonlocal min_distance
+            for child in node.children:
+                possible_path = node.pt.hull_with(child.pt)
+                distance = possible_path.min_dist_with(pt)
+                if distance < min_distance:
+                    nearest_pt = possible_path.nearest_to(pt)
+                    min_distance = distance
+                    if nearest_pt == node.pt:
+                        nearest_node = node
+                        parent_node = None
+                    elif nearest_pt == child.pt:
+                        nearest_node = child
+                        parent_node = None
+                    else:  # need to insert steiner point 
+                        nearest_node = child
+                        parent_node = node
+                traverse(child)
 
-        return nearest_node
+        traverse(self.source)
+        return parent_node, nearest_node
+
+
+    def insert_terminal_with_steiner(self, pt: Point[int, int]):
+        terminal_id = f"terminal_{self.next_terminal_id}"
+        self.next_terminal_id += 1
+
+        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
+
+        parent_node, nearest_node = self._find_nearest_insertion(pt)
+
+        if parent_node is None:
+            nearest_node.add_child(terminal_node)
+        else: # need to insert steiner point
+            node_id = f"steiner_{self.next_steiner_id}"
+            self.next_steiner_id += 1
+
+            possible_path = parent_node.pt.hull_with(nearest_node.pt)
+            nearest_pt = possible_path.nearest_to(pt)
+            new_node = RoutingNode(node_id, NodeType.STEINER, nearest_pt)
+            self.nodes[node_id] = new_node
+
+            # Remove direct connection between parent and nearest node
+            parent_node.remove_child(nearest_node)
+
+            # Insert new node in between
+            parent_node.add_child(new_node)
+            new_node.add_child(nearest_node)
+            new_node.add_child(terminal_node)
+
+        self.nodes[terminal_id] = terminal_node
+
+        return
 
     def calculate_wirelength(self) -> int:
         """Calculate total wirelength of the routing tree.
@@ -443,8 +493,8 @@ def visualize_routing_tree_svg(tree, width=800, height=600, margin=50):
         return "<svg></svg>"
 
     # Get all coordinates to determine bounds
-    all_x = [node.x for node in all_nodes]
-    all_y = [node.y for node in all_nodes]
+    all_x = [node.pt.xcoord for node in all_nodes]
+    all_y = [node.pt.ycoord for node in all_nodes]
 
     min_x, max_x = min(all_x), max(all_x)
     min_y, max_y = min(all_y), max(all_y)
@@ -460,11 +510,12 @@ def visualize_routing_tree_svg(tree, width=800, height=600, margin=50):
     # Scale factors
     scale_x = (width - 2 * margin) / range_x
     scale_y = (height - 2 * margin) / range_y
+    scale = min(scale_x, scale_y)
 
     def scale_coords(x, y):
         """Scale coordinates to fit SVG canvas"""
-        scaled_x = margin + (x - min_x) * scale_x
-        scaled_y = margin + (y - min_y) * scale_y
+        scaled_x = margin + (x - min_x) * scale
+        scaled_y = margin + (y - min_y) * scale
         return scaled_x, scaled_y
 
     svg_parts = []
@@ -479,8 +530,8 @@ def visualize_routing_tree_svg(tree, width=800, height=600, margin=50):
     def draw_connections(node):
         for child in node.children:
             # Get scaled coordinates
-            x1, y1 = scale_coords(node.x, node.y)
-            x2, y2 = scale_coords(child.x, child.y)
+            x1, y1 = scale_coords(node.pt.xcoord, node.pt.ycoord)
+            x2, y2 = scale_coords(child.pt.xcoord, child.pt.ycoord)
 
             # Draw line
             svg_parts.append(
@@ -506,7 +557,7 @@ def visualize_routing_tree_svg(tree, width=800, height=600, margin=50):
 
     # Draw nodes
     for node in all_nodes:
-        x, y = scale_coords(node.x, node.y)
+        x, y = scale_coords(node.pt.xcoord, node.pt.ycoord)
 
         # Different colors and sizes for different node types
         if node.type == NodeType.SOURCE:
@@ -539,7 +590,7 @@ def visualize_routing_tree_svg(tree, width=800, height=600, margin=50):
         # Draw coordinates
         svg_parts.append(
             f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
-            f'fill="gray" text-anchor="middle">({node.x},{node.y})</text>'
+            f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>'
         )
 
     # Add legend
@@ -604,16 +655,16 @@ def save_routing_tree_svg(tree, filename="routing_tree.svg", width=800, height=6
 # Example usage with the provided GlobalRoutingTree class
 if __name__ == "__main__":
     # Create a sample routing tree (using the provided class)
-    routing_tree = GlobalRoutingTree((2, 1))
+    routing_tree = GlobalRoutingTree(Point(2, 1))
 
     # Build a sample tree
     steiner1 = routing_tree.insert_steiner_node(2, 3)
     steiner2 = routing_tree.insert_steiner_node(4, 1, steiner1)
     steiner3 = routing_tree.insert_steiner_node(1, 5)
 
-    terminal1 = routing_tree.insert_terminal_node(3, 6)
-    terminal2 = routing_tree.insert_terminal_node(5, 2, steiner2)
-    terminal3 = routing_tree.insert_terminal_node(2, 8)
+    terminal1 = routing_tree.insert_terminal_node(Point(3, 6))
+    terminal2 = routing_tree.insert_terminal_node(Point(5, 2), steiner2)
+    terminal3 = routing_tree.insert_terminal_node(Point(2, 8))
 
     # Insert a node on an existing branch
     routing_tree.insert_node_on_branch(NodeType.STEINER, 3, 4, steiner1, steiner2)
