@@ -18,8 +18,6 @@ class RoutingNode:
         self.id = node_id
         self.type = node_type
         self.pt = pt
-        # self.x = x
-        # self.y = y
         self.children = []
         self.parent = None
         self.capacitance = 0.0
@@ -61,12 +59,13 @@ class RoutingNode:
         """Get the position of the node.
 
         Returns:
-            A tuple of (x, y) coordinates.
+            A Point object.
 
         Examples:
-            >>> node = RoutingNode("n1", NodeType.TERMINAL, 10, 20)
+            >>> from physdes.point import Point
+            >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
             >>> node.get_position()
-            (10, 20)
+            Point(10, 20)
         """
         return self.pt
 
@@ -80,8 +79,9 @@ class RoutingNode:
             The Manhattan distance.
 
         Examples:
-            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, 0, 0)
-            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, 3, 4)
+            >>> from physdes.point import Point
+            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, Point(0, 0))
+            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, Point(3, 4))
             >>> node1.manhattan_distance(node2)
             7
         """
@@ -96,6 +96,18 @@ class GlobalRoutingTree:
     """Global routing tree that supports Steiner node and terminal node insertion."""
 
     def __init__(self, source_position: Point[int, int] = Point(0, 0)):
+        """
+        Initializes the GlobalRoutingTree.
+
+        Args:
+            source_position: The starting point for the routing.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> tree = GlobalRoutingTree(Point(1, 1))
+            >>> tree.source.pt
+            Point(1, 1)
+        """
         self.source = RoutingNode(
             "source", NodeType.SOURCE, source_position
         )
@@ -104,7 +116,10 @@ class GlobalRoutingTree:
         self.next_terminal_id = 1
 
     def insert_steiner_node(
-        self, x: int, y: int, parent_id: Optional[str] = None
+        self,
+        x: int,
+        y: int,
+        parent_id: Optional[str] = None,
     ) -> str:
         """Insert a new Steiner node into the routing tree.
 
@@ -161,21 +176,23 @@ class GlobalRoutingTree:
         return nearest_node
 
     def insert_terminal_node(
-        self, pt: Point[int, int], parent_id: Optional[str] = None
+        self,
+        pt: Point[int, int],
+        parent_id: Optional[str] = None,
     ) -> str:
         """Insert a new terminal (sink) node into the routing tree.
 
         Args:
-            x: The x-coordinate of the new node.
-            y: The y-coordinate of the new node.
+            pt: The position of the new node.
             parent_id: The ID of the parent node. If None, find the nearest node.
 
         Returns:
             The ID of the new terminal node.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> terminal_id = tree.insert_terminal_node(1, 1)
+            >>> terminal_id = tree.insert_terminal_node(Point(1, 1))
             >>> terminal_id
             'terminal_1'
             >>> tree.nodes[terminal_id].parent == tree.source
@@ -223,10 +240,11 @@ class GlobalRoutingTree:
             The ID of the new node.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
             >>> s1 = tree.insert_steiner_node(1, 1)
-            >>> t1 = tree.insert_terminal_node(2, 2, s1)
-            >>> new_id = tree.insert_node_on_branch(NodeType.STEINER, 1.5, 1.5, s1, t1)
+            >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
+            >>> new_id = tree.insert_node_on_branch(NodeType.STEINER, 1, 2, s1, t1)
             >>> new_id
             'steiner_2'
             >>> tree.nodes[new_id].parent.id == s1
@@ -303,6 +321,19 @@ class GlobalRoutingTree:
 
 
     def insert_terminal_with_steiner(self, pt: Point[int, int]):
+        """
+        Inserts a terminal node, adding a Steiner point if it reduces wire length.
+
+        Args:
+            pt: The position of the terminal to insert.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> tree = GlobalRoutingTree()
+            >>> tree.insert_terminal_with_steiner(Point(2, 2))
+            >>> tree.calculate_wirelength()
+            4
+        """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
@@ -340,11 +371,12 @@ class GlobalRoutingTree:
             The total wirelength.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
             >>> s1 = tree.insert_steiner_node(1, 1)
-            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.calculate_wirelength()
-            4.0
+            4
         """
         total_length = 0
 
@@ -358,7 +390,9 @@ class GlobalRoutingTree:
         return total_length
 
     def get_tree_structure(
-        self, node: Optional[RoutingNode] = None, level: int = 0
+        self,
+        node: Optional[RoutingNode] = None,
+        level: int = 0,
     ) -> str:
         """Get a string representation of the tree structure."""
         if node is None:
@@ -380,9 +414,10 @@ class GlobalRoutingTree:
             A list of nodes representing the path from the source to the given node.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
             >>> s1 = tree.insert_steiner_node(1, 1)
-            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> path = tree.find_path_to_source(t1)
             >>> len(path)
             3
@@ -412,9 +447,10 @@ class GlobalRoutingTree:
             A list of all terminal nodes.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> t1 = tree.insert_terminal_node(1, 1)
-            >>> t2 = tree.insert_terminal_node(2, 2)
+            >>> t1 = tree.insert_terminal_node(Point(1, 1))
+            >>> t2 = tree.insert_terminal_node(Point(2, 2))
             >>> terminals = tree.get_all_terminals()
             >>> len(terminals)
             2
@@ -441,9 +477,10 @@ class GlobalRoutingTree:
         """Simple optimization to remove unnecessary Steiner points.
 
         Examples:
+            >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
             >>> s1 = tree.insert_steiner_node(1, 1)
-            >>> t1 = tree.insert_terminal_node(2, 2, s1)
+            >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.optimize_steiner_points()
             >>> len(tree.get_all_steiner_nodes())
             0

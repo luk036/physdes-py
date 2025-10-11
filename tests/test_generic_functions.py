@@ -77,6 +77,22 @@ def test_nearest_scalar():
     assert nearest(1, 3) == 1
 
 
+def test_nearest_interval():
+    assert nearest(Interval(1, 5), 8) == 5
+    assert nearest(Interval(1, 5), 0) == 1
+    assert nearest(Interval(1, 5), 4) == 4
+
+
+def test_nearest_point():
+    p_of_i = Point(Interval(2, 5), Interval(3, 8))
+    a = Point(1, 1)
+    b = Point(6, 10)
+    c = Point(3, 5)
+    assert nearest(p_of_i, a) == Point(2, 3)
+    assert nearest(p_of_i, b) == Point(5, 8)
+    assert nearest(p_of_i, c) == Point(3, 5)
+
+
 def test_displacement_scalar():
     assert displacement(1, 1) == 0
     assert displacement(1, 3) == -2
