@@ -5,6 +5,7 @@ This module implements the DME algorithm for constructing zero-skew clock trees 
 The algorithm balances clock delays to all sinks while minimizing wirelength.
 """
 
+import doctest
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 from physdes.merge_obj import MergeObj
@@ -14,7 +15,17 @@ from physdes.interval import Interval
 
 @dataclass
 class Sink:
-    """Represents a clock sink with position and capacitance"""
+    """Represents a clock sink with position and capacitance
+
+    Examples:
+        >>> sink = Sink(name="s1", position=Point(10, 20), capacitance=1.5)
+        >>> sink.name
+        's1'
+        >>> sink.position
+        Point(10, 20)
+        >>> sink.capacitance
+        1.5
+    """
 
     name: str
     position: Point[int, int]
@@ -23,7 +34,15 @@ class Sink:
 
 @dataclass
 class TreeNode:
-    """Represents a node in the clock tree"""
+    """Represents a node in the clock tree
+
+    Examples:
+        >>> node = TreeNode(name="n1", position=Point(30, 40))
+        >>> node.name
+        'n1'
+        >>> node.position
+        Point(30, 40)
+    """
 
     name: str
     position: Point[int, int]
@@ -52,6 +71,13 @@ class DMEAlgorithm:
         Args:
             unit_resistance: Resistance per unit length
             unit_capacitance: Capacitance per unit length
+
+        Examples:
+            >>> dme = DMEAlgorithm(unit_resistance=0.2, unit_capacitance=0.3)
+            >>> dme.unit_resistance
+            0.2
+            >>> dme.unit_capacitance
+            0.3
         """
         self.unit_resistance = unit_resistance
         self.unit_capacitance = unit_capacitance
@@ -269,6 +295,11 @@ class DMEAlgorithm:
 
         Returns:
             Elmore delay
+
+        Examples:
+            >>> dme = DMEAlgorithm(unit_resistance=0.1, unit_capacitance=0.2)
+            >>> dme._wire_delay(10, 5.0)
+            6.0
         """
         wire_resistance = self.unit_resistance * length
         wire_capacitance = self.unit_capacitance * length
@@ -296,6 +327,11 @@ class DMEAlgorithm:
 
         Returns:
             Wire capacitance
+
+        Examples:
+            >>> dme = DMEAlgorithm(unit_resistance=0.1, unit_capacitance=0.2)
+            >>> dme._wire_capacitance(10)
+            2.0
         """
         return self.unit_capacitance * length
 
@@ -338,6 +374,13 @@ class DMEAlgorithm:
 
         Returns:
             Center value as integer
+
+        Examples:
+            >>> dme = DMEAlgorithm()
+            >>> dme._get_center(10)
+            10
+            >>> dme._get_center(Interval(10, 20))
+            15
         """
         if isinstance(coord, Interval):
             return (coord.lb + coord.ub) // 2
@@ -370,6 +413,13 @@ class DMEAlgorithm:
 
         Returns:
             Manhattan distance
+
+        Examples:
+            >>> dme = DMEAlgorithm()
+            >>> p1 = Point(10, 20)
+            >>> p2 = Point(40, 60)
+            >>> dme._manhattan_distance(p1, p2)
+            70
         """
         return abs(p1.xcoord - p2.xcoord) + abs(p1.ycoord - p2.ycoord)
 
@@ -440,6 +490,18 @@ def get_tree_statistics(root) -> Dict[str, Any]:
 
     Returns:
         Dictionary with tree statistics
+
+    Examples:
+        >>> from physdes.point import Point
+        >>> from physdes.dme_algorithm import TreeNode, get_tree_statistics
+        >>> s1 = TreeNode(name="s1", position=Point(10, 20))
+        >>> s2 = TreeNode(name="s2", position=Point(30, 40))
+        >>> root = TreeNode(name="n1", position=Point(20, 30), left=s1, right=s2)
+        >>> stats = get_tree_statistics(root)
+        >>> stats["total_nodes"]
+        3
+        >>> stats["total_sinks"]
+        2
     """
     nodes = []
     wires = []
@@ -453,9 +515,9 @@ def get_tree_statistics(root) -> Dict[str, Any]:
             {
                 "name": node.name,
                 "position": (node.position.xcoord, node.position.ycoord),
-                "type": "sink"
-                if node.left is None and node.right is None
-                else "internal",
+                "type": (
+                    "sink" if node.left is None and node.right is None else "internal"
+                ),
                 "delay": getattr(node, "delay", 0),
                 "capacitance": getattr(node, "capacitance", 0),
             }
@@ -524,3 +586,4 @@ def example_dme_usage():
 if __name__ == "__main__":
     # Run example
     clock_tree, analysis = example_dme_usage()
+    doctest.testmod()
