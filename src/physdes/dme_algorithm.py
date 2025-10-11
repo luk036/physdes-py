@@ -431,6 +431,65 @@ class DMEAlgorithm:
         return total
 
 
+def get_tree_statistics(root) -> Dict[str, Any]:
+    """
+    Extract comprehensive statistics from the clock tree
+
+    Args:
+        root: Root node of the clock tree
+
+    Returns:
+        Dictionary with tree statistics
+    """
+    nodes = []
+    wires = []
+    sinks = []
+
+    def traverse(node, parent=None):
+        if not node:
+            return
+
+        nodes.append(
+            {
+                "name": node.name,
+                "position": (node.position.xcoord, node.position.ycoord),
+                "type": "sink"
+                if node.left is None and node.right is None
+                else "internal",
+                "delay": getattr(node, "delay", 0),
+                "capacitance": getattr(node, "capacitance", 0),
+            }
+        )
+
+        if node.left is None and node.right is None:
+            sinks.append(node.name)
+
+        if parent:
+            wires.append(
+                {
+                    "from": parent.name,
+                    "to": node.name,
+                    "length": getattr(node, "wire_length", 0),
+                    "from_pos": (parent.position.xcoord, parent.position.ycoord),
+                    "to_pos": (node.position.xcoord, node.position.ycoord),
+                }
+            )
+
+        traverse(node.left, node)
+        traverse(node.right, node)
+
+    traverse(root)
+
+    return {
+        "nodes": nodes,
+        "wires": wires,
+        "sinks": sinks,
+        "total_nodes": len(nodes),
+        "total_sinks": len(sinks),
+        "total_wires": len(wires),
+    }
+
+
 # Example usage and testing
 def example_dme_usage():
     """Example demonstrating how to use the DME algorithm"""
