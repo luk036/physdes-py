@@ -1,3 +1,5 @@
+from lds_gen.ilds import Halton
+
 from physdes.router.routing_tree import (
     visualize_routing_tree_svg,
     save_routing_tree_svg,
@@ -23,8 +25,14 @@ from physdes.router.global_router import GlobalRouter
 
 def test_route_with_steiner():
     # Create a sample routing tree (using the provided class)
-    source = Point(3, 1)
-    terminals = [Point(2, 4), Point(4, 6), Point(7, 2), Point(6, 3)]
+    hgen = Halton([3, 2], [7, 11])
+    hgen.reseed(19)
+    coords = [hgen.pop() for _ in range(5)]
+    terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    src_coord = hgen.pop()
+    source = Point(src_coord[0], src_coord[1])
+    # source = Point(300, 100)
+    # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
 
