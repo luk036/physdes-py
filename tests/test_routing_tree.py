@@ -2,6 +2,7 @@ import pytest
 from physdes.router.routing_tree import RoutingNode, GlobalRoutingTree, NodeType
 from physdes.point import Point
 
+
 # Tests for RoutingNode
 class TestRoutingNode:
     def test_init(self):
@@ -290,7 +291,7 @@ class TestGlobalRoutingTree:
         assert NodeType.STEINER.name == "STEINER"
         assert NodeType.TERMINAL.name == "TERMINAL"
         assert NodeType.SOURCE.name == "SOURCE"
-        
+
         # Test enum comparison
         node = RoutingNode("test", NodeType.TERMINAL)
         assert node.type == NodeType.TERMINAL

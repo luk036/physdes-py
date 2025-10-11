@@ -1,4 +1,3 @@
-import math
 from typing import List, Tuple, Optional
 from enum import Enum, auto
 from physdes.point import Point
@@ -6,6 +5,7 @@ from physdes.point import Point
 
 class NodeType(Enum):
     """Enum representing different types of routing nodes."""
+
     STEINER = auto()
     TERMINAL = auto()
     SOURCE = auto()
@@ -14,7 +14,9 @@ class NodeType(Enum):
 class RoutingNode:
     """Represents a node in the global routing tree."""
 
-    def __init__(self, node_id: str, node_type: NodeType, pt: Point[int, int] = Point(0, 0)):
+    def __init__(
+        self, node_id: str, node_type: NodeType, pt: Point[int, int] = Point(0, 0)
+    ):
         self.id = node_id
         self.type = node_type
         self.pt = pt
@@ -108,9 +110,7 @@ class GlobalRoutingTree:
             >>> tree.source.pt
             Point(1, 1)
         """
-        self.source = RoutingNode(
-            "source", NodeType.SOURCE, source_position
-        )
+        self.source = RoutingNode("source", NodeType.SOURCE, source_position)
         self.nodes = {"source": self.source}
         self.next_steiner_id = 1
         self.next_terminal_id = 1
@@ -286,7 +286,9 @@ class GlobalRoutingTree:
 
         return node_id
 
-    def _find_nearest_insertion(self, pt: Point[int, int]) -> Tuple[Optional[RoutingNode], RoutingNode]:
+    def _find_nearest_insertion(
+        self, pt: Point[int, int]
+    ) -> Tuple[Optional[RoutingNode], RoutingNode]:
         """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
             return None, self.source
@@ -311,14 +313,13 @@ class GlobalRoutingTree:
                     elif nearest_pt == child.pt:
                         nearest_node = child
                         parent_node = None
-                    else:  # need to insert steiner point 
+                    else:  # need to insert steiner point
                         nearest_node = child
                         parent_node = node
                 traverse(child)
 
         traverse(self.source)
         return parent_node, nearest_node
-
 
     def insert_terminal_with_steiner(self, pt: Point[int, int]):
         """
@@ -343,7 +344,7 @@ class GlobalRoutingTree:
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
-        else: # need to insert steiner point
+        else:  # need to insert steiner point
             node_id = f"steiner_{self.next_steiner_id}"
             self.next_steiner_id += 1
 

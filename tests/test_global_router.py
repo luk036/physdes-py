@@ -1,4 +1,7 @@
-from physdes.router.routing_tree import visualize_routing_tree_svg, save_routing_tree_svg
+from physdes.router.routing_tree import (
+    visualize_routing_tree_svg,
+    save_routing_tree_svg,
+)
 from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
 

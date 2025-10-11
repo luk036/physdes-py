@@ -2,11 +2,17 @@ from typing import List
 from physdes.router.routing_tree import GlobalRoutingTree
 from physdes.point import Point
 
+
 class GlobalRouter:
     """
     A global router for routing between a source and multiple terminals.
     """
-    def __init__(self, source_position: Point[int, int], terminal_positions: List[Point[int, int]]) -> None:
+
+    def __init__(
+        self,
+        source_position: Point[int, int],
+        terminal_positions: List[Point[int, int]],
+    ) -> None:
         """
         Initializes the GlobalRouter.
 
@@ -23,7 +29,11 @@ class GlobalRouter:
             [Point(10, 0), Point(5, 0), Point(1, 0)]
         """
         self.source_position = source_position
-        self.terminal_positions = sorted(terminal_positions, key = lambda pt: source_position.min_dist_with(pt), reverse = True)
+        self.terminal_positions = sorted(
+            terminal_positions,
+            key=lambda pt: source_position.min_dist_with(pt),
+            reverse=True,
+        )
         self.tree = GlobalRoutingTree(source_position)
 
     def route_simple(self) -> None:
@@ -58,6 +68,8 @@ class GlobalRouter:
         for t in self.terminal_positions:
             self.tree.insert_terminal_with_steiner(t)
 
+
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
