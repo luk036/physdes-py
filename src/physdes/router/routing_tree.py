@@ -20,8 +20,8 @@ class RoutingNode:
         self.id = node_id
         self.type = node_type
         self.pt = pt
-        self.children = []
-        self.parent = None
+        self.children: List["RoutingNode"] = []
+        self.parent: Optional["RoutingNode"] = None
         self.capacitance = 0.0
         self.delay = 0.0
 
@@ -433,7 +433,7 @@ class GlobalRoutingTree:
             raise ValueError(f"Node {node_id} not found")
 
         path = []
-        current_node = self.nodes[node_id]
+        current_node: Optional[RoutingNode] = self.nodes[node_id]
 
         while current_node is not None:
             path.append(current_node)

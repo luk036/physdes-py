@@ -173,6 +173,8 @@ class DMEAlgorithm:
                 return ms
 
             # Internal node: compute from children
+            if node.left is None or node.right is None:
+                raise ValueError("Internal node must have both left and right children")
             left_ms = compute_segment(node.left)
             right_ms = compute_segment(node.right)
 
@@ -231,7 +233,9 @@ class DMEAlgorithm:
             Embedded clock tree with actual positions
         """
 
-        def embed_node(node: TreeNode, parent_segment: Optional[MergeObj] = None):
+        def embed_node(
+            node: Optional[TreeNode], parent_segment: Optional[MergeObj] = None
+        ):
             if node is None:
                 return
 
@@ -254,8 +258,8 @@ class DMEAlgorithm:
                     )
 
             # Recursively embed children
-            embed_node(node.left, merging_segments[node.name] if node.left else None)
-            embed_node(node.right, merging_segments[node.name] if node.right else None)
+            embed_node(node.left, merging_segments[node.name])
+            embed_node(node.right, merging_segments[node.name])
 
         embed_node(merging_tree)
         return merging_tree
@@ -268,7 +272,7 @@ class DMEAlgorithm:
             root: Root node of the clock tree
         """
 
-        def compute_delays(node: TreeNode, parent_delay: float = 0.0):
+        def compute_delays(node: Optional[TreeNode], parent_delay: float = 0.0):
             if node is None:
                 return
 
@@ -440,8 +444,10 @@ class DMEAlgorithm:
                 return
             if node.left is None and node.right is None:
                 sink_delays.append(node.delay)
-            collect_sink_delays(node.left)
-            collect_sink_delays(node.right)
+            if node.left:
+                collect_sink_delays(node.left)
+            if node.right:
+                collect_sink_delays(node.right)
 
         collect_sink_delays(root)
 
@@ -474,8 +480,10 @@ class DMEAlgorithm:
             if node is None:
                 return
             total += node.wire_length
-            sum_wirelength(node.left)
-            sum_wirelength(node.right)
+            if node.left:
+                sum_wirelength(node.left)
+            if node.right:
+                sum_wirelength(node.right)
 
         sum_wirelength(root)
         return total
