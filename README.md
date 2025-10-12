@@ -27,3 +27,21 @@
 
 This project has been set up using PyScaffold 3.2.1. For details and usage
 information on PyScaffold see <https://pyscaffold.org/>.
+
+## Output Examples
+
+### Basic Clock Tree
+
+![Basic Clock Tree](./outputs/basic_clock_tree.svg)
+
+### Convex Hull
+
+![Convex Hull](./outputs/convex_hull.svg)
+
+### Example Route Simple
+
+![Example Route Simple](./outputs/example_route_simple.svg)
+
+### Polygon Convex Hull
+
+![Polygon Convex Hull](./outputs/polygon_convex_hull.svg)
