@@ -35,6 +35,7 @@ class GlobalRouter:
             reverse=True,
         )
         self.tree = GlobalRoutingTree(source_position)
+        self.worst_wirelength = source_position.min_dist_with(terminal_positions[0])
 
     def route_simple(self) -> None:
         """
@@ -54,7 +55,7 @@ class GlobalRouter:
 
     def route_with_steiners(self) -> None:
         """
-        Performs routing by inserting Steiner points to reduce wire length.
+        Performs wirelength-driven routing by inserting Steiner points to reduce wire length.
 
         Examples:
             >>> from physdes.point import Point
@@ -67,6 +68,23 @@ class GlobalRouter:
         """
         for t in self.terminal_positions:
             self.tree.insert_terminal_with_steiner(t)
+
+    def route_with_constraints(self, alpha=1.0) -> None:
+        """
+        Performance-driven routing by inserting Steiner points to reduce wire length.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> source = Point(0, 0)
+            >>> terminals = [Point(1, 1), Point(2, 2)]
+            >>> router = GlobalRouter(source, terminals)
+            >>> router.route_with_constraints()
+            >>> router.tree.calculate_wirelength()
+            4
+        """
+        allowed_wirelength = round(self.worst_wirelength * alpha)
+        for t in self.terminal_positions:
+            self.tree.insert_terminal_with_constraints(t, allowed_wirelength)
 
 
 if __name__ == "__main__":

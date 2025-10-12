@@ -24,6 +24,7 @@ class RoutingNode:
         self.parent: Optional["RoutingNode"] = None
         self.capacitance = 0.0
         self.delay = 0.0
+        self.path_length = 0  # for performance-driven routing
 
     def add_child(self, child_node):
         """Add a child node to this node.
@@ -360,6 +361,91 @@ class GlobalRoutingTree:
             parent_node.add_child(new_node)
             new_node.add_child(nearest_node)
             new_node.add_child(terminal_node)
+
+        self.nodes[terminal_id] = terminal_node
+
+        return
+
+    def _find_nearest_insertion_with_constraints(
+        self, pt: Point[int, int], allowed_wirelength: int
+    ) -> Tuple[Optional[RoutingNode], RoutingNode]:
+        """Find the nearest insertion point to the given coordinates."""
+        if not self.nodes:
+            return None, self.source
+
+        nearest_node = self.source
+        parent_node = None
+        min_distance = self.source.pt.min_dist_with(pt)
+
+        def traverse(node: RoutingNode):
+            nonlocal nearest_node
+            nonlocal parent_node
+            nonlocal min_distance
+            for child in node.children:
+                possible_path = node.pt.hull_with(child.pt)
+                distance = possible_path.min_dist_with(pt)
+                nearest_pt = possible_path.nearest_to(pt)
+                path_length = node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                if path_length > allowed_wirelength:
+                    continue
+                if distance < min_distance:
+                    min_distance = distance
+                    if nearest_pt == node.pt:
+                        nearest_node = node
+                        parent_node = None
+                    elif nearest_pt == child.pt:
+                        nearest_node = child
+                        parent_node = None
+                    else:  # need to insert steiner point
+                        nearest_node = child
+                        parent_node = node
+                traverse(child)
+
+        traverse(self.source)
+        return parent_node, nearest_node
+
+    def insert_terminal_with_constraints(self, pt: Point[int, int], allowed_wirelength):
+        """
+        Inserts a terminal node, adding a Steiner point if it reduces wire length.
+
+        Args:
+            pt: The position of the terminal to insert.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> tree = GlobalRoutingTree()
+            >>> tree.insert_terminal_with_steiner(Point(2, 2))
+            >>> tree.calculate_wirelength()
+            4
+        """
+        terminal_id = f"terminal_{self.next_terminal_id}"
+        self.next_terminal_id += 1
+
+        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
+
+        parent_node, nearest_node = self._find_nearest_insertion_with_constraints(pt, allowed_wirelength)
+
+        if parent_node is None:
+            nearest_node.add_child(terminal_node)
+            terminal_node.path_length = nearest_node.path_length + nearest_node.pt.min_dist_with(pt)
+        else:  # need to insert steiner point
+            node_id = f"steiner_{self.next_steiner_id}"
+            self.next_steiner_id += 1
+
+            possible_path = parent_node.pt.hull_with(nearest_node.pt)
+            nearest_pt = possible_path.nearest_to(pt)
+            new_node = RoutingNode(node_id, NodeType.STEINER, nearest_pt)
+            self.nodes[node_id] = new_node
+
+            # Remove direct connection between parent and nearest node
+            parent_node.remove_child(nearest_node)
+
+            # Insert new node in between
+            parent_node.add_child(new_node)
+            new_node.path_length = parent_node.path_length + parent_node.pt.min_dist_with(nearest_pt)
+            new_node.add_child(nearest_node)
+            new_node.add_child(terminal_node)
+            terminal_node.path_length = new_node.path_length + nearest_pt.min_dist_with(pt)
 
         self.nodes[terminal_id] = terminal_node
 
