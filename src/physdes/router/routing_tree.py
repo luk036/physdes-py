@@ -21,7 +21,9 @@ class RoutingNode:
         self.type = node_type
         self.pt = pt
         self.children: List["RoutingNode"] = []
-        self.parent: Optional["RoutingNode"] = None
+        self.parent: Optional["RoutingNode"] = (
+            None  # look likes not maintained properly!
+        )
         self.capacitance = 0.0
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing
@@ -118,8 +120,7 @@ class GlobalRoutingTree:
 
     def insert_steiner_node(
         self,
-        x: int,
-        y: int,
+        pt: Point[int, int],
         parent_id: Optional[str] = None,
     ) -> str:
         """Insert a new Steiner node into the routing tree.
@@ -134,7 +135,7 @@ class GlobalRoutingTree:
 
         Examples:
             >>> tree = GlobalRoutingTree()
-            >>> steiner_id = tree.insert_steiner_node(1, 1)
+            >>> steiner_id = tree.insert_steiner_node(Point(1, 1))
             >>> steiner_id
             'steiner_1'
             >>> tree.nodes[steiner_id].parent == tree.source
@@ -143,7 +144,7 @@ class GlobalRoutingTree:
         steiner_id = f"steiner_{self.next_steiner_id}"
         self.next_steiner_id += 1
 
-        steiner_node = RoutingNode(steiner_id, NodeType.STEINER, Point(x, y))
+        steiner_node = RoutingNode(steiner_id, NodeType.STEINER, pt)
         self.nodes[steiner_id] = steiner_node
 
         if parent_id is None:
@@ -243,7 +244,7 @@ class GlobalRoutingTree:
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> new_id = tree.insert_node_on_branch(NodeType.STEINER, 1, 2, s1, t1)
             >>> new_id
@@ -385,7 +386,9 @@ class GlobalRoutingTree:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
                 nearest_pt = possible_path.nearest_to(pt)
-                path_length = node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                path_length = (
+                    node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                )
                 if path_length > allowed_wirelength:
                     continue
                 if distance < min_distance:
@@ -423,11 +426,15 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
-        parent_node, nearest_node = self._find_nearest_insertion_with_constraints(pt, allowed_wirelength)
+        parent_node, nearest_node = self._find_nearest_insertion_with_constraints(
+            pt, allowed_wirelength
+        )
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
-            terminal_node.path_length = nearest_node.path_length + nearest_node.pt.min_dist_with(pt)
+            terminal_node.path_length = (
+                nearest_node.path_length + nearest_node.pt.min_dist_with(pt)
+            )
         else:  # need to insert steiner point
             node_id = f"steiner_{self.next_steiner_id}"
             self.next_steiner_id += 1
@@ -442,10 +449,14 @@ class GlobalRoutingTree:
 
             # Insert new node in between
             parent_node.add_child(new_node)
-            new_node.path_length = parent_node.path_length + parent_node.pt.min_dist_with(nearest_pt)
+            new_node.path_length = (
+                parent_node.path_length + parent_node.pt.min_dist_with(nearest_pt)
+            )
             new_node.add_child(nearest_node)
             new_node.add_child(terminal_node)
-            terminal_node.path_length = new_node.path_length + nearest_pt.min_dist_with(pt)
+            terminal_node.path_length = new_node.path_length + nearest_pt.min_dist_with(
+                pt
+            )
 
         self.nodes[terminal_id] = terminal_node
 
@@ -460,7 +471,7 @@ class GlobalRoutingTree:
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.calculate_wirelength()
             4
@@ -503,7 +514,7 @@ class GlobalRoutingTree:
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> path = tree.find_path_to_source(t1)
             >>> len(path)
@@ -552,8 +563,8 @@ class GlobalRoutingTree:
 
         Examples:
             >>> tree = GlobalRoutingTree()
-            >>> s1 = tree.insert_steiner_node(1, 1)
-            >>> s2 = tree.insert_steiner_node(2, 2)
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
+            >>> s2 = tree.insert_steiner_node(Point(2, 2))
             >>> steiners = tree.get_all_steiner_nodes()
             >>> len(steiners)
             2
@@ -566,7 +577,7 @@ class GlobalRoutingTree:
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree()
-            >>> s1 = tree.insert_steiner_node(1, 1)
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.optimize_steiner_points()
             >>> len(tree.get_all_steiner_nodes())
@@ -782,9 +793,9 @@ if __name__ == "__main__":
     routing_tree = GlobalRoutingTree(Point(2, 1))
 
     # Build a sample tree
-    steiner1 = routing_tree.insert_steiner_node(2, 3)
-    steiner2 = routing_tree.insert_steiner_node(4, 1, steiner1)
-    steiner3 = routing_tree.insert_steiner_node(1, 5)
+    steiner1 = routing_tree.insert_steiner_node(Point(2, 3))
+    steiner2 = routing_tree.insert_steiner_node(Point(4, 1), steiner1)
+    steiner3 = routing_tree.insert_steiner_node(Point(1, 5))
 
     terminal1 = routing_tree.insert_terminal_node(Point(3, 6))
     terminal2 = routing_tree.insert_terminal_node(Point(5, 2), steiner2)
@@ -809,9 +820,9 @@ if __name__ == "__main__":
 #     print("=== Global Routing Tree Demo ===")
 
 #     # Insert some Steiner nodes
-#     steiner1 = routing_tree.insert_steiner_node(2, 3)
-#     steiner2 = routing_tree.insert_steiner_node(4, 1, steiner1)
-#     steiner3 = routing_tree.insert_steiner_node(1, 5)
+#     steiner1 = routing_tree.insert_steiner_node(Point(2, 3))
+#     steiner2 = routing_tree.insert_steiner_node(Point(4, 1), steiner1)
+#     steiner3 = routing_tree.insert_steiner_node(Point(1, 5))
 
 #     print(f"Inserted Steiner nodes: {steiner1}, {steiner2}, {steiner3}")
 
@@ -851,10 +862,10 @@ if __name__ == "__main__":
 #     complex_tree = GlobalRoutingTree((5, 5))
 
 #     # Create a more complex routing structure
-#     s1 = complex_tree.insert_steiner_node(3, 3)
-#     s2 = complex_tree.insert_steiner_node(7, 3)
-#     s3 = complex_tree.insert_steiner_node(3, 7)
-#     s4 = complex_tree.insert_steiner_node(7, 7)
+#     s1 = complex_tree.insert_steiner_node(Point(3, 3))
+#     s2 = complex_tree.insert_steiner_node(Point(7, 3))
+#     s3 = complex_tree.insert_steiner_node(Point(3, 7))
+#     s4 = complex_tree.insert_steiner_node(Point(7, 7))
 
 #     # Add terminals at the corners
 #     t1 = complex_tree.insert_terminal_node(1, 1, s1)

@@ -211,7 +211,6 @@ class MergeObj(Generic[T1, T2]):
         Examples:
             >>> r1 = MergeObj(4 + 5, 4 - 5)
             >>> r2 = MergeObj(7 + 9, 7 - 9)
-            >>> v = Vector2(5, 6)
             >>> r1.min_dist_with(r2)
             7
         """

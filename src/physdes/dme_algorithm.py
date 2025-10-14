@@ -49,9 +49,10 @@ class TreeNode:
     left: Optional["TreeNode"] = None
     right: Optional["TreeNode"] = None
     parent: Optional["TreeNode"] = None
-    wire_length: float = 0.0
+    wire_length: int = 0
     delay: float = 0.0
     capacitance: float = 0.0
+    need_buffers_or_snakes_to_balance = False
 
 
 class DMEAlgorithm:
@@ -81,7 +82,7 @@ class DMEAlgorithm:
         """
         self.unit_resistance = unit_resistance
         self.unit_capacitance = unit_capacitance
-        self.tapering_factor = 0.7  # Buffer/wire sizing factor
+        # self.tapering_factor = 0.7  # Buffer/wire sizing factor
 
     def build_clock_tree(self, sinks: List[Sink]) -> TreeNode:
         """
@@ -102,8 +103,8 @@ class DMEAlgorithm:
             for s in sinks
         ]
 
-        # Step 2: Build merging tree using balanced bipartition
-        merging_tree = self._build_merging_tree(nodes)
+        # Step 2: Build merging tree using balanced bipartition (luk036: need better creation)
+        merging_tree = self._build_merging_tree(nodes, True)
 
         # Step 3: Perform bottom-up merging segment computation
         merging_segments = self._compute_merging_segments(merging_tree)
@@ -116,7 +117,7 @@ class DMEAlgorithm:
 
         return clock_tree
 
-    def _build_merging_tree(self, nodes: List[TreeNode]) -> TreeNode:
+    def _build_merging_tree(self, nodes: List[TreeNode], vertical: bool) -> TreeNode:
         """
         Build a balanced merging tree using recursive bipartition
 
@@ -130,7 +131,11 @@ class DMEAlgorithm:
             return nodes[0]
 
         # Sort nodes by x-coordinate for balanced partitioning
-        sorted_nodes = sorted(nodes, key=lambda n: n.position.xcoord)
+        sorted_nodes = (
+            sorted(nodes, key=lambda n: n.position.xcoord)
+            if vertical
+            else sorted(nodes, key=lambda n: n.position.ycoord)
+        )
 
         # Split into two balanced groups
         mid = len(sorted_nodes) // 2
@@ -138,8 +143,8 @@ class DMEAlgorithm:
         right_group = sorted_nodes[mid:]
 
         # Recursively build subtrees
-        left_child = self._build_merging_tree(left_group)
-        right_child = self._build_merging_tree(right_group)
+        left_child = self._build_merging_tree(left_group, not vertical)
+        right_child = self._build_merging_tree(right_group, not vertical)
 
         # Create parent node (position will be determined during embedding)
         parent = TreeNode(
@@ -167,7 +172,7 @@ class DMEAlgorithm:
 
         def compute_segment(node: TreeNode) -> MergeObj:
             if node.left is None and node.right is None:
-                # Leaf node: merging segment is the sink point
+                # Leaf node: merging segment is the sink point (delay = 0.0)
                 ms = MergeObj.construct(node.position.xcoord, node.position.ycoord)
                 merging_segments[node.name] = ms
                 return ms
@@ -289,7 +294,7 @@ class DMEAlgorithm:
 
         compute_delays(root)
 
-    def _wire_delay(self, length: float, load_capacitance: float) -> float:
+    def _wire_delay(self, length: int, load_capacitance: float) -> float:
         """
         Compute Elmore delay for a wire segment
 
@@ -407,7 +412,7 @@ class DMEAlgorithm:
         # In a full implementation, this would find the actual nearest point
         return self._segment_center(segment)
 
-    def _manhattan_distance(self, p1: Point, p2: Point) -> float:
+    def _manhattan_distance(self, p1: Point, p2: Point) -> int:
         """
         Compute Manhattan distance between two points
 
@@ -463,7 +468,7 @@ class DMEAlgorithm:
             "total_wirelength": self._total_wirelength(root),
         }
 
-    def _total_wirelength(self, root: TreeNode) -> float:
+    def _total_wirelength(self, root: TreeNode) -> int:
         """
         Compute total wirelength of the clock tree
 
@@ -473,7 +478,7 @@ class DMEAlgorithm:
         Returns:
             Total wirelength
         """
-        total = 0.0
+        total = 0
 
         def sum_wirelength(node: TreeNode):
             nonlocal total

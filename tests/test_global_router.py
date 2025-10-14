@@ -43,6 +43,7 @@ def test_route_with_steiner():
     # Save to file
     save_routing_tree_svg(router.tree, "example_route_with_steiner.svg")
 
+
 def test_route_with_constraints():
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
