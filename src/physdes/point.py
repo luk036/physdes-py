@@ -481,7 +481,7 @@ class Point(Generic[T1, T2]):
         """
         return min_dist(self.xcoord, other.xcoord) + min_dist(self.ycoord, other.ycoord)
 
-    def nearest_to(self, other: "Point[int, int]") -> "Point[int, int]":
+    def nearest_to(self, other: "Point") -> "Point":
         """
         The function calculates the nearest point to a point using their x and y coordinates.
 

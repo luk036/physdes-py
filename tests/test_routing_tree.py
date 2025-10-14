@@ -123,7 +123,9 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
-        new_s_id = tree.insert_node_on_branch(NodeType.STEINER, 1, 1, s1_id, s2_id)
+        new_s_id = tree.insert_node_on_branch(
+            NodeType.STEINER, Point(1, 1), s1_id, s2_id
+        )
 
         assert new_s_id == "steiner_3"
         assert tree.nodes[new_s_id].parent == tree.nodes[s1_id]
@@ -136,7 +138,9 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
-        new_t_id = tree.insert_node_on_branch(NodeType.TERMINAL, 1, 1, s1_id, s2_id)
+        new_t_id = tree.insert_node_on_branch(
+            NodeType.TERMINAL, Point(1, 1), s1_id, s2_id
+        )
 
         assert new_t_id == "terminal_1"
         assert tree.nodes[new_t_id].type == NodeType.TERMINAL
@@ -147,9 +151,13 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree()
         s1_id = tree.insert_steiner_node(Point(0, 0))
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree.insert_node_on_branch(NodeType.STEINER, 1, 1, s1_id, "non_existent")
+            tree.insert_node_on_branch(
+                NodeType.STEINER, Point(1, 1), s1_id, "non_existent"
+            )
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree.insert_node_on_branch(NodeType.STEINER, 1, 1, "non_existent", s1_id)
+            tree.insert_node_on_branch(
+                NodeType.STEINER, Point(1, 1), "non_existent", s1_id
+            )
 
     def test_insert_node_on_branch_not_direct_child(self):
         tree = GlobalRoutingTree()
@@ -158,7 +166,7 @@ class TestGlobalRoutingTree:
         with pytest.raises(
             ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
         ):
-            tree.insert_node_on_branch(NodeType.STEINER, 1, 1, s1_id, s2_id)
+            tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), s1_id, s2_id)
 
     def test_insert_node_on_branch_invalid_node_type(self):
         tree = GlobalRoutingTree()
@@ -167,7 +175,7 @@ class TestGlobalRoutingTree:
         with pytest.raises(
             ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"
         ):
-            tree.insert_node_on_branch(NodeType.SOURCE, 1, 1, s1_id, s2_id)
+            tree.insert_node_on_branch(NodeType.SOURCE, Point(1, 1), s1_id, s2_id)
 
     def test_find_nearest_node(self):
         tree = GlobalRoutingTree(Point(0, 0))
