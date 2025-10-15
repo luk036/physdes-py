@@ -24,7 +24,7 @@ class GlobalRouter3d:
             >>> from physdes.point import Point
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(10, 1), 0), Point(Point(1, 2), 0), Point(Point(5, 0), 0)]
-            >>> router = GlobalRouter3d(source, terminals)
+            >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
             [Point((10, 1), 0), Point((5, 0), 0), Point((1, 2), 0)]
         """
@@ -45,7 +45,7 @@ class GlobalRouter3d:
             >>> from physdes.point import Point
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
-            >>> router = GlobalRouter3d(source, terminals)
+            >>> router = GlobalRouter(source, terminals)
             >>> router.route_simple()
             >>> router.tree.calculate_wirelength()
             7
@@ -61,7 +61,7 @@ class GlobalRouter3d:
             >>> from physdes.point import Point
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
-            >>> router = GlobalRouter3d(source, terminals)
+            >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_steiners()
             >>> router.tree.calculate_wirelength()
             5
@@ -77,7 +77,7 @@ class GlobalRouter3d:
             >>> from physdes.point import Point
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
-            >>> router = GlobalRouter3d(source, terminals)
+            >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_constraints()
             >>> router.tree.calculate_wirelength()
             5

@@ -5,19 +5,19 @@
 <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
 </marker>
 </defs>
-<line x1="50.0" y1="511.53846153846155" x2="236.59855769230768" y2="511.53846153846155" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="511.53846153846155" x2="455.64903846153845" y2="511.53846153846155" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="511.53846153846155" x2="236.59855769230768" y2="396.15384615384613" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="455.64903846153845" y1="511.53846153846155" x2="601.6826923076923" y2="550.0" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="455.64903846153845" y1="511.53846153846155" x2="455.64903846153845" y2="357.6923076923077" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="396.15384615384613" x2="236.59855769230768" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="50.0" y1="511.53846153846155" x2="236.59855769230768" y2="511.53846153846155" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="511.53846153846155" x2="601.6826923076923" y2="550.0" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="511.53846153846155" x2="236.59855769230768" y2="396.15384615384613" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="396.15384615384613" x2="236.59855769230768" y2="203.84615384615384" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="236.59855769230768" y1="396.15384615384613" x2="163.58173076923077" y2="396.15384615384613" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="203.84615384615384" x2="236.59855769230768" y2="50.0" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="203.84615384615384" x2="382.63221153846155" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="382.63221153846155" y1="203.84615384615384" x2="528.6658653846154" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="382.63221153846155" y1="203.84615384615384" x2="382.63221153846155" y2="242.3076923076923" stroke="green" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="528.6658653846154" y1="203.84615384615384" x2="674.6995192307692" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="528.6658653846154" y1="203.84615384615384" x2="528.6658653846154" y2="88.46153846153845" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="203.84615384615384" x2="236.59855769230768" y2="50.0" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="203.84615384615384" x2="382.63221153846155" y2="203.84615384615384" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="382.63221153846155" y1="203.84615384615384" x2="382.63221153846155" y2="242.3076923076923" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="382.63221153846155" y1="203.84615384615384" x2="455.64903846153845" y2="203.84615384615384" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="455.64903846153845" y1="203.84615384615384" x2="528.6658653846154" y2="203.84615384615384" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="455.64903846153845" y1="203.84615384615384" x2="455.64903846153845" y2="357.6923076923077" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="528.6658653846154" y1="203.84615384615384" x2="674.6995192307692" y2="203.84615384615384" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="528.6658653846154" y1="203.84615384615384" x2="528.6658653846154" y2="88.46153846153845" stroke="green" stroke-width="2" marker-end="url(#arrowhead)"/>
 <circle cx="50.0" cy="511.53846153846155" r="8" fill="red" stroke="black" stroke-width="1"/>
 <text x="60.0" y="515.5384615384615" font-family="Arial" font-size="10" fill="black">S</text>
 <text x="50.0" y="498.53846153846155" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(27,1728)</text>
@@ -36,21 +36,21 @@
 <circle cx="236.59855769230768" cy="50.0" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="244.59855769230768" y="54.0" font-family="Arial" font-size="10" fill="black">T3</text>
 <text x="236.59855769230768" y="39.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(648,192)</text>
-<circle cx="382.63221153846155" cy="203.84615384615384" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="390.63221153846155" y="207.84615384615384" font-family="Arial" font-size="10" fill="black">S3</text>
-<text x="382.63221153846155" y="192.84615384615384" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,704)</text>
-<circle cx="382.63221153846155" cy="242.3076923076923" r="6" fill="green" stroke="black" stroke-width="1"/>
-<text x="390.63221153846155" y="246.3076923076923" font-family="Arial" font-size="10" fill="black">T4</text>
-<text x="382.63221153846155" y="231.3076923076923" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,832)</text>
 <circle cx="236.59855769230768" cy="511.53846153846155" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="244.59855769230768" y="515.5384615384615" font-family="Arial" font-size="10" fill="black">S4</text>
+<text x="244.59855769230768" y="515.5384615384615" font-family="Arial" font-size="10" fill="black">S3</text>
 <text x="236.59855769230768" y="500.53846153846155" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(648,1728)</text>
 <circle cx="601.6826923076923" cy="550.0" r="6" fill="green" stroke="black" stroke-width="1"/>
-<text x="609.6826923076923" y="554.0" font-family="Arial" font-size="10" fill="black">T5</text>
+<text x="609.6826923076923" y="554.0" font-family="Arial" font-size="10" fill="black">T4</text>
 <text x="601.6826923076923" y="539.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1863,1856)</text>
-<circle cx="455.64903846153845" cy="511.53846153846155" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="463.64903846153845" y="515.5384615384615" font-family="Arial" font-size="10" fill="black">S5</text>
-<text x="455.64903846153845" y="500.53846153846155" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,1728)</text>
+<circle cx="382.63221153846155" cy="203.84615384615384" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="390.63221153846155" y="207.84615384615384" font-family="Arial" font-size="10" fill="black">S4</text>
+<text x="382.63221153846155" y="192.84615384615384" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,704)</text>
+<circle cx="382.63221153846155" cy="242.3076923076923" r="6" fill="green" stroke="black" stroke-width="1"/>
+<text x="390.63221153846155" y="246.3076923076923" font-family="Arial" font-size="10" fill="black">T5</text>
+<text x="382.63221153846155" y="231.3076923076923" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,832)</text>
+<circle cx="455.64903846153845" cy="203.84615384615384" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="463.64903846153845" y="207.84615384615384" font-family="Arial" font-size="10" fill="black">S5</text>
+<text x="455.64903846153845" y="192.84615384615384" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,704)</text>
 <circle cx="455.64903846153845" cy="357.6923076923077" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="463.64903846153845" y="361.6923076923077" font-family="Arial" font-size="10" fill="black">T6</text>
 <text x="455.64903846153845" y="346.6923076923077" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,1216)</text>
@@ -71,5 +71,5 @@
 <text x="20" y="125" font-family="Arial" font-size="9">Total Nodes: 14</text>
 <text x="20" y="140" font-family="Arial" font-size="9">Terminals: 7</text>
 <text x="20" y="155" font-family="Arial" font-size="9">Steiner: 6</text>
-<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 6825.00</text>
+<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 6725.00</text>
 </svg>

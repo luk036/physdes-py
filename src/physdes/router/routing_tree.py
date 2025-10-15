@@ -14,9 +14,7 @@ class NodeType(Enum):
 class RoutingNode:
     """Represents a node in the global routing tree."""
 
-    def __init__(
-        self, node_id: str, node_type: NodeType, pt: Point[int, int] = Point(0, 0)
-    ):
+    def __init__(self, node_id: str, node_type: NodeType, pt: Point):
         self.id = node_id
         self.type = node_type
         self.pt = pt
@@ -32,8 +30,15 @@ class RoutingNode:
         """Add a child node to this node.
 
         Examples:
-            >>> parent = RoutingNode("p1", NodeType.STEINER)
-            >>> child = RoutingNode("c1", NodeType.TERMINAL)
+            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
+            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+            >>> parent.add_child(child)
+            >>> len(parent.children)
+            1
+            >>> child.parent == parent
+            True
+            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
+            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
             >>> parent.add_child(child)
             >>> len(parent.children)
             1
@@ -47,8 +52,16 @@ class RoutingNode:
         """Remove a child node.
 
         Examples:
-            >>> parent = RoutingNode("p1", NodeType.STEINER)
-            >>> child = RoutingNode("c1", NodeType.TERMINAL)
+            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
+            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+            >>> parent.add_child(child)
+            >>> parent.remove_child(child)
+            >>> len(parent.children)
+            0
+            >>> child.parent is None
+            True
+            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
+            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
             >>> parent.add_child(child)
             >>> parent.remove_child(child)
             >>> len(parent.children)
@@ -71,6 +84,9 @@ class RoutingNode:
             >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
             >>> node.get_position()
             Point(10, 20)
+            >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
+            >>> node.get_position()
+            Point((10, 20), 20)
         """
         return self.pt
 
@@ -89,6 +105,10 @@ class RoutingNode:
             >>> node2 = RoutingNode("n2", NodeType.TERMINAL, Point(3, 4))
             >>> node1.manhattan_distance(node2)
             7
+            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, Point(Point(3, 4), 4))
+            >>> node1.manhattan_distance(node2)
+            11
         """
         return self.pt.min_dist_with(other_node.pt)
 
@@ -100,7 +120,7 @@ class RoutingNode:
 class GlobalRoutingTree:
     """Global routing tree that supports Steiner node and terminal node insertion."""
 
-    def __init__(self, source_position: Point[int, int] = Point(0, 0)):
+    def __init__(self, source_position: Point):
         """
         Initializes the GlobalRoutingTree.
 
@@ -112,6 +132,9 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(1, 1))
             >>> tree.source.pt
             Point(1, 1)
+            >>> tree3d = GlobalRoutingTree(Point(Point(1, 1), 1))
+            >>> tree3d.source.pt
+            Point((1, 1), 1)
         """
         self.source = RoutingNode("source", NodeType.SOURCE, source_position)
         self.nodes = {"source": self.source}
@@ -120,7 +143,7 @@ class GlobalRoutingTree:
 
     def insert_steiner_node(
         self,
-        pt: Point[int, int],
+        pt: Point,
         parent_id: Optional[str] = None,
     ) -> str:
         """Insert a new Steiner node into the routing tree.
@@ -134,11 +157,17 @@ class GlobalRoutingTree:
             The ID of the new Steiner node.
 
         Examples:
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> steiner_id = tree.insert_steiner_node(Point(1, 1))
             >>> steiner_id
             'steiner_1'
             >>> tree.nodes[steiner_id].parent == tree.source
+            True
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> steiner_id = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> steiner_id
+            'steiner_1'
+            >>> tree3d.nodes[steiner_id].parent == tree3d.source
             True
         """
         steiner_id = f"steiner_{self.next_steiner_id}"
@@ -160,7 +189,7 @@ class GlobalRoutingTree:
 
         return steiner_id
 
-    def _find_nearest_node(self, pt: Point[int, int]) -> RoutingNode:
+    def _find_nearest_node(self, pt: Point) -> RoutingNode:
         """Find the nearest node to the given coordinates."""
         if not self.nodes:
             return self.source
@@ -179,7 +208,7 @@ class GlobalRoutingTree:
 
     def insert_terminal_node(
         self,
-        pt: Point[int, int],
+        pt: Point,
         parent_id: Optional[str] = None,
     ) -> str:
         """Insert a new terminal (sink) node into the routing tree.
@@ -193,11 +222,17 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> terminal_id = tree.insert_terminal_node(Point(1, 1))
             >>> terminal_id
             'terminal_1'
             >>> tree.nodes[terminal_id].parent == tree.source
+            True
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> terminal_id = tree3d.insert_terminal_node(Point(Point(1, 1), 1))
+            >>> terminal_id
+            'terminal_1'
+            >>> tree3d.nodes[terminal_id].parent == tree3d.source
             True
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
@@ -224,7 +259,7 @@ class GlobalRoutingTree:
     def insert_node_on_branch(
         self,
         new_node_type: NodeType,
-        pt: Point[int, int],
+        pt: Point,
         branch_start_id: str,
         branch_end_id: str,
     ) -> str:
@@ -242,7 +277,7 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> new_id = tree.insert_node_on_branch(NodeType.STEINER, Point(1, 2), s1, t1)
@@ -251,6 +286,16 @@ class GlobalRoutingTree:
             >>> tree.nodes[new_id].parent.id == s1
             True
             >>> tree.nodes[t1].parent.id == new_id
+            True
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
+            >>> new_id = tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 2), 2), s1, t1)
+            >>> new_id
+            'steiner_2'
+            >>> tree3d.nodes[new_id].parent.id == s1
+            True
+            >>> tree3d.nodes[t1].parent.id == new_id
             True
         """
         if branch_start_id not in self.nodes or branch_end_id not in self.nodes:
@@ -288,7 +333,7 @@ class GlobalRoutingTree:
         return node_id
 
     def _find_nearest_insertion(
-        self, pt: Point[int, int]
+        self, pt: Point
     ) -> Tuple[Optional[RoutingNode], RoutingNode]:
         """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
@@ -322,7 +367,7 @@ class GlobalRoutingTree:
         traverse(self.source)
         return parent_node, nearest_node
 
-    def insert_terminal_with_steiner(self, pt: Point[int, int]):
+    def insert_terminal_with_steiner(self, pt: Point):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
@@ -331,10 +376,14 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> tree.insert_terminal_with_steiner(Point(2, 2))
             >>> tree.calculate_wirelength()
             4
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
+            >>> tree3d.calculate_wirelength()
+            6
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
@@ -367,7 +416,7 @@ class GlobalRoutingTree:
         return
 
     def _find_nearest_insertion_with_constraints(
-        self, pt: Point[int, int], allowed_wirelength: int
+        self, pt: Point, allowed_wirelength: int
     ) -> Tuple[Optional[RoutingNode], RoutingNode]:
         """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
@@ -406,7 +455,7 @@ class GlobalRoutingTree:
         traverse(self.source)
         return parent_node, nearest_node
 
-    def insert_terminal_with_constraints(self, pt: Point[int, int], allowed_wirelength):
+    def insert_terminal_with_constraints(self, pt: Point, allowed_wirelength):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
@@ -415,10 +464,14 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> tree.insert_terminal_with_steiner(Point(2, 2))
             >>> tree.calculate_wirelength()
             4
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
+            >>> tree3d.calculate_wirelength()
+            6
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
@@ -469,11 +522,16 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.calculate_wirelength()
             4
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
+            >>> tree3d.calculate_wirelength()
+            6
         """
         total_length = 0
 
@@ -512,10 +570,22 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> path = tree.find_path_to_source(t1)
+            >>> len(path)
+            3
+            >>> path[0].id
+            'source'
+            >>> path[1].id
+            'steiner_1'
+            >>> path[2].id
+            'terminal_1'
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
+            >>> path = tree3d.find_path_to_source(t1)
             >>> len(path)
             3
             >>> path[0].id
@@ -545,10 +615,16 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> t1 = tree.insert_terminal_node(Point(1, 1))
             >>> t2 = tree.insert_terminal_node(Point(2, 2))
             >>> terminals = tree.get_all_terminals()
+            >>> len(terminals)
+            2
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(1, 1), 1))
+            >>> t2 = tree3d.insert_terminal_node(Point(Point(2, 2), 2))
+            >>> terminals = tree3d.get_all_terminals()
             >>> len(terminals)
             2
         """
@@ -561,10 +637,16 @@ class GlobalRoutingTree:
             A list of all Steiner nodes.
 
         Examples:
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> s2 = tree.insert_steiner_node(Point(2, 2))
             >>> steiners = tree.get_all_steiner_nodes()
+            >>> len(steiners)
+            2
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> s2 = tree3d.insert_steiner_node(Point(Point(2, 2), 2))
+            >>> steiners = tree3d.get_all_steiner_nodes()
             >>> len(steiners)
             2
         """
@@ -575,11 +657,17 @@ class GlobalRoutingTree:
 
         Examples:
             >>> from physdes.point import Point
-            >>> tree = GlobalRoutingTree()
+            >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
             >>> tree.optimize_steiner_points()
             >>> len(tree.get_all_steiner_nodes())
+            0
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
+            >>> tree3d.optimize_steiner_points()
+            >>> len(tree3d.get_all_steiner_nodes())
             0
         """
         steiner_nodes = self.get_all_steiner_nodes()
@@ -600,6 +688,16 @@ class GlobalRoutingTree:
     def visualize_tree(self):
         """Simple ASCII visualization of the routing tree."""
         print("Global Routing Tree Structure:")
+        print("=" * 40)
+        print(self.get_tree_structure())
+        print(f"Total wirelength: {self.calculate_wirelength():.2f}")
+        print(f"Total nodes: {len(self.nodes)}")
+        print(f"Terminals: {len(self.get_all_terminals())}")
+        print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
+
+    def visualize_tree3d(self):
+        """Simple ASCII visualization of the routing tree3d."""
+        print("Global Routing Tree3d Structure:")
         print("=" * 40)
         print(self.get_tree_structure())
         print(f"Total wirelength: {self.calculate_wirelength():.2f}")
@@ -784,6 +882,191 @@ def save_routing_tree_svg(tree, filename="routing_tree.svg", width=800, height=6
     with open(filename, "w") as f:
         f.write(svg_content)
     print(f"Routing tree saved to {filename}")
+
+
+def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=50):
+    """
+    Visualize a GlobalRoutingTree in SVG format.
+
+    Args:
+        tree3d: GlobalRoutingTree instance to visualize
+        width: SVG canvas width
+        height: SVG canvas height
+        margin: Margin around the drawing area
+
+    Returns:
+        SVG string representation
+    """
+    # Calculate bounds to scale the coordinates
+    all_nodes = list(tree3d.nodes.values())
+    if not all_nodes:
+        return "<svg></svg>"
+
+    layer_colors = ["red", "yellow", "blue", "green"]
+
+    # Get all coordinates to determine bounds
+    all_x = [node.pt.xcoord.xcoord for node in all_nodes]
+    # all_z = [node.pt.xcoord.ycoord for node in all_nodes]
+    all_y = [node.pt.ycoord for node in all_nodes]
+
+    min_x, max_x = min(all_x), max(all_x)
+    min_y, max_y = min(all_y), max(all_y)
+
+    # Add some padding to bounds
+    range_x = max_x - min_x
+    range_y = max_y - min_y
+    if range_x == 0:
+        range_x = 1
+    if range_y == 0:
+        range_y = 1
+
+    # Scale factors
+    scale_x = (width - 2 * margin) / range_x
+    scale_y = (height - 2 * margin) / range_y
+    scale = min(scale_x, scale_y)
+
+    def scale_coords(x, y):
+        """Scale coordinates to fit SVG canvas"""
+        scaled_x = margin + (x - min_x) * scale
+        scaled_y = margin + (y - min_y) * scale
+        return scaled_x, scaled_y
+
+    svg_parts = []
+
+    # SVG header
+    svg_parts.append(
+        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
+    )
+    svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
+
+    # Draw connections first (so nodes appear on top)
+    def draw_connections(node):
+        for child in node.children:
+            # Get scaled coordinates
+            x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
+            x2, y2 = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
+            color = layer_colors[
+                (child.pt.xcoord.ycoord // scale_z) % len(layer_colors)
+            ]
+            # Draw line
+            svg_parts.append(
+                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>'
+            )
+
+        for child in node.children:
+            draw_connections(child)
+
+    # Add arrowhead marker definition
+    svg_parts.append("<defs>")
+    svg_parts.append(
+        '<marker id="arrowhead" markerWidth="10" markerHeight="7" '
+        'refX="9" refY="3.5" orient="auto">'
+    )
+    svg_parts.append('<polygon points="0 0, 10 3.5, 0 7" fill="black"/>')
+    svg_parts.append("</marker>")
+    svg_parts.append("</defs>")
+
+    # Draw all connections starting from source
+    draw_connections(tree3d.source)
+
+    # Draw nodes
+    for node in all_nodes:
+        x, y = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
+
+        # Different colors and sizes for different node types
+        if node.type == NodeType.SOURCE:
+            color = "red"
+            radius = 8
+            label = "S"
+        elif node.type == NodeType.STEINER:
+            color = "blue"
+            radius = 6
+            label = f"S{node.id.split('_')[1]}"
+        elif node.type == NodeType.TERMINAL:
+            color = "green"
+            radius = 6
+            label = f"T{node.id.split('_')[1]}"
+        else:
+            color = "gray"
+            radius = 5
+            label = node.id
+
+        # Draw node circle
+        svg_parts.append(
+            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
+        )
+
+        # Draw node label
+        svg_parts.append(
+            f'<text x="{x + radius + 2}" y="{y + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
+        )
+
+        # Draw coordinates
+        svg_parts.append(
+            f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
+            f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
+        )
+
+    # Add legend
+    legend_y = 20
+    svg_parts.append(
+        f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>'
+    )
+
+    legend_items = [
+        ("Source", "red", 20, legend_y + 20),
+        ("Steiner", "blue", 20, legend_y + 40),
+        ("Terminal", "green", 20, legend_y + 60),
+    ]
+
+    for text, color, x_pos, y_pos in legend_items:
+        svg_parts.append(
+            f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
+        )
+        svg_parts.append(
+            f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
+        )
+
+    # Display statistics
+    stats_y = legend_y + 90
+    svg_parts.append(
+        f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>'
+    )
+    svg_parts.append(
+        f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree3d.nodes)}</text>'
+    )
+    svg_parts.append(
+        f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree3d.get_all_terminals())}</text>'
+    )
+    svg_parts.append(
+        f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>'
+    )
+    svg_parts.append(
+        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>'
+    )
+
+    svg_parts.append("</svg>")
+
+    return "\n".join(svg_parts)
+
+
+def save_routing_tree3d_svg(
+    tree3d, scale_z, filename="routing_tree3d.svg", width=800, height=600
+):
+    """
+    Save the routing tree3d visualization as an SVG file.
+
+    Args:
+        tree3d: GlobalRoutingTree instance
+        filename: Output filename
+        width: SVG canvas width
+        height: SVG canvas height
+    """
+    svg_content = visualize_routing_tree3d_svg(tree3d, scale_z, width, height)
+    with open(filename, "w") as f:
+        f.write(svg_content)
+    print(f"Routing tree3d saved to {filename}")
 
 
 # Example usage with the provided GlobalRoutingTree class

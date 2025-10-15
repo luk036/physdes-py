@@ -10,8 +10,8 @@ class GlobalRouter:
 
     def __init__(
         self,
-        source_position: Point[int, int],
-        terminal_positions: List[Point[int, int]],
+        source_position: Point,
+        terminal_positions: List[Point],
     ) -> None:
         """
         Initializes the GlobalRouter.
@@ -27,6 +27,11 @@ class GlobalRouter:
             >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
             [Point(10, 0), Point(5, 0), Point(1, 0)]
+            >>> source = Point(Point(0, 0), 0)
+            >>> terminals = [Point(Point(10, 1), 0), Point(Point(1, 2), 0), Point(Point(5, 0), 0)]
+            >>> router = GlobalRouter(source, terminals)
+            >>> router.terminal_positions
+            [Point((10, 1), 0), Point((5, 0), 0), Point((1, 2), 0)]
         """
         self.source_position = source_position
         self.terminal_positions = sorted(
@@ -49,6 +54,12 @@ class GlobalRouter:
             >>> router.route_simple()
             >>> router.tree.calculate_wirelength()
             6
+            >>> source = Point(Point(0, 0), 0)
+            >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
+            >>> router = GlobalRouter(source, terminals)
+            >>> router.route_simple()
+            >>> router.tree.calculate_wirelength()
+            7
         """
         for t in self.terminal_positions:
             self.tree.insert_terminal_node(t)
@@ -65,6 +76,12 @@ class GlobalRouter:
             >>> router.route_with_steiners()
             >>> router.tree.calculate_wirelength()
             4
+            >>> source = Point(Point(0, 0), 0)
+            >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
+            >>> router = GlobalRouter(source, terminals)
+            >>> router.route_with_steiners()
+            >>> router.tree.calculate_wirelength()
+            5
         """
         for t in self.terminal_positions:
             self.tree.insert_terminal_with_steiner(t)
@@ -81,6 +98,12 @@ class GlobalRouter:
             >>> router.route_with_constraints()
             >>> router.tree.calculate_wirelength()
             4
+            >>> source = Point(Point(0, 0), 0)
+            >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
+            >>> router = GlobalRouter(source, terminals)
+            >>> router.route_with_constraints()
+            >>> router.tree.calculate_wirelength()
+            5
         """
         allowed_wirelength = round(self.worst_wirelength * alpha)
         for t in self.terminal_positions:

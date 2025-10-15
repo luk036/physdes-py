@@ -30,7 +30,8 @@ def test_route_with_steiner():
     hgen.reseed(19)
     coords = [hgen.pop() for _ in range(7)]
     terminals = [
-        Point(Point(xcoord, randint(0, 3) * scale_z), ycoord) for xcoord, ycoord in coords
+        Point(Point(xcoord, randint(0, 3) * scale_z), ycoord)
+        for xcoord, ycoord in coords
     ]
     src_coord = hgen.pop()
     source = Point(Point(src_coord[0], randint(0, 3) * scale_z), src_coord[1])
@@ -40,7 +41,9 @@ def test_route_with_steiner():
     router.route_with_steiners()
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(router.tree, scale_z, width=1000, height=1000)
+    svg_output = visualize_routing_tree3d_svg(
+        router.tree, scale_z, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file
@@ -54,7 +57,8 @@ def test_route_with_constraints():
     hgen.reseed(19)
     coords = [hgen.pop() for _ in range(7)]
     terminals = [
-        Point(Point(xcoord, randint(0, 3) * scale_z), ycoord) for xcoord, ycoord in coords
+        Point(Point(xcoord, randint(0, 3) * scale_z), ycoord)
+        for xcoord, ycoord in coords
     ]
     src_coord = hgen.pop()
     source = Point(Point(src_coord[0], randint(0, 3) * scale_z), src_coord[1])
@@ -64,7 +68,9 @@ def test_route_with_constraints():
     router.route_with_constraints(1.0)
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(router.tree, scale_z, width=1000, height=1000)
+    svg_output = visualize_routing_tree3d_svg(
+        router.tree, scale_z, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file

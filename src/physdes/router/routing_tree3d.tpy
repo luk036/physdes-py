@@ -676,7 +676,9 @@ def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=
             # Get scaled coordinates
             x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
             x2, y2 = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
-            color = layer_colors[(child.pt.xcoord.ycoord // scale_z) % len(layer_colors)]
+            color = layer_colors[
+                (child.pt.xcoord.ycoord // scale_z) % len(layer_colors)
+            ]
             # Draw line
             svg_parts.append(
                 f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
