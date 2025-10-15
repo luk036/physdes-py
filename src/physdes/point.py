@@ -527,6 +527,9 @@ class Point(Generic[T1, T2]):
             >>> r = a.enlarge_with(4)
             >>> print(r)
             ([5, 13], [-5, 3])
+            >>> r = a.enlarge_with(0)
+            >>> print(r)
+            ([9, 9], [-1, -1])
         """
         xcoord = enlarge(self.xcoord, alpha)
         ycoord = enlarge(self.ycoord, alpha)

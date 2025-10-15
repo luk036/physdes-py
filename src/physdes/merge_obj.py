@@ -280,6 +280,10 @@ class MergeObj(Generic[T1, T2]):
             >>> m1 = s1.merge_with(s2)
             >>> print(m1)
             /[1100, 1100], [-700, -100]/
+            >>> s1 = MergeObj(200 + 600, 200 - 600)
+            >>> m1 = s1.merge_with(s1)
+            >>> print(m1)
+            /[800, 800], [-400, -400]/
         """
         alpha = self.min_dist_with(other)
         half = alpha // 2

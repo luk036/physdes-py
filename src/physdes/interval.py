@@ -688,6 +688,8 @@ def hull(lhs, rhs):
         [3, 7]
         >>> print(hull(a, Interval(6, 9)))
         [3, 9]
+        >>> print(hull(a, Interval(0, 2)))
+        [0, 5]
     """
     if hasattr(lhs, "hull_with"):
         return lhs.hull_with(rhs)

@@ -434,18 +434,13 @@ class Vector2(Generic[T1, T2]):
             >>> v_nested = Vector2(Vector2(2.0, 4.0), 6.0)
             >>> print(v_nested / 2.0)
             <<1.0, 2.0>, 3.0>
+            >>> print(v / -2.0)
+            <-3.0, -4.5>
         """
         T = type(self)
         return T(self.x / alpha, self.y / alpha)
 
 
 if __name__ == "__main__":
-    # import doctest
-    # doctest.testmod()
-
-    v = Vector2(6.0, 9.0)
-    v /= 2.0
-    print(v)
-    v3d = Vector2(v, 5)  # vector in 3d
-    v3d /= 0.5
-    print(v3d)
+    import doctest
+    doctest.testmod()

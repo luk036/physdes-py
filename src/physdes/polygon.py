@@ -739,6 +739,14 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
         >>> pointset = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> point_in_polygon(pointset, Point(0, 1))
         True
+        >>> point_in_polygon(pointset, Point(0, -4))
+        False
+        >>> point_in_polygon(pointset, Point(-6, -2))
+        True
+        >>> point_in_polygon(pointset, Point(0, 0))
+        True
+        >>> point_in_polygon(pointset, Point(10, 10))
+        False
     """
     res = False
     pt0 = pointset[-1]
@@ -834,6 +842,15 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
         >>> hull = polygon_make_convex_hull(pointset)
         >>> len(hull)
         4
+        >>> coords = [
+        ...     (0, -4), (0, -1), (3, -3), (5, 1), (2, 2), (3, 3),
+        ...     (1, 4), (-2, 4), (-2, 2), (-4, 3), (-5, 1), (-6, -2),
+        ...     (-3, -3), (-3, -4)
+        ... ]
+        >>> pointset = [Point(x, y) for x, y in coords]
+        >>> hull = polygon_make_convex_hull(pointset)
+        >>> len(hull)
+        10
     """
     n = len(pointset)
     if n < 3:

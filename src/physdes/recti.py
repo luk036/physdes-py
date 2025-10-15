@@ -164,6 +164,10 @@ class Rectangle(Point[Interval[int], Interval[int]]):
             True
             >>> a.contains(Rectangle(Interval(32, 38), Interval(51, 67)))
             False
+            >>> a.contains(VSegment(36, Interval(51, 57)))
+            True
+            >>> a.contains(HSegment(Interval(32, 38), 53))
+            True
         """
         return self.xcoord.contains(other.xcoord) and self.ycoord.contains(other.ycoord)
 
@@ -231,6 +235,8 @@ class VSegment(Point[int, Interval[int]]):
             True
             >>> a.contains(VSegment(6, Interval(33, 38)))
             False
+            >>> a.contains(Point(6, 33))
+            False
         """
         return self.xcoord == other.xcoord and self.ycoord.contains(other.ycoord)
 
@@ -274,6 +280,8 @@ class HSegment(Point[Interval[int], int]):
             >>> a.contains(HSegment(Interval(33, 38), 5))
             True
             >>> a.contains(HSegment(Interval(33, 38), 6))
+            False
+            >>> a.contains(Point(33, 6))
             False
         """
         return self.ycoord == other.ycoord and self.xcoord.contains(other.xcoord)

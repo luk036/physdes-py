@@ -216,6 +216,24 @@ def min_dist(lhs, rhs):
 
 
 def nearest(lhs, rhs):
+    """
+    The `nearest` function returns the nearest point on lhs to rhs.
+
+    :param lhs: The `lhs` parameter represents the object on which to find the nearest point.
+    :param rhs: The `rhs` parameter represents the point to which the nearest point is to be found.
+    :return: the nearest point on lhs to rhs.
+
+    Examples:
+        >>> nearest(1, 1)
+        1
+        >>> nearest(1, 3)
+        1
+        >>> from physdes.interval import Interval
+        >>> nearest(Interval(1, 2), 4)
+        2
+        >>> nearest(Interval(1, 5), 4)
+        4
+    """
     if hasattr(lhs, "nearest_to"):
         return lhs.nearest_to(rhs)
     else:  # assume scalar

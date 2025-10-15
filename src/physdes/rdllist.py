@@ -8,6 +8,16 @@ T = TypeVar("T")
 class RDllIterator:
     """The `RobinIterator` class is an iterator that iterates over a singly linked list starting from a
     given node.
+
+    Examples:
+        >>> cdll = RDllist(5)
+        >>> it = RDllIterator(cdll[2])
+        >>> for vlink in it:
+        ...     print(vlink.data)
+        3
+        4
+        0
+        1
     """
 
     __slots__ = ("cur", "stop")
@@ -54,7 +64,24 @@ class RDllIterator:
 
 
 class RDllist:
-    """Round-Robin Doubly Linked List implementation"""
+    """Round-Robin Doubly Linked List implementation
+
+    Examples:
+        >>> cdll = RDllist(5)
+        >>> for vlink in cdll:
+        ...     print(vlink.data)
+        1
+        2
+        3
+        4
+        >>> cdll = RDllist(5, reverse=True)
+        >>> for vlink in cdll:
+        ...     print(vlink.data)
+        4
+        3
+        2
+        1
+    """
 
     __slots__ = "cycle"
     cycle: List[Dllink[int]]
