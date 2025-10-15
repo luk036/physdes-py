@@ -83,8 +83,23 @@ class Point(Generic[T1, T2]):
         self.xcoord: T1 = xcoord
         self.ycoord: T2 = ycoord
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.xcoord}, {self.ycoord})"
+    def __repr__(self) -> str:
+        """
+        The `__repr__` function returns a string representation of a Point object, including the class
+        name and its coordinates.
+
+        :return: The `__repr__` method is returning a string representation of the `Point` object. The
+            string includes the class name, and the x and y coordinates of the point
+        
+        Examples:
+            >>> a = Point(3, 4)
+            >>> repr(a)
+            'Point(3, 4)'
+            >>> a3d = Point(a, 5)  # Point in 3d
+            >>> repr(a3d)
+            'Point(Point(3, 4), 5)'
+        """
+        return f"{self.__class__.__name__}({repr(self.xcoord)}, {repr(self.ycoord)})"
 
     def __str__(self) -> str:
         """
@@ -299,27 +314,25 @@ class Point(Generic[T1, T2]):
         T = type(self)  # Type could be Point or Rectangle or others
         return T(self.xcoord - rhs.x, self.ycoord - rhs.y)
 
-    def displace(self, rhs: "Point[T1, T2]"):  # TODO: what is the type?
+    def displace(self, rhs: "Point[T1, T2]") -> Vector2:
         """
-        The `displace` function takes a `Vector` or `Point` object as an argument and returns a new
-        `Vector2` object representing the displacement between the two points.
+        Calculates the displacement vector from another point to this point.
 
-        :param rhs: The parameter `rhs` is of type `"Point[T1, T2]"`, which means it can be either a `Vector2` or a `Point` object
-        :type rhs: "Point[T1, T2]"
-        :return: The `displace` method is returning a `Vector2` object.
+        This method takes another `Point` object (`rhs`) as input and returns a `Vector2`
+        object representing the displacement from `rhs` to the current point (`self`).
+
+        :param rhs: The other point from which to calculate the displacement.
+        :type rhs: Point[T1, T2]
+        :return: A `Vector2` object representing the displacement.
 
         Examples:
             >>> a = Point(3, 4)
-            >>> v = Vector2(5, 6)
-            >>> b = a - v
-            >>> print(b)
-            (-2, -2)
+            >>> b = Point(1, 1)
             >>> print(a.displace(b))
-            <5, 6>
-            >>> c = Point(1, 1)
-            >>> d = Point(3, 4)
-            >>> print(d.displace(c))
             <2, 3>
+            >>> c = Point(5, 6)
+            >>> print(b.displace(c))
+            <-4, -5>
         """
         return Vector2(
             displacement(self.xcoord, rhs.xcoord), displacement(self.ycoord, rhs.ycoord)
@@ -483,7 +496,16 @@ class Point(Generic[T1, T2]):
 
     def nearest_to(self, other: "Point") -> "Point":
         """
-        The function calculates the nearest point to a point using their x and y coordinates.
+        Calculates the point on this object that is nearest to another point.
+
+        This method takes another `Point` object (`other`) and returns a new `Point`
+        representing the location on the boundary or inside of `self` that is closest to
+        `other`. This is particularly useful when `self` represents a geometric shape
+        (like a rectangle, represented by a Point of Intervals) and `other` is a point.
+
+        :param other: The other point to find the nearest location to.
+        :type other: Point
+        :return: A new `Point` object representing the nearest point on `self`.
 
         Examples:
             >>> a = Point(3, 4)
@@ -502,16 +524,19 @@ class Point(Generic[T1, T2]):
             nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
         )
 
-    def enlarge_with(self, alpha):  # TODO: what is the type?
+    def enlarge_with(self, alpha: float):
         """
-        The `enlarge_with` function takes a parameter `alpha` and returns a new instance of the same type
-        with the x and y coordinates enlarged by `alpha`.
+        Enlarges the point by a given amount in each dimension.
 
-        :param alpha: The `alpha` parameter is a value that determines the amount by which the coordinates
-            of the point should be enlarged
+        This method takes a numerical value `alpha` and enlarges the point by that
+        amount in both the x and y dimensions. If the point's coordinates are single
+        values, they are converted into intervals. The result is a new object of the
+        same type as `self` (e.g., a `Point` with `Interval` coordinates, representing
+        a rectangle).
 
-        :return: The `enlarge_with` method returns an instance of the same type as `self` with the enlarged
-            coordinates.
+        :param alpha: The amount to enlarge the point by. This can be an integer or a float.
+        :type alpha: float
+        :return: A new object of the same type as `self` with enlarged coordinates.
 
         Examples:
             >>> a = Point(9, -1)
@@ -521,12 +546,6 @@ class Point(Generic[T1, T2]):
             >>> r = a.enlarge_with(2)
             >>> print(r)
             ([7, 11], [-3, 1])
-            >>> r = a.enlarge_with(3)
-            >>> print(r)
-            ([6, 12], [-4, 2])
-            >>> r = a.enlarge_with(4)
-            >>> print(r)
-            ([5, 13], [-5, 3])
             >>> r = a.enlarge_with(0)
             >>> print(r)
             ([9, 9], [-1, -1])

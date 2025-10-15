@@ -79,8 +79,22 @@ class Vector2(Generic[T1, T2]):
         self.x_ = x
         self.y_ = y
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.x}, {self.y})"
+    def __repr__(self) -> str:
+        """
+        The `__repr__` function returns a string representation of a `Vector2` object, including the class
+        name and its coordinates, which is useful for debugging.
+
+        :return: The `__repr__` method is returning a string representation of the `Vector2` object.
+
+        Examples:
+            >>> v = Vector2(3, 4)
+            >>> repr(v)
+            'Vector2(3, 4)'
+            >>> v3d = Vector2(v, 5)  # vector in 3d
+            >>> repr(v3d)
+            'Vector2(Vector2(3, 4), 5)'
+        """
+        return f"{self.__class__.__name__}({repr(self.x)}, {repr(self.y)})"
 
     def __str__(self) -> str:
         """
@@ -152,14 +166,17 @@ class Vector2(Generic[T1, T2]):
     #     T = type(self)
     #     return T(self.x_, self.y_)
 
-    def cross(self, rhs):
+    def cross(self, rhs: "Vector2[T1, T2]") -> float:
         """
-        The `cross` function calculates the cross product of two vectors.
+        Calculates the 2D cross product of this vector with another vector.
 
-        :param rhs: The parameter `rhs` stands for "right-hand side" and represents another vector that we
-            want to perform the cross product with
+        The 2D cross product is a scalar value that is positive if `rhs` is to the
+        "left" of this vector, negative if to the "right", and zero if they are
+        collinear.
 
-        :return: The cross product of the two vectors.
+        :param rhs: The other vector to compute the cross product with.
+        :type rhs: Vector2[T1, T2]
+        :return: The scalar value of the 2D cross product.
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -222,14 +239,16 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(-self.x, -self.y)
 
-    def __iadd__(self, rhs) -> "Vector2[T1, T2]":
+    def __iadd__(self, rhs: "Vector2[T1, T2]") -> "Vector2[T1, T2]":
         """
-        The `__iadd__` method is used to implement the in-place addition operator for a Vector2 class.
+        Performs in-place addition of another vector to this vector.
 
-        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the object that is being
-            added to the current object. In this case, it is a `Vector2` object
+        This method adds the components of the `rhs` vector to the corresponding
+        components of this vector, modifying the vector in place.
 
-        :return: The `__iadd__` method returns `self`, which is an instance of the class.
+        :param rhs: The vector to add to this one.
+        :type rhs: Vector2[T1, T2]
+        :return: The modified vector (`self`).
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -249,17 +268,16 @@ class Vector2(Generic[T1, T2]):
         self.y_ += rhs.y
         return self
 
-    def __add__(self, rhs) -> "Vector2[T1, T2]":
+    def __add__(self, rhs: "Vector2[T1, T2]") -> "Vector2[T1, T2]":
         """
-        The `__add__` method overloads the `+` operator for the `Vector2` class, allowing two vectors to be
-        added together.
+        Adds this vector to another vector, returning a new vector.
 
-        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the object that is being
-            added to the current object. In this case, it is assumed that both `self` and `rhs` are instances of
-            the `Vector2` class
+        This method adds the components of the `rhs` vector to the corresponding
+        components of this vector and returns a new `Vector2` object with the result.
 
-        :return: The `__add__` method is returning a new instance of the same type as `self` with the x and
-            y components added together.
+        :param rhs: The vector to add to this one.
+        :type rhs: Vector2[T1, T2]
+        :return: A new `Vector2` object representing the sum.
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -278,15 +296,16 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x + rhs.x, self.y + rhs.y)
 
-    def __isub__(self, rhs) -> "Vector2[T1, T2]":
+    def __isub__(self, rhs: "Vector2[T1, T2]") -> "Vector2[T1, T2]":
         """
-        The `__isub__` method subtracts the x and y components of the right-hand side vector from the x and
-        y components of the left-hand side vector and returns the modified left-hand side vector.
+        Performs in-place subtraction of another vector from this vector.
 
-        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
-            subtracted from the current vector
+        This method subtracts the components of the `rhs` vector from the corresponding
+        components of this vector, modifying the vector in place.
 
-        :return: The method `__isub__` returns an instance of the class `"Vector2[T1, T2]"`.
+        :param rhs: The vector to subtract from this one.
+        :type rhs: Vector2[T1, T2]
+        :return: The modified vector (`self`).
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -306,16 +325,16 @@ class Vector2(Generic[T1, T2]):
         self.y_ -= rhs.y
         return self
 
-    def __sub__(self, rhs) -> "Vector2[T1, T2]":
+    def __sub__(self, rhs: "Vector2[T1, T2]") -> "Vector2[T1, T2]":
         """
-        The `__sub__` method subtracts the coordinates of two vectors and returns a new vector with the
-        result.
+        Subtracts another vector from this vector, returning a new vector.
 
-        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the vector that is being
-            subtracted from the current vector
+        This method subtracts the components of the `rhs` vector from the corresponding
+        components of this vector and returns a new `Vector2` object with the result.
 
-        :return: The `__sub__` method is returning a new instance of the same type (`T`) with the x and y
-            components subtracted from the corresponding components of the `rhs` object.
+        :param rhs: The vector to subtract from this one.
+        :type rhs: Vector2[T1, T2]
+        :return: A new `Vector2` object representing the difference.
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -334,16 +353,16 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x - rhs.x, self.y - rhs.y)
 
-    def __imul__(self, alpha) -> "Vector2[T1, T2]":
+    def __imul__(self, alpha: float) -> "Vector2[T1, T2]":
         """
-        The `__imul__` method multiplies the x and y components of a Vector2 object by a scalar value and
-        returns the modified object.
+        Performs in-place multiplication of this vector by a scalar.
 
-        :param alpha: The parameter `alpha` represents the scalar value by which the vector's components
-            (`x_` and `y_`) will be multiplied
+        This method multiplies both components of this vector by the scalar `alpha`,
+        modifying the vector in place.
 
-        :return: The method `__imul__` returns `self`, which is an instance of the class that the method
-            belongs to.
+        :param alpha: The scalar value to multiply the vector by.
+        :type alpha: float
+        :return: The modified vector (`self`).
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -363,15 +382,16 @@ class Vector2(Generic[T1, T2]):
         self.y_ *= alpha
         return self
 
-    def __mul__(self, alpha) -> "Vector2[T1, T2]":
+    def __mul__(self, alpha: float) -> "Vector2[T1, T2]":
         """
-        The `__mul__` method multiplies a vector by a scalar and returns a new vector.
+        Multiplies this vector by a scalar, returning a new vector.
 
-        :param alpha: The parameter `alpha` represents a scalar value that will be multiplied with the `x`
-            and `y` components of the vector
+        This method multiplies both components of this vector by the scalar `alpha`
+        and returns a new `Vector2` object with the result.
 
-        :return: The method `__mul__` returns a new instance of the same type as `self` with the `x` and `y`
-            attributes multiplied by `alpha`.
+        :param alpha: The scalar value to multiply the vector by.
+        :type alpha: float
+        :return: A new `Vector2` object representing the product.
 
         Examples:
             >>> v = Vector2(3, 4)
@@ -387,16 +407,16 @@ class Vector2(Generic[T1, T2]):
         T = type(self)
         return T(self.x * alpha, self.y * alpha)
 
-    def __itruediv__(self, alpha) -> "Vector2[T1, T2]":
+    def __itruediv__(self, alpha: float) -> "Vector2[T1, T2]":
         """
-        The `__itruediv__` method divides the x and y components of a Vector2 object by a given value and
-        returns the modified object.
+        Performs in-place true division of this vector by a scalar.
 
-        :param alpha: The parameter `alpha` represents the value by which the `x_` and `y_` attributes of
-            the object are divided
+        This method divides both components of this vector by the scalar `alpha`,
+        modifying the vector in place.
 
-        :return: The method is returning the updated instance of the class `self` after performing the
-            division operation.
+        :param alpha: The scalar value to divide the vector by.
+        :type alpha: float
+        :return: The modified vector (`self`).
 
         Examples:
             >>> v = Vector2(6.0, 9.0)
@@ -416,13 +436,16 @@ class Vector2(Generic[T1, T2]):
         self.y_ /= alpha
         return self
 
-    def __truediv__(self, alpha) -> "Vector2[T1, T2]":
+    def __truediv__(self, alpha: float) -> "Vector2[T1, T2]":
         """
-        The `__truediv__` method divides a vector by a scalar and returns a new vector with the resulting values.
+        Divides this vector by a scalar, returning a new vector.
 
-        :param alpha: The parameter `alpha` represents the value by which the vector is divided
-        :return: The `__truediv__` method returns a new instance of the same type (`T`) with the `x` and `y`
-            attributes divided by `alpha`.
+        This method divides both components of this vector by the scalar `alpha`
+        and returns a new `Vector2` object with the result.
+
+        :param alpha: The scalar value to divide the vector by.
+        :type alpha: float
+        :return: A new `Vector2` object representing the quotient.
 
         Examples:
             >>> v = Vector2(6.0, 9.0)
@@ -443,4 +466,4 @@ class Vector2(Generic[T1, T2]):
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    doctest.testmod(verbose=True)

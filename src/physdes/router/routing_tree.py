@@ -86,7 +86,7 @@ class RoutingNode:
             Point(10, 20)
             >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
             >>> node.get_position()
-            Point((10, 20), 20)
+            Point(Point(10, 20), 20)
         """
         return self.pt
 
@@ -134,7 +134,7 @@ class GlobalRoutingTree:
             Point(1, 1)
             >>> tree3d = GlobalRoutingTree(Point(Point(1, 1), 1))
             >>> tree3d.source.pt
-            Point((1, 1), 1)
+            Point(Point(1, 1), 1)
         """
         self.source = RoutingNode("source", NodeType.SOURCE, source_position)
         self.nodes = {"source": self.source}

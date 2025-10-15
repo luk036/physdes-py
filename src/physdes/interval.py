@@ -74,8 +74,19 @@ class Interval(Generic[T]):
         self._lb: T = lb
         self._ub: T = ub
 
-    def __repr__(self):
-        return f"{self.__class__.__name__}({self.lb}, {self.ub}"
+    def __repr__(self) -> str:
+        """
+        The `__repr__` function returns a string representation of an `Interval` object, including the class
+        name and its lower and upper bounds, which is useful for debugging.
+
+        :return: The `__repr__` method is returning a string representation of the `Interval` object.
+
+        Examples:
+            >>> a = Interval(3, 4)
+            >>> repr(a)
+            'Interval(3, 4)'
+        """
+        return f"{self.__class__.__name__}({self.lb}, {self.ub})"
 
     def __str__(self) -> str:
         """
@@ -154,16 +165,19 @@ class Interval(Generic[T]):
 
     def length(self) -> T:
         """
-        The function returns the length of a range defined by the upper bound (ub) and lower bound (lb)
-        attributes.
+        Calculates the length of the interval.
 
-        :return: The length of the object, which is calculated by subtracting the upper bound (ub) from
-            the lower bound (lb).
+        The length is the difference between the upper and lower bounds.
+
+        :return: The length of the interval.
 
         Examples:
             >>> a = Interval(3, 4)
             >>> a.length()
             1
+            >>> b = Interval(3, 8)
+            >>> b.length()
+            5
         """
         return self.ub - self.lb
 
@@ -189,106 +203,102 @@ class Interval(Generic[T]):
         """
         return (self.lb, self.ub) == (other.lb, other.ub)
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: Union["Interval[T]", T]) -> bool:
         """
-        The function compares the upper bound of the current object with the other object and returns
-        True if the upper bound of the current object is less than the other object.
+        Checks if this interval is strictly to the left of another value.
 
-        :param other: The "other" parameter represents the value that the current object is being
-            compared to. In this case, it is being compared to the upper bound (ub) of the current object
+        This method returns `True` if the upper bound of this interval is less than
+        the given value (or the lower bound of the given interval).
 
-        :return: The code is returning a boolean value indicating whether the upper bound of the current
-            interval object is less than the other object.
+        :param other: The value or interval to compare with.
+        :type other: Union[Interval[T], T]
+        :return: `True` if this interval is strictly to the left of `other`.
 
         Examples:
             >>> a = Interval(3, 4)
-            >>> b = Interval(3, 5)
+            >>> b = Interval(5, 6)
             >>> a < b
-            False
+            True
+            >>> a < 5
+            True
             >>> b < a
             False
-            >>> Interval(1, 2) < Interval(3, 4)
-            True
-            >>> Interval(3, 4) < Interval(1, 2)
-            False
-            >>> Interval(1, 5) < Interval(2, 3)
+            >>> a < 4
             False
         """
         return self.ub < other
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: Union["Interval[T]", T]) -> bool:
         """
-        The function compares the upper bound of the current object with the other object and returns
-        True if the lower bound of the current object is greater than the other object.
+        Checks if this interval is strictly to the right of another value.
 
-        :param other: The "other" parameter represents the value that the current object is being
-            compared to. In this case, it is being compared to the lower bound (lb) of the current object
+        This method returns `True` if the lower bound of this interval is greater than
+        the given value (or the upper bound of the given interval).
 
-        :return: The code is returning a boolean value indicating whether the lower bound of the current
-            interval object is greater than the other object.
+        :param other: The value or interval to compare with.
+        :type other: Union[Interval[T], T]
+        :return: `True` if this interval is strictly to the right of `other`.
 
         Examples:
-            >>> a = Interval(3, 4)
-            >>> b = Interval(3, 5)
+            >>> a = Interval(5, 6)
+            >>> b = Interval(3, 4)
             >>> a > b
-            False
+            True
+            >>> a > 4
+            True
             >>> b > a
             False
-            >>> Interval(3, 4) > Interval(1, 2)
-            True
-            >>> Interval(1, 2) > Interval(3, 4)
-            False
-            >>> Interval(2, 3) > Interval(1, 5)
+            >>> a > 5
             False
         """
         return self.lb > other
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: Union["Interval[T]", T]) -> bool:
         """
-        The function returns True if the current interval is less than or equal to the the other interval.
+        Checks if this interval is not strictly to the right of another value.
 
-        :param other: The `other` parameter represents another instance of the `Interval` class that we
-            are comparing to the current instance
+        This method returns `True` if this interval is not strictly greater than the
+        given value or interval.
 
-        :return: The code is returning a boolean value.
+        :param other: The value or interval to compare with.
+        :type other: Union[Interval[T], T]
+        :return: `True` if this interval is less than or equal to `other`.
 
         Examples:
-            >>> a = Interval(3, 4)
-            >>> b = Interval(3, 5)
+            >>> a = Interval(3, 5)
+            >>> b = Interval(5, 7)
             >>> a <= b
+            True
+            >>> a <= 5
             True
             >>> b <= a
             True
-            >>> Interval(1, 2) <= Interval(3, 4)
-            True
-            >>> Interval(3, 4) <= Interval(1, 2)
-            False
-            >>> Interval(1, 5) <= Interval(2, 3)
+            >>> a <= 3
             True
         """
         return not (other < self.lb)
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: Union["Interval[T]", T]) -> bool:
         """
-        The function returns True if the current interval is greater than or equal to the the other interval.
+        Checks if this interval is not strictly to the left of another value.
 
-        :param other: The `other` parameter represents another instance of the `Interval` class that we
-            are comparing to the current instance
+        This method returns `True` if this interval is not strictly less than the
+        given value or interval.
 
-        :return: The code is returning a boolean value.
+        :param other: The value or interval to compare with.
+        :type other: Union[Interval[T], T]
+        :return: `True` if this interval is greater than or equal to `other`.
 
         Examples:
-            >>> a = Interval(3, 4)
+            >>> a = Interval(5, 7)
             >>> b = Interval(3, 5)
             >>> a >= b
             True
+            >>> a >= 5
+            True
             >>> b >= a
             True
-            >>> Interval(3, 4) >= Interval(1, 2)
-            True
-            >>> Interval(1, 2) >= Interval(3, 4)
-            False
-            >>> Interval(2, 3) >= Interval(1, 5)
+            >>> a >= 7
             True
         """
         return not (self.ub < other)
@@ -668,17 +678,16 @@ class Interval(Generic[T]):
         return S(self._lb - alpha, self._ub + alpha)
 
 
-def hull(lhs, rhs):
+def hull(lhs: Union[Interval[T], T], rhs: Union[Interval[T], T]) -> Interval[T]:
     """
-    The `hull` function calculates the convex hull of two objects.
+    Calculates the convex hull of two objects, returning the smallest interval
+    that contains both.
 
-    :param lhs: The `lhs` parameter represents the left-hand side of the operation, while the `rhs`
-        parameter represents the right-hand side of the operation
+    This function can take two intervals, two scalars, or an interval and a scalar.
 
-    :param rhs: The `rhs` parameter is the right-hand side of the operation. It can be any value or
-        object that supports the `hull_with` method
-
-    :return: the hull of the input arguments.
+    :param lhs: The first object (Interval or scalar).
+    :param rhs: The second object (Interval or scalar).
+    :return: The smallest `Interval` that contains both `lhs` and `rhs`.
 
     Examples:
         >>> a = Interval(3, 5)
@@ -690,6 +699,8 @@ def hull(lhs, rhs):
         [3, 9]
         >>> print(hull(a, Interval(0, 2)))
         [0, 5]
+        >>> print(hull(2, 5))
+        [2, 5]
     """
     if hasattr(lhs, "hull_with"):
         return lhs.hull_with(rhs)
@@ -699,19 +710,16 @@ def hull(lhs, rhs):
         return Interval(lhs, rhs) if lhs < rhs else Interval(rhs, lhs)
 
 
-def enlarge(lhs, rhs):
+def enlarge(lhs: Union[Interval[T], T], rhs: T) -> Interval[T]:
     """
-    The `enlarge` function takes two arguments, `lhs` and `rhs`, and returns the result of enlarging
-    `lhs` by `rhs`.
+    Enlarges an interval or scalar by a given amount.
 
-    :param lhs: The `lhs` parameter represents the left-hand side of the operation. It can be either an
-        object that has a method `enlarge_with`, or a scalar value
+    If `lhs` is an `Interval`, it is enlarged by `rhs`. If `lhs` is a scalar, it is
+    treated as a zero-width interval and enlarged by `rhs`.
 
-    :param rhs: The parameter `rhs` is the value by which the `lhs` object will be enlarged
-
-    :type rhs: T
-
-    :return: an enlarged interval or scalar value.
+    :param lhs: The interval or scalar to enlarge.
+    :param rhs: The amount to enlarge by.
+    :return: The enlarged `Interval`.
 
     Examples:
         >>> a = Interval(3, 5)
@@ -719,6 +727,8 @@ def enlarge(lhs, rhs):
         [1, 7]
         >>> print(enlarge(a, -1))
         [4, 4]
+        >>> print(enlarge(5, 2))
+        [3, 7]
     """
     if hasattr(lhs, "enlarge_with"):
         return lhs.enlarge_with(rhs)

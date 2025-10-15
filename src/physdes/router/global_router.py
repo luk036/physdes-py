@@ -31,7 +31,7 @@ class GlobalRouter:
             >>> terminals = [Point(Point(10, 1), 0), Point(Point(1, 2), 0), Point(Point(5, 0), 0)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
-            [Point((10, 1), 0), Point((5, 0), 0), Point((1, 2), 0)]
+            [Point(Point(10, 1), 0), Point(Point(5, 0), 0), Point(Point(1, 2), 0)]
         """
         self.source_position = source_position
         self.terminal_positions = sorted(
