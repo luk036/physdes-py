@@ -97,9 +97,7 @@ class RoutingNode3d:
 
     def __str__(self):
         type_name = self.type.name.capitalize()
-        return (
-            f"{type_name}Node({self.id}, ({self.pt.xcoord}, {self.pt.ycoord}))"
-        )
+        return f"{type_name}Node({self.id}, ({self.pt.xcoord}, {self.pt.ycoord}))"
 
 
 class GlobalRoutingTree3d:
@@ -617,7 +615,7 @@ class GlobalRoutingTree3d:
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
 
 
-def visualize_routing_tree3d_svg(tree3d, width=800, height=600, margin=50):
+def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=50):
     """
     Visualize a GlobalRoutingTree3d in SVG format.
 
@@ -634,6 +632,8 @@ def visualize_routing_tree3d_svg(tree3d, width=800, height=600, margin=50):
     all_nodes = list(tree3d.nodes.values())
     if not all_nodes:
         return "<svg></svg>"
+
+    layer_colors = ["red", "yellow", "blue", "green"]
 
     # Get all coordinates to determine bounds
     all_x = [node.pt.xcoord.xcoord for node in all_nodes]
@@ -676,11 +676,11 @@ def visualize_routing_tree3d_svg(tree3d, width=800, height=600, margin=50):
             # Get scaled coordinates
             x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
             x2, y2 = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
-
+            color = layer_colors[(child.pt.xcoord.ycoord // scale_z) % len(layer_colors)]
             # Draw line
             svg_parts.append(
                 f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-                f'stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>'
+                f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>'
             )
 
         for child in node.children:
@@ -781,7 +781,7 @@ def visualize_routing_tree3d_svg(tree3d, width=800, height=600, margin=50):
 
 
 def save_routing_tree3d_svg(
-    tree3d, filename="routing_tree3d.svg", width=800, height=600
+    tree3d, scale_z, filename="routing_tree3d.svg", width=800, height=600
 ):
     """
     Save the routing tree3d visualization as an SVG file.
@@ -792,7 +792,7 @@ def save_routing_tree3d_svg(
         width: SVG canvas width
         height: SVG canvas height
     """
-    svg_content = visualize_routing_tree3d_svg(tree3d, width, height)
+    svg_content = visualize_routing_tree3d_svg(tree3d, scale_z, width, height)
     with open(filename, "w") as f:
         f.write(svg_content)
     print(f"Routing tree3d saved to {filename}")

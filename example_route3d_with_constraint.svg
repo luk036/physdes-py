@@ -5,19 +5,19 @@
 <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
 </marker>
 </defs>
-<line x1="50.0" y1="511.53846153846155" x2="236.59855769230768" y2="511.53846153846155" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="511.53846153846155" x2="455.64903846153845" y2="511.53846153846155" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="511.53846153846155" x2="236.59855769230768" y2="396.15384615384613" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="455.64903846153845" y1="511.53846153846155" x2="601.6826923076923" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="455.64903846153845" y1="511.53846153846155" x2="455.64903846153845" y2="357.6923076923077" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="396.15384615384613" x2="236.59855769230768" y2="203.84615384615384" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="396.15384615384613" x2="163.58173076923077" y2="396.15384615384613" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="203.84615384615384" x2="236.59855769230768" y2="50.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="236.59855769230768" y1="203.84615384615384" x2="382.63221153846155" y2="203.84615384615384" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="382.63221153846155" y1="203.84615384615384" x2="528.6658653846154" y2="203.84615384615384" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="382.63221153846155" y1="203.84615384615384" x2="382.63221153846155" y2="242.3076923076923" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="528.6658653846154" y1="203.84615384615384" x2="674.6995192307692" y2="203.84615384615384" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="528.6658653846154" y1="203.84615384615384" x2="528.6658653846154" y2="88.46153846153845" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="50.0" y1="511.53846153846155" x2="236.59855769230768" y2="511.53846153846155" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="511.53846153846155" x2="455.64903846153845" y2="511.53846153846155" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="511.53846153846155" x2="236.59855769230768" y2="396.15384615384613" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="455.64903846153845" y1="511.53846153846155" x2="601.6826923076923" y2="550.0" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="455.64903846153845" y1="511.53846153846155" x2="455.64903846153845" y2="357.6923076923077" stroke="yellow" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="396.15384615384613" x2="236.59855769230768" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="396.15384615384613" x2="163.58173076923077" y2="396.15384615384613" stroke="blue" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="203.84615384615384" x2="236.59855769230768" y2="50.0" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="236.59855769230768" y1="203.84615384615384" x2="382.63221153846155" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="382.63221153846155" y1="203.84615384615384" x2="528.6658653846154" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="382.63221153846155" y1="203.84615384615384" x2="382.63221153846155" y2="242.3076923076923" stroke="green" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="528.6658653846154" y1="203.84615384615384" x2="674.6995192307692" y2="203.84615384615384" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="528.6658653846154" y1="203.84615384615384" x2="528.6658653846154" y2="88.46153846153845" stroke="red" stroke-width="2" marker-end="url(#arrowhead)"/>
 <circle cx="50.0" cy="511.53846153846155" r="8" fill="red" stroke="black" stroke-width="1"/>
 <text x="60.0" y="515.5384615384615" font-family="Arial" font-size="10" fill="black">S</text>
 <text x="50.0" y="498.53846153846155" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(27,1728)</text>
@@ -71,5 +71,5 @@
 <text x="20" y="125" font-family="Arial" font-size="9">Total Nodes: 14</text>
 <text x="20" y="140" font-family="Arial" font-size="9">Terminals: 7</text>
 <text x="20" y="155" font-family="Arial" font-size="9">Steiner: 6</text>
-<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 6228.00</text>
+<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 6825.00</text>
 </svg>
