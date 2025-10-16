@@ -166,7 +166,7 @@ class Vector2(Generic[T1, T2]):
     #     T = type(self)
     #     return T(self.x_, self.y_)
 
-    def cross(self, rhs: "Vector2[T1, T2]") -> float:
+    def cross(self, rhs: "Vector2[T1, T2]"):
         """
         Calculates the 2D cross product of this vector with another vector.
 
@@ -466,4 +466,5 @@ class Vector2(Generic[T1, T2]):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(verbose=True)

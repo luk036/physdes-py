@@ -40,7 +40,15 @@ manipulations in their code.
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
-from .generic import contain, displacement, intersection, min_dist, overlap, nearest
+from .generic import (
+    contain,
+    displacement,
+    intersection,
+    min_dist,
+    overlap,
+    nearest,
+    measure_of,
+)
 from .interval import enlarge, hull
 from .vector2 import Vector2
 
@@ -90,7 +98,7 @@ class Point(Generic[T1, T2]):
 
         :return: The `__repr__` method is returning a string representation of the `Point` object. The
             string includes the class name, and the x and y coordinates of the point
-        
+
         Examples:
             >>> a = Point(3, 4)
             >>> repr(a)
@@ -117,6 +125,22 @@ class Point(Generic[T1, T2]):
             ((3, 4), 5)
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
+
+    def measure(self):
+        """
+        Calculates the measure (area, volume etc.) of the point.
+
+        :return: The measure (area, volume etc.) of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.measure()
+            1
+            >>> b = Point(3, 8)
+            >>> b.measure()
+            1
+        """
+        return measure_of(self.xcoord) * measure_of(self.ycoord)
 
     # def copy(self) -> "Point[T1, T2]":
     #     """

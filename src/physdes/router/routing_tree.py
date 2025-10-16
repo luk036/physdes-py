@@ -884,7 +884,9 @@ def save_routing_tree_svg(tree, filename="routing_tree.svg", width=800, height=6
     print(f"Routing tree saved to {filename}")
 
 
-def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=50):
+def visualize_routing_tree3d_svg(
+    tree3d, scale_z: int, width=800, height=600, margin=50
+):
     """
     Visualize a GlobalRoutingTree in SVG format.
 
@@ -1052,7 +1054,7 @@ def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=
 
 
 def save_routing_tree3d_svg(
-    tree3d, scale_z, filename="routing_tree3d.svg", width=800, height=600
+    tree3d, scale_z: int, filename="routing_tree3d.svg", width=800, height=600
 ):
     """
     Save the routing tree3d visualization as an SVG file.

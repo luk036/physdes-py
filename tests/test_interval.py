@@ -57,7 +57,7 @@ def test_interval2():
     a = Interval(3, 4)
     assert a.lb == 3
     assert a.ub == 4
-    assert a.length() == 1
+    assert a.measure() == 1
     assert a.contains(3)
     assert a.contains(4)
     assert not a.contains(5)

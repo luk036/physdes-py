@@ -182,7 +182,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
             >>> a.width()
             10
         """
-        return self.xcoord.length()
+        return self.xcoord.measure()
 
     def height(self) -> int:
         """
@@ -195,7 +195,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
             >>> a.height()
             12
         """
-        return self.ycoord.length()
+        return self.ycoord.measure()
 
     def area(self) -> int:
         """
@@ -208,7 +208,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
             >>> a.area()
             120
         """
-        return self.xcoord.length() * self.ycoord.length()
+        return self.xcoord.measure() * self.ycoord.measure()
 
 
 class VSegment(Point[int, Interval[int]]):

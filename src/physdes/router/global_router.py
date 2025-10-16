@@ -36,8 +36,12 @@ class GlobalRouter:
         self.source_position = source_position
         self.terminal_positions = sorted(
             terminal_positions,
-            key=lambda pt: source_position.min_dist_with(pt),
-            reverse=True,
+            key=lambda t: (
+                -source_position.min_dist_with(t),  # Negative for descending order
+                -source_position.hull_with(
+                    t
+                ).measure(),  # Negative for descending order
+            ),
         )
         self.tree = GlobalRoutingTree(source_position)
         self.worst_wirelength = source_position.min_dist_with(terminal_positions[0])

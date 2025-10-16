@@ -43,6 +43,13 @@ geometric objects.
 """
 
 
+def measure_of(obj):
+    if hasattr(obj, "measure"):
+        return obj.measure()
+    else:
+        return 1
+
+
 def overlap(lhs, rhs) -> bool:
     """
     The `overlap` function checks if two objects have an overlapping property or are equal.

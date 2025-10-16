@@ -163,20 +163,20 @@ class Interval(Generic[T]):
     #     S = type(self)
     #     return S(self._lb, self._ub)
 
-    def length(self) -> T:
+    def measure(self) -> T:
         """
-        Calculates the length of the interval.
+        Calculates the measure (length) of the interval.
 
-        The length is the difference between the upper and lower bounds.
+        The measure (length) is the difference between the upper and lower bounds.
 
-        :return: The length of the interval.
+        :return: The measure (length) of the interval.
 
         Examples:
             >>> a = Interval(3, 4)
-            >>> a.length()
+            >>> a.measure()
             1
             >>> b = Interval(3, 8)
-            >>> b.length()
+            >>> b.measure()
             5
         """
         return self.ub - self.lb
