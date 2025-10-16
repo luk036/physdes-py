@@ -678,7 +678,7 @@ class Interval(Generic[T]):
         return S(self._lb - alpha, self._ub + alpha)
 
 
-def hull(lhs: Union[Interval[T], T], rhs: Union[Interval[T], T]) -> Interval[T]:
+def hull(lhs, rhs) -> Interval[T]:
     """
     Calculates the convex hull of two objects, returning the smallest interval
     that contains both.
@@ -710,7 +710,7 @@ def hull(lhs: Union[Interval[T], T], rhs: Union[Interval[T], T]) -> Interval[T]:
         return Interval(lhs, rhs) if lhs < rhs else Interval(rhs, lhs)
 
 
-def enlarge(lhs: Union[Interval[T], T], rhs: T) -> Interval[T]:
+def enlarge(lhs, rhs) -> Interval[T]:
     """
     Enlarges an interval or scalar by a given amount.
 

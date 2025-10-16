@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import Any, Generic, TypeVar, Union
+from typing import Any, Generic, TypeVar
 
 from .generic import (
     contain,
@@ -573,5 +573,4 @@ class Point(Generic[T1, T2]):
         """
         xcoord = enlarge(self.xcoord, alpha)
         ycoord = enlarge(self.ycoord, alpha)
-        T = type(self)
-        return T(xcoord, ycoord)
+        return Point(xcoord, ycoord)
