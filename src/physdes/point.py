@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Union
 
 from .generic import (
     contain,
@@ -49,14 +49,11 @@ from .generic import (
     nearest,
     measure_of,
 )
-from .interval import enlarge, hull
+from .interval import enlarge, hull, Interval
 from .vector2 import Vector2
 
-if TYPE_CHECKING:
-    from .interval import Interval
-
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Point[Any, Any]")
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Point[Any, Any]")
+T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", Any)
+T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", Any)
 
 
 class Point(Generic[T1, T2]):
@@ -548,7 +545,7 @@ class Point(Generic[T1, T2]):
             nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
         )
 
-    def enlarge_with(self, alpha: float):
+    def enlarge_with(self, alpha: int | float):
         """
         Enlarges the point by a given amount in each dimension.
 

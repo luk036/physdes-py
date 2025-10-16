@@ -331,7 +331,7 @@ class RPolygon:
             >>> P.is_anticlockwise()
             False
         """
-        pointset = [Vector2(0, 0)] + self._vecs
+        pointset: List[Vector2[int, int]] = [Vector2(0, 0)] + self._vecs
 
         if len(pointset) < 2:
             raise ValueError("RPolygon must have at least 2 points")
@@ -370,8 +370,8 @@ class RPolygon:
             >>> polygon.signed_area_x2
             -2
         """
-        new_vecs = []
-        current_pt = Vector2(0, 0)
+        new_vecs: List[Vector2[int, int]] = []
+        current_pt: Vector2[int, int] = Vector2(0, 0)
 
         for next_pt in self._vecs:
             if current_pt.x != next_pt.x and current_pt.y != next_pt.y:
@@ -381,7 +381,7 @@ class RPolygon:
             current_pt = next_pt
 
         # Closing segment
-        first_pt = Vector2(0, 0)
+        first_pt: Vector2[int, int] = Vector2(0, 0)
         if current_pt.x != first_pt.x and current_pt.y != first_pt.y:
             new_vecs.append(Vector2(first_pt.x, current_pt.y))
 

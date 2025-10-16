@@ -43,13 +43,14 @@ It\'s designed to be intuitive for beginners while also offering advanced featur
 complex use cases.
 """
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, Union
+from .interval import Interval
 
 if TYPE_CHECKING:
     from .interval import Interval
 
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", "Vector2[Any, Any]")
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", "Vector2[Any, Any]")
+T1 = TypeVar("T1", bound=Any)
+T2 = TypeVar("T2", bound=Any)
 
 
 class Vector2(Generic[T1, T2]):
