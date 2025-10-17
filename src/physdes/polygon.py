@@ -88,6 +88,8 @@ class Polygon(Generic[T]):
             >>> P = Polygon(Point(400, 500), S)
             >>> print(P._origin)
             (400, 500)
+            >>> print(P._vecs[0])
+            <0, -4>
         """
         self._origin = origin
         self._vecs = vecs
@@ -126,6 +128,8 @@ class Polygon(Generic[T]):
             >>> P = Polygon.from_pointset(S)
             >>> print(P._origin)
             (0, -4)
+            >>> print(P._vecs[0])
+            <0, 3>
         """
         origin = pointset[0]
         vecs = list(vtx.displace(origin) for vtx in pointset[1:])
@@ -166,6 +170,9 @@ class Polygon(Generic[T]):
             >>> Q = Polygon.from_pointset(S)
             >>> print(P == Q)
             True
+            >>> R = Polygon.from_pointset(S[1:] + [S[0]])
+            >>> print(P == R)
+            False
         """
         if not isinstance(rhs, Polygon):
             return NotImplemented
@@ -206,6 +213,8 @@ class Polygon(Generic[T]):
             >>> P += Vector2(1, 1)
             >>> print(P._origin)
             (1, -3)
+            >>> print(P._vecs[0])
+            <0, 3>
         """
         self._origin += rhs
         return self
@@ -245,6 +254,8 @@ class Polygon(Generic[T]):
             >>> P -= Vector2(1, 1)
             >>> print(P._origin)
             (-1, -5)
+            >>> print(P._vecs[0])
+            <0, 3>
         """
         self._origin -= rhs
         return self

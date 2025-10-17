@@ -6,7 +6,7 @@ using SVG format for clear, scalable graphics.
 """
 
 import doctest
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, Optional
 from physdes.point import Point
 
 
@@ -60,7 +60,7 @@ class ClockTreeVisualizer:
         filename: str = "clock_tree.svg",
         width: int = 800,
         height: int = 600,
-        analysis: Dict[str, Any] = None,
+        analysis: Optional[Dict[str, Any]] = None,
     ) -> str:
         """
         Create an SVG visualization of the clock tree
@@ -300,7 +300,7 @@ class ClockTreeVisualizer:
 def create_interactive_svg(
     root,
     sinks: List,
-    analysis: Dict[str, Any],
+    analysis: Optional[Dict[str, Any]],
     filename: str = "clock_tree_interactive.svg",
     width: int = 1000,
     height: int = 700,
