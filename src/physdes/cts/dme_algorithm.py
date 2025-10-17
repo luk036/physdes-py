@@ -625,7 +625,7 @@ def get_tree_statistics(root) -> Dict[str, Any]:
 
     Examples:
         >>> from physdes.point import Point
-        >>> from physdes.dme_algorithm import TreeNode, get_tree_statistics
+        >>> from physdes.cts.dme_algorithm import TreeNode, get_tree_statistics
         >>> s1 = TreeNode(name="s1", position=Point(10, 20))
         >>> s2 = TreeNode(name="s2", position=Point(30, 40))
         >>> root = TreeNode(name="n1", position=Point(20, 30), left=s1, right=s2)

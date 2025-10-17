@@ -361,7 +361,7 @@ def create_comparison_visualization(
 
     Examples:
         >>> from physdes.point import Point
-        >>> from physdes.dme_algorithm import TreeNode, Sink
+        >>> from physdes.cts.dme_algorithm import TreeNode, Sink
         >>> tree1 = TreeNode("root1", Point(50, 50))
         >>> tree2 = TreeNode("root2", Point(150, 50))
         >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]
@@ -494,7 +494,7 @@ def create_delay_model_comparison(
 # Example usage function
 def visualize_example_tree():
     """Example function demonstrating clock tree visualization with different delay models"""
-    from physdes.dme_algorithm import (
+    from physdes.cts.dme_algorithm import (
         Sink,
         LinearDelayCalculator,
         ElmoreDelayCalculator,
