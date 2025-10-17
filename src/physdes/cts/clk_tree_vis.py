@@ -60,6 +60,7 @@ class ClockTreeVisualizer:
         filename: str = "clock_tree.svg",
         width: int = 800,
         height: int = 600,
+        analysis: Dict[str, Any] = None,
     ) -> str:
         """
         Create an SVG visualization of the clock tree
@@ -70,6 +71,7 @@ class ClockTreeVisualizer:
             filename: Output filename
             width: SVG width
             height: SVG height
+            analysis: Optional analysis results from DME algorithm
 
         Returns:
             SVG string content
@@ -95,6 +97,7 @@ class ClockTreeVisualizer:
             "  .node-label { font: 10px sans-serif; fill: #333; }",
             "  .delay-label { font: 8px sans-serif; fill: #666; }",
             "  .wire-label { font: 9px sans-serif; fill: #444; }",
+            "  .analysis-label { font: 12px sans-serif; fill: #333; }",
             "</style>",
             '<rect width="100%" height="100%" fill="white"/>',
             '<g class="clock-tree">',
@@ -106,16 +109,21 @@ class ClockTreeVisualizer:
         # Draw nodes
         svg_content.extend(self._draw_nodes(root, sinks, scale_coord))
 
+        # Add analysis information if provided
+        if analysis:
+            svg_content.extend(self._create_analysis_box(analysis, width))
+
         # Close SVG
         svg_content.extend(["</g>", "</svg>"])
 
         svg_string = "\n".join(svg_content)
 
         # Save to file
-        with open(filename, "w") as f:
-            f.write(svg_string)
+        if filename != "":
+            with open(filename, "w") as f:
+                f.write(svg_string)
+            print(f"Clock tree visualization saved to {filename}")
 
-        print(f"Clock tree visualization saved to {filename}")
         return svg_string
 
     def _collect_all_nodes(self, root) -> List:
@@ -256,12 +264,46 @@ class ClockTreeVisualizer:
         draw_nodes_recursive(root)
         return svg_elements
 
+    def _create_analysis_box(
+        self, analysis: Dict[str, Any], svg_width: int
+    ) -> List[str]:
+        """Create analysis information box"""
+        delay_model = analysis.get("delay_model", "Unknown")
+
+        analysis_text = [
+            "Clock Tree Analysis",
+            f"Delay Model: {delay_model}",
+            f"Max Delay: {analysis.get('max_delay', 0):.3f}",
+            f"Min Delay: {analysis.get('min_delay', 0):.3f}",
+            f"Skew: {analysis.get('skew', 0):.3f}",
+            f"Total Wirelength: {analysis.get('total_wirelength', 0):.1f}",
+            f"Sinks: {len(analysis.get('sink_delays', []))}",
+        ]
+
+        analysis_box = [
+            '<g class="analysis-info">',
+            '<rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>',
+            '<rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>',
+            '<text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>',
+            '<text x="20" y="45" font-family="monospace" font-size="11" fill="#333">',
+        ]
+
+        for i, text in enumerate(analysis_text[1:]):  # Skip title line
+            analysis_box.append(f'<tspan x="20" y="{45 + (i + 1) * 16}">{text}</tspan>')
+
+        analysis_box.append("</text>")
+        analysis_box.append("</g>")
+
+        return analysis_box
+
 
 def create_interactive_svg(
     root,
     sinks: List,
     analysis: Dict[str, Any],
     filename: str = "clock_tree_interactive.svg",
+    width: int = 1000,
+    height: int = 700,
 ) -> str:
     """
     Create an interactive SVG with additional information and styling
@@ -271,6 +313,8 @@ def create_interactive_svg(
         sinks: List of sink objects
         analysis: Skew analysis results
         filename: Output filename
+        width: SVG width
+        height: SVG height
 
     Returns:
         SVG string content
@@ -287,95 +331,177 @@ def create_interactive_svg(
         text_color="#263238",
     )
 
-    svg_content = visualizer.visualize_tree(root, sinks, filename, 1000, 700)
-
-    # Enhance with analysis information
-    enhanced_svg = _add_analysis_info(svg_content, analysis)
-
-    with open(filename, "w") as f:
-        f.write(enhanced_svg)
-
-    return enhanced_svg
+    svg_content = visualizer.visualize_tree(
+        root, sinks, filename, width, height, analysis
+    )
+    return svg_content
 
 
-def _add_analysis_info(svg_content: str, analysis: Dict[str, Any]) -> str:
-    """Add analysis information to the SVG
-
-    Examples:
-        >>> svg = '<svg><g class="clock-tree"></g></svg>'
-        >>> analysis = {"skew": 0.03}
-        >>> enhanced_svg = _add_analysis_info(svg, analysis)
-        >>> "Skew: 0.030" in enhanced_svg
-        True
-    """
-
-    analysis_text = [
-        "Clock Tree Analysis",
-        f"Max Delay: {analysis.get('max_delay', 0):.3f}",
-        f"Min Delay: {analysis.get('min_delay', 0):.3f}",
-        f"Skew: {analysis.get('skew', 0):.3f}",
-        f"Total Wirelength: {analysis.get('total_wirelength', 0):.1f}",
-        f"Sinks: {len(analysis.get('sink_delays', []))}",
-    ]
-
-    # Insert analysis box at the beginning of the SVG
-    lines = svg_content.split("\n")
-
-    # Find the position after the opening SVG tag and style
-    insert_pos = 0
-    for i, line in enumerate(lines):
-        if '<g class="clock-tree">' in line:
-            insert_pos = i
-            break
-
-    # Create analysis box
-    analysis_box = [
-        '<g class="analysis-info">',
-        '<rect x="10" y="10" width="200" height="120" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>',
-        '<text x="20" y="30" font-family="monospace" font-size="12" fill="#333">',
-    ]
-
-    for i, text in enumerate(analysis_text):
-        analysis_box.append(f'<tspan x="20" y="{30 + (i + 1) * 18}">{text}</tspan>')
-
-    analysis_box.append("</text>")
-    analysis_box.append("</g>")
-
-    # Insert analysis box
-    lines[insert_pos:insert_pos] = analysis_box
-
-    return "\n".join(lines)
-
-
-def create_animated_tree_construction(
-    root, sinks: List, filename: str = "clock_tree_animated.svg"
+def create_comparison_visualization(
+    trees_data: List[Dict[str, Any]],
+    filename: str = "clock_tree_comparison.svg",
+    width: int = 1200,
+    height: int = 800,
 ) -> str:
     """
-    Create an animated SVG showing the tree construction process
+    Create a comparison visualization of multiple clock trees
 
     Args:
-        root: Root node of clock tree
-        sinks: List of sink objects
+        trees_data: List of dictionaries containing:
+            - 'tree': root node
+            - 'sinks': list of sinks
+            - 'analysis': analysis results
+            - 'title': descriptive title
+        filename: Output filename
+        width: SVG width
+        height: SVG height
+
+    Returns:
+        SVG string content
+
+    Examples:
+        >>> from physdes.point import Point
+        >>> from physdes.dme_algorithm import TreeNode, Sink
+        >>> tree1 = TreeNode("root1", Point(50, 50))
+        >>> tree2 = TreeNode("root2", Point(150, 50))
+        >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]
+        >>> analysis = {"skew": 0.1, "max_delay": 5.0, "total_wirelength": 100}
+        >>> data = [
+        ...     {"tree": tree1, "sinks": sinks, "analysis": analysis, "title": "Linear Model"},
+        ...     {"tree": tree2, "sinks": sinks, "analysis": analysis, "title": "Elmore Model"}
+        ... ]
+        >>> svg = create_comparison_visualization(data, "comparison.svg", 800, 400)
+        Comparison visualization saved to comparison.svg
+        >>> "Linear Model" in svg
+        True
+    """
+    if not trees_data:
+        raise ValueError("No tree data provided for comparison")
+
+    num_trees = len(trees_data)
+    cols = min(2, num_trees)  # Maximum 2 columns
+    rows = (num_trees + cols - 1) // cols
+
+    sub_width = width // cols
+    sub_height = height // rows
+
+    svg_content = [
+        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">',
+        "<style>",
+        "  .node-label { font: 8px sans-serif; fill: #333; }",
+        "  .delay-label { font: 7px sans-serif; fill: #666; }",
+        "  .title { font: 14px sans-serif; fill: #333; font-weight: bold; }",
+        "  .comparison-label { font: 10px sans-serif; fill: #333; }",
+        "</style>",
+        '<rect width="100%" height="100%" fill="white"/>',
+    ]
+
+    visualizer = ClockTreeVisualizer(
+        margin=40,
+        node_radius=6,
+        wire_width=2,
+        sink_color="#4CAF50",
+        internal_color="#2196F3",
+        root_color="#F44336",
+    )
+
+    for i, tree_data in enumerate(trees_data):
+        row = i // cols
+        col = i % cols
+
+        offset_x = col * sub_width
+        offset_y = row * sub_height
+
+        # Add title for this subplot
+        title = tree_data.get("title", f"Tree {i+1}")
+        svg_content.append(
+            f'<text x="{offset_x + sub_width//2}" y="{offset_y + 20}" class="title" text-anchor="middle">{title}</text>'
+        )
+
+        # Create a temporary SVG for this tree
+        temp_svg = visualizer.visualize_tree(
+            tree_data["tree"],
+            tree_data["sinks"],
+            "",  # No filename for temporary use
+            sub_width - 20,
+            sub_height - 40,
+            tree_data.get("analysis"),
+        )
+
+        # Extract the main content (between <g class="clock-tree"> and </g>)
+        lines = temp_svg.split("\n")
+        start_idx = -1
+        end_idx = -1
+
+        for j, line in enumerate(lines):
+            if '<g class="clock-tree">' in line:
+                start_idx = j
+            elif (
+                start_idx != -1 and "</g>" in line and "clock-tree" not in lines[j - 1]
+            ):
+                end_idx = j
+                break
+
+        if start_idx != -1 and end_idx != -1:
+            tree_content = lines[start_idx : end_idx + 1]
+
+            # Transform coordinates to fit in subplot
+            transformed_content = []
+            for line in tree_content:
+                # This is a simplified transformation - in practice would need proper SVG transformation
+                if 'x="' in line and 'y="' in line:
+                    # Simple string replacement for positioning
+                    line = line.replace('x="', f'x="{offset_x} + 10 + ')
+                    line = line.replace('y="', f'y="{offset_y} + 40 + ')
+                transformed_content.append(line)
+
+            svg_content.extend(transformed_content)
+
+    svg_content.append("</svg>")
+    svg_string = "\n".join(svg_content)
+
+    with open(filename, "w") as f:
+        f.write(svg_string)
+
+    print(f"Comparison visualization saved to {filename}")
+    return svg_string
+
+
+def create_delay_model_comparison(
+    linear_tree_data: Dict[str, Any],
+    elmore_tree_data: Dict[str, Any],
+    filename: str = "delay_model_comparison.svg",
+) -> str:
+    """
+    Create a specialized comparison between linear and Elmore delay models
+
+    Args:
+        linear_tree_data: Data for linear delay model tree
+        elmore_tree_data: Data for Elmore delay model tree
         filename: Output filename
 
     Returns:
         SVG string content
     """
-    # This would require more complex SVG animation features
-    # For now, return a static visualization
-    print("Animated version not yet implemented. Creating static visualization.")
-    return create_interactive_svg(root, sinks, {}, filename)
+    linear_tree_data["title"] = "Linear Delay Model"
+    elmore_tree_data["title"] = "Elmore Delay Model"
+
+    return create_comparison_visualization(
+        [linear_tree_data, elmore_tree_data], filename, width=1200, height=600
+    )
 
 
 # Example usage function
 def visualize_example_tree():
-    """Example function demonstrating clock tree visualization"""
-    from physdes.dme_algorithm import Sink, example_dme_usage
+    """Example function demonstrating clock tree visualization with different delay models"""
+    from physdes.dme_algorithm import (
+        Sink,
+        LinearDelayCalculator,
+        ElmoreDelayCalculator,
+        DMEAlgorithm,
+    )
 
-    # Generate example clock tree
-    clock_tree, analysis = example_dme_usage()
-
-    # Get sinks from the example (in practice, you'd have your actual sinks)
+    # Generate example clock tree with both delay models
     example_sinks = [
         Sink("s1", Point(10, 20), 1.0),
         Sink("s2", Point(30, 40), 1.0),
@@ -384,27 +510,64 @@ def visualize_example_tree():
         Sink("s5", Point(90, 50), 1.0),
     ]
 
-    # Create visualizations
+    print("=== Generating Clock Trees with Different Delay Models ===")
+
+    # Linear delay model
+    linear_calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
+    dme_linear = DMEAlgorithm(delay_calculator=linear_calc)
+    clock_tree_linear = dme_linear.build_clock_tree(example_sinks)
+    analysis_linear = dme_linear.analyze_skew(clock_tree_linear)
+
+    # Elmore delay model
+    elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
+    dme_elmore = DMEAlgorithm(delay_calculator=elmore_calc)
+    clock_tree_elmore = dme_elmore.build_clock_tree(example_sinks)
+    analysis_elmore = dme_elmore.analyze_skew(clock_tree_elmore)
+
+    # Create individual visualizations
     visualizer = ClockTreeVisualizer()
 
-    # Basic visualization
-    basic_svg = visualizer.visualize_tree(
-        clock_tree, example_sinks, "basic_clock_tree.svg"
+    # Linear model visualization
+    linear_svg = visualizer.visualize_tree(
+        clock_tree_linear,
+        example_sinks,
+        "linear_model_clock_tree.svg",
+        analysis=analysis_linear,
     )
 
-    # Interactive visualization with analysis
-    interactive_svg = create_interactive_svg(
-        clock_tree, example_sinks, analysis, "interactive_clock_tree.svg"
+    # Elmore model visualization
+    elmore_svg = visualizer.visualize_tree(
+        clock_tree_elmore,
+        example_sinks,
+        "elmore_model_clock_tree.svg",
+        analysis=analysis_elmore,
     )
+
+    # Comparison visualization
+    linear_data = {
+        "tree": clock_tree_linear,
+        "sinks": example_sinks,
+        "analysis": analysis_linear,
+        "title": "Linear Delay Model",
+    }
+    elmore_data = {
+        "tree": clock_tree_elmore,
+        "sinks": example_sinks,
+        "analysis": analysis_elmore,
+        "title": "Elmore Delay Model",
+    }
+
+    comparison_svg = create_delay_model_comparison(linear_data, elmore_data)
 
     print("Visualizations created:")
-    print("- basic_clock_tree.svg: Basic tree structure")
-    print("- interactive_clock_tree.svg: With analysis information")
+    print("- linear_model_clock_tree.svg: Linear delay model")
+    print("- elmore_model_clock_tree.svg: Elmore delay model")
+    print("- delay_model_comparison.svg: Side-by-side comparison")
 
-    return basic_svg, interactive_svg
+    return linear_svg, elmore_svg, comparison_svg
 
 
 if __name__ == "__main__":
     # Run example visualization
-    basic, interactive = visualize_example_tree()
+    linear_svg, elmore_svg, comparison_svg = visualize_example_tree()
     doctest.testmod()
