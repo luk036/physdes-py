@@ -120,4 +120,4 @@ def test_route_with_constraints_special():
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, "specical18.svg")
+    save_routing_tree_svg(router.tree, "neg_specical18.svg")

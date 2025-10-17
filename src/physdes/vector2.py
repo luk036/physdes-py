@@ -43,11 +43,10 @@ It\'s designed to be intuitive for beginners while also offering advanced featur
 complex use cases.
 """
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, Union
-from .interval import Interval
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 if TYPE_CHECKING:
-    from .interval import Interval
+    pass
 
 T1 = TypeVar("T1", bound=Any)
 T2 = TypeVar("T2", bound=Any)

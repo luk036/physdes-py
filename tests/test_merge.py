@@ -1,6 +1,5 @@
 from physdes.interval import Interval, min_dist
 from physdes.merge_obj import MergeObj
-from physdes.vector2 import Vector2
 
 
 def test_MergeObj():

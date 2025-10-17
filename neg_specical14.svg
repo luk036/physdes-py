@@ -5,21 +5,22 @@
 <polygon points="0 0, 10 3.5, 0 7" fill="black"/>
 </marker>
 </defs>
-<line x1="550.0" y1="550.0" x2="150.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="550.0" y1="550.0" x2="550.0" y2="150.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="150.0" y1="550.0" x2="100.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="150.0" y1="550.0" x2="150.0" y2="450.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="100.0" y1="550.0" x2="50.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="100.0" y1="550.0" x2="100.0" y2="500.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="150.0" y1="450.0" x2="200.0" y2="400.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="200.0" y1="400.0" x2="250.0" y2="350.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
-<line x1="250.0" y1="350.0" x2="300.0" y2="300.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="550.0" y1="550.0" x2="300.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="550.0" y1="150.0" x2="550.0" y2="100.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="550.0" y1="150.0" x2="450.0" y2="150.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="550.0" y1="100.0" x2="550.0" y2="50.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="550.0" y1="100.0" x2="500.0" y2="100.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="450.0" y1="150.0" x2="400.0" y2="200.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <line x1="400.0" y1="200.0" x2="350.0" y2="250.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="300.0" y1="550.0" x2="150.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="300.0" y1="550.0" x2="300.0" y2="300.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="150.0" y1="550.0" x2="100.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="150.0" y1="550.0" x2="150.0" y2="450.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="100.0" y1="550.0" x2="50.0" y2="550.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="100.0" y1="550.0" x2="100.0" y2="500.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="150.0" y1="450.0" x2="200.0" y2="400.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
+<line x1="200.0" y1="400.0" x2="250.0" y2="350.0" stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>
 <circle cx="550.0" cy="550.0" r="8" fill="red" stroke="black" stroke-width="1"/>
 <text x="560.0" y="554.0" font-family="Arial" font-size="10" fill="black">S</text>
 <text x="550.0" y="537.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(0,0)</text>
@@ -65,6 +66,9 @@
 <circle cx="350.0" cy="250.0" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="358.0" y="254.0" font-family="Arial" font-size="10" fill="black">T10</text>
 <text x="350.0" y="239.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(-4,-6)</text>
+<circle cx="300.0" cy="550.0" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="308.0" y="554.0" font-family="Arial" font-size="10" fill="black">S5</text>
+<text x="300.0" y="539.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(-5,0)</text>
 <circle cx="300.0" cy="300.0" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="308.0" y="304.0" font-family="Arial" font-size="10" fill="black">T11</text>
 <text x="300.0" y="289.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(-5,-5)</text>
@@ -76,8 +80,8 @@
 <circle cx="20" cy="76" r="4" fill="green" stroke="black"/>
 <text x="30" y="80" font-family="Arial" font-size="10">Terminal</text>
 <text x="20" y="110" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>
-<text x="20" y="125" font-family="Arial" font-size="9">Total Nodes: 16</text>
+<text x="20" y="125" font-family="Arial" font-size="9">Total Nodes: 17</text>
 <text x="20" y="140" font-family="Arial" font-size="9">Terminals: 11</text>
-<text x="20" y="155" font-family="Arial" font-size="9">Steiner: 4</text>
-<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 36.00</text>
+<text x="20" y="155" font-family="Arial" font-size="9">Steiner: 5</text>
+<text x="20" y="170" font-family="Arial" font-size="9">Wirelength: 39.00</text>
 </svg>

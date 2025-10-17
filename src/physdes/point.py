@@ -449,8 +449,7 @@ class Point(Generic[T1, T2]):
             >>> print(r.hull_with(r))
             ([3, 4], [5, 6])
         """
-        T = type(self)
-        return T(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
+        return Point(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
     def intersect_with(self, other):
         """
@@ -480,8 +479,7 @@ class Point(Generic[T1, T2]):
             >>> print(r.intersect_with(r))
             ([3, 4], [5, 6])
         """
-        T = type(self)
-        return T(
+        return Point(
             intersection(self.xcoord, other.xcoord),
             intersection(self.ycoord, other.ycoord),
         )
