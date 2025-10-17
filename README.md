@@ -13,6 +13,14 @@
 
 - Rectilinear Polygon support
 
+## 🚀 Recent Developments
+
+- **3D Global Router:** A 3D global router has been added to the project.
+- **Smarter Global Router:** The global router has been made smarter.
+- **Bug Fixes:** Several bugs have been fixed, including those identified by mypy.
+- **Documentation:** More documentation tests have been added.
+- **Visualization:** Display colors as layers in the visualization.
+
 ## Dependencies
 
 - [luk036/mywheel](https://github.com/luk036/mywheel)
