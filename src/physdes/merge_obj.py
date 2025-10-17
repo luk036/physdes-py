@@ -38,10 +38,9 @@ abstracting away some of the more complex mathematical calculations.
 
 from typing import TYPE_CHECKING, Generic, TypeVar
 
-from .generic import intersection, min_dist
+from .generic import min_dist
 from .interval import enlarge
 from .point import Point
-from .vector2 import Vector2
 
 if TYPE_CHECKING:
     from .interval import Interval
@@ -96,9 +95,9 @@ class MergeObj(Generic[T1, T2]):
         :type ycoord: T2
 
         Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
+            >>> a = MergeObj(4 - 5, 4 + 5)
             >>> print(a)
-            /9, -1/
+            /-1, 9/
         """
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
@@ -116,9 +115,9 @@ class MergeObj(Generic[T1, T2]):
         Examples:
             >>> a = MergeObj.construct(4, 5)
             >>> print(a)
-            /9, -1/
+            /-1, 9/
         """
-        impl = Point(xcoord + ycoord, xcoord - ycoord)
+        impl = Point(xcoord - ycoord, xcoord + ycoord)
         return MergeObj(impl.xcoord, impl.ycoord)
 
     def __repr__(self):
@@ -134,9 +133,9 @@ class MergeObj(Generic[T1, T2]):
             coordinates of the object.
 
         Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
+            >>> a = MergeObj(4 - 5, 4 + 5)
             >>> print(a)
-            /9, -1/
+            /-1, 9/
         """
         return f"/{self.impl.xcoord}, {self.impl.ycoord}/"
 
@@ -148,56 +147,15 @@ class MergeObj(Generic[T1, T2]):
         :return: The `__eq__` method is returning a boolean value.
 
         Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
-            >>> b = MergeObj(7 + 9, 7 - 9)
+            >>> a = MergeObj(4 - 5, 4 + 5)
+            >>> b = MergeObj(7 - 9, 7 + 9)
             >>> a == b
             False
-            >>> c = MergeObj(9, -1)
+            >>> c = MergeObj(-1, 9)
             >>> a == c
             True
         """
         return self.impl == other.impl
-
-    def __iadd__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
-        """Translate by displacement
-
-        The `__iadd__` method allows a `MergeObj` object to be translated by a given displacement vector.
-
-        :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector.
-            It is used to specify the displacement that will be added to the current object
-
-        :type rhs: Vector2
-
-        :return: The method `__iadd__` returns an instance of the class `MergeObj[T1, T2]`.
-
-        Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
-            >>> a += Vector2(1, 2)
-            >>> print(a)
-            /12, -2/
-        """
-        self.impl.xcoord += rhs.x + rhs.y
-        self.impl.ycoord += rhs.x - rhs.y
-        return self
-
-    def __isub__(self, rhs: Vector2) -> "MergeObj[T1, T2]":
-        """
-        The function subtracts the x and y coordinates of a Vector2 object from the x and y coordinates
-        of a MergeObj object.
-
-        :param rhs: The parameter `rhs` is of type `Vector2`, which represents a 2-dimensional vector
-        :type rhs: Vector2
-        :return: The method `__isub__` returns an instance of the class `MergeObj[T1, T2]`.
-
-        Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
-            >>> a -= Vector2(1, 2)
-            >>> print(a)
-            /6, 0/
-        """
-        self.impl.xcoord -= rhs.x + rhs.y
-        self.impl.ycoord -= rhs.x - rhs.y
-        return self
 
     def min_dist_with(self, other) -> int:
         """
@@ -209,8 +167,8 @@ class MergeObj(Generic[T1, T2]):
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
-            >>> r1 = MergeObj(4 + 5, 4 - 5)
-            >>> r2 = MergeObj(7 + 9, 7 - 9)
+            >>> r1 = MergeObj(4 - 5, 4 + 5)
+            >>> r2 = MergeObj(7 - 9, 7 + 9)
             >>> r1.min_dist_with(r2)
             7
         """
@@ -233,10 +191,10 @@ class MergeObj(Generic[T1, T2]):
         :return: The `enlarge_with` method is returning a new `MergeObj` object with the enlarged coordinates.
 
         Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
+            >>> a = MergeObj(4 - 5, 4 + 5)
             >>> r = a.enlarge_with(1)
             >>> print(r)
-            /[8, 10], [-2, 0]/
+            /[-2, 0], [8, 10]/
         """
         xcoord = enlarge(self.impl.xcoord, alpha)  # TODO: check
         ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
@@ -254,10 +212,10 @@ class MergeObj(Generic[T1, T2]):
             between the self object and the other object.
 
         Examples:
-            >>> a = MergeObj(4 + 5, 4 - 5)
+            >>> a = MergeObj(4 - 5, 4 + 5)
             >>> r = a.intersect_with(a)
             >>> print(r)
-            /9, -1/
+            /-1, 9/
         """
         point = self.impl.intersect_with(other.impl)  # TODO
         return MergeObj(point.xcoord, point.ycoord)
@@ -275,19 +233,19 @@ class MergeObj(Generic[T1, T2]):
             y-coordinate of the intersection of the two objects being merged.
 
         Examples:
-            >>> s1 = MergeObj(200 + 600, 200 - 600)
-            >>> s2 = MergeObj(500 + 900, 500 - 900)
+            >>> s1 = MergeObj(200 - 600, 200 + 600)
+            >>> s2 = MergeObj(500 - 900, 500 + 900)
             >>> m1 = s1.merge_with(s2)
             >>> print(m1)
-            /[1100, 1100], [-700, -100]/
-            >>> s1 = MergeObj(200 + 600, 200 - 600)
+            /[-700, -100], [1100, 1100]/
+            >>> s1 = MergeObj(200 - 600, 200 + 600)
             >>> m1 = s1.merge_with(s1)
             >>> print(m1)
-            /[800, 800], [-400, -400]/
+            /[-400, -400], [800, 800]/
         """
         alpha = self.min_dist_with(other)
         half = alpha // 2
-        trr1 = enlarge(self.impl, half)
-        trr2 = enlarge(other.impl, alpha - half)
-        impl = intersection(trr1, trr2)
+        trr1 = self.impl.enlarge_with(half)
+        trr2 = other.impl.enlarge_with(alpha - half)
+        impl = trr1.intersect_with(trr2)
         return MergeObj(impl.xcoord, impl.ycoord)
