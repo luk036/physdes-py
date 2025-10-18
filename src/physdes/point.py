@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Union, Union
 
 from .generic import (
     contain,
@@ -123,7 +123,7 @@ class Point(Generic[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
-    def measure(self):
+    def measure(self) -> Any:
         """
         Calculates the measure (area, volume etc.) of the point.
 
@@ -158,7 +158,7 @@ class Point(Generic[T1, T2]):
     #     T = type(self)  # Type could be Point or Rectangle or others
     #     return T(self.xcoord, self.ycoord)
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: "Point[T1, T2]") -> bool:
         """
         The `__lt__` function compares two points based on their x and y coordinates and returns True if
         the first point is less than the second point.
@@ -183,7 +183,7 @@ class Point(Generic[T1, T2]):
         """
         return (self.xcoord, self.ycoord) < (other.xcoord, other.ycoord)
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: "Point[T1, T2]") -> bool:
         """
         The `__le__` function compares two points and returns True if the first point is less than or
         equal to the second point based on their x and y coordinates.
@@ -207,7 +207,7 @@ class Point(Generic[T1, T2]):
         """
         return (self.xcoord, self.ycoord) <= (other.xcoord, other.ycoord)
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         The `__eq__` function checks if two points have the same x and y coordinates.
 
@@ -230,6 +230,8 @@ class Point(Generic[T1, T2]):
             >>> a != b
             True
         """
+        if not isinstance(other, Point):
+            return NotImplemented
         return (self.xcoord, self.ycoord) == (other.xcoord, other.ycoord)
 
     def __iadd__(self, rhs: Vector2) -> "Point[T1, T2]":
@@ -376,7 +378,7 @@ class Point(Generic[T1, T2]):
         """
         return Point(self.ycoord, self.xcoord)
 
-    def overlaps(self, other) -> bool:
+    def overlaps(self, other: "Point[T1, T2]") -> bool:
         """
         The `overlaps` function checks if two objects overlap by comparing their x and y coordinates.
 
@@ -401,7 +403,7 @@ class Point(Generic[T1, T2]):
         """
         return overlap(self.xcoord, other.xcoord) and overlap(self.ycoord, other.ycoord)
 
-    def contains(self, other) -> bool:
+    def contains(self, other: "Point[T1, T2]") -> bool:
         """
         The function checks if the x and y coordinates of one object are contained within the x and y
         coordinates of another object.
@@ -428,7 +430,7 @@ class Point(Generic[T1, T2]):
         """
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
-    def hull_with(self, other):
+    def hull_with(self, other: "Point[T1, T2]") -> "Point[Any, Any]":
         """
         The `hull_with` function takes another object and returns a new object with the hull of the x and y
         coordinates of both objects.
@@ -451,7 +453,7 @@ class Point(Generic[T1, T2]):
         """
         return Point(hull(self.xcoord, other.xcoord), hull(self.ycoord, other.ycoord))
 
-    def intersect_with(self, other):
+    def intersect_with(self, other: "Point[T1, T2]") -> "Point[Any, Any]":
         """
         The function `intersect_with` takes another object as input and returns a new object that
         represents the intersection of the x and y coordinates of the two objects.
@@ -484,7 +486,7 @@ class Point(Generic[T1, T2]):
             intersection(self.ycoord, other.ycoord),
         )
 
-    def min_dist_with(self, other):
+    def min_dist_with(self, other: "Point[T1, T2]") -> Union[T1, T2]:
         """
         The function calculates the minimum Manhattan distance between two points using their x and y coordinates.
 
@@ -543,7 +545,7 @@ class Point(Generic[T1, T2]):
             nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
         )
 
-    def enlarge_with(self, alpha: int | float):
+    def enlarge_with(self, alpha: int | float) -> "Point[Any, Any]":
         """
         Enlarges the point by a given amount in each dimension.
 

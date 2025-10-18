@@ -38,7 +38,7 @@ allocation, or numerical analysis. It allows programmers to easily manipulate an
 intervals without having to manually handle the lower and upper bounds separately.
 """
 
-from typing import Generic, TypeVar, Union
+from typing import Generic, TypeVar, Union, Any
 
 from .generic import displacement, min_dist
 
@@ -181,26 +181,9 @@ class Interval(Generic[T]):
         """
         return self.ub - self.lb
 
-    def __eq__(self, other) -> bool:
-        """
-        The function checks if two Interval objects have the same lower and upper bounds.
-
-        :param other: The "other" parameter represents another object that we are comparing with the
-            current object. In this case, it is used to compare two Interval objects and check if they are
-            equal
-
-        :return: The `__eq__` method is returning a boolean value.
-
-        Examples:
-            >>> a = Interval(3, 4)
-            >>> b = Interval(3, 5)
-            >>> a == b
-            False
-            >>> c = Interval(3, 4)
-            >>> d = Interval(3, 4)
-            >>> c == d
-            True
-        """
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Interval):
+            return NotImplemented
         return (self.lb, self.ub) == (other.lb, other.ub)
 
     def __lt__(self, other: Union["Interval[T]", T]) -> bool:
@@ -498,7 +481,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return self.lb <= obj <= self.ub
 
-    def hull_with(self, obj: Union["Interval[T]", T]):
+    def hull_with(self, obj: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The `hull_with` function takes an object (either an `Interval` or a scalar) and returns a new
         `Interval` object that represents the hull (smallest interval that contains both intervals) of
@@ -522,7 +505,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(min(self.lb, obj), max(self.ub, obj))
 
-    def intersect_with(self, obj: Union["Interval[T]", T]):
+    def intersect_with(self, obj: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The `intersect_with` function takes in an object and returns the intersection between the
         object and the current interval.
@@ -563,7 +546,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(max(self.lb, obj), min(self.ub, obj))
 
-    def min_dist_with(self, obj: Union["Interval[T]", T]):
+    def min_dist_with(self, obj: Union["Interval[T]", T]) -> T:
         """
         The function calculates the minimum distance between two objects.
 
@@ -612,7 +595,7 @@ class Interval(Generic[T]):
             return self.lb
         return obj
 
-    def displace(self, obj: "Interval[T]"):
+    def displace(self, obj: "Interval[T]") -> "Interval[T]":
         """
         The `displace` function takes an object as an argument and returns a new Interval object with
         the lower and upper bounds displaced by the corresponding bounds of the input object.
@@ -678,7 +661,7 @@ class Interval(Generic[T]):
         return S(self._lb - alpha, self._ub + alpha)
 
 
-def hull(lhs, rhs) -> Interval[T]:
+def hull(lhs: Any, rhs: Any) -> "Interval[T]":
     """
     Calculates the convex hull of two objects, returning the smallest interval
     that contains both.
@@ -710,7 +693,7 @@ def hull(lhs, rhs) -> Interval[T]:
         return Interval(lhs, rhs) if lhs < rhs else Interval(rhs, lhs)
 
 
-def enlarge(lhs, rhs) -> Interval[T]:
+def enlarge(lhs: Any, rhs: T) -> "Interval[T]":
     """
     Enlarges an interval or scalar by a given amount.
 

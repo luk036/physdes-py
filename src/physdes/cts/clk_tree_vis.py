@@ -6,7 +6,7 @@ using SVG format for clear, scalable graphics.
 """
 
 import doctest
-from typing import List, Tuple, Dict, Any, Optional
+from typing import List, Tuple, Dict, Any, Optional, Callable
 from physdes.point import Point
 
 
@@ -55,8 +55,8 @@ class ClockTreeVisualizer:
 
     def visualize_tree(
         self,
-        root,
-        sinks: List,
+        root: Any,
+        sinks: List[Any],
         filename: str = "clock_tree.svg",
         width: int = 800,
         height: int = 600,
@@ -126,7 +126,7 @@ class ClockTreeVisualizer:
 
         return svg_string
 
-    def _collect_all_nodes(self, root) -> List:
+    def _collect_all_nodes(self, root: Any) -> List[Any]:
         """Collect all nodes in the tree"""
         nodes = []
 
@@ -166,7 +166,7 @@ class ClockTreeVisualizer:
 
         return (min_x - padding, min_y - padding, max_x + padding, max_y + padding)
 
-    def _draw_wires(self, root, scale_coord) -> List[str]:
+    def _draw_wires(self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]) -> List[str]:
         """Draw all wires in the clock tree"""
         svg_elements = []
 
@@ -202,7 +202,7 @@ class ClockTreeVisualizer:
         draw_wires_recursive(root)
         return svg_elements
 
-    def _draw_nodes(self, root, sinks, scale_coord) -> List[str]:
+    def _draw_nodes(self, root: Any, sinks: List[Any], scale_coord: Callable[[Any, Any], Tuple[float, float]]) -> List[str]:
         """Draw all nodes in the clock tree"""
         svg_elements = []
         sink_positions = {
@@ -298,8 +298,8 @@ class ClockTreeVisualizer:
 
 
 def create_interactive_svg(
-    root,
-    sinks: List,
+    root: Any,
+    sinks: List[Any],
     analysis: Optional[Dict[str, Any]],
     filename: str = "clock_tree_interactive.svg",
     width: int = 1000,
@@ -496,7 +496,7 @@ def create_delay_model_comparison(
 
 
 # Example usage function
-def visualize_example_tree():
+def visualize_example_tree() -> Tuple[str, str, str]:
     """Example function demonstrating clock tree visualization with different delay models"""
     from physdes.cts.dme_algorithm import (
         Sink,

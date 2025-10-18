@@ -6,7 +6,7 @@ This module implements the DME algorithm with configurable delay models.
 """
 
 import doctest
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from physdes.merge_obj import MergeObj
@@ -281,7 +281,7 @@ class DMEAlgorithm:
 
         return clock_tree
 
-    def _build_merging_tree(self, nodes: List[TreeNode], vertical: bool) -> TreeNode:
+    def _build_merging_tree(self, nodes: List["TreeNode"], vertical: bool) -> "TreeNode":
         """
         Build a balanced merging tree using recursive bipartition
 
@@ -322,7 +322,7 @@ class DMEAlgorithm:
 
         return parent
 
-    def _compute_merging_segments(self, root: TreeNode) -> Dict[str, MergeObj]:
+    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, MergeObj]:
         """
         Compute merging segments for all nodes in bottom-up order
 
@@ -334,7 +334,7 @@ class DMEAlgorithm:
         """
         merging_segments = {}
 
-        def compute_segment(node: TreeNode) -> MergeObj:
+        def compute_segment(node: "TreeNode") -> MergeObj:
             if node.left is None and node.right is None:
                 # Leaf node: merging segment is the sink point (delay = 0.0)
                 ms = MergeObj.construct(node.position.xcoord, node.position.ycoord)
@@ -395,8 +395,8 @@ class DMEAlgorithm:
         return merging_segments
 
     def _embed_tree(
-        self, merging_tree: TreeNode, merging_segments: Dict[str, MergeObj]
-    ) -> TreeNode:
+        self, merging_tree: "TreeNode", merging_segments: Dict[str, MergeObj]
+    ) -> "TreeNode":
         """
         Embed the clock tree by selecting actual positions for internal nodes
 
@@ -409,7 +409,7 @@ class DMEAlgorithm:
         """
 
         def embed_node(
-            node: Optional[TreeNode], parent_segment: Optional[MergeObj] = None
+            node: Optional["TreeNode"], parent_segment: Optional[MergeObj] = None
         ):
             if node is None:
                 return
@@ -438,7 +438,7 @@ class DMEAlgorithm:
         embed_node(merging_tree)
         return merging_tree
 
-    def _compute_tree_parameters(self, root: TreeNode):
+    def _compute_tree_parameters(self, root: "TreeNode"):
         """
         Compute delays and other parameters for the entire tree
 
@@ -446,7 +446,7 @@ class DMEAlgorithm:
             root: Root node of the clock tree
         """
 
-        def compute_delays(node: Optional[TreeNode], parent_delay: float = 0.0):
+        def compute_delays(node: Optional["TreeNode"], parent_delay: float = 0.0):
             if node is None:
                 return
 
@@ -493,7 +493,7 @@ class DMEAlgorithm:
         y_center = self._get_center(segment.impl.ycoord)
         return Point(x_center, y_center)
 
-    def _get_center(self, coord) -> int:
+    def _get_center(self, coord: Any) -> int:
         """
         Get center value from coordinate (handles both int and Interval)
 
@@ -530,7 +530,7 @@ class DMEAlgorithm:
         # For simplicity, use the segment center
         return self._segment_center(segment)
 
-    def _manhattan_distance(self, p1: Point, p2: Point) -> int:
+    def _manhattan_distance(self, p1: Point[int, int], p2: Point[int, int]) -> int:
         """
         Compute Manhattan distance between two points
 
@@ -550,7 +550,7 @@ class DMEAlgorithm:
         """
         return abs(p1.xcoord - p2.xcoord) + abs(p1.ycoord - p2.ycoord)
 
-    def analyze_skew(self, root: TreeNode) -> Dict[str, Any]:
+    def analyze_skew(self, root: "TreeNode") -> Dict[str, Any]:
         """
         Analyze clock skew in the constructed tree
 
@@ -562,7 +562,7 @@ class DMEAlgorithm:
         """
         sink_delays = []
 
-        def collect_sink_delays(node: TreeNode):
+        def collect_sink_delays(node: Optional["TreeNode"]):
             if node is None:
                 return
             if node.left is None and node.right is None:
@@ -587,7 +587,7 @@ class DMEAlgorithm:
             "delay_model": self.delay_calculator.__class__.__name__,
         }
 
-    def _total_wirelength(self, root: TreeNode) -> int:
+    def _total_wirelength(self, root: "TreeNode") -> int:
         """
         Compute total wirelength of the clock tree
 
@@ -599,7 +599,7 @@ class DMEAlgorithm:
         """
         total = 0
 
-        def sum_wirelength(node: TreeNode):
+        def sum_wirelength(node: Optional["TreeNode"]):
             nonlocal total
             if node is None:
                 return
@@ -613,7 +613,7 @@ class DMEAlgorithm:
         return total
 
 
-def get_tree_statistics(root) -> Dict[str, Any]:
+def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
     """
     Extract comprehensive statistics from the clock tree
 
@@ -639,7 +639,7 @@ def get_tree_statistics(root) -> Dict[str, Any]:
     wires = []
     sinks = []
 
-    def traverse(node, parent=None):
+    def traverse(node: Optional["TreeNode"], parent: Optional["TreeNode"] = None):
         if not node:
             return
 
@@ -685,7 +685,7 @@ def get_tree_statistics(root) -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage():
+def example_dme_usage() -> Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]:
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

@@ -46,7 +46,7 @@ various applications involving 2D geometry.
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, Generic, List, TypeVar, Tuple
+from typing import Callable, Generic, List, TypeVar, Tuple, Iterable, Iterator, Any
 
 from mywheel.dllist import Dllink
 
@@ -55,14 +55,14 @@ from .rdllist import RDllist
 from .vector2 import Vector2
 
 T = TypeVar("T", int, float)
-PointSet = List[Point[T, T]]
+PointSet = List[Point[Any, Any]]
 
 
 class Polygon(Generic[T]):
     _origin: Point[T, T]
-    _vecs: List[Vector2[T, T]]
+    _vecs: List[Vector2[Any, Any]]
 
-    def __init__(self, origin, vecs) -> None:
+    def __init__(self, origin: Point[T, T], vecs: List[Vector2[T, T]]) -> None:
         """
         The function initializes an object with the given first point and a given vector set.
 
@@ -95,7 +95,7 @@ class Polygon(Generic[T]):
         self._vecs = vecs
 
     @classmethod
-    def from_pointset(cls, pointset: PointSet):
+    def from_pointset(cls, pointset: PointSet) -> "Polygon[T]":
         """
         The function initializes an object with a given point set, setting the origin to the first point and
         creating a list of vectors by displacing each point from the origin.
@@ -364,7 +364,7 @@ class Polygon(Generic[T]):
         # Calculate vectors and cross product
         return (current_point - prev_point).cross(next_point - current_point) > 0
 
-    def is_convex(self, is_anticlockwise=None) -> bool:
+    def is_convex(self, is_anticlockwise: bool | None = None) -> bool:
         """
         Check if the polygon is convex.
 
@@ -410,14 +410,14 @@ class Polygon(Generic[T]):
             )
 
 
-def partition(pred, iterable):
+def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
     "Use a predicate to partition entries into true entries and false entries"
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
-    return filter(pred, t1), filterfalse(pred, t2)
+    return list(filter(pred, t1)), list(filterfalse(pred, t2))
 
 
-def create_mono_polygon(lst: PointSet, dir: Callable) -> PointSet:
+def create_mono_polygon(lst: PointSet, dir: Callable[[Point[Any, Any]], Any]) -> PointSet:
     """
     The `create_mono_polygon` function creates a monotone polygon for a given point set by partitioning
     the points based on a direction and sorting them.
@@ -603,8 +603,8 @@ def create_test_polygon(lst: PointSet) -> PointSet:
     vec = upmost.displace(dnmost)
 
     lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(dnmost)) < 0, lst)
-    lst1 = list(lst1)  # note!!!!
-    lst2 = list(lst2)  # note!!!!
+    lst1 = list(lst1)
+    lst2 = list(lst2)
     rightmost = max(lst1)
     lst3, lst4 = partition(lambda a: a.ycoord < rightmost.ycoord, lst1)
     leftmost = min(lst2)
@@ -623,7 +623,7 @@ def create_test_polygon(lst: PointSet) -> PointSet:
     return lsta + lstb + lstc + lstd
 
 
-def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
+def polygon_is_monotone(lst: PointSet, dir: Callable[[Point[T, T]], Any]) -> bool:
     """
     Check if a polygon is monotone in a given direction.
 
@@ -647,7 +647,7 @@ def polygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
     max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
     rdll = RDllist(len(lst))
 
-    def voilate(start: int, stop: int, cmp: Callable) -> bool:
+    def voilate(start: int, stop: int, cmp: Callable[[Any, Any], bool]) -> bool:
         vi = rdll[start]
         while id(vi) != id(rdll[stop]):
             vnext = vi.next
@@ -876,7 +876,7 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
 
     rdll = RDllist(n)
 
-    def process(v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable) -> None:
+    def process(v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable[[Any], bool]) -> None:
         vlink = v_start.next
         while id(vlink) != id(v_stop):
             vnext = vlink.next

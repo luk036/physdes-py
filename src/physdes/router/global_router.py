@@ -10,8 +10,8 @@ class GlobalRouter:
 
     def __init__(
         self,
-        source_position: Point,
-        terminal_positions: List[Point],
+        source_position: Point[int, int],
+        terminal_positions: List[Point[int, int]],
     ) -> None:
         """
         Initializes the GlobalRouter.
@@ -88,7 +88,7 @@ class GlobalRouter:
         for t in self.terminal_positions:
             self.tree.insert_terminal_with_steiner(t)
 
-    def route_with_constraints(self, alpha=1.0) -> None:
+    def route_with_constraints(self, alpha: float = 1.0) -> None:
         """
         Performance-driven routing by inserting Steiner points to reduce wire length.
 

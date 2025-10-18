@@ -47,7 +47,7 @@ Overall, this code provides a set of tools for working with rectilinear polygons
 # from enum import Enum
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, List, Tuple
+from typing import Callable, List, Tuple, Iterable, Iterator, Any
 
 from mywheel.dllist import Dllink
 
@@ -86,7 +86,7 @@ class RPolygon:
     _origin: Point[int, int]
     _vecs: List[Vector2[int, int]]
 
-    def __init__(self, origin, vecs) -> None:
+    def __init__(self, origin: Point[int, int], vecs: List[Vector2[int, int]]) -> None:
         """
         Initializes an RPolygon object with an origin point and a list of vectors.
 
@@ -117,7 +117,7 @@ class RPolygon:
         self._vecs = vecs
 
     @classmethod
-    def from_pointset(cls, pointset: PointSet):
+    def from_pointset(cls, pointset: PointSet) -> "RPolygon":
         """
         The function initializes an object with a given point set, setting the origin to the first point and
         creating a list of vectors by displacing each point from the origin.
@@ -349,7 +349,7 @@ class RPolygon:
         # Calculate vectors and cross product
         return prev_point.y > current_point.y
 
-    def to_polygon(self) -> Polygon:
+    def to_polygon(self) -> Polygon[int]:
         """
         The `to_polygon` function converts a rectilinear polygon to a standard polygon.
 
@@ -388,15 +388,15 @@ class RPolygon:
         return Polygon(self._origin, new_vecs)
 
 
-def partition(pred, iterable):
+def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
     "Use a predicate to partition entries into true entries and false entries"
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
-    return filter(pred, t1), filterfalse(pred, t2)
+    return list(filter(pred, t1)), list(filterfalse(pred, t2))
 
 
 def create_mono_rpolygon(
-    lst: PointSet, dir: Callable, cmp: Callable
+    lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]], cmp: Callable[[int, int], bool]
 ) -> Tuple[PointSet, bool]:
     """
     The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
@@ -560,8 +560,8 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     vec = max_pt.displace(min_pt)
 
     lst1, lst2 = partition(lambda pt: vec.cross(pt.displace(min_pt)) < 0, lst)
-    lst1 = list(lst1)  # note!!!!
-    lst2 = list(lst2)  # note!!!!
+    lst1 = list(lst1)
+    lst2 = list(lst2)
     max_pt1 = max(lst1, key=dir_x)
     lst3, lst4 = partition(lambda pt: pt.ycoord < max_pt1.ycoord, lst1)
     min_pt2 = min(lst2, key=dir_x)
@@ -580,7 +580,7 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     return lsta + lstb + lstc + lstd
 
 
-def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
+def rpolygon_is_monotone(lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]]) -> bool:
     """
     Check if a rectilinear polygon is monotone in a given direction.
 
@@ -606,7 +606,7 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable) -> bool:
     v_min = rdll[min_index]
     v_max = rdll[max_index]
 
-    def voilate(vi: Dllink[int], v_stop: Dllink[int], cmp: Callable) -> bool:
+    def voilate(vi: Dllink[int], v_stop: Dllink[int], cmp: Callable[[int, int], bool]) -> bool:
         while id(vi) != id(v_stop):
             vnext = vi.next
             if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
@@ -763,7 +763,7 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
 
 
 def rpolygon_make_monotone_hull(
-    lst: PointSet, is_anticlockwise: bool, dir: Callable
+    lst: PointSet, is_anticlockwise: bool, dir: Callable[[Point[int, int]], Tuple[int, int]]
 ) -> PointSet:
     """
     Create the x-monotone hull of a rectilinear polygon.
@@ -793,9 +793,9 @@ def rpolygon_make_monotone_hull(
     def process(
         vcurr: Dllink[int],
         vstop: Dllink[int],
-        cmp: Callable,
-        cmp2: Callable,
-        dir: Callable,
+        cmp: Callable[[Any, Any], bool],
+        cmp2: Callable[[Any], bool],
+        dir: Callable[[Point[int, int]], Tuple[int, int]],
     ) -> None:
         while id(vcurr) != id(vstop):
             vnext = vcurr.next

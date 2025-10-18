@@ -43,14 +43,16 @@ geometric objects.
 """
 
 
-def measure_of(obj):
+from typing import Any, Union
+
+def measure_of(obj: Any) -> Union[int, Any]:
     if hasattr(obj, "measure"):
         return obj.measure()
     else:
         return 1
 
 
-def overlap(lhs, rhs) -> bool:
+def overlap(lhs: Any, rhs: Any) -> bool:
     """
     The `overlap` function checks if two objects have an overlapping property or are equal.
 
@@ -91,7 +93,7 @@ def overlap(lhs, rhs) -> bool:
         return lhs == rhs
 
 
-def contain(lhs, rhs) -> bool:
+def contain(lhs: Any, rhs: Any) -> bool:
     """
     The `contain` function checks if one object contains another object.
 
@@ -130,7 +132,7 @@ def contain(lhs, rhs) -> bool:
         return lhs == rhs
 
 
-def intersection(lhs, rhs):
+def intersection(lhs: Any, rhs: Any) -> Any:
     """
     The `intersection` function returns the intersection of two objects if they have an
     `intersect_with` method, otherwise it returns the objects themselves if they are equal.
@@ -171,7 +173,7 @@ def intersection(lhs, rhs):
         return lhs
 
 
-def min_dist(lhs, rhs):
+def min_dist(lhs: Any, rhs: Any) -> Any:
     """
     The `min_dist` function calculates the minimum Manhattan distance between two objects,
     using their `min_dist_with` method if available, or by subtracting them if they are
@@ -222,7 +224,7 @@ def min_dist(lhs, rhs):
         return abs(lhs - rhs)
 
 
-def nearest(lhs, rhs):
+def nearest(lhs: Any, rhs: Any) -> Any:
     """
     The `nearest` function returns the nearest point on lhs to rhs.
 
@@ -291,7 +293,7 @@ def nearest(lhs, rhs):
 #         return abs(lhs - rhs)
 
 
-def displacement(lhs, rhs):
+def displacement(lhs: Any, rhs: Any) -> Any:
     """
     The `displacement` function calculates the displacement between two objects or scalars.
 

@@ -58,7 +58,7 @@ class Vector2(Generic[T1, T2]):
 
     __slots__ = ("x_", "y_")
 
-    def __init__(self, x, y) -> None:
+    def __init__(self, x: T1, y: T2) -> None:
         """
         The `__init__` function initializes a Vector2 object with x and y coordinates.
 
@@ -166,7 +166,7 @@ class Vector2(Generic[T1, T2]):
     #     T = type(self)
     #     return T(self.x_, self.y_)
 
-    def cross(self, rhs: "Vector2[T1, T2]"):
+    def cross(self, rhs: "Vector2[T1, T2]") -> Any:
         """
         Calculates the 2D cross product of this vector with another vector.
 
@@ -194,7 +194,7 @@ class Vector2(Generic[T1, T2]):
         """
         return self.x_ * rhs.y_ - rhs.x_ * self.y_
 
-    def __eq__(self, rhs) -> bool:
+    def __eq__(self, rhs: object) -> bool:
         """
         The `__eq__` function checks if two instances of the `Vector2` class are equal by comparing their
         `x_` and `y_` attributes.
@@ -219,6 +219,8 @@ class Vector2(Generic[T1, T2]):
             >>> v_diff == w_diff
             False
         """
+        if not isinstance(rhs, Vector2):
+            return NotImplemented
         return (self.x_, self.y_) == (rhs.x_, rhs.y_)
 
     def __neg__(self) -> "Vector2[T1, T2]":

@@ -72,7 +72,7 @@ def rpolygon_cut_convex_recur(
         return [L]
 
     def _find_concave_point(
-        vcurr: Dllink[int], cmp2: Callable
+        vcurr: Dllink[int], cmp2: Callable[[int], bool]
     ) -> Optional[Dllink[int]]:
         vstop = vcurr
         while True:
@@ -179,7 +179,7 @@ def rpolygon_cut_explicit_recur(
         return [L]
 
     def find_explicit_concave_point(
-        vstart: Dllink[int], cmp2: Callable
+        vstart: Dllink[int], cmp2: Callable[[int], bool]
     ) -> Optional[Dllink[int]]:
         vcurr = vstart
         while True:

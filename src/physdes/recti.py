@@ -51,7 +51,7 @@ from .point import Point
 class Rectangle(Point[Interval[int], Interval[int]]):
     """Axis-parallel Rectangle"""
 
-    def __init__(self, xcoord: Interval, ycoord: Interval):
+    def __init__(self, xcoord: Interval[int], ycoord: Interval[int]):
         """
         The `__init__` function initializes a Rectangle object with x and y coordinates.
 
@@ -216,7 +216,7 @@ class VSegment(Point[int, Interval[int]]):
     Represents a VSegment.
     """
 
-    def contains(self, other: Point) -> bool:
+    def contains(self, other: Point[int, Interval[int]]) -> bool:
         """
         The `contains` function checks if a given point is contained within a vertical segment.
 
@@ -262,7 +262,7 @@ class HSegment(Point[Interval[int], int]):
     Represents a HSegment.
     """
 
-    def contains(self, other) -> bool:
+    def contains(self, other: Point[Interval[int], int]) -> bool:
         """
         The `contains` function checks if a given object is contained within another object based on their
         coordinates.

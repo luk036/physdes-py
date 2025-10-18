@@ -36,7 +36,7 @@ class provides a high-level interface for working with these rotated geometric o
 abstracting away some of the more complex mathematical calculations.
 """
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar, Any
 
 from .generic import min_dist
 from .interval import enlarge
@@ -120,7 +120,7 @@ class MergeObj(Generic[T1, T2]):
         impl = Point(xcoord - ycoord, xcoord + ycoord)
         return MergeObj(impl.xcoord, impl.ycoord)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord})"
 
     def __str__(self) -> str:
@@ -139,7 +139,7 @@ class MergeObj(Generic[T1, T2]):
         """
         return f"/{self.impl.xcoord}, {self.impl.ycoord}/"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """
         The `__eq__` function checks if two `MergeObj` instances have the same `impl` attribute.
 
@@ -155,9 +155,11 @@ class MergeObj(Generic[T1, T2]):
             >>> a == c
             True
         """
+        if not isinstance(other, MergeObj):
+            return NotImplemented
         return self.impl == other.impl
 
-    def min_dist_with(self, other) -> int:
+    def min_dist_with(self, other: "MergeObj[T1, T2]") -> int:
         """
         The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
 
@@ -178,7 +180,7 @@ class MergeObj(Generic[T1, T2]):
             min_dist(self.impl.ycoord, other.impl.ycoord),
         )
 
-    def enlarge_with(self, alpha: int):
+    def enlarge_with(self, alpha: int) -> "MergeObj[Any, Any]":
         """
         The `enlarge_with` function takes an integer `alpha` and returns a new `MergeObj` object with
         enlarged coordinates.
@@ -200,7 +202,7 @@ class MergeObj(Generic[T1, T2]):
         ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
         return MergeObj(xcoord, ycoord)  # TODO
 
-    def intersect_with(self, other):
+    def intersect_with(self, other: "MergeObj[T1, T2]") -> "MergeObj[T1, T2]":
         """
         The function calculates the intersection point between two MergeObj objects and returns a new
         MergeObj object with the coordinates of the intersection point.
@@ -220,7 +222,7 @@ class MergeObj(Generic[T1, T2]):
         point = self.impl.intersect_with(other.impl)  # TODO
         return MergeObj(point.xcoord, point.ycoord)
 
-    def merge_with(self, other):
+    def merge_with(self, other: "MergeObj[T1, T2]") -> "MergeObj[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
         the two objects, enlarges the objects based on the calculated distance, finds the intersection
