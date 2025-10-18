@@ -513,8 +513,8 @@ def visualize_example_tree():
         Sink("s4", Point(20, 20), 1.0),
         Sink("s5", Point(-20, -20), 1.0),
         Sink("s6", Point(-30, -50), 1.0),
-        Sink("s7", Point(-100, 0), 1.0),
-        Sink("s8", Point(20, 40), 1.0),
+        Sink("s7", Point(-100, -40), 1.0),
+        Sink("s8", Point(-100, 0), 1.0),
     ]
 
     print("=== Generating Clock Trees with Different Delay Models ===")

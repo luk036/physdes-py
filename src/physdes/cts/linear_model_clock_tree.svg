@@ -7,90 +7,90 @@
 </style>
 <rect width="100%" height="100%" fill="white"/>
 <g class="clock-tree">
-<line x1="286.97916666666663" y1="378.125" x2="378.125" y2="417.1875" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="332.5520833333333" y="392.65625" class="wire-label" text-anchor="middle">50.0</text>
-<line x1="378.125" y1="417.1875" x2="378.125" y2="482.29166666666663" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="378.125" y="444.7395833333333" class="wire-label" text-anchor="middle">25.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="195.83333333333331" y2="91.66666666666666" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="286.97916666666663" y="281.97916666666663" class="wire-label" text-anchor="middle">220.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="508.3333333333333" y2="143.75" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="443.22916666666663" y="308.0208333333333" class="wire-label" text-anchor="middle">180.0</text>
-<line x1="378.125" y1="417.1875" x2="378.125" y2="482.29166666666663" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="378.125" y="444.7395833333333" class="wire-label" text-anchor="middle">25.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="91.66666666666666" y2="195.83333333333331" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="234.89583333333331" y="334.0625" class="wire-label" text-anchor="middle">220.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="143.75" y2="352.0833333333333" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="260.9375" y="412.1875" class="wire-label" text-anchor="middle">140.0</text>
-<line x1="286.97916666666663" y1="378.125" x2="378.125" y2="417.1875" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="332.5520833333333" y="392.65625" class="wire-label" text-anchor="middle">50.0</text>
-<line x1="378.125" y1="417.1875" x2="378.125" y2="482.29166666666663" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="378.125" y="444.7395833333333" class="wire-label" text-anchor="middle">25.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="456.25" y2="247.91666666666666" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="417.1875" y="360.10416666666663" class="wire-label" text-anchor="middle">120.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="456.25" y2="456.25" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="417.1875" y="464.2708333333333" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="378.125" y1="417.1875" x2="378.125" y2="482.29166666666663" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="378.125" y="444.7395833333333" class="wire-label" text-anchor="middle">25.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="352.0833333333333" y2="456.25" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="365.10416666666663" y="464.2708333333333" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="378.125" y1="482.29166666666663" x2="404.16666666666663" y2="508.3333333333333" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="391.1458333333333" y="490.3125" class="wire-label" text-anchor="middle">20.0</text>
-<circle cx="286.97916666666663" cy="378.125" r="10" fill="#F44336" stroke="#333" stroke-width="1"/>
-<text x="286.97916666666663" y="363.125" class="node-label" text-anchor="middle">n8</text>
-<text x="286.97916666666663" y="400.125" class="delay-label" text-anchor="middle">d:0.0</text>
-<circle cx="378.125" cy="417.1875" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="406.1875" class="node-label" text-anchor="middle">n4</text>
-<text x="378.125" y="435.1875" class="delay-label" text-anchor="middle">d:25.0</text>
-<circle cx="378.125" cy="482.29166666666663" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="471.29166666666663" class="node-label" text-anchor="middle">n2</text>
-<text x="378.125" y="500.29166666666663" class="delay-label" text-anchor="middle">d:37.5</text>
-<circle cx="195.83333333333331" cy="91.66666666666666" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="195.83333333333331" y="80.66666666666666" class="node-label" text-anchor="middle">s7</text>
-<text x="195.83333333333331" y="109.66666666666666" class="delay-label" text-anchor="middle">d:147.5</text>
-<circle cx="508.3333333333333" cy="143.75" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="508.3333333333333" y="132.75" class="node-label" text-anchor="middle">s6</text>
-<text x="508.3333333333333" y="161.75" class="delay-label" text-anchor="middle">d:127.5</text>
-<circle cx="378.125" cy="482.29166666666663" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="471.29166666666663" class="node-label" text-anchor="middle">n2</text>
-<text x="378.125" y="500.29166666666663" class="delay-label" text-anchor="middle">d:37.5</text>
-<circle cx="91.66666666666666" cy="195.83333333333331" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="91.66666666666666" y="184.83333333333331" class="node-label" text-anchor="middle">s1</text>
-<text x="91.66666666666666" y="213.83333333333331" class="delay-label" text-anchor="middle">d:147.5</text>
-<circle cx="143.75" cy="352.0833333333333" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="143.75" y="341.0833333333333" class="node-label" text-anchor="middle">s2</text>
-<text x="143.75" y="370.0833333333333" class="delay-label" text-anchor="middle">d:107.5</text>
-<circle cx="378.125" cy="417.1875" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="406.1875" class="node-label" text-anchor="middle">n4</text>
-<text x="378.125" y="435.1875" class="delay-label" text-anchor="middle">d:25.0</text>
-<circle cx="378.125" cy="482.29166666666663" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="471.29166666666663" class="node-label" text-anchor="middle">n2</text>
-<text x="378.125" y="500.29166666666663" class="delay-label" text-anchor="middle">d:37.5</text>
-<circle cx="456.25" cy="247.91666666666666" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="456.25" y="236.91666666666666" class="node-label" text-anchor="middle">s5</text>
-<text x="456.25" y="265.91666666666663" class="delay-label" text-anchor="middle">d:97.5</text>
-<circle cx="456.25" cy="456.25" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="456.25" y="443.25" class="node-label" text-anchor="middle">s4</text>
-<text x="456.25" y="476.25" class="delay-label" text-anchor="middle">d:57.5</text>
-<text x="456.25" y="486.25" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="378.125" cy="482.29166666666663" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="378.125" y="471.29166666666663" class="node-label" text-anchor="middle">n2</text>
-<text x="378.125" y="500.29166666666663" class="delay-label" text-anchor="middle">d:37.5</text>
-<circle cx="352.0833333333333" cy="456.25" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="352.0833333333333" y="445.25" class="node-label" text-anchor="middle">s3</text>
-<text x="352.0833333333333" y="474.25" class="delay-label" text-anchor="middle">d:47.5</text>
-<circle cx="404.16666666666663" cy="508.3333333333333" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="404.16666666666663" y="497.3333333333333" class="node-label" text-anchor="middle">s8</text>
-<text x="404.16666666666663" y="526.3333333333333" class="delay-label" text-anchor="middle">d:47.5</text>
+<line x1="272.9166666666667" y1="283.33333333333337" x2="362.5" y2="341.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="317.70833333333337" y="307.5" class="wire-label" text-anchor="middle">71.0</text>
+<line x1="362.5" y1="341.6666666666667" x2="341.6666666666667" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.08333333333337" y="399.1666666666667" class="wire-label" text-anchor="middle">70.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="258.33333333333337" y2="91.66666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="300.0" y="274.1666666666667" class="wire-label" text-anchor="middle">220.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="175.0" y2="175.0" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="258.33333333333337" y="315.83333333333337" class="wire-label" text-anchor="middle">220.0</text>
+<line x1="362.5" y1="341.6666666666667" x2="341.6666666666667" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.08333333333337" y="399.1666666666667" class="wire-label" text-anchor="middle">70.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="91.66666666666667" y2="258.33333333333337" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="216.66666666666669" y="357.5" class="wire-label" text-anchor="middle">220.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="133.33333333333334" y2="383.33333333333337" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="237.5" y="420.0" class="wire-label" text-anchor="middle">140.0</text>
+<line x1="272.9166666666667" y1="283.33333333333337" x2="362.5" y2="341.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="317.70833333333337" y="307.5" class="wire-label" text-anchor="middle">71.0</text>
+<line x1="362.5" y1="341.6666666666667" x2="341.6666666666667" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.08333333333337" y="399.1666666666667" class="wire-label" text-anchor="middle">70.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="425.0" y2="216.66666666666669" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="383.33333333333337" y="336.6666666666667" class="wire-label" text-anchor="middle">160.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="383.33333333333337" y2="300.0" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="362.5" y="378.33333333333337" class="wire-label" text-anchor="middle">100.0</text>
+<line x1="362.5" y1="341.6666666666667" x2="341.6666666666667" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.08333333333337" y="399.1666666666667" class="wire-label" text-anchor="middle">70.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="300.0" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="320.83333333333337" y="461.6666666666667" class="wire-label" text-anchor="middle">20.0</text>
+<line x1="341.6666666666667" y1="466.6666666666667" x2="383.33333333333337" y2="466.6666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="362.5" y="461.6666666666667" class="wire-label" text-anchor="middle">20.0</text>
+<circle cx="272.9166666666667" cy="283.33333333333337" r="10" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="272.9166666666667" y="268.33333333333337" class="node-label" text-anchor="middle">n8</text>
+<text x="272.9166666666667" y="305.33333333333337" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="362.5" cy="341.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="362.5" y="330.6666666666667" class="node-label" text-anchor="middle">n4</text>
+<text x="362.5" y="359.6666666666667" class="delay-label" text-anchor="middle">d:35.5</text>
+<circle cx="341.6666666666667" cy="466.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="341.6666666666667" y="455.6666666666667" class="node-label" text-anchor="middle">n2</text>
+<text x="341.6666666666667" y="484.6666666666667" class="delay-label" text-anchor="middle">d:70.5</text>
+<circle cx="258.33333333333337" cy="91.66666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="258.33333333333337" y="80.66666666666667" class="node-label" text-anchor="middle">s7</text>
+<text x="258.33333333333337" y="109.66666666666667" class="delay-label" text-anchor="middle">d:180.5</text>
+<circle cx="175.0" cy="175.0" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="175.0" y="164.0" class="node-label" text-anchor="middle">s8</text>
+<text x="175.0" y="193.0" class="delay-label" text-anchor="middle">d:180.5</text>
+<circle cx="341.6666666666667" cy="466.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="341.6666666666667" y="455.6666666666667" class="node-label" text-anchor="middle">n2</text>
+<text x="341.6666666666667" y="484.6666666666667" class="delay-label" text-anchor="middle">d:70.5</text>
+<circle cx="91.66666666666667" cy="258.33333333333337" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="91.66666666666667" y="247.33333333333337" class="node-label" text-anchor="middle">s1</text>
+<text x="91.66666666666667" y="276.33333333333337" class="delay-label" text-anchor="middle">d:180.5</text>
+<circle cx="133.33333333333334" cy="383.33333333333337" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="133.33333333333334" y="372.33333333333337" class="node-label" text-anchor="middle">s2</text>
+<text x="133.33333333333334" y="401.33333333333337" class="delay-label" text-anchor="middle">d:140.5</text>
+<circle cx="362.5" cy="341.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="362.5" y="330.6666666666667" class="node-label" text-anchor="middle">n4</text>
+<text x="362.5" y="359.6666666666667" class="delay-label" text-anchor="middle">d:35.5</text>
+<circle cx="341.6666666666667" cy="466.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="341.6666666666667" y="455.6666666666667" class="node-label" text-anchor="middle">n2</text>
+<text x="341.6666666666667" y="484.6666666666667" class="delay-label" text-anchor="middle">d:70.5</text>
+<circle cx="425.0" cy="216.66666666666669" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="425.0" y="205.66666666666669" class="node-label" text-anchor="middle">s6</text>
+<text x="425.0" y="234.66666666666669" class="delay-label" text-anchor="middle">d:150.5</text>
+<circle cx="383.33333333333337" cy="300.0" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="383.33333333333337" y="289.0" class="node-label" text-anchor="middle">s5</text>
+<text x="383.33333333333337" y="318.0" class="delay-label" text-anchor="middle">d:120.5</text>
+<circle cx="341.6666666666667" cy="466.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="341.6666666666667" y="455.6666666666667" class="node-label" text-anchor="middle">n2</text>
+<text x="341.6666666666667" y="484.6666666666667" class="delay-label" text-anchor="middle">d:70.5</text>
+<circle cx="300.0" cy="466.6666666666667" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="300.0" y="455.6666666666667" class="node-label" text-anchor="middle">s3</text>
+<text x="300.0" y="484.6666666666667" class="delay-label" text-anchor="middle">d:80.5</text>
+<circle cx="383.33333333333337" cy="466.6666666666667" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="383.33333333333337" y="453.6666666666667" class="node-label" text-anchor="middle">s4</text>
+<text x="383.33333333333337" y="486.6666666666667" class="delay-label" text-anchor="middle">d:80.5</text>
+<text x="383.33333333333337" y="496.6666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
 <g class="analysis-info">
 <rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
 <rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
 <text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
 <text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
 <tspan x="20" y="61">Delay Model: LinearDelayCalculator</tspan>
-<tspan x="20" y="77">Max Delay: 147.500</tspan>
-<tspan x="20" y="93">Min Delay: 47.500</tspan>
+<tspan x="20" y="77">Max Delay: 180.500</tspan>
+<tspan x="20" y="93">Min Delay: 80.500</tspan>
 <tspan x="20" y="109">Skew: 100.000</tspan>
-<tspan x="20" y="125">Total Wirelength: 1160.0</tspan>
+<tspan x="20" y="125">Total Wirelength: 1522.0</tspan>
 <tspan x="20" y="141">Sinks: 8</tspan>
 </text>
 </g>
