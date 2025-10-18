@@ -413,9 +413,8 @@ def create_comparison_visualization(
         offset_y = row * sub_height
 
         # Add title for this subplot
-        title = tree_data.get("title", f"Tree {i+1}")
         svg_content.append(
-            f'<text x="{offset_x + sub_width//2}" y="{offset_y + 20}" class="title" text-anchor="middle">{title}</text>'
+            f'<text x="{offset_x + sub_width//2}" y="{offset_y + 20}" class="title" text-anchor="middle">{tree_data.get("title", f"Tree {i+1}")}</text>'
         )
 
         # Create a temporary SVG for this tree
@@ -442,20 +441,24 @@ def create_comparison_visualization(
                 end_idx = j
                 break
 
-        if start_idx != -1 and end_idx != -1:
-            tree_content = lines[start_idx : end_idx + 1]
+        if start_idx == -1 or end_idx == -1:
+            raise ValueError("Could not parse temporary SVG content")
 
-            # Transform coordinates to fit in subplot
-            transformed_content = []
-            for line in tree_content:
-                # This is a simplified transformation - in practice would need proper SVG transformation
-                if 'x="' in line and 'y="' in line:
-                    # Simple string replacement for positioning
-                    line = line.replace('x="', f'x="{offset_x} + 10 + ')
-                    line = line.replace('y="', f'y="{offset_y} + 40 + ')
-                transformed_content.append(line)
+        tree_content = lines[start_idx + 1 : end_idx]  # Skip <g> and </g>
 
-            svg_content.extend(transformed_content)
+        # Remove the background rect if present
+        if (
+            tree_content
+            and '<rect width="100%" height="100%" fill="white"/>' in tree_content[0]
+        ):
+            tree_content = tree_content[1:]
+
+        # Add transformed group
+        svg_content.append(
+            f'<g transform="translate({offset_x + 10}, {offset_y + 40})">'
+        )
+        svg_content.extend(tree_content)
+        svg_content.append("</g>")
 
     svg_content.append("</svg>")
     svg_string = "\n".join(svg_content)

@@ -24,6 +24,7 @@
 <tspan x="20" y="141">Sinks: 0</tspan>
 </text>
 </g>
+</g>
 <text x="600" y="20" class="title" text-anchor="middle">Elmore Model</text>
 <g transform="translate(410, 40)">
 <circle cx="315.0" cy="118.57142857142857" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
@@ -41,5 +42,6 @@
 <tspan x="20" y="125">Total Wirelength: 100.0</tspan>
 <tspan x="20" y="141">Sinks: 0</tspan>
 </text>
+</g>
 </g>
 </svg>

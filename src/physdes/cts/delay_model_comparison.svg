@@ -1,0 +1,124 @@
+<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .node-label { font: 8px sans-serif; fill: #333; }
+  .delay-label { font: 7px sans-serif; fill: #666; }
+  .title { font: 14px sans-serif; fill: #333; font-weight: bold; }
+  .comparison-label { font: 10px sans-serif; fill: #333; }
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="300" y="20" class="title" text-anchor="middle">Linear Delay Model</text>
+<g transform="translate(10, 40)">
+<line x1="141.53846153846155" y1="264.61538461538464" x2="233.84615384615387" y2="418.4615384615385" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="187.6923076923077" y="336.53846153846155" class="wire-label" text-anchor="middle">80.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="80.0" y2="141.53846153846155" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="156.92307692307693" y="275.0" class="wire-label" text-anchor="middle">140.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="80.0" y2="264.61538461538464" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="156.92307692307693" y="336.53846153846155" class="wire-label" text-anchor="middle">100.0</text>
+<line x1="141.53846153846155" y1="264.61538461538464" x2="233.84615384615387" y2="326.1538461538462" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="187.6923076923077" y="290.3846153846154" class="wire-label" text-anchor="middle">50.0</text>
+<line x1="233.84615384615387" y1="326.1538461538462" x2="233.84615384615387" y2="233.84615384615387" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="275.0" class="wire-label" text-anchor="middle">30.0</text>
+<line x1="233.84615384615387" y1="326.1538461538462" x2="233.84615384615387" y2="418.4615384615385" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="367.3076923076924" class="wire-label" text-anchor="middle">30.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="356.92307692307696" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="382.69230769230774" class="wire-label" text-anchor="middle">20.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="480.0" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="444.2307692307693" class="wire-label" text-anchor="middle">20.0</text>
+<circle cx="141.53846153846155" cy="264.61538461538464" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="141.53846153846155" y="251.61538461538464" class="node-label" text-anchor="middle">n5</text>
+<text x="141.53846153846155" y="284.61538461538464" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="233.84615384615387" cy="418.4615384615385" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="409.4615384615385" class="node-label" text-anchor="middle">n2</text>
+<text x="233.84615384615387" y="434.4615384615385" class="delay-label" text-anchor="middle">d:40.0</text>
+<circle cx="80.0" cy="141.53846153846155" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="80.0" y="132.53846153846155" class="node-label" text-anchor="middle">s1</text>
+<text x="80.0" y="157.53846153846155" class="delay-label" text-anchor="middle">d:110.0</text>
+<circle cx="80.0" cy="264.61538461538464" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="80.0" y="255.61538461538464" class="node-label" text-anchor="middle">s2</text>
+<text x="80.0" y="280.61538461538464" class="delay-label" text-anchor="middle">d:90.0</text>
+<circle cx="233.84615384615387" cy="326.1538461538462" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="317.1538461538462" class="node-label" text-anchor="middle">n3</text>
+<text x="233.84615384615387" y="342.1538461538462" class="delay-label" text-anchor="middle">d:25.0</text>
+<circle cx="233.84615384615387" cy="233.84615384615387" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="224.84615384615387" class="node-label" text-anchor="middle">s3</text>
+<text x="233.84615384615387" y="249.84615384615387" class="delay-label" text-anchor="middle">d:40.0</text>
+<circle cx="233.84615384615387" cy="418.4615384615385" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="409.4615384615385" class="node-label" text-anchor="middle">n2</text>
+<text x="233.84615384615387" y="434.4615384615385" class="delay-label" text-anchor="middle">d:40.0</text>
+<circle cx="233.84615384615387" cy="356.92307692307696" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="347.92307692307696" class="node-label" text-anchor="middle">s4</text>
+<text x="233.84615384615387" y="372.92307692307696" class="delay-label" text-anchor="middle">d:50.0</text>
+<circle cx="233.84615384615387" cy="480.0" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="471.0" class="node-label" text-anchor="middle">s5</text>
+<text x="233.84615384615387" y="496.0" class="delay-label" text-anchor="middle">d:50.0</text>
+<g class="analysis-info">
+<rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
+<rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
+<text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
+<text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
+<tspan x="20" y="61">Delay Model: LinearDelayCalculator</tspan>
+<tspan x="20" y="77">Max Delay: 110.000</tspan>
+<tspan x="20" y="93">Min Delay: 40.000</tspan>
+<tspan x="20" y="109">Skew: 70.000</tspan>
+<tspan x="20" y="125">Total Wirelength: 470.0</tspan>
+<tspan x="20" y="141">Sinks: 5</tspan>
+</text>
+</g>
+<text x="900" y="20" class="title" text-anchor="middle">Elmore Delay Model</text>
+<g transform="translate(610, 40)">
+<line x1="224.6153846153846" y1="378.46153846153845" x2="233.84615384615387" y2="418.4615384615385" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="229.23076923076923" y="393.46153846153845" class="wire-label" text-anchor="middle">16.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="80.0" y2="141.53846153846155" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="156.92307692307693" y="275.0" class="wire-label" text-anchor="middle">140.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="80.0" y2="264.61538461538464" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="156.92307692307693" y="336.53846153846155" class="wire-label" text-anchor="middle">100.0</text>
+<line x1="224.6153846153846" y1="378.46153846153845" x2="233.84615384615387" y2="418.4615384615385" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="229.23076923076923" y="393.46153846153845" class="wire-label" text-anchor="middle">16.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="233.84615384615387" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="321.1538461538462" class="wire-label" text-anchor="middle">60.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="418.4615384615385" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="356.92307692307696" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="382.69230769230774" class="wire-label" text-anchor="middle">20.0</text>
+<line x1="233.84615384615387" y1="418.4615384615385" x2="233.84615384615387" y2="480.0" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="233.84615384615387" y="444.2307692307693" class="wire-label" text-anchor="middle">20.0</text>
+<circle cx="224.6153846153846" cy="378.46153846153845" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="224.6153846153846" y="365.46153846153845" class="node-label" text-anchor="middle">n5</text>
+<text x="224.6153846153846" y="398.46153846153845" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="233.84615384615387" cy="418.4615384615385" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="409.4615384615385" class="node-label" text-anchor="middle">n2</text>
+<text x="233.84615384615387" y="434.4615384615385" class="delay-label" text-anchor="middle">d:18.6</text>
+<circle cx="80.0" cy="141.53846153846155" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="80.0" y="132.53846153846155" class="node-label" text-anchor="middle">s1</text>
+<text x="80.0" y="157.53846153846155" class="delay-label" text-anchor="middle">d:228.6</text>
+<circle cx="80.0" cy="264.61538461538464" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="80.0" y="255.61538461538464" class="node-label" text-anchor="middle">s2</text>
+<text x="80.0" y="280.61538461538464" class="delay-label" text-anchor="middle">d:128.6</text>
+<circle cx="233.84615384615387" cy="418.4615384615385" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="409.4615384615385" class="node-label" text-anchor="middle">n3</text>
+<text x="233.84615384615387" y="434.4615384615385" class="delay-label" text-anchor="middle">d:39.4</text>
+<circle cx="233.84615384615387" cy="233.84615384615387" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="224.84615384615387" class="node-label" text-anchor="middle">s3</text>
+<text x="233.84615384615387" y="249.84615384615387" class="delay-label" text-anchor="middle">d:81.4</text>
+<circle cx="233.84615384615387" cy="418.4615384615385" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="409.4615384615385" class="node-label" text-anchor="middle">n2</text>
+<text x="233.84615384615387" y="434.4615384615385" class="delay-label" text-anchor="middle">d:39.4</text>
+<circle cx="233.84615384615387" cy="356.92307692307696" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="347.92307692307696" class="node-label" text-anchor="middle">s4</text>
+<text x="233.84615384615387" y="372.92307692307696" class="delay-label" text-anchor="middle">d:45.4</text>
+<circle cx="233.84615384615387" cy="480.0" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="233.84615384615387" y="471.0" class="node-label" text-anchor="middle">s5</text>
+<text x="233.84615384615387" y="496.0" class="delay-label" text-anchor="middle">d:45.4</text>
+<g class="analysis-info">
+<rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
+<rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
+<text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
+<text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
+<tspan x="20" y="61">Delay Model: ElmoreDelayCalculator</tspan>
+<tspan x="20" y="77">Max Delay: 228.560</tspan>
+<tspan x="20" y="93">Min Delay: 45.360</tspan>
+<tspan x="20" y="109">Skew: 183.200</tspan>
+<tspan x="20" y="125">Total Wirelength: 372.0</tspan>
+<tspan x="20" y="141">Sinks: 5</tspan>
+</text>
+</g>
+</svg>
