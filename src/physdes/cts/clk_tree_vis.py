@@ -459,6 +459,7 @@ def create_comparison_visualization(
         )
         svg_content.extend(tree_content)
         svg_content.append("</g>")
+        svg_content.append("</g>")  # why?
 
     svg_content.append("</svg>")
     svg_string = "\n".join(svg_content)
@@ -506,11 +507,14 @@ def visualize_example_tree():
 
     # Generate example clock tree with both delay models
     example_sinks = [
-        Sink("s1", Point(10, 20), 1.0),
-        Sink("s2", Point(30, 40), 1.0),
-        Sink("s3", Point(50, 10), 1.0),
-        Sink("s4", Point(70, 30), 1.0),
-        Sink("s5", Point(90, 50), 1.0),
+        Sink("s1", Point(-100, 40), 1.0),
+        Sink("s2", Point(-60, 60), 1.0),
+        Sink("s3", Point(0, 40), 1.0),
+        Sink("s4", Point(20, 20), 1.0),
+        Sink("s5", Point(-20, -20), 1.0),
+        Sink("s6", Point(-30, -50), 1.0),
+        Sink("s7", Point(-100, 0), 1.0),
+        Sink("s8", Point(20, 40), 1.0),
     ]
 
     print("=== Generating Clock Trees with Different Delay Models ===")
