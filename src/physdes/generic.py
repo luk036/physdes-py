@@ -42,8 +42,8 @@ physical design calculations, capable of working with both simple numbers and mo
 geometric objects.
 """
 
-
 from typing import Any, Union
+
 
 def measure_of(obj: Any) -> Union[int, Any]:
     if hasattr(obj, "measure"):
@@ -291,6 +291,13 @@ def nearest(lhs: Any, rhs: Any) -> Any:
 #         return rhs.min_dist_change_with(lhs)
 #     else:  # assume scalar
 #         return abs(lhs - rhs)
+
+
+def center(obj: Any) -> Any:
+    if hasattr(obj, "get_center"):
+        return obj.get_center()
+    else:
+        return obj  # assume scalar
 
 
 def displacement(lhs: Any, rhs: Any) -> Any:

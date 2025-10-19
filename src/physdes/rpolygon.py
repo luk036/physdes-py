@@ -47,7 +47,7 @@ Overall, this code provides a set of tools for working with rectilinear polygons
 # from enum import Enum
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, List, Tuple, Iterable, Iterator, Any
+from typing import Callable, List, Tuple, Iterable, Any
 
 from mywheel.dllist import Dllink
 
@@ -388,7 +388,9 @@ class RPolygon:
         return Polygon(self._origin, new_vecs)
 
 
-def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
+def partition(
+    pred: Callable[[Any], bool], iterable: Iterable[Any]
+) -> Tuple[List[Any], List[Any]]:
     "Use a predicate to partition entries into true entries and false entries"
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
@@ -396,7 +398,9 @@ def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[Lis
 
 
 def create_mono_rpolygon(
-    lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]], cmp: Callable[[int, int], bool]
+    lst: PointSet,
+    dir: Callable[[Point[int, int]], Tuple[int, int]],
+    cmp: Callable[[int, int], bool],
 ) -> Tuple[PointSet, bool]:
     """
     The `create_mono_rpolygon` function creates a monotone rectilinear polygon for a given point set,
@@ -580,7 +584,9 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     return lsta + lstb + lstc + lstd
 
 
-def rpolygon_is_monotone(lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]]) -> bool:
+def rpolygon_is_monotone(
+    lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]]
+) -> bool:
     """
     Check if a rectilinear polygon is monotone in a given direction.
 
@@ -606,7 +612,9 @@ def rpolygon_is_monotone(lst: PointSet, dir: Callable[[Point[int, int]], Tuple[i
     v_min = rdll[min_index]
     v_max = rdll[max_index]
 
-    def voilate(vi: Dllink[int], v_stop: Dllink[int], cmp: Callable[[int, int], bool]) -> bool:
+    def voilate(
+        vi: Dllink[int], v_stop: Dllink[int], cmp: Callable[[int, int], bool]
+    ) -> bool:
         while id(vi) != id(v_stop):
             vnext = vi.next
             if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
@@ -763,7 +771,9 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
 
 
 def rpolygon_make_monotone_hull(
-    lst: PointSet, is_anticlockwise: bool, dir: Callable[[Point[int, int]], Tuple[int, int]]
+    lst: PointSet,
+    is_anticlockwise: bool,
+    dir: Callable[[Point[int, int]], Tuple[int, int]],
 ) -> PointSet:
     """
     Create the x-monotone hull of a rectilinear polygon.

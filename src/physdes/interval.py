@@ -546,7 +546,7 @@ class Interval(Generic[T]):
         else:  # assume scalar
             return Interval(max(self.lb, obj), min(self.ub, obj))
 
-    def min_dist_with(self, obj: Union["Interval[T]", T]) -> T:
+    def min_dist_with(self, obj: Union["Interval[T]", T]) -> T | int:
         """
         The function calculates the minimum distance between two objects.
 
@@ -617,6 +617,19 @@ class Interval(Generic[T]):
         lb = displacement(self.lb, obj.lb)
         ub = displacement(self.ub, obj.ub)
         return Interval(lb, ub)
+
+    def get_center(self) -> T:
+        """
+        Calculates the center of the point.
+
+        :return: The center of the point.
+
+        Examples:
+            >>> a = Interval[3, 7]
+            >>> a.get_center()
+            5
+        """
+        return self.lb + (self.ub - self.lb) // 2
 
     # def min_dist_change_with(self, obj: Union["Interval[T]", T]):
     #     """[summary]

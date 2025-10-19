@@ -222,7 +222,16 @@ class MergeObj(Generic[T1, T2]):
         point = self.impl.intersect_with(other.impl)  # TODO
         return MergeObj(point.xcoord, point.ycoord)
 
-    def merge_with(self, other: "MergeObj[T1, T2]") -> "MergeObj[T1, T2]":
+    def get_center(self) -> Point[Any, Any]:
+        """
+        Calculates the center of the merging segment
+
+        :return: The center of the merging segment.
+        """
+        m = self.impl.get_center()
+        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+
+    def merge_with(self, other: "MergeObj[T1, T2]", half: int) -> "MergeObj[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
         the two objects, enlarges the objects based on the calculated distance, finds the intersection
@@ -233,20 +242,8 @@ class MergeObj(Generic[T1, T2]):
 
         :return: The `merge_with` method returns a new `MergeObj` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
-
-        Examples:
-            >>> s1 = MergeObj(200 - 600, 200 + 600)
-            >>> s2 = MergeObj(500 - 900, 500 + 900)
-            >>> m1 = s1.merge_with(s2)
-            >>> print(m1)
-            /[-700, -100], [1100, 1100]/
-            >>> s1 = MergeObj(200 - 600, 200 + 600)
-            >>> m1 = s1.merge_with(s1)
-            >>> print(m1)
-            /[-400, -400], [800, 800]/
         """
         alpha = self.min_dist_with(other)
-        half = alpha // 2
         trr1 = self.impl.enlarge_with(half)
         trr2 = other.impl.enlarge_with(alpha - half)
         impl = trr1.intersect_with(trr2)

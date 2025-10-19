@@ -317,8 +317,8 @@ class TestIntegration:
 
         # Build clock tree
         calculator = LinearDelayCalculator(delay_per_unit=0.5)
-        dme = DMEAlgorithm(delay_calculator=calculator)
-        clock_tree = dme.build_clock_tree(sinks)
+        dme = DMEAlgorithm(sinks, delay_calculator=calculator)
+        clock_tree = dme.build_clock_tree()
         analysis = dme.analyze_skew(clock_tree)
 
         # Create visualization
@@ -350,14 +350,14 @@ class TestIntegration:
 
         # Linear model tree
         linear_calc = LinearDelayCalculator(delay_per_unit=0.3)
-        dme_linear = DMEAlgorithm(delay_calculator=linear_calc)
-        tree_linear = dme_linear.build_clock_tree(sinks)
+        dme_linear = DMEAlgorithm(sinks, delay_calculator=linear_calc)
+        tree_linear = dme_linear.build_clock_tree()
         analysis_linear = dme_linear.analyze_skew(tree_linear)
 
         # Elmore model tree
         elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        dme_elmore = DMEAlgorithm(delay_calculator=elmore_calc)
-        tree_elmore = dme_elmore.build_clock_tree(sinks)
+        dme_elmore = DMEAlgorithm(sinks, delay_calculator=elmore_calc)
+        tree_elmore = dme_elmore.build_clock_tree()
         analysis_elmore = dme_elmore.analyze_skew(tree_elmore)
 
         # Create comparison

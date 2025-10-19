@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import Any, Generic, TypeVar, Union, Union
+from typing import Any, Generic, TypeVar, Union
 
 from .generic import (
     contain,
@@ -48,6 +48,7 @@ from .generic import (
     overlap,
     nearest,
     measure_of,
+    center,
 )
 from .interval import enlarge, hull, Interval
 from .vector2 import Vector2
@@ -574,3 +575,19 @@ class Point(Generic[T1, T2]):
         xcoord = enlarge(self.xcoord, alpha)
         ycoord = enlarge(self.ycoord, alpha)
         return Point(xcoord, ycoord)
+
+    def get_center(self) -> "Point[Any, Any]":
+        """
+        Calculates the center of the point.
+
+        :return: The center of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.get_center()
+            Point(3, 4)
+            >>> a = Point(Interval[3, 7], 4)
+            >>> a.get_center()
+            Point(5, 4)
+        """
+        return Point(center(self.xcoord), center(self.ycoord))

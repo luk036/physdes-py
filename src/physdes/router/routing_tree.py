@@ -455,7 +455,9 @@ class GlobalRoutingTree:
         traverse(self.source)
         return parent_node, nearest_node
 
-    def insert_terminal_with_constraints(self, pt: Point[Any, Any], allowed_wirelength: int):
+    def insert_terminal_with_constraints(
+        self, pt: Point[Any, Any], allowed_wirelength: int
+    ):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
@@ -706,7 +708,9 @@ class GlobalRoutingTree:
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
 
 
-def visualize_routing_tree_svg(tree: "GlobalRoutingTree", width: int = 800, height: int = 600, margin: int = 50) -> str:
+def visualize_routing_tree_svg(
+    tree: "GlobalRoutingTree", width: int = 800, height: int = 600, margin: int = 50
+) -> str:
     """
     Visualize a GlobalRoutingTree in SVG format.
 
@@ -868,7 +872,12 @@ def visualize_routing_tree_svg(tree: "GlobalRoutingTree", width: int = 800, heig
     return "\n".join(svg_parts)
 
 
-def save_routing_tree_svg(tree: "GlobalRoutingTree", filename: str = "routing_tree.svg", width: int = 800, height: int = 600) -> None:
+def save_routing_tree_svg(
+    tree: "GlobalRoutingTree",
+    filename: str = "routing_tree.svg",
+    width: int = 800,
+    height: int = 600,
+) -> None:
     """
     Save the routing tree visualization as an SVG file.
 
@@ -885,7 +894,11 @@ def save_routing_tree_svg(tree: "GlobalRoutingTree", filename: str = "routing_tr
 
 
 def visualize_routing_tree3d_svg(
-    tree3d: "GlobalRoutingTree", scale_z: int, width: int = 800, height: int = 600, margin: int = 50
+    tree3d: "GlobalRoutingTree",
+    scale_z: int,
+    width: int = 800,
+    height: int = 600,
+    margin: int = 50,
 ) -> str:
     """
     Visualize a GlobalRoutingTree in SVG format.
@@ -1054,7 +1067,11 @@ def visualize_routing_tree3d_svg(
 
 
 def save_routing_tree3d_svg(
-    tree3d: "GlobalRoutingTree", scale_z: int, filename: str = "routing_tree3d.svg", width: int = 800, height: int = 600
+    tree3d: "GlobalRoutingTree",
+    scale_z: int,
+    filename: str = "routing_tree3d.svg",
+    width: int = 800,
+    height: int = 600,
 ) -> None:
     """
     Save the routing tree3d visualization as an SVG file.

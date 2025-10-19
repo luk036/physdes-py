@@ -15,14 +15,6 @@ def test_MergeObj():
     assert repr(r1) == "MergeObj(-1, 9)"
 
 
-def test_merge():
-    s1 = MergeObj(200 - 600, 200 + 600)
-    s2 = MergeObj(500 - 900, 500 + 900)
-    m1 = s1.merge_with(s2)
-    print(m1)
-    assert m1 == MergeObj(Interval(-700, -100), Interval(1100, 1100))
-
-
 def test_merge_2():
     a = MergeObj(4 - 5, 4 + 5)
     b = MergeObj(7 - 9, 7 + 9)
@@ -38,8 +30,8 @@ def test_merge_2():
 def test_merge_3():
     s1 = MergeObj(1, 1)
     s2 = MergeObj(3, 3)
-    m1 = s1.merge_with(s2)
-    assert m1 == MergeObj(Interval(2, 2), Interval(2, 2))
+    m1 = s1.merge_with(s2, 2)
+    assert m1 == MergeObj(Interval(3, 3), Interval(3, 3))
 
 
 def test_repr():

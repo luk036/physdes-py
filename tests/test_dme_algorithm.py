@@ -18,7 +18,6 @@ from physdes.cts.dme_algorithm import (
     get_tree_statistics,
 )
 from physdes.point import Point
-from physdes.interval import Interval
 
 
 class TestDelayCalculators:
@@ -33,7 +32,7 @@ class TestDelayCalculators:
     def test_linear_delay_calculation(self):
         """Test linear delay calculation"""
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        delay = calc.calculate_wire_delay(10.0, 5.0)
+        delay = calc.calculate_wire_delay(10, 5.0)
         assert delay == 5.0  # 0.5 * 10
 
     def test_linear_delay_per_unit(self):
@@ -45,7 +44,7 @@ class TestDelayCalculators:
     def test_linear_wire_capacitance(self):
         """Test linear wire capacitance calculation"""
         calc = LinearDelayCalculator(capacitance_per_unit=0.2)
-        capacitance = calc.calculate_wire_capacitance(10.0)
+        capacitance = calc.calculate_wire_capacitance(10)
         assert capacitance == 2.0
 
     def test_elmore_delay_calculator_initialization(self):
@@ -57,7 +56,7 @@ class TestDelayCalculators:
     def test_elmore_delay_calculation(self):
         """Test Elmore delay calculation"""
         calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        delay = calc.calculate_wire_delay(10.0, 5.0)
+        delay = calc.calculate_wire_delay(10, 5.0)
         expected = 0.1 * 10 * (0.2 * 10 / 2 + 5.0)  # R * (C_wire/2 + C_load)
         assert delay == expected
 
@@ -71,7 +70,7 @@ class TestDelayCalculators:
     def test_elmore_wire_capacitance(self):
         """Test Elmore wire capacitance calculation"""
         calc = ElmoreDelayCalculator(unit_capacitance=0.2)
-        capacitance = calc.calculate_wire_capacitance(10.0)
+        capacitance = calc.calculate_wire_capacitance(10)
         assert capacitance == 2.0
 
 
@@ -97,13 +96,15 @@ class TestDMEAlgorithm:
 
     def test_dme_algorithm_initialization(self, linear_calculator):
         """Test DMEAlgorithm initialization with delay calculator"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
+        dme = DMEAlgorithm(
+            [Sink("s1", Point(0, 0), 1.0)], delay_calculator=linear_calculator
+        )
         assert dme.delay_calculator == linear_calculator
 
     def test_build_clock_tree_with_linear_model(self, sample_sinks, linear_calculator):
         """Test clock tree construction with linear delay model"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        root = dme.build_clock_tree(sample_sinks)
+        dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
+        root = dme.build_clock_tree()
 
         assert root is not None
         assert root.name.startswith("n")
@@ -112,8 +113,8 @@ class TestDMEAlgorithm:
 
     def test_build_clock_tree_with_elmore_model(self, sample_sinks, elmore_calculator):
         """Test clock tree construction with Elmore delay model"""
-        dme = DMEAlgorithm(delay_calculator=elmore_calculator)
-        root = dme.build_clock_tree(sample_sinks)
+        dme = DMEAlgorithm(sample_sinks, delay_calculator=elmore_calculator)
+        root = dme.build_clock_tree()
 
         assert root is not None
         assert root.name.startswith("n")
@@ -123,8 +124,8 @@ class TestDMEAlgorithm:
     def test_build_clock_tree_single_sink(self, linear_calculator):
         """Test clock tree construction with single sink"""
         single_sink = [Sink("s1", Point(0, 0), 1.0)]
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        root = dme.build_clock_tree(single_sink)
+        dme = DMEAlgorithm(single_sink, delay_calculator=linear_calculator)
+        root = dme.build_clock_tree()
 
         assert root.name == "s1"
         assert root.left is None
@@ -132,14 +133,13 @@ class TestDMEAlgorithm:
 
     def test_build_clock_tree_empty_sinks(self, linear_calculator):
         """Test clock tree construction with empty sinks list"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
         with pytest.raises(ValueError, match="No sinks provided"):
-            dme.build_clock_tree([])
+            _ = DMEAlgorithm([], delay_calculator=linear_calculator)
 
     def test_analyze_skew_linear_model(self, sample_sinks, linear_calculator):
         """Test skew analysis with linear delay model"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        root = dme.build_clock_tree(sample_sinks)
+        dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
+        root = dme.build_clock_tree()
         analysis = dme.analyze_skew(root)
 
         assert "max_delay" in analysis
@@ -153,39 +153,18 @@ class TestDMEAlgorithm:
 
     def test_analyze_skew_elmore_model(self, sample_sinks, elmore_calculator):
         """Test skew analysis with Elmore delay model"""
-        dme = DMEAlgorithm(delay_calculator=elmore_calculator)
-        root = dme.build_clock_tree(sample_sinks)
+        dme = DMEAlgorithm(sample_sinks, delay_calculator=elmore_calculator)
+        root = dme.build_clock_tree()
         analysis = dme.analyze_skew(root)
 
         assert "delay_model" in analysis
         assert analysis["delay_model"] == "ElmoreDelayCalculator"
         assert analysis["skew"] >= 0
 
-    def test_manhattan_distance(self, linear_calculator):
-        """Test Manhattan distance calculation"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        p1 = Point(0, 0)
-        p2 = Point(3, 4)
-        distance = dme._manhattan_distance(p1, p2)
-        assert distance == 7
-
-    def test_get_center_int(self, linear_calculator):
-        """Test center calculation for integer coordinate"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        center = dme._get_center(10)
-        assert center == 10
-
-    def test_get_center_interval(self, linear_calculator):
-        """Test center calculation for interval coordinate"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        interval = Interval(10, 20)
-        center = dme._get_center(interval)
-        assert center == 15
-
     def test_total_wirelength(self, sample_sinks, linear_calculator):
         """Test total wirelength calculation"""
-        dme = DMEAlgorithm(delay_calculator=linear_calculator)
-        root = dme.build_clock_tree(sample_sinks)
+        dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
+        root = dme.build_clock_tree()
         total_length = dme._total_wirelength(root)
         assert total_length >= 0
 
@@ -264,14 +243,14 @@ class TestIntegration:
 
         # Linear model
         linear_calc = LinearDelayCalculator(delay_per_unit=0.5)
-        dme_linear = DMEAlgorithm(delay_calculator=linear_calc)
-        tree_linear = dme_linear.build_clock_tree(sinks)
+        dme_linear = DMEAlgorithm(sinks, delay_calculator=linear_calc)
+        tree_linear = dme_linear.build_clock_tree()
         analysis_linear = dme_linear.analyze_skew(tree_linear)
 
         # Elmore model
         elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        dme_elmore = DMEAlgorithm(delay_calculator=elmore_calc)
-        tree_elmore = dme_elmore.build_clock_tree(sinks)
+        dme_elmore = DMEAlgorithm(sinks, delay_calculator=elmore_calc)
+        tree_elmore = dme_elmore.build_clock_tree()
         analysis_elmore = dme_elmore.analyze_skew(tree_elmore)
 
         # They should have different delay models
@@ -290,8 +269,8 @@ class TestIntegration:
         sinks = [Sink(f"s{i}", Point(i * 10, i * 5), 1.0 + i * 0.1) for i in range(8)]
 
         calc = LinearDelayCalculator(delay_per_unit=0.3)
-        dme = DMEAlgorithm(delay_calculator=calc)
-        root = dme.build_clock_tree(sinks)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+        root = dme.build_clock_tree()
         analysis = dme.analyze_skew(root)
 
         assert root is not None

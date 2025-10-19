@@ -166,7 +166,9 @@ class ClockTreeVisualizer:
 
         return (min_x - padding, min_y - padding, max_x + padding, max_y + padding)
 
-    def _draw_wires(self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]) -> List[str]:
+    def _draw_wires(
+        self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]
+    ) -> List[str]:
         """Draw all wires in the clock tree"""
         svg_elements = []
 
@@ -202,7 +204,12 @@ class ClockTreeVisualizer:
         draw_wires_recursive(root)
         return svg_elements
 
-    def _draw_nodes(self, root: Any, sinks: List[Any], scale_coord: Callable[[Any, Any], Tuple[float, float]]) -> List[str]:
+    def _draw_nodes(
+        self,
+        root: Any,
+        sinks: List[Any],
+        scale_coord: Callable[[Any, Any], Tuple[float, float]],
+    ) -> List[str]:
         """Draw all nodes in the clock tree"""
         svg_elements = []
         sink_positions = {
@@ -521,14 +528,14 @@ def visualize_example_tree() -> Tuple[str, str, str]:
 
     # Linear delay model
     linear_calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
-    dme_linear = DMEAlgorithm(delay_calculator=linear_calc)
-    clock_tree_linear = dme_linear.build_clock_tree(example_sinks)
+    dme_linear = DMEAlgorithm(example_sinks, delay_calculator=linear_calc)
+    clock_tree_linear = dme_linear.build_clock_tree()
     analysis_linear = dme_linear.analyze_skew(clock_tree_linear)
 
     # Elmore delay model
     elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-    dme_elmore = DMEAlgorithm(delay_calculator=elmore_calc)
-    clock_tree_elmore = dme_elmore.build_clock_tree(example_sinks)
+    dme_elmore = DMEAlgorithm(example_sinks, delay_calculator=elmore_calc)
+    clock_tree_elmore = dme_elmore.build_clock_tree()
     analysis_elmore = dme_elmore.analyze_skew(clock_tree_elmore)
 
     # Create individual visualizations

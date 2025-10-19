@@ -46,7 +46,7 @@ various applications involving 2D geometry.
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, Generic, List, TypeVar, Tuple, Iterable, Iterator, Any
+from typing import Callable, Generic, List, TypeVar, Tuple, Iterable, Any
 
 from mywheel.dllist import Dllink
 
@@ -410,14 +410,18 @@ class Polygon(Generic[T]):
             )
 
 
-def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
+def partition(
+    pred: Callable[[Any], bool], iterable: Iterable[Any]
+) -> Tuple[List[Any], List[Any]]:
     "Use a predicate to partition entries into true entries and false entries"
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
     return list(filter(pred, t1)), list(filterfalse(pred, t2))
 
 
-def create_mono_polygon(lst: PointSet, dir: Callable[[Point[Any, Any]], Any]) -> PointSet:
+def create_mono_polygon(
+    lst: PointSet, dir: Callable[[Point[Any, Any]], Any]
+) -> PointSet:
     """
     The `create_mono_polygon` function creates a monotone polygon for a given point set by partitioning
     the points based on a direction and sorting them.
@@ -876,7 +880,9 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
 
     rdll = RDllist(n)
 
-    def process(v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable[[Any], bool]) -> None:
+    def process(
+        v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable[[Any], bool]
+    ) -> None:
         vlink = v_start.next
         while id(vlink) != id(v_stop):
             vnext = vlink.next

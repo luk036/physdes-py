@@ -11,14 +11,68 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from physdes.merge_obj import MergeObj
 from physdes.point import Point
-from physdes.interval import Interval
+from icecream import ic
+
+
+@dataclass
+class Sink:
+    """Represents a clock sink with position and capacitance
+
+    Examples:
+        >>> sink = Sink(name="s1", position=Point(10, 20), capacitance=1.5)
+        >>> sink.name
+        's1'
+        >>> sink.position
+        Point(10, 20)
+        >>> sink.capacitance
+        1.5
+        >>> sink = Sink(name="s1", position=Point(Point(10, 20), 20), capacitance=1.5)
+        >>> sink.name
+        's1'
+        >>> sink.position
+        Point(Point(10, 20), 20)
+        >>> sink.capacitance
+        1.5
+    """
+
+    name: str
+    position: Point
+    capacitance: float = 1.0
+
+
+@dataclass
+class TreeNode:
+    """Represents a node in the clock tree
+
+    Examples:
+        >>> node = TreeNode(name="n1", position=Point(30, 40))
+        >>> node.name
+        'n1'
+        >>> node.position
+        Point(30, 40)
+        >>> node = TreeNode(name="n1", position=Point(Point(30, 40), 40))
+        >>> node.name
+        'n1'
+        >>> node.position
+        Point(Point(30, 40), 40)
+    """
+
+    name: str
+    position: Point
+    left: Optional["TreeNode"] = None
+    right: Optional["TreeNode"] = None
+    parent: Optional["TreeNode"] = None
+    wire_length: int = 0
+    delay: float = 0.0
+    capacitance: float = 0.0
+    need_buffers_or_snakes_to_balance = False
 
 
 class DelayCalculator(ABC):
     """Abstract base class for delay calculation strategies"""
 
     @abstractmethod
-    def calculate_wire_delay(self, length: float, load_capacitance: float) -> float:
+    def calculate_wire_delay(self, length: int, load_capacitance: float) -> float:
         """Calculate wire delay for given length and load capacitance"""
         pass
 
@@ -28,8 +82,15 @@ class DelayCalculator(ABC):
         pass
 
     @abstractmethod
-    def calculate_wire_capacitance(self, length: float) -> float:
+    def calculate_wire_capacitance(self, length: int) -> float:
         """Calculate wire capacitance for given length"""
+        pass
+
+    @abstractmethod
+    def calculate_extra_length(
+        self, node_left: TreeNode, node_right: TreeNode, distance: int
+    ) -> int:
+        """Calculate extra length based on skew"""
         pass
 
 
@@ -52,7 +113,7 @@ class LinearDelayCalculator(DelayCalculator):
         self.delay_per_unit = delay_per_unit
         self.capacitance_per_unit = capacitance_per_unit
 
-    def calculate_wire_delay(self, length: float, load_capacitance: float) -> float:
+    def calculate_wire_delay(self, length: int, load_capacitance: float) -> float:
         """
         Calculate wire delay using linear model
 
@@ -87,7 +148,7 @@ class LinearDelayCalculator(DelayCalculator):
         """
         return self.delay_per_unit
 
-    def calculate_wire_capacitance(self, length: float) -> float:
+    def calculate_wire_capacitance(self, length: int) -> float:
         """
         Calculate wire capacitance
 
@@ -103,6 +164,16 @@ class LinearDelayCalculator(DelayCalculator):
             2.0
         """
         return self.capacitance_per_unit * length
+
+    def calculate_extra_length(
+        self, node_left: TreeNode, node_right: TreeNode, distance: int
+    ) -> int:
+        """Calculate extra length based on skew"""
+        # Compute required delay balancing
+        half = (
+            round((node_right.delay - node_left.delay) / self.delay_per_unit) + distance
+        ) // 2
+        return half
 
 
 class ElmoreDelayCalculator(DelayCalculator):
@@ -124,7 +195,7 @@ class ElmoreDelayCalculator(DelayCalculator):
         self.unit_resistance = unit_resistance
         self.unit_capacitance = unit_capacitance
 
-    def calculate_wire_delay(self, length: float, load_capacitance: float) -> float:
+    def calculate_wire_delay(self, length: int, load_capacitance: float) -> float:
         """
         Calculate Elmore delay for a wire segment
 
@@ -162,7 +233,7 @@ class ElmoreDelayCalculator(DelayCalculator):
         """
         return self.unit_resistance * (self.unit_capacitance / 2 + load_capacitance)
 
-    def calculate_wire_capacitance(self, length: float) -> float:
+    def calculate_wire_capacitance(self, length: int) -> float:
         """
         Calculate wire capacitance
 
@@ -179,47 +250,13 @@ class ElmoreDelayCalculator(DelayCalculator):
         """
         return self.unit_capacitance * length
 
-
-@dataclass
-class Sink:
-    """Represents a clock sink with position and capacitance
-
-    Examples:
-        >>> sink = Sink(name="s1", position=Point(10, 20), capacitance=1.5)
-        >>> sink.name
-        's1'
-        >>> sink.position
-        Point(10, 20)
-        >>> sink.capacitance
-        1.5
-    """
-
-    name: str
-    position: Point[int, int]
-    capacitance: float = 1.0
-
-
-@dataclass
-class TreeNode:
-    """Represents a node in the clock tree
-
-    Examples:
-        >>> node = TreeNode(name="n1", position=Point(30, 40))
-        >>> node.name
-        'n1'
-        >>> node.position
-        Point(30, 40)
-    """
-
-    name: str
-    position: Point[int, int]
-    left: Optional["TreeNode"] = None
-    right: Optional["TreeNode"] = None
-    parent: Optional["TreeNode"] = None
-    wire_length: int = 0
-    delay: float = 0.0
-    capacitance: float = 0.0
-    need_buffers_or_snakes_to_balance = False
+    def calculate_extra_length(
+        self, node_left: TreeNode, node_right: TreeNode, distance: int
+    ) -> int:
+        """Calculate extra length based on skew"""
+        # Compute required delay balancing
+        half = (round((node_right.delay - node_left.delay)) + distance) // 2
+        return half
 
 
 class DMEAlgorithm:
@@ -228,11 +265,12 @@ class DMEAlgorithm:
     with configurable delay calculation strategy
     """
 
-    def __init__(self, delay_calculator: DelayCalculator):
+    def __init__(self, sinks: List[Sink], delay_calculator: DelayCalculator):
         """
         Initialize DME algorithm with delay calculation strategy
 
         Args:
+            sinks: List of clock sinks with positions and capacitances
             delay_calculator: Strategy for delay calculation
 
         Examples:
@@ -246,25 +284,24 @@ class DMEAlgorithm:
             >>> isinstance(dme.delay_calculator, ElmoreDelayCalculator)
             True
         """
-        self.delay_calculator = delay_calculator
+        if not sinks:
+            raise ValueError("No sinks provided")
 
-    def build_clock_tree(self, sinks: List[Sink]) -> TreeNode:
+        self.sinks = sinks
+        self.delay_calculator = delay_calculator
+        self.node_id = 0
+
+    def build_clock_tree(self) -> TreeNode:
         """
         Build a zero-skew clock tree for the given sinks
-
-        Args:
-            sinks: List of clock sinks with positions and capacitances
 
         Returns:
             Root node of the clock tree
         """
-        if not sinks:
-            raise ValueError("No sinks provided")
-
         # Step 1: Create initial leaf nodes
         nodes = [
             TreeNode(name=s.name, position=s.position, capacitance=s.capacitance)
-            for s in sinks
+            for s in self.sinks
         ]
 
         # Step 2: Build merging tree using balanced bipartition
@@ -281,7 +318,9 @@ class DMEAlgorithm:
 
         return clock_tree
 
-    def _build_merging_tree(self, nodes: List["TreeNode"], vertical: bool) -> "TreeNode":
+    def _build_merging_tree(
+        self, nodes: List["TreeNode"], vertical: bool
+    ) -> "TreeNode":
         """
         Build a balanced merging tree using recursive bipartition
 
@@ -312,11 +351,14 @@ class DMEAlgorithm:
 
         # Create parent node (position will be determined during embedding)
         parent = TreeNode(
-            name=f"n{len(nodes)}",
-            position=Point(0, 0),  # Temporary position
+            name=f"n{self.node_id}",
+            position=left_child.position,  # Temporary position
             left=left_child,
             right=right_child,
         )
+        self.node_id += 1
+
+        ic(parent.name)
         left_child.parent = parent
         right_child.parent = parent
 
@@ -349,40 +391,43 @@ class DMEAlgorithm:
 
             # Compute merging cost (Manhattan distance between segments)
             distance = left_ms.min_dist_with(right_ms)
+            # ic(distance)
 
             # Compute required delay balancing using the strategy pattern
-            left_delay = node.left.delay + self.delay_calculator.calculate_wire_delay(
-                distance, node.left.capacitance
-            )
-            right_delay = node.right.delay + self.delay_calculator.calculate_wire_delay(
-                distance, node.right.capacitance
-            )
+            # left_delay = node.left.delay + self.delay_calculator.calculate_wire_delay(
+            #     distance, node.left.capacitance
+            # )
+            # right_delay = node.right.delay + self.delay_calculator.calculate_wire_delay(
+            #     distance, node.right.capacitance
+            # )
 
-            # Adjust for zero skew
-            skew = abs(left_delay - right_delay)
-            if skew > 1e-6:
-                # Need to balance delays by adjusting wire lengths
-                if left_delay > right_delay:
-                    # Right branch needs longer wire
-                    extra_length = (
-                        skew
-                        / self.delay_calculator.calculate_wire_delay_per_unit(
-                            node.right.capacitance
-                        )
-                    )
-                    right_ms = self._extend_segment(right_ms, extra_length)
-                else:
-                    # Left branch needs longer wire
-                    extra_length = (
-                        skew
-                        / self.delay_calculator.calculate_wire_delay_per_unit(
-                            node.left.capacitance
-                        )
-                    )
-                    left_ms = self._extend_segment(left_ms, extra_length)
-
+            # # Adjust for zero skew
+            # skew = abs(left_delay - right_delay)
+            # if skew > 1e-6:
+            #     # Need to balance delays by adjusting wire lengths
+            #     if left_delay > right_delay:
+            #         # Right branch needs longer wire
+            #         extra_length = (
+            #             skew
+            #             / self.delay_calculator.calculate_wire_delay_per_unit(
+            #                 node.right.capacitance
+            #             )
+            #         )
+            #         right_ms = self._extend_segment(right_ms, extra_length)
+            #     else:
+            #         # Left branch needs longer wire
+            #         extra_length = (
+            #             skew
+            #             / self.delay_calculator.calculate_wire_delay_per_unit(
+            #                 node.left.capacitance
+            #             )
+            #         )
+            #         left_ms = self._extend_segment(left_ms, extra_length)
+            half = self.delay_calculator.calculate_extra_length(
+                node.left, node.right, distance
+            )
             # Merge the segments
-            merged_segment = left_ms.merge_with(right_ms)
+            merged_segment = left_ms.merge_with(right_ms, half)
             merging_segments[node.name] = merged_segment
 
             # Update node capacitance (sum of children + wire capacitance)
@@ -417,7 +462,7 @@ class DMEAlgorithm:
             if parent_segment is None:
                 # Root node: choose center of merging segment
                 node_segment = merging_segments[node.name]
-                node.position = self._segment_center(node_segment)
+                node.position = node_segment.get_center()
             else:
                 # Internal node: choose point in merging segment closest to parent
                 node_segment = merging_segments[node.name]
@@ -427,9 +472,7 @@ class DMEAlgorithm:
 
                 # Compute wire length to parent
                 if node.parent:
-                    node.wire_length = self._manhattan_distance(
-                        node.position, node.parent.position
-                    )
+                    node.wire_length = node.position.min_dist_with(node.parent.position)
 
             # Recursively embed children
             embed_node(node.left, merging_segments[node.name])
@@ -465,7 +508,7 @@ class DMEAlgorithm:
 
         compute_delays(root)
 
-    def _extend_segment(self, segment: MergeObj, extra_length: float) -> MergeObj:
+    def _extend_segment(self, segment: MergeObj, extra_length: int) -> MergeObj:
         """
         Extend a merging segment to increase wire length
 
@@ -477,46 +520,44 @@ class DMEAlgorithm:
             Extended merging segment
         """
         # For simplicity, extend in both x and y directions
-        return segment.enlarge_with(int(extra_length / 2))
+        return segment.enlarge_with(extra_length // 2)
 
-    def _segment_center(self, segment: MergeObj) -> Point[int, int]:
-        """
-        Find the center point of a merging segment
+    # def _segment_center(self, segment: MergeObj) -> Point[int, int]:
+    #     """
+    #     Find the center point of a merging segment
 
-        Args:
-            segment: Merging segment
+    #     Args:
+    #         segment: Merging segment
 
-        Returns:
-            Center point
-        """
-        x_center = self._get_center(segment.impl.xcoord)
-        y_center = self._get_center(segment.impl.ycoord)
-        return Point(x_center, y_center)
+    #     Returns:
+    #         Center point
+    #     """
+    #     x_center = self._get_center(segment.impl.xcoord)
+    #     y_center = self._get_center(segment.impl.ycoord)
+    #     return Point(x_center, y_center)
 
-    def _get_center(self, coord: Any) -> int:
-        """
-        Get center value from coordinate (handles both int and Interval)
+    # def _get_center(self, coord: Any) -> int:
+    #     """
+    #     Get center value from coordinate (handles both int and Interval)
 
-        Args:
-            coord: Coordinate value (int or Interval)
+    #     Args:
+    #         coord: Coordinate value (int or Interval)
 
-        Returns:
-            Center value as integer
+    #     Returns:
+    #         Center value as integer
 
-        Examples:
-            >>> dme = DMEAlgorithm(LinearDelayCalculator())
-            >>> dme._get_center(10)
-            10
-            >>> dme._get_center(Interval(10, 20))
-            15
-        """
-        if isinstance(coord, Interval):
-            return (coord.lb + coord.ub) // 2
-        return coord
+    #     Examples:
+    #         >>> dme = DMEAlgorithm(LinearDelayCalculator())
+    #         >>> dme._get_center(10)
+    #         10
+    #         >>> dme._get_center(Interval(10, 20))
+    #         15
+    #     """
+    #     if isinstance(coord, Interval):
+    #         return (coord.lb + coord.ub) // 2
+    #     return coord
 
-    def _nearest_point_in_segment(
-        self, segment: MergeObj, target_segment: MergeObj
-    ) -> Point[int, int]:
+    def _nearest_point_in_segment(self, segment: MergeObj, target_segment: MergeObj):
         """
         Find the point in segment that is nearest to the target segment
 
@@ -528,27 +569,7 @@ class DMEAlgorithm:
             Nearest point in source segment to target segment
         """
         # For simplicity, use the segment center
-        return self._segment_center(segment)
-
-    def _manhattan_distance(self, p1: Point[int, int], p2: Point[int, int]) -> int:
-        """
-        Compute Manhattan distance between two points
-
-        Args:
-            p1: First point
-            p2: Second point
-
-        Returns:
-            Manhattan distance
-
-        Examples:
-            >>> dme = DMEAlgorithm(LinearDelayCalculator())
-            >>> p1 = Point(10, 20)
-            >>> p2 = Point(40, 60)
-            >>> dme._manhattan_distance(p1, p2)
-            70
-        """
-        return abs(p1.xcoord - p2.xcoord) + abs(p1.ycoord - p2.ycoord)
+        return segment.get_center()
 
     def analyze_skew(self, root: "TreeNode") -> Dict[str, Any]:
         """
@@ -685,7 +706,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks
@@ -699,8 +722,8 @@ def example_dme_usage() -> Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[st
 
     print("=== Linear Delay Model ===")
     linear_calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
-    dme_linear = DMEAlgorithm(delay_calculator=linear_calc)
-    clock_tree_linear = dme_linear.build_clock_tree(sinks)
+    dme_linear = DMEAlgorithm(sinks, delay_calculator=linear_calc)
+    clock_tree_linear = dme_linear.build_clock_tree()
     analysis_linear = dme_linear.analyze_skew(clock_tree_linear)
 
     print(f"Delay Model: {analysis_linear['delay_model']}")
@@ -711,8 +734,8 @@ def example_dme_usage() -> Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[st
 
     print("\n=== Elmore Delay Model ===")
     elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-    dme_elmore = DMEAlgorithm(delay_calculator=elmore_calc)
-    clock_tree_elmore = dme_elmore.build_clock_tree(sinks)
+    dme_elmore = DMEAlgorithm(sinks, delay_calculator=elmore_calc)
+    clock_tree_elmore = dme_elmore.build_clock_tree()
     analysis_elmore = dme_elmore.analyze_skew(clock_tree_elmore)
 
     print(f"Delay Model: {analysis_elmore['delay_model']}")
