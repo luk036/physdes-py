@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
-from icecream import ic
+from icecream import ic  # type: ignore
 
 
 @dataclass
@@ -729,9 +729,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> (
-    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
-):
+def example_dme_usage() -> Tuple[
+    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
+]:
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

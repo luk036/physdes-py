@@ -46,6 +46,19 @@ from typing import Any, Union
 
 
 def measure_of(obj: Any) -> Union[int, Any]:
+    """
+    The `measure_of` function calculates the measure of an object.
+
+    :param obj: The `obj` parameter represents the object for which the measure is to be calculated.
+    :return: the measure of the object.
+
+    Examples:
+        >>> measure_of(1)
+        1
+        >>> from physdes.interval import Interval
+        >>> measure_of(Interval(1, 2))
+        1
+    """
     if hasattr(obj, "measure"):
         return obj.measure()
     else:
@@ -294,6 +307,19 @@ def nearest(lhs: Any, rhs: Any) -> Any:
 
 
 def center(obj: Any) -> Any:
+    """
+    The `center` function calculates the center of an object.
+
+    :param obj: The `obj` parameter represents the object for which the center is to be calculated.
+    :return: the center of the object.
+
+    Examples:
+        >>> center(1)
+        1
+        >>> from physdes.interval import Interval
+        >>> center(Interval(1, 3))
+        2
+    """
     if hasattr(obj, "get_center"):
         return obj.get_center()
     else:
@@ -301,6 +327,19 @@ def center(obj: Any) -> Any:
 
 
 def lower(obj: Any) -> Any:
+    """
+    The `lower` function calculates the lower corner of an object.
+
+    :param obj: The `obj` parameter represents the object for which the lower corner is to be calculated.
+    :return: the lower corner of the object.
+
+    Examples:
+        >>> lower(1)
+        1
+        >>> from physdes.interval import Interval
+        >>> lower(Interval(1, 3))
+        1
+    """
     if hasattr(obj, "lower_corner"):
         return obj.lower_corner()
     else:
@@ -308,6 +347,19 @@ def lower(obj: Any) -> Any:
 
 
 def upper(obj: Any) -> Any:
+    """
+    The `upper` function calculates the upper corner of an object.
+
+    :param obj: The `obj` parameter represents the object for which the upper corner is to be calculated.
+    :return: the upper corner of the object.
+
+    Examples:
+        >>> upper(1)
+        1
+        >>> from physdes.interval import Interval
+        >>> upper(Interval(1, 3))
+        3
+    """
     if hasattr(obj, "upper_corner"):
         return obj.upper_corner()
     else:

@@ -41,7 +41,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar, Any
 from .generic import min_dist
 from .interval import enlarge
 from .point import Point
-from icecream import ic
+from icecream import ic  # type: ignore
 
 if TYPE_CHECKING:
     from .interval import Interval
@@ -122,6 +122,17 @@ class ManhattanArc(Generic[T1, T2]):
         return ManhattanArc(impl.xcoord, impl.ycoord)
 
     def __repr__(self) -> str:
+        """
+        The `__repr__` function returns a string representation of an `ManhattanArc` object, including the class
+        name and its x and y coordinates, which is useful for debugging.
+
+        :return: The `__repr__` method is returning a string representation of the `ManhattanArc` object.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> repr(a)
+            'ManhattanArc(-1, 9)'
+        """
         return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord})"
 
     def __str__(self) -> str:
@@ -160,7 +171,7 @@ class ManhattanArc(Generic[T1, T2]):
             return NotImplemented
         return self.impl == other.impl
 
-    def min_dist_with(self, other: "ManhattanArc[T1, T2]") -> int:
+    def min_dist_with(self, other: "ManhattanArc[Any, Any]") -> int:
         """
         The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
 
@@ -228,6 +239,11 @@ class ManhattanArc(Generic[T1, T2]):
         Calculates the center of the merging segment
 
         :return: The center of the merging segment.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_center())
+            (4, 5)
         """
         m = self.impl.get_center()
         return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
@@ -237,6 +253,11 @@ class ManhattanArc(Generic[T1, T2]):
         Calculates the lower corner of the merging segment
 
         :return: The lower corner of the merging segment.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_lower_corner())
+            (4, 5)
         """
         m = self.impl.lower_corner()
         return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
@@ -246,6 +267,11 @@ class ManhattanArc(Generic[T1, T2]):
         Calculates the upper corner of the merging segment
 
         :return: The upper corner of the merging segment.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_upper_corner())
+            (4, 5)
         """
         m = self.impl.upper_corner()
         return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
@@ -255,6 +281,11 @@ class ManhattanArc(Generic[T1, T2]):
         Calculates the center of the merging segment
 
         :return: The center of the merging segment.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.nearest_point_to(Point(0, 0)))
+            (4, 5)
         """
         ms = ManhattanArc.construct(other.xcoord, other.ycoord)
         distance = self.min_dist_with(ms)
@@ -288,6 +319,12 @@ class ManhattanArc(Generic[T1, T2]):
 
         :return: The `merge_with` method returns a new `ManhattanArc` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> b = ManhattanArc(7 - 9, 7 + 9)
+            >>> print(a.merge_with(b, 3))
+            /[-4, 2], [12, 12]/
         """
         distance = self.min_dist_with(other)
         trr1 = self.enlarge_with(alpha)

@@ -421,7 +421,7 @@ def create_comparison_visualization(
 
         # Add title for this subplot
         svg_content.append(
-            f'<text x="{offset_x + sub_width//2}" y="{offset_y + 20}" class="title" text-anchor="middle">{tree_data.get("title", f"Tree {i+1}")}</text>'
+            f'<text x="{offset_x + sub_width // 2}" y="{offset_y + 20}" class="title" text-anchor="middle">{tree_data.get("title", f"Tree {i + 1}")}</text>'
         )
 
         # Create a temporary SVG for this tree

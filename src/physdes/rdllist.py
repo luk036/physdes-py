@@ -108,9 +108,38 @@ class RDllist:
                 dl2 = dl1
 
     def __getitem__(self, k: int) -> Dllink[int]:
+        """
+        The `__getitem__` function returns the item at the given index.
+
+        :param k: The `k` parameter is an integer that represents the index of the item to be retrieved
+        :type k: int
+        :return: The item at the given index.
+
+        Examples:
+            >>> cdll = RDllist(5)
+            >>> cdll[2].data
+            2
+        """
         return self.cycle[k]
 
     def from_node(self, k: int) -> RDllIterator:
+        """
+        The `from_node` function returns an iterator that starts from the given node.
+
+        :param k: The `k` parameter is an integer that represents the starting node
+        :type k: int
+        :return: An iterator that starts from the given node.
+
+        Examples:
+            >>> cdll = RDllist(5)
+            >>> it = cdll.from_node(2)
+            >>> for vlink in it:
+            ...     print(vlink.data)
+            3
+            4
+            0
+            1
+        """
         return RDllIterator(self.cycle[k])
 
     def __iter__(self) -> RDllIterator:

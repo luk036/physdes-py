@@ -72,6 +72,12 @@ def parse_args(args: List[str]) -> argparse.Namespace:
 
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
+
+    Examples:
+        >>> parse_args(["--version"])
+        Traceback (most recent call last):
+        ...
+        SystemExit: 0
     """
     parser = argparse.ArgumentParser(description="Just a Fibonacci demonstration")
     parser.add_argument(
@@ -104,6 +110,9 @@ def setup_logging(loglevel: int) -> None:
 
     Args:
       loglevel (int): minimum loglevel for emitting messages
+
+    Examples:
+        >>> setup_logging(logging.INFO)
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
     logging.basicConfig(
@@ -120,6 +129,10 @@ def main(args: List[str]) -> None:
     Args:
       args (List[str]): command line parameters as list of strings
           (for example  ``["--verbose", "42"]``).
+
+    Examples:
+        >>> main(["1"])
+        The 1-th Fibonacci number is 1
     """
     parsed_args = parse_args(args)
     setup_logging(parsed_args.loglevel)
@@ -132,6 +145,12 @@ def run():
     """Calls :func:`main` passing the CLI arguments extracted from :obj:`sys.argv`
 
     This function can be used as entry point to create console scripts with setuptools.
+
+    Examples:
+        >>> import sys
+        >>> sys.argv = ["", "1"]
+        >>> run()
+        The 1-th Fibonacci number is 1
     """
     main(sys.argv[1:])
 

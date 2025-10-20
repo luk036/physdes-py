@@ -413,7 +413,13 @@ class Polygon(Generic[T]):
 def partition(
     pred: Callable[[Any], bool], iterable: Iterable[Any]
 ) -> Tuple[List[Any], List[Any]]:
-    "Use a predicate to partition entries into true entries and false entries"
+    """Use a predicate to partition entries into true entries and false entries
+
+    Examples:
+        >>> is_odd = lambda x: x % 2 != 0
+        >>> partition(is_odd, range(10))
+        ([1, 3, 5, 7, 9], [0, 2, 4, 6, 8])
+    """
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
     t1, t2 = tee(iterable)
     return list(filter(pred, t1)), list(filterfalse(pred, t2))
