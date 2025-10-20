@@ -9,7 +9,7 @@ import doctest
 from typing import List, Optional, Dict, Any, Tuple
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
-from physdes.merge_obj import MergeObj
+from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
 from icecream import ic
 
@@ -65,7 +65,7 @@ class TreeNode:
     wire_length: int = 0
     delay: float = 0.0
     capacitance: float = 0.0
-    need_buffers_or_snakes_to_balance = False
+    need_elongation = False
 
 
 class DelayCalculator(ABC):
@@ -170,10 +170,16 @@ class LinearDelayCalculator(DelayCalculator):
     ) -> int:
         """Calculate extra length based on skew"""
         # Compute required delay balancing
-        half = (
+        extend_left = (
             round((node_right.delay - node_left.delay) / self.delay_per_unit) + distance
         ) // 2
-        return half
+        if extend_left < 0:
+            extend_left = 0
+            node_right.need_elongation = True
+        elif extend_left > distance:
+            extend_left = distance
+            node_left.need_elongation = True
+        return extend_left
 
 
 class ElmoreDelayCalculator(DelayCalculator):
@@ -364,7 +370,7 @@ class DMEAlgorithm:
 
         return parent
 
-    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, MergeObj]:
+    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, ManhattanArc]:
         """
         Compute merging segments for all nodes in bottom-up order
 
@@ -376,10 +382,10 @@ class DMEAlgorithm:
         """
         merging_segments = {}
 
-        def compute_segment(node: "TreeNode") -> MergeObj:
+        def compute_segment(node: "TreeNode") -> ManhattanArc:
             if node.left is None and node.right is None:
                 # Leaf node: merging segment is the sink point (delay = 0.0)
-                ms = MergeObj.construct(node.position.xcoord, node.position.ycoord)
+                ms = ManhattanArc.construct(node.position.xcoord, node.position.ycoord)
                 merging_segments[node.name] = ms
                 return ms
 
@@ -423,11 +429,11 @@ class DMEAlgorithm:
             #             )
             #         )
             #         left_ms = self._extend_segment(left_ms, extra_length)
-            half = self.delay_calculator.calculate_extra_length(
+            extend_left = self.delay_calculator.calculate_extra_length(
                 node.left, node.right, distance
             )
             # Merge the segments
-            merged_segment = left_ms.merge_with(right_ms, half)
+            merged_segment = left_ms.merge_with(right_ms, extend_left)
             merging_segments[node.name] = merged_segment
 
             # Update node capacitance (sum of children + wire capacitance)
@@ -440,7 +446,7 @@ class DMEAlgorithm:
         return merging_segments
 
     def _embed_tree(
-        self, merging_tree: "TreeNode", merging_segments: Dict[str, MergeObj]
+        self, merging_tree: "TreeNode", merging_segments: Dict[str, ManhattanArc]
     ) -> "TreeNode":
         """
         Embed the clock tree by selecting actual positions for internal nodes
@@ -454,7 +460,7 @@ class DMEAlgorithm:
         """
 
         def embed_node(
-            node: Optional["TreeNode"], parent_segment: Optional[MergeObj] = None
+            node: Optional["TreeNode"], parent_segment: Optional[ManhattanArc] = None
         ):
             if node is None:
                 return
@@ -508,7 +514,7 @@ class DMEAlgorithm:
 
         compute_delays(root)
 
-    def _extend_segment(self, segment: MergeObj, extra_length: int) -> MergeObj:
+    def _extend_segment(self, segment: ManhattanArc, extra_length: int) -> ManhattanArc:
         """
         Extend a merging segment to increase wire length
 
@@ -522,7 +528,7 @@ class DMEAlgorithm:
         # For simplicity, extend in both x and y directions
         return segment.enlarge_with(extra_length // 2)
 
-    # def _segment_center(self, segment: MergeObj) -> Point[int, int]:
+    # def _segment_center(self, segment: ManhattanArc) -> Point[int, int]:
     #     """
     #     Find the center point of a merging segment
 
@@ -557,7 +563,9 @@ class DMEAlgorithm:
     #         return (coord.lb + coord.ub) // 2
     #     return coord
 
-    def _nearest_point_in_segment(self, segment: MergeObj, target_segment: MergeObj):
+    def _nearest_point_in_segment(
+        self, segment: ManhattanArc, target_segment: ManhattanArc
+    ):
         """
         Find the point in segment that is nearest to the target segment
 

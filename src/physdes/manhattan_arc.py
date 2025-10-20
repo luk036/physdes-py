@@ -1,33 +1,33 @@
 """
-MergeObj Class
+ManhattanArc Class
 
-This code defines a class called MergeObj, which represents a geometric object in a 2D space.
+This code defines a class called ManhattanArc, which represents a geometric object in a 2D space.
 The purpose of this class is to handle operations on points, segments, or regions that are
 rotated 45 degrees. It's designed to work with different types of coordinates, such as
 integers, floats, or intervals.
 
-The MergeObj class takes two inputs when creating an object: xcoord and ycoord. These
+The ManhattanArc class takes two inputs when creating an object: xcoord and ycoord. These
 represent the coordinates of the object in the rotated space. The class doesn't produce a
 specific output on its own, but it provides various methods to manipulate and interact
 with these objects.
 
 The class achieves its purpose by storing the coordinates in a Point object and providing
 methods to perform operations like translation, enlargement, intersection, and merging
-with other MergeObj instances. It uses a 45-degree rotated coordinate system, which allows
+with other ManhattanArc instances. It uses a 45-degree rotated coordinate system, which allows
 for easier calculations in certain geometric operations.
 
 Some important logic flows in this code include:
 
 1. The constructor (init) creates a Point object with the given coordinates.
-2. The construct method creates a MergeObj from regular x and y coordinates by rotating
+2. The construct method creates a ManhattanArc from regular x and y coordinates by rotating
    them 45 degrees.
 3. The translation methods (iadd and isub) move the object by adding or subtracting
    vector components.
 4. The min_dist_with method calculates the minimum rectilinear distance between two
-   MergeObj instances.
-5. The enlarge_with method creates a new MergeObj with enlarged coordinates.
-6. The intersect_with method finds the intersection point between two MergeObj instances.
-7. The merge_with method combines two MergeObj instances by enlarging them based on their
+   ManhattanArc instances.
+5. The enlarge_with method creates a new ManhattanArc with enlarged coordinates.
+6. The intersect_with method finds the intersection point between two ManhattanArc instances.
+7. The merge_with method combines two ManhattanArc instances by enlarging them based on their
    distance and finding their intersection.
 
 These operations allow for complex geometric manipulations, which can be useful in various
@@ -49,7 +49,7 @@ T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]")
 T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]")
 
 
-class MergeObj(Generic[T1, T2]):
+class ManhattanArc(Generic[T1, T2]):
     """
     Merging point, segment, or region ⛝
 
@@ -95,30 +95,30 @@ class MergeObj(Generic[T1, T2]):
         :type ycoord: T2
 
         Examples:
-            >>> a = MergeObj(4 - 5, 4 + 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> print(a)
             /-1, 9/
         """
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
     @staticmethod
-    def construct(xcoord: int, ycoord: int) -> "MergeObj[int, int]":
+    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
         """
-        The function constructs a MergeObj object from the given x and y coordinates.
+        The function constructs a ManhattanArc object from the given x and y coordinates.
 
         :param xcoord: An integer representing the x-coordinate of the point
         :type xcoord: int
         :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a Cartesian coordinate system
         :type ycoord: int
-        :return: an instance of the `MergeObj` class with the `xcoord` and `ycoord` values of the `impl` object.
+        :return: an instance of the `ManhattanArc` class with the `xcoord` and `ycoord` values of the `impl` object.
 
         Examples:
-            >>> a = MergeObj.construct(4, 5)
+            >>> a = ManhattanArc.construct(4, 5)
             >>> print(a)
             /-1, 9/
         """
         impl = Point(xcoord - ycoord, xcoord + ycoord)
-        return MergeObj(impl.xcoord, impl.ycoord)
+        return ManhattanArc(impl.xcoord, impl.ycoord)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.impl.xcoord}, {self.impl.ycoord})"
@@ -133,7 +133,7 @@ class MergeObj(Generic[T1, T2]):
             coordinates of the object.
 
         Examples:
-            >>> a = MergeObj(4 - 5, 4 + 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> print(a)
             /-1, 9/
         """
@@ -141,25 +141,25 @@ class MergeObj(Generic[T1, T2]):
 
     def __eq__(self, other: object) -> bool:
         """
-        The `__eq__` function checks if two `MergeObj` instances have the same `impl` attribute.
+        The `__eq__` function checks if two `ManhattanArc` instances have the same `impl` attribute.
 
         :param other: The `other` parameter represents the object that we are comparing with the current object
         :return: The `__eq__` method is returning a boolean value.
 
         Examples:
-            >>> a = MergeObj(4 - 5, 4 + 5)
-            >>> b = MergeObj(7 - 9, 7 + 9)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> b = ManhattanArc(7 - 9, 7 + 9)
             >>> a == b
             False
-            >>> c = MergeObj(-1, 9)
+            >>> c = ManhattanArc(-1, 9)
             >>> a == c
             True
         """
-        if not isinstance(other, MergeObj):
+        if not isinstance(other, ManhattanArc):
             return NotImplemented
         return self.impl == other.impl
 
-    def min_dist_with(self, other: "MergeObj[T1, T2]") -> int:
+    def min_dist_with(self, other: "ManhattanArc[T1, T2]") -> int:
         """
         The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
 
@@ -169,8 +169,8 @@ class MergeObj(Generic[T1, T2]):
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
-            >>> r1 = MergeObj(4 - 5, 4 + 5)
-            >>> r2 = MergeObj(7 - 9, 7 + 9)
+            >>> r1 = ManhattanArc(4 - 5, 4 + 5)
+            >>> r2 = ManhattanArc(7 - 9, 7 + 9)
             >>> r1.min_dist_with(r2)
             7
         """
@@ -180,47 +180,47 @@ class MergeObj(Generic[T1, T2]):
             min_dist(self.impl.ycoord, other.impl.ycoord),
         )
 
-    def enlarge_with(self, alpha: int) -> "MergeObj[Any, Any]":
+    def enlarge_with(self, alpha: int) -> "ManhattanArc[Any, Any]":
         """
-        The `enlarge_with` function takes an integer `alpha` and returns a new `MergeObj` object with
+        The `enlarge_with` function takes an integer `alpha` and returns a new `ManhattanArc` object with
         enlarged coordinates.
 
         :param alpha: The parameter `alpha` is an integer that represents the factor by which the
-            coordinates of the `MergeObj` object should be enlarged
+            coordinates of the `ManhattanArc` object should be enlarged
 
         :type alpha: int
 
-        :return: The `enlarge_with` method is returning a new `MergeObj` object with the enlarged coordinates.
+        :return: The `enlarge_with` method is returning a new `ManhattanArc` object with the enlarged coordinates.
 
         Examples:
-            >>> a = MergeObj(4 - 5, 4 + 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> r = a.enlarge_with(1)
             >>> print(r)
             /[-2, 0], [8, 10]/
         """
         xcoord = enlarge(self.impl.xcoord, alpha)  # TODO: check
         ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
-        return MergeObj(xcoord, ycoord)  # TODO
+        return ManhattanArc(xcoord, ycoord)  # TODO
 
-    def intersect_with(self, other: "MergeObj[T1, T2]") -> "MergeObj[T1, T2]":
+    def intersect_with(self, other: "ManhattanArc[T1, T2]") -> "ManhattanArc[T1, T2]":
         """
-        The function calculates the intersection point between two MergeObj objects and returns a new
-        MergeObj object with the coordinates of the intersection point.
+        The function calculates the intersection point between two ManhattanArc objects and returns a new
+        ManhattanArc object with the coordinates of the intersection point.
 
         :param other: The "other" parameter is an object of the same class as the current object. It
-            represents another instance of the MergeObj class that we want to find the intersection with
+            represents another instance of the ManhattanArc class that we want to find the intersection with
 
-        :return: a MergeObj object with the x-coordinate and y-coordinate of the intersection point
+        :return: a ManhattanArc object with the x-coordinate and y-coordinate of the intersection point
             between the self object and the other object.
 
         Examples:
-            >>> a = MergeObj(4 - 5, 4 + 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> r = a.intersect_with(a)
             >>> print(r)
             /-1, 9/
         """
         point = self.impl.intersect_with(other.impl)  # TODO
-        return MergeObj(point.xcoord, point.ycoord)
+        return ManhattanArc(point.xcoord, point.ycoord)
 
     def get_center(self) -> Point[Any, Any]:
         """
@@ -231,7 +231,9 @@ class MergeObj(Generic[T1, T2]):
         m = self.impl.get_center()
         return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
 
-    def merge_with(self, other: "MergeObj[T1, T2]", half: int) -> "MergeObj[T1, T2]":
+    def merge_with(
+        self, other: "ManhattanArc[T1, T2]", half: int
+    ) -> "ManhattanArc[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
         the two objects, enlarges the objects based on the calculated distance, finds the intersection
@@ -240,11 +242,11 @@ class MergeObj(Generic[T1, T2]):
         :param other: The "other" parameter is an object of the same class as the current object. It
             represents another instance of the class that we want to merge with the current instance
 
-        :return: The `merge_with` method returns a new `MergeObj` object with the x-coordinate and
+        :return: The `merge_with` method returns a new `ManhattanArc` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
         """
         alpha = self.min_dist_with(other)
         trr1 = self.impl.enlarge_with(half)
         trr2 = other.impl.enlarge_with(alpha - half)
         impl = trr1.intersect_with(trr2)
-        return MergeObj(impl.xcoord, impl.ycoord)
+        return ManhattanArc(impl.xcoord, impl.ycoord)

@@ -48,7 +48,7 @@ def test_route3d_with_steiner():
     print(svg_output)
 
     # Save to file
-    save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_steiner.svg")
+    # save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_steiner.svg")
 
 
 def test_route3d_with_constraints():
@@ -75,4 +75,4 @@ def test_route3d_with_constraints():
     print(svg_output)
 
     # Save to file
-    save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_constraint.svg")
+    # save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_constraint.svg")
