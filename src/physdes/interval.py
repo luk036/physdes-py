@@ -625,11 +625,37 @@ class Interval(Generic[T]):
         :return: The center of the point.
 
         Examples:
-            >>> a = Interval[3, 7]
+            >>> a = Interval(3, 7)
             >>> a.get_center()
             5
         """
         return self.lb + (self.ub - self.lb) // 2
+
+    def lower_corner(self) -> T:
+        """
+        Calculates the lower corner of the point.
+
+        :return: The lower corner of the point.
+
+        Examples:
+            >>> a = Interval(3, 7)
+            >>> a.lower_corner()
+            3
+        """
+        return self.lb
+
+    def upper_corner(self) -> T:
+        """
+        Calculates the upper corner of the point.
+
+        :return: The upper corner of the point.
+
+        Examples:
+            >>> a = Interval(3, 7)
+            >>> a.upper_corner()
+            7
+        """
+        return self.ub
 
     # def min_dist_change_with(self, obj: Union["Interval[T]", T]):
     #     """[summary]

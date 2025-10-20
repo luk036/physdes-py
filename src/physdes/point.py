@@ -49,6 +49,8 @@ from .generic import (
     nearest,
     measure_of,
     center,
+    lower,
+    upper,
 )
 from .interval import enlarge, hull, Interval
 from .vector2 import Vector2
@@ -586,8 +588,40 @@ class Point(Generic[T1, T2]):
             >>> a = Point(3, 4)
             >>> a.get_center()
             Point(3, 4)
-            >>> a = Point(Interval[3, 7], 4)
+            >>> a = Point(Interval(3, 7), 4)
             >>> a.get_center()
             Point(5, 4)
         """
         return Point(center(self.xcoord), center(self.ycoord))
+
+    def lower_corner(self) -> "Point[Any, Any]":
+        """
+        Calculates the lower corner of the point.
+
+        :return: The lower corner of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.lower_corner()
+            Point(3, 4)
+            >>> a = Point(Interval(3, 7), 4)
+            >>> a.lower_corner()
+            Point(3, 4)
+        """
+        return Point(lower(self.xcoord), lower(self.ycoord))
+
+    def upper_corner(self) -> "Point[Any, Any]":
+        """
+        Calculates the upper corner of the point.
+
+        :return: The upper corner of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.upper_corner()
+            Point(3, 4)
+            >>> a = Point(Interval(3, 7), 4)
+            >>> a.upper_corner()
+            Point(7, 4)
+        """
+        return Point(upper(self.xcoord), upper(self.ycoord))

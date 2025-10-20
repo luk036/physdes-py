@@ -87,9 +87,9 @@ class DelayCalculator(ABC):
         pass
 
     @abstractmethod
-    def calculate_extra_length(
+    def calculate_extra_length_and_delay(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> int:
+    ) -> Tuple[int, float, float]:
         """Calculate extra length based on skew"""
         pass
 
@@ -165,21 +165,25 @@ class LinearDelayCalculator(DelayCalculator):
         """
         return self.capacitance_per_unit * length
 
-    def calculate_extra_length(
+    def calculate_extra_length_and_delay(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> int:
+    ) -> Tuple[int, float, float]:
         """Calculate extra length based on skew"""
         # Compute required delay balancing
         extend_left = (
             round((node_right.delay - node_left.delay) / self.delay_per_unit) + distance
         ) // 2
+        delay_left = node_left.delay + extend_left * self.delay_per_unit
+        delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
         if extend_left < 0:
             extend_left = 0
             node_right.need_elongation = True
+            ic(extend_left)
         elif extend_left > distance:
             extend_left = distance
             node_left.need_elongation = True
-        return extend_left
+            ic(extend_left)
+        return extend_left, delay_left, delay_right
 
 
 class ElmoreDelayCalculator(DelayCalculator):
@@ -256,13 +260,23 @@ class ElmoreDelayCalculator(DelayCalculator):
         """
         return self.unit_capacitance * length
 
-    def calculate_extra_length(
+    def calculate_extra_length_and_delay(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> int:
+    ) -> Tuple[int, float, float]:
         """Calculate extra length based on skew"""
         # Compute required delay balancing
-        half = (round((node_right.delay - node_left.delay)) + distance) // 2
-        return half
+        extend_left = (round((node_right.delay - node_left.delay)) + distance) // 2
+        delay_left = node_left.delay + extend_left
+        delay_right = node_right.delay + (distance - extend_left)
+        if extend_left < 0:
+            extend_left = 0
+            node_right.need_elongation = True
+            ic(extend_left)
+        elif extend_left > distance:
+            extend_left = distance
+            node_left.need_elongation = True
+            ic(extend_left)
+        return extend_left, delay_left, delay_right
 
 
 class DMEAlgorithm:
@@ -281,12 +295,13 @@ class DMEAlgorithm:
 
         Examples:
             >>> linear_calc = LinearDelayCalculator(delay_per_unit=0.5)
-            >>> dme = DMEAlgorithm(delay_calculator=linear_calc)
+            >>> sinks = [Sink("s1", Point(10, 20), 1.0)]
+            >>> dme = DMEAlgorithm(sinks, delay_calculator=linear_calc)
             >>> isinstance(dme.delay_calculator, LinearDelayCalculator)
             True
 
             >>> elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-            >>> dme = DMEAlgorithm(delay_calculator=elmore_calc)
+            >>> dme = DMEAlgorithm(sinks, delay_calculator=elmore_calc)
             >>> isinstance(dme.delay_calculator, ElmoreDelayCalculator)
             True
         """
@@ -311,7 +326,7 @@ class DMEAlgorithm:
         ]
 
         # Step 2: Build merging tree using balanced bipartition
-        merging_tree = self._build_merging_tree(nodes, True)
+        merging_tree = self._build_merging_tree(nodes, False)
 
         # Step 3: Perform bottom-up merging segment computation
         merging_segments = self._compute_merging_segments(merging_tree)
@@ -364,7 +379,7 @@ class DMEAlgorithm:
         )
         self.node_id += 1
 
-        ic(parent.name)
+        # ic(parent.name)
         left_child.parent = parent
         right_child.parent = parent
 
@@ -429,9 +444,12 @@ class DMEAlgorithm:
             #             )
             #         )
             #         left_ms = self._extend_segment(left_ms, extra_length)
-            extend_left = self.delay_calculator.calculate_extra_length(
-                node.left, node.right, distance
+            extend_left, delay_left, _ = (
+                self.delay_calculator.calculate_extra_length_and_delay(
+                    node.left, node.right, distance
+                )
             )
+            node.delay = node.left.delay + delay_left
             # Merge the segments
             merged_segment = left_ms.merge_with(right_ms, extend_left)
             merging_segments[node.name] = merged_segment
@@ -439,7 +457,6 @@ class DMEAlgorithm:
             # Update node capacitance (sum of children + wire capacitance)
             wire_cap = self.delay_calculator.calculate_wire_capacitance(distance)
             node.capacitance = node.left.capacitance + node.right.capacitance + wire_cap
-
             return merged_segment
 
         compute_segment(root)
@@ -468,16 +485,13 @@ class DMEAlgorithm:
             if parent_segment is None:
                 # Root node: choose center of merging segment
                 node_segment = merging_segments[node.name]
-                node.position = node_segment.get_center()
+                node.position = node_segment.get_upper_corner()
             else:
                 # Internal node: choose point in merging segment closest to parent
                 node_segment = merging_segments[node.name]
-                node.position = self._nearest_point_in_segment(
-                    node_segment, parent_segment
-                )
-
                 # Compute wire length to parent
                 if node.parent:
+                    node.position = node_segment.nearest_point_to(node.parent.position)
                     node.wire_length = node.position.min_dist_with(node.parent.position)
 
             # Recursively embed children
@@ -514,19 +528,19 @@ class DMEAlgorithm:
 
         compute_delays(root)
 
-    def _extend_segment(self, segment: ManhattanArc, extra_length: int) -> ManhattanArc:
-        """
-        Extend a merging segment to increase wire length
+    # def _extend_segment(self, segment: ManhattanArc, extra_length: int) -> ManhattanArc:
+    #     """
+    #     Extend a merging segment to increase wire length
 
-        Args:
-            segment: Original merging segment
-            extra_length: Amount to extend
+    #     Args:
+    #         segment: Original merging segment
+    #         extra_length: Amount to extend
 
-        Returns:
-            Extended merging segment
-        """
-        # For simplicity, extend in both x and y directions
-        return segment.enlarge_with(extra_length // 2)
+    #     Returns:
+    #         Extended merging segment
+    #     """
+    #     # For simplicity, extend in both x and y directions
+    #     return segment.enlarge_with(extra_length // 2)
 
     # def _segment_center(self, segment: ManhattanArc) -> Point[int, int]:
     #     """
@@ -563,21 +577,22 @@ class DMEAlgorithm:
     #         return (coord.lb + coord.ub) // 2
     #     return coord
 
-    def _nearest_point_in_segment(
-        self, segment: ManhattanArc, target_segment: ManhattanArc
-    ):
-        """
-        Find the point in segment that is nearest to the target segment
+    # def _nearest_point_in_segment(
+    #     self, segment: ManhattanArc, target_segment: ManhattanArc
+    # ):
+    #     """
+    #     Find the point in segment that is nearest to the target segment
 
-        Args:
-            segment: Source segment to find point in
-            target_segment: Target segment to get close to
+    #     Args:
+    #         segment: Source segment to find point in
+    #         target_segment: Target segment to get close to
 
-        Returns:
-            Nearest point in source segment to target segment
-        """
-        # For simplicity, use the segment center
-        return segment.get_center()
+    #     Returns:
+    #         Nearest point in source segment to target segment
+    #     """
+    #     # For simplicity, use the segment center
+    #     # return segment.get_center()
+    #     return segment.nearest_point_to(target_segment)
 
     def analyze_skew(self, root: "TreeNode") -> Dict[str, Any]:
         """

@@ -300,6 +300,20 @@ def center(obj: Any) -> Any:
         return obj  # assume scalar
 
 
+def lower(obj: Any) -> Any:
+    if hasattr(obj, "lower_corner"):
+        return obj.lower_corner()
+    else:
+        return obj  # assume scalar
+
+
+def upper(obj: Any) -> Any:
+    if hasattr(obj, "upper_corner"):
+        return obj.upper_corner()
+    else:
+        return obj  # assume scalar
+
+
 def displacement(lhs: Any, rhs: Any) -> Any:
     """
     The `displacement` function calculates the displacement between two objects or scalars.

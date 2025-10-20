@@ -41,6 +41,7 @@ from typing import TYPE_CHECKING, Generic, TypeVar, Any
 from .generic import min_dist
 from .interval import enlarge
 from .point import Point
+from icecream import ic
 
 if TYPE_CHECKING:
     from .interval import Interval
@@ -231,8 +232,51 @@ class ManhattanArc(Generic[T1, T2]):
         m = self.impl.get_center()
         return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
 
+    def get_lower_corner(self) -> Point[Any, Any]:
+        """
+        Calculates the lower corner of the merging segment
+
+        :return: The lower corner of the merging segment.
+        """
+        m = self.impl.lower_corner()
+        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+
+    def get_upper_corner(self) -> Point[Any, Any]:
+        """
+        Calculates the upper corner of the merging segment
+
+        :return: The upper corner of the merging segment.
+        """
+        m = self.impl.upper_corner()
+        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+
+    def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
+        """
+        Calculates the center of the merging segment
+
+        :return: The center of the merging segment.
+        """
+        ms = ManhattanArc.construct(other.xcoord, other.ycoord)
+        distance = self.min_dist_with(ms)
+        trr = ms.enlarge_with(distance)
+        lb = self.impl.lower_corner()
+        ub = self.impl.upper_corner()
+        m = self.impl.get_center()
+        if trr.impl.contains(lb):
+            m = lb
+        elif trr.impl.contains(ub):
+            m = ub
+        else:
+            ic(distance)
+            ic(trr)
+            ic(self.impl)
+            ic(lb)
+            ic(ub)
+            ic(trr.impl.contains(ub))
+        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+
     def merge_with(
-        self, other: "ManhattanArc[T1, T2]", half: int
+        self, other: "ManhattanArc[T1, T2]", alpha: int
     ) -> "ManhattanArc[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
@@ -245,8 +289,8 @@ class ManhattanArc(Generic[T1, T2]):
         :return: The `merge_with` method returns a new `ManhattanArc` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
         """
-        alpha = self.min_dist_with(other)
-        trr1 = self.impl.enlarge_with(half)
-        trr2 = other.impl.enlarge_with(alpha - half)
-        impl = trr1.intersect_with(trr2)
-        return ManhattanArc(impl.xcoord, impl.ycoord)
+        distance = self.min_dist_with(other)
+        trr1 = self.enlarge_with(alpha)
+        trr2 = other.enlarge_with(distance - alpha)
+        localimpl = trr1.impl.intersect_with(trr2.impl)
+        return ManhattanArc(localimpl.xcoord, localimpl.ycoord)

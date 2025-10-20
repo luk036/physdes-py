@@ -2,7 +2,6 @@ from lds_gen.ilds import Halton
 
 from physdes.router.routing_tree import (
     visualize_routing_tree3d_svg,
-    save_routing_tree3d_svg,
 )
 from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
