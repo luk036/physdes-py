@@ -6,3 +6,4 @@ dependencies:
   - pytest-benchmark
   - hypothesis
   - typing_extensions
+  - icecream
