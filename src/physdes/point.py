@@ -41,18 +41,18 @@ manipulations in their code.
 from typing import Any, Generic, TypeVar, Union
 
 from .generic import (
+    center,
     contain,
     displacement,
     intersection,
-    min_dist,
-    overlap,
-    nearest,
-    measure_of,
-    center,
     lower,
+    measure_of,
+    min_dist,
+    nearest,
+    overlap,
     upper,
 )
-from .interval import enlarge, hull, Interval
+from .interval import Interval, enlarge, hull
 from .vector2 import Vector2
 
 T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", Any)

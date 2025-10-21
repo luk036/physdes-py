@@ -46,7 +46,7 @@ various applications involving 2D geometry.
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Callable, Generic, List, TypeVar, Tuple, Iterable, Any
+from typing import Any, Callable, Generic, Iterable, List, Tuple, TypeVar
 
 from mywheel.dllist import Dllink
 

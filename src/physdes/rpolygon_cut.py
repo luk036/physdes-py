@@ -1,27 +1,29 @@
 """
 Rectilinear Polygon Cutting Algorithms.
 
-This module provides a set of functions for partitioning rectilinear polygons into convex 
-components. This is a common operation in computational geometry and is used in various 
+This module provides a set of functions for partitioning rectilinear polygons into convex
+components. This is a common operation in computational geometry and is used in various
 applications, such as VLSI physical design, computer graphics, and robotics.
 
-The core functionality of this module is to take a rectilinear polygon, which may be 
-concave, and decompose it into a set of smaller, convex rectilinear polygons. This is 
+The core functionality of this module is to take a rectilinear polygon, which may be
+concave, and decompose it into a set of smaller, convex rectilinear polygons. This is
 achieved by identifying concave vertices and introducing cuts to resolve the concavities.
 
 The main functions provided are:
-- `rpolygon_cut_convex()`: A recursive algorithm that cuts a rectilinear polygon into 
+- `rpolygon_cut_convex()`: A recursive algorithm that cuts a rectilinear polygon into
   convex pieces.
-- `rpolygon_cut_explicit()`: An alternative cutting algorithm that also produces convex 
+- `rpolygon_cut_explicit()`: An alternative cutting algorithm that also produces convex
   partitions.
 
-These functions are essential for simplifying complex polygon geometries, making them 
-easier to process in downstream applications. The algorithms are designed to be robust 
+These functions are essential for simplifying complex polygon geometries, making them
+easier to process in downstream applications. The algorithms are designed to be robust
 and efficient, handling various polygon shapes and complexities.
 """
 import math
 from typing import Callable, List, Optional, Tuple
+
 from mywheel.dllist import Dllink
+
 from .point import Point
 from .rdllist import RDllist
 
@@ -32,14 +34,14 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
     """
     Finds the point in a polygon that is closest to a given vertex.
 
-    This function is a key helper for the polygon cutting algorithms. When a concave 
-    vertex is identified, this function is used to find the best vertex to connect it 
-    to, in order to create a cut that resolves the concavity. The "best" vertex is 
+    This function is a key helper for the polygon cutting algorithms. When a concave
+    vertex is identified, this function is used to find the best vertex to connect it
+    to, in order to create a cut that resolves the concavity. The "best" vertex is
     the one that is closest in either the horizontal or vertical direction.
 
-    The function iterates through the vertices of the polygon and calculates the 
-    Manhattan distance to the given vertex (`vcurr`). It keeps track of the minimum 
-    distance found and returns the vertex that corresponds to this minimum distance, 
+    The function iterates through the vertices of the polygon and calculates the
+    Manhattan distance to the given vertex (`vcurr`). It keeps track of the minimum
+    distance found and returns the vertex that corresponds to this minimum distance,
     along with a flag indicating whether the closest connection is vertical or horizontal.
 
     Args:
@@ -47,7 +49,7 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
         vcurr: The vertex from which to measure the distance.
 
     Returns:
-        A tuple containing the closest vertex and a boolean indicating whether the 
+        A tuple containing the closest vertex and a boolean indicating whether the
         connection is vertical (True) or horizontal (False).
     """
     vnext = vcurr.next
@@ -177,16 +179,16 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
 
-    This function implements a recursive algorithm to partition a given rectilinear 
-    polygon into a set of convex components. The process begins by identifying a 
-    concave vertex in the polygon. Once a concave vertex is found, a cut is made to 
-    another vertex in the polygon, effectively splitting the polygon into two smaller 
-    polygons. This process is then applied recursively to the resulting polygons until 
+    This function implements a recursive algorithm to partition a given rectilinear
+    polygon into a set of convex components. The process begins by identifying a
+    concave vertex in the polygon. Once a concave vertex is found, a cut is made to
+    another vertex in the polygon, effectively splitting the polygon into two smaller
+    polygons. This process is then applied recursively to the resulting polygons until
     all of them are convex.
 
-    The choice of the cut is critical for the efficiency and quality of the partitioning. 
-    This implementation uses the `find_min_dist_point` function to select a cut that 
-    connects the concave vertex to the nearest vertex in the polygon, which helps to 
+    The choice of the cut is critical for the efficiency and quality of the partitioning.
+    This implementation uses the `find_min_dist_point` function to select a cut that
+    connects the concave vertex to the nearest vertex in the polygon, which helps to
     create well-shaped partitions.
 
     Args:
@@ -300,15 +302,15 @@ def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSe
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
 
-    This function provides an alternative algorithm for partitioning a rectilinear polygon 
-    into convex components. Like `rpolygon_cut_convex`, it works by identifying concave 
-    vertices and introducing cuts to resolve them. The underlying logic for selecting 
-    cuts and performing the partitioning may differ, but the end result is the same: a 
+    This function provides an alternative algorithm for partitioning a rectilinear polygon
+    into convex components. Like `rpolygon_cut_convex`, it works by identifying concave
+    vertices and introducing cuts to resolve them. The underlying logic for selecting
+    cuts and performing the partitioning may differ, but the end result is the same: a
     set of convex rectilinear polygons.
 
-    This function can be used as a drop-in replacement for `rpolygon_cut_convex`. 
-    Depending on the specific geometry of the input polygon, one function may perform 
-    better than the other. Having both options provides flexibility for different use 
+    This function can be used as a drop-in replacement for `rpolygon_cut_convex`.
+    Depending on the specific geometry of the input polygon, one function may perform
+    better than the other. Having both options provides flexibility for different use
     cases.
 
     Args:

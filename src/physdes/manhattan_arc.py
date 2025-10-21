@@ -36,12 +36,13 @@ class provides a high-level interface for working with these rotated geometric o
 abstracting away some of the more complex mathematical calculations.
 """
 
-from typing import TYPE_CHECKING, Generic, TypeVar, Any
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
+
+from icecream import ic  # type: ignore
 
 from .generic import min_dist
 from .interval import enlarge
 from .point import Point
-from icecream import ic  # type: ignore
 
 if TYPE_CHECKING:
     from .interval import Interval

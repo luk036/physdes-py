@@ -2,26 +2,27 @@
 Unit tests for Clock Tree Visualization module
 """
 
-import pytest
 import sys
-from pathlib import Path
 import xml.etree.ElementTree as ET
+from pathlib import Path
+
+import pytest
 
 # Add the parent directory to Python path to import the modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from physdes.cts.clk_tree_vis import (
     ClockTreeVisualizer,
-    create_interactive_svg,
     create_comparison_visualization,
     create_delay_model_comparison,
+    create_interactive_svg,
 )
 from physdes.cts.dme_algorithm import (
+    DMEAlgorithm,
+    ElmoreDelayCalculator,
+    LinearDelayCalculator,
     Sink,
     TreeNode,
-    LinearDelayCalculator,
-    ElmoreDelayCalculator,
-    DMEAlgorithm,
 )
 from physdes.point import Point
 

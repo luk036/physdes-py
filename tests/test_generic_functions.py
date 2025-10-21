@@ -1,10 +1,10 @@
 from physdes.generic import (
-    overlap,
     contain,
+    displacement,
     intersection,
     min_dist,
     nearest,
-    displacement,
+    overlap,
 )
 from physdes.interval import Interval
 from physdes.point import Point

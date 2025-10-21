@@ -1,5 +1,6 @@
-from typing import List, Tuple, Optional, Any
 from enum import Enum, auto
+from typing import Any, List, Optional, Tuple
+
 from physdes.point import Point
 
 
@@ -19,9 +20,9 @@ class RoutingNode:
         self.type = node_type
         self.pt = pt
         self.children: List["RoutingNode"] = []
-        self.parent: Optional["RoutingNode"] = (
-            None  # look likes not maintained properly!
-        )
+        self.parent: Optional[
+            "RoutingNode"
+        ] = None  # look likes not maintained properly!
         self.capacitance = 0.0
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing

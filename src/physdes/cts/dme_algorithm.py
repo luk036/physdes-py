@@ -1,15 +1,15 @@
 """
 Deferred Merge Embedding (DME) Algorithm for Clock Tree Synthesis.
 
-This module provides a comprehensive implementation of the Deferred Merge Embedding (DME) 
-algorithm, a widely used technique for constructing zero-skew clock trees in VLSI design. 
-The DME algorithm is known for its efficiency and effectiveness in minimizing clock skew, 
+This module provides a comprehensive implementation of the Deferred Merge Embedding (DME)
+algorithm, a widely used technique for constructing zero-skew clock trees in VLSI design.
+The DME algorithm is known for its efficiency and effectiveness in minimizing clock skew,
 a critical factor in high-performance digital circuits.
 
-The implementation leverages the Strategy Pattern for delay calculation, allowing for 
-pluggable delay models. This design provides the flexibility to switch between different 
-delay calculation strategies, such as linear and Elmore delay models, without altering 
-the core algorithm. This modular approach makes it easy to extend the system with new 
+The implementation leverages the Strategy Pattern for delay calculation, allowing for
+pluggable delay models. This design provides the flexibility to switch between different
+delay calculation strategies, such as linear and Elmore delay models, without altering
+the core algorithm. This modular approach makes it easy to extend the system with new
 delay models as needed.
 
 Key components of the module include:
@@ -22,12 +22,14 @@ Key components of the module include:
 """
 
 import doctest
-from typing import List, Optional, Dict, Any, Tuple
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
+
+from icecream import ic  # type: ignore
+
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
-from icecream import ic  # type: ignore
 
 
 @dataclass
@@ -460,10 +462,12 @@ class DMEAlgorithm:
             #             )
             #         )
             #         left_ms = self._extend_segment(left_ms, extra_length)
-            extend_left, delay_left, _ = (
-                self.delay_calculator.calculate_extra_length_and_delay(
-                    node.left, node.right, distance
-                )
+            (
+                extend_left,
+                delay_left,
+                _,
+            ) = self.delay_calculator.calculate_extra_length_and_delay(
+                node.left, node.right, distance
             )
             node.delay = node.left.delay + delay_left
             # Merge the segments
@@ -745,9 +749,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple[
-    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
-]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks
@@ -788,7 +792,10 @@ def example_dme_usage() -> Tuple[
 
 if __name__ == "__main__":
     # Run example
-    clock_tree_linear, clock_tree_elmore, analysis_linear, analysis_elmore = (
-        example_dme_usage()
-    )
+    (
+        clock_tree_linear,
+        clock_tree_elmore,
+        analysis_linear,
+        analysis_elmore,
+    ) = example_dme_usage()
     doctest.testmod()

@@ -1,26 +1,27 @@
 """
 Global Router for VLSI Physical Design.
 
-This module provides a global router that offers multiple strategies for routing between a 
-source and multiple terminals. The global router is a key component in the VLSI physical 
-design flow, responsible for finding paths for interconnects while considering various 
+This module provides a global router that offers multiple strategies for routing between a
+source and multiple terminals. The global router is a key component in the VLSI physical
+design flow, responsible for finding paths for interconnects while considering various
 constraints such as wirelength and timing.
 
-The `GlobalRouter` class implements several routing algorithms, each tailored for different 
+The `GlobalRouter` class implements several routing algorithms, each tailored for different
 optimization goals:
-- `route_simple()`: A basic approach that connects terminals directly to the nearest 
+- `route_simple()`: A basic approach that connects terminals directly to the nearest
   point in the routing tree.
-- `route_with_steiners()`: A more advanced technique that inserts Steiner points to 
+- `route_with_steiners()`: A more advanced technique that inserts Steiner points to
   minimize wirelength.
-- `route_with_constraints()`: A performance-driven strategy that considers both wirelength 
+- `route_with_constraints()`: A performance-driven strategy that considers both wirelength
   and timing constraints.
 
-This modular design allows users to choose the most appropriate routing strategy for their 
+This modular design allows users to choose the most appropriate routing strategy for their
 specific needs, providing a flexible and powerful tool for global routing tasks.
 """
 from typing import List
-from physdes.router.routing_tree import GlobalRoutingTree
+
 from physdes.point import Point
+from physdes.router.routing_tree import GlobalRoutingTree
 
 
 class GlobalRouter:

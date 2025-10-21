@@ -38,7 +38,7 @@ allocation, or numerical analysis. It allows programmers to easily manipulate an
 intervals without having to manually handle the lower and upper bounds separately.
 """
 
-from typing import Generic, TypeVar, Union, Any
+from typing import Any, Generic, TypeVar, Union
 
 from .generic import displacement, min_dist
 

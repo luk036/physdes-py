@@ -1,12 +1,11 @@
 from lds_gen.ilds import Halton
 
-from physdes.router.routing_tree import (
-    visualize_routing_tree_svg,
-    save_routing_tree_svg,
-)
 from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
-
+from physdes.router.routing_tree import (
+    save_routing_tree_svg,
+    visualize_routing_tree_svg,
+)
 
 # def test_route_simple():
 #     # Create a sample routing tree (using the provided class)

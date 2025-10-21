@@ -6,7 +6,8 @@ using SVG format for clear, scalable graphics.
 """
 
 import doctest
-from typing import List, Tuple, Dict, Any, Optional, Callable
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
 from physdes.point import Point
 
 
@@ -506,10 +507,10 @@ def create_delay_model_comparison(
 def visualize_example_tree() -> Tuple[str, str, str]:
     """Example function demonstrating clock tree visualization with different delay models"""
     from physdes.cts.dme_algorithm import (
-        Sink,
-        LinearDelayCalculator,
-        ElmoreDelayCalculator,
         DMEAlgorithm,
+        ElmoreDelayCalculator,
+        LinearDelayCalculator,
+        Sink,
     )
 
     # Generate example clock tree with both delay models
