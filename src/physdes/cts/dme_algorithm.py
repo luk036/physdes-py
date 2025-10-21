@@ -1,8 +1,24 @@
 """
-Deferred Merge Embedding (DME) Algorithm for Clock Tree Synthesis
-with Strategy Pattern for Delay Calculation
+Deferred Merge Embedding (DME) Algorithm for Clock Tree Synthesis.
 
-This module implements the DME algorithm with configurable delay models.
+This module provides a comprehensive implementation of the Deferred Merge Embedding (DME) 
+algorithm, a widely used technique for constructing zero-skew clock trees in VLSI design. 
+The DME algorithm is known for its efficiency and effectiveness in minimizing clock skew, 
+a critical factor in high-performance digital circuits.
+
+The implementation leverages the Strategy Pattern for delay calculation, allowing for 
+pluggable delay models. This design provides the flexibility to switch between different 
+delay calculation strategies, such as linear and Elmore delay models, without altering 
+the core algorithm. This modular approach makes it easy to extend the system with new 
+delay models as needed.
+
+Key components of the module include:
+- `Sink`: Represents a clock sink with position and capacitance.
+- `TreeNode`: Defines the structure of the clock tree.
+- `DelayCalculator`: An abstract base class for delay calculation strategies.
+- `LinearDelayCalculator`: A concrete implementation of the linear delay model.
+- `ElmoreDelayCalculator`: A concrete implementation of the Elmore delay model.
+- `DMEAlgorithm`: The main class that orchestrates the clock tree synthesis process.
 """
 
 import doctest

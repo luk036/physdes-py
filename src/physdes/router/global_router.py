@@ -1,3 +1,23 @@
+"""
+Global Router for VLSI Physical Design.
+
+This module provides a global router that offers multiple strategies for routing between a 
+source and multiple terminals. The global router is a key component in the VLSI physical 
+design flow, responsible for finding paths for interconnects while considering various 
+constraints such as wirelength and timing.
+
+The `GlobalRouter` class implements several routing algorithms, each tailored for different 
+optimization goals:
+- `route_simple()`: A basic approach that connects terminals directly to the nearest 
+  point in the routing tree.
+- `route_with_steiners()`: A more advanced technique that inserts Steiner points to 
+  minimize wirelength.
+- `route_with_constraints()`: A performance-driven strategy that considers both wirelength 
+  and timing constraints.
+
+This modular design allows users to choose the most appropriate routing strategy for their 
+specific needs, providing a flexible and powerful tool for global routing tasks.
+"""
 from typing import List
 from physdes.router.routing_tree import GlobalRoutingTree
 from physdes.point import Point
@@ -34,6 +54,7 @@ class GlobalRouter:
             [Point(Point(10, 1), 0), Point(Point(5, 0), 0), Point(Point(1, 2), 0)]
         """
         self.source_position = source_position
+        """The starting point for the routing."""
         self.terminal_positions = sorted(
             terminal_positions,
             key=lambda t: (
@@ -41,8 +62,11 @@ class GlobalRouter:
                 source_position.hull_with(t).measure(),  # Negative for descending order
             ),
         )
+        """A list of terminal points to be routed to, sorted by distance from the source."""
         self.tree = GlobalRoutingTree(source_position)
+        """The routing tree, which is built up as the routing progresses."""
         self.worst_wirelength = source_position.min_dist_with(terminal_positions[0])
+        """The wirelength of the longest connection from the source to a terminal."""
 
     def route_simple(self) -> None:
         """

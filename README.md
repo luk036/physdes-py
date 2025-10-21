@@ -15,11 +15,11 @@
 
 ## 🚀 Recent Developments
 
-- **3D Global Router:** A 3D global router has been added to the project.
-- **Smarter Global Router:** The global router has been made smarter.
-- **Bug Fixes:** Several bugs have been fixed, including those identified by mypy.
-- **Documentation:** More documentation tests have been added.
-- **Visualization:** Display colors as layers in the visualization.
+- **Deferred Merge Embedding (DME) Algorithm:** Implemented the DME algorithm for clock tree synthesis, featuring a strategy pattern for delay calculation. This allows for flexible delay modeling, with both `LinearDelayCalculator` and `ElmoreDelayCalculator` provided as options. The algorithm is designed to build a zero-skew clock tree and includes functionalities for analyzing clock skew, total wirelength, and other tree statistics.
+- **Global Router Enhancements:** The global router now offers multiple routing strategies to accommodate different design needs:
+  - `route_simple()`: Connects terminals directly to the nearest node in the tree for quick and straightforward routing.
+  - `route_with_steiners()`: Inserts Steiner points to optimize wire length, resulting in more efficient routing.
+  - `route_with_constraints()`: A performance-driven approach that also uses Steiner points to reduce wire length.
 
 ## Dependencies
 
