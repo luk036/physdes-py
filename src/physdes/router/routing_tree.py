@@ -960,7 +960,8 @@ def save_routing_tree_svg(
 
 def visualize_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    scale_z: int,
+    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    scale_z: int = 100,
     width: int = 800,
     height: int = 600,
     margin: int = 50,
@@ -982,7 +983,7 @@ def visualize_routing_tree3d_svg(
     if not all_nodes:
         return "<svg></svg>"
 
-    layer_colors = ["red", "yellow", "blue", "green"]
+    layer_colors = ["red", "orange", "blue", "green"]
 
     # Get all coordinates to determine bounds
     all_x = [node.pt.xcoord.xcoord for node in all_nodes]
@@ -1088,6 +1089,18 @@ def visualize_routing_tree3d_svg(
             f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
         )
 
+    # Draw keepouts
+    if keepouts is not None:
+        for keepout in keepouts:
+            x1, y1 = scale_coords(keepout.xcoord.xcoord.lb, keepout.ycoord.lb)
+            x2, y2 = scale_coords(keepout.xcoord.xcoord.ub, keepout.ycoord.ub)
+            rwidth = x2 - x1
+            rheight = y2 - y1
+            color = "pink"
+            svg_parts.append(
+                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
+            )
+
     # Add legend
     legend_y = 20
     svg_parts.append(
@@ -1133,7 +1146,8 @@ def visualize_routing_tree3d_svg(
 
 def save_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    scale_z: int,
+    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    scale_z: int = 100,
     filename: str = "routing_tree3d.svg",
     width: int = 800,
     height: int = 600,
@@ -1147,7 +1161,7 @@ def save_routing_tree3d_svg(
         width: SVG canvas width
         height: SVG canvas height
     """
-    svg_content = visualize_routing_tree3d_svg(tree3d, scale_z, width, height)
+    svg_content = visualize_routing_tree3d_svg(tree3d, keepouts, scale_z, width, height)
     with open(filename, "w") as f:
         f.write(svg_content)
     print(f"Routing tree3d saved to {filename}")

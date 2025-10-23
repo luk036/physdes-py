@@ -4,21 +4,10 @@ from lds_gen.ilds import Halton
 
 from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
-from physdes.router.routing_tree import visualize_routing_tree3d_svg
-
-# def test_route_simple():
-#     # Create a sample routing tree (using the provided class)
-#     source = Point(3, 1)
-#     terminals = [Point(2, 8), Point(3, 6), Point(5, 2)]
-#     router = GlobalRouter(source, terminals)
-#     router.route_simple()
-
-#     # Generate and print SVG
-#     svg_output = visualize_routing_tree_svg(router.tree)
-#     print(svg_output)
-
-#     # Save to file
-#     save_routing_tree_svg(router.tree, "example_route_simple.svg")
+from physdes.router.routing_tree import (
+    visualize_routing_tree3d_svg,
+    save_routing_tree3d_svg,
+)
 
 
 def test_route3d_with_steiner():
@@ -40,12 +29,14 @@ def test_route3d_with_steiner():
 
     # Generate and print SVG
     svg_output = visualize_routing_tree3d_svg(
-        router.tree, scale_z, width=1000, height=1000
+        router.tree, None, scale_z, width=1000, height=1000
     )
     print(svg_output)
 
     # Save to file
-    # save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_steiner.svg")
+    save_routing_tree3d_svg(
+        router.tree, None, scale_z, "example_route3d_with_steiner.svg"
+    )
 
 
 def test_route3d_with_constraints():
@@ -67,9 +58,11 @@ def test_route3d_with_constraints():
 
     # Generate and print SVG
     svg_output = visualize_routing_tree3d_svg(
-        router.tree, scale_z, width=1000, height=1000
+        router.tree, None, scale_z, width=1000, height=1000
     )
     print(svg_output)
 
     # Save to file
-    # save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_constraint.svg")
+    save_routing_tree3d_svg(
+        router.tree, None, scale_z, "example_route3d_with_constraint.svg"
+    )

@@ -9,7 +9,7 @@ from physdes.router.routing_tree import (
 )
 
 
-def test_route_with_steiner_and_keepout():
+def test_route_with_steiner_and_keepouts():
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
@@ -34,7 +34,7 @@ def test_route_with_steiner_and_keepout():
 
     # Save to file
     save_routing_tree_svg(
-        router.tree, keepouts, filename="example_route_with_steiner_and_keepout.svg"
+        router.tree, keepouts, filename="example_route_with_steiner_and_keepouts.svg"
     )
 
 
