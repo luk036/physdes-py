@@ -1,37 +1,14 @@
-from lds_gen.ilds import Halton
-
-from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
 from physdes.router.routing_tree import (
     save_routing_tree_svg,
     visualize_routing_tree_svg,
 )
-
-# def test_route_simple():
-#     # Create a sample routing tree (using the provided class)
-#     source = Point(3, 1)
-#     terminals = [Point(2, 8), Point(3, 6), Point(5, 2)]
-#     router = GlobalRouter(source, terminals)
-#     router.route_simple()
-
-#     # Generate and print SVG
-#     svg_output = visualize_routing_tree_svg(router.tree)
-#     print(svg_output)
-
-#     # Save to file
-#     save_routing_tree_svg(router.tree, "example_route_simple.svg")
+from tests.conftest import generate_random_points, generate_special_points
 
 
 def test_route_with_steiner():
-    # Create a sample routing tree (using the provided class)
-    hgen = Halton([3, 2], [7, 11])
-    hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
-    terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    src_coord = hgen.pop()
-    source = Point(src_coord[0], src_coord[1])
-    # source = Point(300, 100)
-    # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
+    """Test routing with Steiner points."""
+    source, terminals = generate_random_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
 
@@ -44,15 +21,8 @@ def test_route_with_steiner():
 
 
 def test_route_with_delay_constraint():
-    # Create a sample routing tree (using the provided class)
-    hgen = Halton([3, 2], [7, 11])
-    hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
-    terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    src_coord = hgen.pop()
-    source = Point(src_coord[0], src_coord[1])
-    # source = Point(300, 100)
-    # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
     router = GlobalRouter(source, terminals)
     router.route_with_constraints(1.0)
 
@@ -67,23 +37,8 @@ def test_route_with_delay_constraint():
 
 
 def test_route_with_steiner_special():
-    coords = [
-        (-10, 0),
-        (-9, -1),
-        (-8, -2),
-        (-7, -3),
-        (-6, -4),
-        (-5, -5),
-        (-4, -6),
-        (-3, -7),
-        (-2, -8),
-        (-1, -9),
-        (0, -10),
-    ]
-    terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    source = Point(0, 0)
-    # source = Point(300, 100)
-    # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
+    """Test routing with Steiner points for a special case."""
+    source, terminals = generate_special_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
 
@@ -98,23 +53,8 @@ def test_route_with_steiner_special():
 
 
 def test_route_with_constraints_special():
-    coords = [
-        (-10, 0),
-        (-9, -1),
-        (-8, -2),
-        (-7, -3),
-        (-6, -4),
-        (-5, -5),
-        (-4, -6),
-        (-3, -7),
-        (-2, -8),
-        (-1, -9),
-        (0, -10),
-    ]
-    terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    source = Point(0, 0)
-    # source = Point(300, 100)
-    # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
+    """Test routing with constraints for a special case."""
+    source, terminals = generate_special_points()
     router = GlobalRouter(source, terminals)
     router.route_with_constraints(1.8)
 
