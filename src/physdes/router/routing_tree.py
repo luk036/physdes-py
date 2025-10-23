@@ -960,7 +960,9 @@ def save_routing_tree_svg(
 
 def visualize_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    keepouts: Optional[
+        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
+    ] = None,
     scale_z: int = 100,
     width: int = 800,
     height: int = 600,
@@ -1146,7 +1148,9 @@ def visualize_routing_tree3d_svg(
 
 def save_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    keepouts: Optional[
+        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
+    ] = None,
     scale_z: int = 100,
     filename: str = "routing_tree3d.svg",
     width: int = 800,
