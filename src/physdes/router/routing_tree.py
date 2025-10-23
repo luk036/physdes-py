@@ -3,7 +3,6 @@ from typing import Any, List, Optional, Tuple
 
 from physdes.point import Point
 from physdes.interval import Interval
-from icecream import ic
 
 
 class NodeType(Enum):
@@ -355,30 +354,34 @@ class GlobalRoutingTree:
             for child in node.children:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
-                nearest_pt = possible_path.nearest_to(pt)
-                if keepouts is not None:
-                    path1 = nearest_pt.hull_with(pt)
-                    path2 = nearest_pt.hull_with(node.pt)
-                    path3 = nearest_pt.hull_with(child.pt)
-                    block = False
-                    for keepout in keepouts:
-                        if keepout.contains(nearest_pt):
-                            block = True
-                        if keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
-                            block = True
-                    if block:
-                        continue
                 if distance < min_distance:
-                    min_distance = distance
-                    if nearest_pt == node.pt:
-                        nearest_node = node
-                        parent_node = None
-                    elif nearest_pt == child.pt:
-                        nearest_node = child
-                        parent_node = None
-                    else:  # need to insert steiner point
-                        nearest_node = child
-                        parent_node = node
+                    nearest_pt = possible_path.nearest_to(pt)
+                    block = False
+                    if keepouts is not None:
+                        path1 = nearest_pt.hull_with(pt)
+                        path2 = nearest_pt.hull_with(node.pt)
+                        path3 = nearest_pt.hull_with(child.pt)
+                        block = False
+                        for keepout in keepouts:
+                            if keepout.contains(nearest_pt):
+                                block = True
+                            if (
+                                keepout.blocks(path1)
+                                or keepout.blocks(path2)
+                                or keepout.blocks(path3)
+                            ):
+                                block = True
+                    if not block:
+                        min_distance = distance
+                        if nearest_pt == node.pt:
+                            nearest_node = node
+                            parent_node = None
+                        elif nearest_pt == child.pt:
+                            nearest_node = child
+                            parent_node = None
+                        else:  # need to insert steiner point
+                            nearest_node = child
+                            parent_node = node
                 traverse(child)
 
         traverse(self.source)
@@ -458,34 +461,40 @@ class GlobalRoutingTree:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
                 nearest_pt = possible_path.nearest_to(pt)
-                if keepouts is not None:
-                    path1 = nearest_pt.hull_with(pt)
-                    path2 = nearest_pt.hull_with(node.pt)
-                    path3 = nearest_pt.hull_with(child.pt)
-                    block = False
-                    for keepout in keepouts:
-                        if keepout.contains(nearest_pt):
-                            block = True
-                        if keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
-                            block = True
-                    if block:
-                        continue
+
                 path_length = (
                     node.path_length + node.pt.min_dist_with(nearest_pt) + distance
                 )
                 if path_length > allowed_wirelength:
                     continue
+
                 if distance < min_distance:
-                    min_distance = distance
-                    if nearest_pt == node.pt:
-                        nearest_node = node
-                        parent_node = None
-                    elif nearest_pt == child.pt:
-                        nearest_node = child
-                        parent_node = None
-                    else:  # need to insert steiner point
-                        nearest_node = child
-                        parent_node = node
+                    block = False
+                    if keepouts is not None:
+                        path1 = nearest_pt.hull_with(pt)
+                        path2 = nearest_pt.hull_with(node.pt)
+                        path3 = nearest_pt.hull_with(child.pt)
+                        block = False
+                        for keepout in keepouts:
+                            if keepout.contains(nearest_pt):
+                                block = True
+                            if (
+                                keepout.blocks(path1)
+                                or keepout.blocks(path2)
+                                or keepout.blocks(path3)
+                            ):
+                                block = True
+                    if not block:
+                        min_distance = distance
+                        if nearest_pt == node.pt:
+                            nearest_node = node
+                            parent_node = None
+                        elif nearest_pt == child.pt:
+                            nearest_node = child
+                            parent_node = None
+                        else:  # need to insert steiner point
+                            nearest_node = child
+                            parent_node = node
                 traverse(child)
 
         traverse(self.source)

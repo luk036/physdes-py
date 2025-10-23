@@ -70,7 +70,9 @@ class GlobalRouter:
         """A list of terminal points to be routed to, sorted by distance from the source."""
         self.tree = GlobalRoutingTree(source_position)
         """The routing tree, which is built up as the routing progresses."""
-        self.worst_wirelength = source_position.min_dist_with(self.terminal_positions[0])
+        self.worst_wirelength = source_position.min_dist_with(
+            self.terminal_positions[0]
+        )
         ic(self.terminal_positions[0])
         ic(self.terminal_positions[1])
         """The wirelength of the longest connection from the source to a terminal."""

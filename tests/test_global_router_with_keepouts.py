@@ -49,7 +49,7 @@ def test_route_with_keepouts():
     # source = Point(300, 100)
     # terminals = [Point(200, 400), Point(400, 600), Point(700, 200), Point(600, 300)]
     keepouts = [
-        Point(Interval(1300, 1800), Interval(500, 900)),
+        Point(Interval(1600, 1900), Interval(1000, 1500)),
         Point(Interval(500, 800), Interval(600, 900)),
     ]
 
