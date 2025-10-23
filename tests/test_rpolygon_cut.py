@@ -10,6 +10,7 @@ from physdes.rpolygon import (
     rpolygon_make_convex_hull,
 )
 from physdes.rpolygon_cut import rpolygon_cut_explicit
+from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
 def test_rpolygon_cut_explicit():
@@ -22,33 +23,28 @@ def test_rpolygon_cut_explicit():
     is_anticlockwise = P.is_anticlockwise()
     S = rpolygon_make_convex_hull(S0, is_anticlockwise)
 
-    print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-
-    print('  <polygon points="', end=" ")
-    p0 = S[-1]
-    for p1 in S:
-        print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
-        p0 = p1
-    print('"')
-    print('  fill="#88C0D0" stroke="black" opacity="0.5"/>')
-    for p in S:
-        print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
+    svg_parts = []
+    svg_parts.append(
+        f'<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">'
+    )
+    svg_parts.append(
+        get_polygon_svg_elements(
+            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
+        )
+    )
+    svg_parts.append(get_circle_svg_elements(S, circle_radius=10))
 
     L = rpolygon_cut_explicit(S, is_anticlockwise)
     for C in L:
-        print('  <polygon points="', end=" ")
-        p0 = C[-1]
-        for p1 in C:
-            print(
-                "{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord),
-                end=" ",
+        svg_parts.append(
+            get_polygon_svg_elements(
+                C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
             )
-            p0 = p1
-        print('"')
-        print('  fill="#D088C0" stroke="black" opacity="0.3"/>')
+        )
         # for p in C:
-        #     print('  <circle cx="{}" cy="{}" r="10" fill="red"/>'.format(p.xcoord, p.ycoord))
+        #     svg_parts.append(f'  <circle cx="{p.xcoord}" cy="{p.ycoord}" r="10" fill="red"/>')
 
-    print("</svg>")
+    svg_parts.append("</svg>")
+    print("\n".join(svg_parts))
     for C in L:
         assert rpolygon_is_convex(C)

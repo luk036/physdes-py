@@ -8,6 +8,7 @@ from physdes.rpolygon import (
     rpolygon_is_ymonotone,
     rpolygon_make_convex_hull,
 )
+from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
 def test_rpolygon_make_convex_hull():
@@ -17,26 +18,23 @@ def test_rpolygon_make_convex_hull():
     assert not rpolygon_is_xmonotone(S)
     assert not rpolygon_is_ymonotone(S)
 
-    print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-
-    print('  <polygon points="', end=" ")
-    p0 = S[-1]
-    for p1 in S:
-        print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
-        p0 = p1
-    print('"')
-    print('  fill="#88C0D0" stroke="black" opacity="0.5"/>')
-    for p in S:
-        print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
+    svg_parts = []
+    svg_parts.append(
+        f'<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">'
+    )
+    svg_parts.append(
+        get_polygon_svg_elements(
+            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
+        )
+    )
+    svg_parts.append(get_circle_svg_elements(S, circle_radius=10))
 
     C = rpolygon_make_convex_hull(S, False)
-    print('  <polygon points="', end=" ")
-    p0 = C[-1]
-    for p1 in C:
-        print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
-        p0 = p1
-    print('"')
-    print('  fill="#D088C0" stroke="black" opacity="0.3"/>')
-
-    print("</svg>")
+    svg_parts.append(
+        get_polygon_svg_elements(
+            C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
+        )
+    )
+    svg_parts.append("</svg>")
+    print("\n".join(svg_parts))
     assert rpolygon_is_convex(C)

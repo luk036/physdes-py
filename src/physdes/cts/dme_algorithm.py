@@ -749,9 +749,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> (
-    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
-):
+def example_dme_usage() -> Tuple[
+    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
+]:
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks
