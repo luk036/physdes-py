@@ -339,7 +339,26 @@ class GlobalRoutingTree:
         pt: Point[Any, Any],
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
-        """Find the nearest insertion point to the given coordinates."""
+        """
+        Find the nearest insertion point to the given coordinates, avoiding keepouts.
+
+        Args:
+            pt: The point to insert.
+            keepouts: A list of rectangular regions to avoid.
+
+        Returns:
+            A tuple containing the parent node and the nearest node for insertion.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> from physdes.interval import Interval
+            >>> tree = GlobalRoutingTree(Point(0, 0))
+            >>> _ = tree.insert_terminal_node(Point(10, 0))
+            >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
+            >>> parent, nearest = tree._find_nearest_insertion(Point(5, 5), keepouts)
+            >>> nearest.pt
+            Point(0, 0)
+        """
         if not self.nodes:
             return None, self.source
 
@@ -395,9 +414,6 @@ class GlobalRoutingTree:
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
-        Args:
-            pt: The position of the terminal to insert.
-
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree(Point(0, 0))
@@ -408,6 +424,13 @@ class GlobalRoutingTree:
             >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
             >>> tree3d.calculate_wirelength()
             6
+            >>> from physdes.interval import Interval
+            >>> tree = GlobalRoutingTree(Point(0, 0))
+            >>> _ = tree.insert_terminal_node(Point(10, 0))
+            >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
+            >>> tree.insert_terminal_with_steiner(Point(5, 5), keepouts)
+            >>> tree.calculate_wirelength()
+            20
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
@@ -445,7 +468,29 @@ class GlobalRoutingTree:
         allowed_wirelength: int,
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
-        """Find the nearest insertion point to the given coordinates."""
+        """
+        Find the nearest insertion point to the given coordinates with wirelength constraints.
+
+        Args:
+            pt: The point to insert.
+            allowed_wirelength: The maximum allowed wirelength from the source.
+            keepouts: A list of rectangular regions to avoid.
+
+        Returns:
+            A tuple containing the parent node and the nearest node for insertion.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> from physdes.interval import Interval
+            >>> tree = GlobalRoutingTree(Point(0, 0))
+            >>> _ = tree.insert_terminal_node(Point(10, 0))
+            >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
+            >>> parent, nearest = tree._find_nearest_insertion_with_constraints(
+            ...     Point(5, 5), 100, keepouts
+            ... )
+            >>> nearest.pt
+            Point(0, 0)
+        """
         if not self.nodes:
             return None, self.source
 
@@ -507,21 +552,30 @@ class GlobalRoutingTree:
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ):
         """
-        Inserts a terminal node, adding a Steiner point if it reduces wire length.
+        Inserts a terminal node with wirelength constraints, adding a Steiner point if it reduces wire length.
 
         Args:
             pt: The position of the terminal to insert.
+            allowed_wirelength: The maximum allowed wirelength from the source.
+            keepouts: A list of rectangular regions to avoid.
 
         Examples:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree(Point(0, 0))
-            >>> tree.insert_terminal_with_steiner(Point(2, 2))
+            >>> tree.insert_terminal_with_constraints(Point(2, 2), 10)
             >>> tree.calculate_wirelength()
             4
             >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
-            >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
+            >>> tree3d.insert_terminal_with_constraints(Point(Point(2, 2), 2), 10)
             >>> tree3d.calculate_wirelength()
             6
+            >>> from physdes.interval import Interval
+            >>> tree = GlobalRoutingTree(Point(0, 0))
+            >>> _ = tree.insert_terminal_node(Point(10, 0))
+            >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
+            >>> tree.insert_terminal_with_constraints(Point(5, 5), 100, keepouts)
+            >>> tree.calculate_wirelength()
+            20
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1

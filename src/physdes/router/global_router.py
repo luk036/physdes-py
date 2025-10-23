@@ -44,6 +44,7 @@ class GlobalRouter:
         Args:
             source_position: The starting point for the routing.
             terminal_positions: A list of terminal points to be routed to.
+            keepouts: A list of rectangular regions to avoid during routing.
 
         Examples:
             >>> from physdes.point import Point
@@ -57,6 +58,11 @@ class GlobalRouter:
             >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
             [Point(Point(10, 1), 0), Point(Point(5, 0), 0), Point(Point(1, 2), 0)]
+            >>> from physdes.interval import Interval
+            >>> keepouts = [Point(Interval(2, 4), Interval(2, 4))]
+            >>> router = GlobalRouter(source, terminals, keepouts)
+            >>> router.keepouts
+            [Point(Interval(2, 4), Interval(2, 4))]
         """
         self.source_position = source_position
         """The starting point for the routing."""
