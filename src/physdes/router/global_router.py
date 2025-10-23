@@ -18,10 +18,13 @@ optimization goals:
 This modular design allows users to choose the most appropriate routing strategy for their
 specific needs, providing a flexible and powerful tool for global routing tasks.
 """
-from typing import List
+
+from typing import List, Optional
 
 from physdes.point import Point
+from physdes.interval import Interval
 from physdes.router.routing_tree import GlobalRoutingTree
+from icecream import ic
 
 
 class GlobalRouter:
@@ -33,6 +36,7 @@ class GlobalRouter:
         self,
         source_position: Point[int, int],
         terminal_positions: List[Point[int, int]],
+        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> None:
         """
         Initializes the GlobalRouter.
@@ -66,8 +70,11 @@ class GlobalRouter:
         """A list of terminal points to be routed to, sorted by distance from the source."""
         self.tree = GlobalRoutingTree(source_position)
         """The routing tree, which is built up as the routing progresses."""
-        self.worst_wirelength = source_position.min_dist_with(terminal_positions[0])
+        self.worst_wirelength = source_position.min_dist_with(self.terminal_positions[0])
+        ic(self.terminal_positions[0])
+        ic(self.terminal_positions[1])
         """The wirelength of the longest connection from the source to a terminal."""
+        self.keepouts = keepouts
 
     def route_simple(self) -> None:
         """
@@ -111,7 +118,7 @@ class GlobalRouter:
             5
         """
         for t in self.terminal_positions:
-            self.tree.insert_terminal_with_steiner(t)
+            self.tree.insert_terminal_with_steiner(t, self.keepouts)
 
     def route_with_constraints(self, alpha: float = 1.0) -> None:
         """
@@ -134,7 +141,9 @@ class GlobalRouter:
         """
         allowed_wirelength = round(self.worst_wirelength * alpha)
         for t in self.terminal_positions:
-            self.tree.insert_terminal_with_constraints(t, allowed_wirelength)
+            self.tree.insert_terminal_with_constraints(
+                t, allowed_wirelength, self.keepouts
+            )
 
 
 if __name__ == "__main__":

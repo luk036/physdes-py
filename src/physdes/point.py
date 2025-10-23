@@ -433,6 +433,14 @@ class Point(Generic[T1, T2]):
         """
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
+    def blocks(self, other: "Point[T1, T2]") -> bool:
+        return (
+            contain(self.xcoord, other.xcoord)
+            and contain(other.ycoord, self.ycoord)
+            or contain(self.ycoord, other.ycoord)
+            and contain(other.xcoord, self.xcoord)
+        )
+
     def hull_with(self, other: "Point[T1, T2]") -> "Point[Any, Any]":
         """
         The `hull_with` function takes another object and returns a new object with the hull of the x and y

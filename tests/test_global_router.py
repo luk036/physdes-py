@@ -40,10 +40,10 @@ def test_route_with_steiner():
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, "example_route_with_steiner.svg")
+    save_routing_tree_svg(router.tree, filename="example_route_with_steiner.svg")
 
 
-def test_route_with_constraints():
+def test_route_with_delay_constraint():
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
@@ -61,7 +61,9 @@ def test_route_with_constraints():
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, "example_route_with_constraint.svg")
+    save_routing_tree_svg(
+        router.tree, filename="example_route_with_delay_constraint.svg"
+    )
 
 
 def test_route_with_steiner_special():
@@ -90,7 +92,9 @@ def test_route_with_steiner_special():
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, "example_route_with_steiner_special.svg")
+    save_routing_tree_svg(
+        router.tree, filename="example_route_with_steiner_special.svg"
+    )
 
 
 def test_route_with_constraints_special():
@@ -119,4 +123,4 @@ def test_route_with_constraints_special():
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, "neg_specical18.svg")
+    save_routing_tree_svg(router.tree, filename="neg_specical18.svg")

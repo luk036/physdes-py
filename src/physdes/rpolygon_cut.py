@@ -19,6 +19,7 @@ These functions are essential for simplifying complex polygon geometries, making
 easier to process in downstream applications. The algorithms are designed to be robust
 and efficient, handling various polygon shapes and complexities.
 """
+
 import math
 from typing import Callable, List, Optional, Tuple
 

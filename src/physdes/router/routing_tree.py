@@ -2,6 +2,8 @@ from enum import Enum, auto
 from typing import Any, List, Optional, Tuple
 
 from physdes.point import Point
+from physdes.interval import Interval
+from icecream import ic
 
 
 class NodeType(Enum):
@@ -20,9 +22,9 @@ class RoutingNode:
         self.type = node_type
         self.pt = pt
         self.children: List["RoutingNode"] = []
-        self.parent: Optional[
-            "RoutingNode"
-        ] = None  # look likes not maintained properly!
+        self.parent: Optional["RoutingNode"] = (
+            None  # look likes not maintained properly!
+        )
         self.capacitance = 0.0
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing
@@ -334,7 +336,9 @@ class GlobalRoutingTree:
         return node_id
 
     def _find_nearest_insertion(
-        self, pt: Point[Any, Any]
+        self,
+        pt: Point[Any, Any],
+        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
         """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
@@ -351,8 +355,20 @@ class GlobalRoutingTree:
             for child in node.children:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
+                nearest_pt = possible_path.nearest_to(pt)
+                if keepouts is not None:
+                    path1 = nearest_pt.hull_with(pt)
+                    path2 = nearest_pt.hull_with(node.pt)
+                    path3 = nearest_pt.hull_with(child.pt)
+                    block = False
+                    for keepout in keepouts:
+                        if keepout.contains(nearest_pt):
+                            block = True
+                        if keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
+                            block = True
+                    if block:
+                        continue
                 if distance < min_distance:
-                    nearest_pt = possible_path.nearest_to(pt)
                     min_distance = distance
                     if nearest_pt == node.pt:
                         nearest_node = node
@@ -368,7 +384,11 @@ class GlobalRoutingTree:
         traverse(self.source)
         return parent_node, nearest_node
 
-    def insert_terminal_with_steiner(self, pt: Point[Any, Any]):
+    def insert_terminal_with_steiner(
+        self,
+        pt: Point[Any, Any],
+        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    ):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
@@ -391,7 +411,7 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
-        parent_node, nearest_node = self._find_nearest_insertion(pt)
+        parent_node, nearest_node = self._find_nearest_insertion(pt, keepouts)
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
@@ -417,7 +437,10 @@ class GlobalRoutingTree:
         return
 
     def _find_nearest_insertion_with_constraints(
-        self, pt: Point[Any, Any], allowed_wirelength: int
+        self,
+        pt: Point[Any, Any],
+        allowed_wirelength: int,
+        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
         """Find the nearest insertion point to the given coordinates."""
         if not self.nodes:
@@ -435,6 +458,18 @@ class GlobalRoutingTree:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
                 nearest_pt = possible_path.nearest_to(pt)
+                if keepouts is not None:
+                    path1 = nearest_pt.hull_with(pt)
+                    path2 = nearest_pt.hull_with(node.pt)
+                    path3 = nearest_pt.hull_with(child.pt)
+                    block = False
+                    for keepout in keepouts:
+                        if keepout.contains(nearest_pt):
+                            block = True
+                        if keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
+                            block = True
+                    if block:
+                        continue
                 path_length = (
                     node.path_length + node.pt.min_dist_with(nearest_pt) + distance
                 )
@@ -457,7 +492,10 @@ class GlobalRoutingTree:
         return parent_node, nearest_node
 
     def insert_terminal_with_constraints(
-        self, pt: Point[Any, Any], allowed_wirelength: int
+        self,
+        pt: Point[Any, Any],
+        allowed_wirelength: int,
+        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
@@ -482,7 +520,7 @@ class GlobalRoutingTree:
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
         parent_node, nearest_node = self._find_nearest_insertion_with_constraints(
-            pt, allowed_wirelength
+            pt, allowed_wirelength, keepouts
         )
 
         if parent_node is None:
@@ -710,7 +748,11 @@ class GlobalRoutingTree:
 
 
 def visualize_routing_tree_svg(
-    tree: "GlobalRoutingTree", width: int = 800, height: int = 600, margin: int = 50
+    tree: "GlobalRoutingTree",
+    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+    width: int = 800,
+    height: int = 600,
+    margin: int = 50,
 ) -> str:
     """
     Visualize a GlobalRoutingTree in SVG format.
@@ -830,6 +872,18 @@ def visualize_routing_tree_svg(
             f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>'
         )
 
+    # Draw keepouts
+    if keepouts is not None:
+        for keepout in keepouts:
+            x1, y1 = scale_coords(keepout.xcoord.lb, keepout.ycoord.lb)
+            x2, y2 = scale_coords(keepout.xcoord.ub, keepout.ycoord.ub)
+            rwidth = x2 - x1
+            rheight = y2 - y1
+            color = "orange"
+            svg_parts.append(
+                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
+            )
+
     # Add legend
     legend_y = 20
     svg_parts.append(
@@ -875,6 +929,7 @@ def visualize_routing_tree_svg(
 
 def save_routing_tree_svg(
     tree: "GlobalRoutingTree",
+    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     filename: str = "routing_tree.svg",
     width: int = 800,
     height: int = 600,
@@ -888,7 +943,7 @@ def save_routing_tree_svg(
         width: SVG canvas width
         height: SVG canvas height
     """
-    svg_content = visualize_routing_tree_svg(tree, width, height)
+    svg_content = visualize_routing_tree_svg(tree, keepouts, width, height, 50)
     with open(filename, "w") as f:
         f.write(svg_content)
     print(f"Routing tree saved to {filename}")
@@ -1113,7 +1168,7 @@ if __name__ == "__main__":
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(routing_tree, "example_routing_tree.svg")
+    save_routing_tree_svg(routing_tree, filename="example_routing_tree.svg")
 
 
 # Example usage and demonstration
