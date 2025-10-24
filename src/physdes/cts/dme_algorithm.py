@@ -394,23 +394,31 @@ class DMEAlgorithm:
         if len(nodes) == 1:
             return nodes[0]
 
-        # Sort nodes by x-coordinate for balanced partitioning
+        # Sort nodes along the appropriate axis (x or y) to facilitate balanced partitioning.
+        # This ensures that the division into left and right groups is as even as possible,
+        # which is crucial for building a balanced merging tree.
         sorted_nodes = (
             sorted(nodes, key=lambda n: n.position.xcoord)
             if vertical
             else sorted(nodes, key=lambda n: n.position.ycoord)
         )
 
-        # Split into two balanced groups
+        # Split the sorted nodes into two balanced groups: left and right.
+        # The 'mid' index ensures an approximately equal distribution of nodes
+        # between the two child subtrees.
         mid = len(sorted_nodes) // 2
         left_group = sorted_nodes[:mid]
         right_group = sorted_nodes[mid:]
 
-        # Recursively build subtrees
+        # Recursively build the left and right subtrees. The 'vertical' parameter is toggled
+        # to alternate the sorting axis (x then y, or y then x) at each level of recursion.
+        # This ensures that the tree is balanced in both dimensions.
         left_child = self._build_merging_tree(left_group, not vertical)
         right_child = self._build_merging_tree(right_group, not vertical)
 
-        # Create parent node (position will be determined during embedding)
+        # Create a new parent node for the two subtrees. Its position is temporary
+        # and will be determined during the embedding phase. A unique ID is assigned
+        # to each new internal node.
         parent = TreeNode(
             name=f"n{self.node_id}",
             position=left_child.position,  # Temporary position
@@ -419,7 +427,7 @@ class DMEAlgorithm:
         )
         self.node_id += 1
 
-        # ic(parent.name)
+        # Assign the newly created parent to its children, establishing the tree structure.
         left_child.parent = parent
         right_child.parent = parent
 
@@ -439,18 +447,21 @@ class DMEAlgorithm:
 
         def compute_segment(node: "TreeNode") -> ManhattanArc:
             if node.left is None and node.right is None:
-                # Leaf node: merging segment is the sink point (delay = 0.0)
+                # If it's a leaf node (a sink), its merging segment is simply its position.
+                # The delay for a leaf node is considered 0.0 at this stage.
                 ms = ManhattanArc.from_point(node.position)
                 merging_segments[node.name] = ms
                 return ms
 
-            # Internal node: compute from children
+            # If it's an internal node, recursively compute the merging segments for its children.
+            # This bottom-up approach ensures that child segments are computed before parent segments.
             if node.left is None or node.right is None:
                 raise ValueError("Internal node must have both left and right children")
             left_ms = compute_segment(node.left)
             right_ms = compute_segment(node.right)
 
-            # Compute merging cost (Manhattan distance between segments)
+            # Calculate the Manhattan distance between the two child merging segments.
+            # This distance represents the minimum possible wire length required to connect them.
             distance = left_ms.min_dist_with(right_ms)
             # ic(distance)
 
@@ -484,6 +495,9 @@ class DMEAlgorithm:
             #             )
             #         )
             #         left_ms = self._extend_segment(left_ms, extra_length)
+            # Calculate the tapping point and delay for the merged segment using the configured
+            # delay calculator strategy. This step is crucial for achieving zero-skew by
+            # determining how to balance the delays from the left and right branches.
             (
                 extend_left,
                 delay_left,
@@ -491,11 +505,14 @@ class DMEAlgorithm:
                 node.left, node.right, distance
             )
             node.delay = delay_left
-            # Merge the segments
+            # Merge the left and right segments based on the calculated tapping point.
+            # The 'extend_left' parameter dictates how much the left segment needs to be
+            # extended to meet the zero-skew requirement.
             merged_segment = left_ms.merge_with(right_ms, extend_left)
             merging_segments[node.name] = merged_segment
 
-            # Update node capacitance (sum of children + wire capacitance)
+            # Update the capacitance of the current node. This includes the capacitances
+            # of its children and the capacitance of the wire segment connecting them.
             wire_cap = self.delay_calculator.calculate_wire_capacitance(distance)
             node.capacitance = node.left.capacitance + node.right.capacitance + wire_cap
             return merged_segment
@@ -524,18 +541,24 @@ class DMEAlgorithm:
                 return
 
             if parent_segment is None:
-                # Root node: choose center of merging segment
+                # If it's the root node (no parent segment), its position is chosen as
+                # the upper corner of its merging segment. This is an arbitrary but consistent
+                # choice for the root's physical location.
                 node_segment = merging_segments[node.name]
                 node.position = node_segment.get_upper_corner()
             else:
-                # Internal node: choose point in merging segment closest to parent
+                # For internal nodes, the actual position is determined by finding the point
+                # within its merging segment that is closest to its parent's position.
+                # This minimizes the wire length connecting the node to its parent.
                 node_segment = merging_segments[node.name]
                 # Compute wire length to parent
                 if node.parent:
                     node.position = node_segment.nearest_point_to(node.parent.position)
                     node.wire_length = node.position.min_dist_with(node.parent.position)
 
-            # Recursively embed children
+            # Recursively call embed_node for the left and right children.
+            # The merging segment of the current node becomes the 'parent_segment'
+            # for its children, guiding their embedding process.
             embed_node(node.left, merging_segments[node.name])
             embed_node(node.right, merging_segments[node.name])
 
@@ -554,16 +577,21 @@ class DMEAlgorithm:
             if node is None:
                 return
 
-            # Compute delay from parent to this node using the strategy pattern
+            # If the node has a parent, calculate the wire delay from the parent to this node.
+            # This calculation uses the configured delay_calculator strategy, taking into
+            # account the wire length and the node's capacitance.
             if node.parent:
                 wire_delay = self.delay_calculator.calculate_wire_delay(
                     node.wire_length, node.capacitance
                 )
+                # The total delay to this node is the parent's delay plus the wire delay.
                 node.delay = parent_delay + wire_delay
             else:
+                # The root node of the clock tree has a zero delay by definition.
                 node.delay = 0.0  # Root has zero delay
 
-            # Recursively compute for children
+            # Recursively compute delays for the children, passing the current node's
+            # delay as the parent_delay for the next level.
             compute_delays(node.left, node.delay)
             compute_delays(node.right, node.delay)
 
