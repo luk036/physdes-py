@@ -22,7 +22,6 @@ specific needs, providing a flexible and powerful tool for global routing tasks.
 from typing import List, Optional
 
 from physdes.point import Point
-from physdes.interval import Interval
 from physdes.router.routing_tree import GlobalRoutingTree
 from icecream import ic
 
@@ -34,9 +33,9 @@ class GlobalRouter:
 
     def __init__(
         self,
-        source_position: Point[int, int],
-        terminal_positions: List[Point[int, int]],
-        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+        source_position: Point,
+        terminal_positions: List[Point],
+        keepouts: Optional[List[Point]] = None,
     ) -> None:
         """
         Initializes the GlobalRouter.

@@ -105,9 +105,9 @@ class DelayCalculator(ABC):
         pass
 
     @abstractmethod
-    def calculate_extra_length_and_delay(
+    def calculate_tapping_point(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> Tuple[int, float, float]:
+    ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         pass
 
@@ -183,25 +183,32 @@ class LinearDelayCalculator(DelayCalculator):
         """
         return self.capacitance_per_unit * length
 
-    def calculate_extra_length_and_delay(
+    def calculate_tapping_point(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> Tuple[int, float, float]:
+    ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         # Compute required delay balancing
-        extend_left = (
-            round((node_right.delay - node_left.delay) / self.delay_per_unit) + distance
-        ) // 2
+        skew = node_right.delay - node_left.delay
+        extend_left = round((skew / self.delay_per_unit + distance) / 2)
         delay_left = node_left.delay + extend_left * self.delay_per_unit
-        delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
+        node_left.wire_length = extend_left
+        node_right.wire_length = distance - extend_left
+        # delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
         if extend_left < 0:
+            ic(extend_left)
+            node_left.wire_length = 0
+            node_right.wire_length = distance - extend_left
             extend_left = 0
+            delay_left = node_left.delay
             node_right.need_elongation = True
-            ic(extend_left)
         elif extend_left > distance:
-            extend_left = distance
-            node_left.need_elongation = True
             ic(extend_left)
-        return extend_left, delay_left, delay_right
+            node_right.wire_length = 0
+            node_right.wire_length = extend_left
+            extend_left = distance
+            delay_left = node_right.delay
+            node_left.need_elongation = True
+        return extend_left, delay_left
 
 
 class ElmoreDelayCalculator(DelayCalculator):
@@ -278,23 +285,37 @@ class ElmoreDelayCalculator(DelayCalculator):
         """
         return self.unit_capacitance * length
 
-    def calculate_extra_length_and_delay(
+    def calculate_tapping_point(
         self, node_left: TreeNode, node_right: TreeNode, distance: int
-    ) -> Tuple[int, float, float]:
+    ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         # Compute required delay balancing
-        extend_left = (round((node_right.delay - node_left.delay)) + distance) // 2
-        delay_left = node_left.delay + extend_left
-        delay_right = node_right.delay + (distance - extend_left)
+        skew = node_right.delay - node_left.delay
+        r = distance * self.unit_resistance 
+        c = distance * self.unit_capacitance
+        z = (skew + r * (node_right.capacitance + c / 2.0)) / (r * (c + node_right.capacitance + node_left.capacitance))
+        extend_left = round(z * distance)
+        r_left = extend_left * self.unit_resistance
+        c_left = extend_left * self.unit_capacitance
+        delay_left = node_left.delay + r_left * (c_left / 2.0 + node_left.capacitance)
+        node_left.wire_length = extend_left
+        node_right.wire_length = distance - extend_left
+        # delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
         if extend_left < 0:
+            ic(extend_left)
+            node_left.wire_length = 0
+            node_right.wire_length = distance - extend_left
             extend_left = 0
+            delay_left = node_left.delay
             node_right.need_elongation = True
-            ic(extend_left)
         elif extend_left > distance:
-            extend_left = distance
-            node_left.need_elongation = True
             ic(extend_left)
-        return extend_left, delay_left, delay_right
+            node_right.wire_length = 0
+            node_right.wire_length = extend_left
+            extend_left = distance
+            delay_left = node_right.delay
+            node_left.need_elongation = True
+        return extend_left, delay_left
 
 
 class DMEAlgorithm:
@@ -418,7 +439,7 @@ class DMEAlgorithm:
         def compute_segment(node: "TreeNode") -> ManhattanArc:
             if node.left is None and node.right is None:
                 # Leaf node: merging segment is the sink point (delay = 0.0)
-                ms = ManhattanArc.construct(node.position.xcoord, node.position.ycoord)
+                ms = ManhattanArc.from_point(node.position)
                 merging_segments[node.name] = ms
                 return ms
 
@@ -465,11 +486,10 @@ class DMEAlgorithm:
             (
                 extend_left,
                 delay_left,
-                _,
-            ) = self.delay_calculator.calculate_extra_length_and_delay(
+            ) = self.delay_calculator.calculate_tapping_point(
                 node.left, node.right, distance
             )
-            node.delay = node.left.delay + delay_left
+            node.delay = delay_left
             # Merge the segments
             merged_segment = left_ms.merge_with(right_ms, extend_left)
             merging_segments[node.name] = merged_segment
@@ -749,9 +769,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple[
-    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
-]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

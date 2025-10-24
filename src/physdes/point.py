@@ -381,6 +381,20 @@ class Point(Generic[T1, T2]):
         """
         return Point(self.ycoord, self.xcoord)
 
+    def rotates(self) -> "Point[T1, T2]":
+        x = self.xcoord
+        y = self.ycoord
+        xcoord = x - y
+        ycoord = x + y
+        return Point(xcoord, ycoord)
+
+    def inv_rotates(self) -> "Point[T1, T2]":
+        x = self.xcoord
+        y = self.ycoord
+        xcoord = (x + y) // 2
+        ycoord = (-x + y) // 2
+        return Point(xcoord, ycoord)
+
     def overlaps(self, other: "Point[T1, T2]") -> bool:
         """
         The `overlaps` function checks if two objects overlap by comparing their x and y coordinates.

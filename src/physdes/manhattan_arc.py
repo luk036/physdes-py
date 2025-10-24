@@ -103,6 +103,11 @@ class ManhattanArc(Generic[T1, T2]):
         """
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
+    @classmethod
+    def from_point(cls, pt: Point):
+        pt_xformed = pt.rotates()
+        return cls(pt_xformed.xcoord, pt_xformed.ycoord)
+
     @staticmethod
     def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
         """
@@ -188,7 +193,7 @@ class ManhattanArc(Generic[T1, T2]):
             7
         """
         # Note: take max of xcoord and ycoord
-        return max(
+        return max( # ???
             min_dist(self.impl.xcoord, other.impl.xcoord),
             min_dist(self.impl.ycoord, other.impl.ycoord),
         )
@@ -247,7 +252,7 @@ class ManhattanArc(Generic[T1, T2]):
             (4, 5)
         """
         m = self.impl.get_center()
-        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+        return m.inv_rotates()
 
     def get_lower_corner(self) -> Point[Any, Any]:
         """
@@ -261,7 +266,7 @@ class ManhattanArc(Generic[T1, T2]):
             (4, 5)
         """
         m = self.impl.lower_corner()
-        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+        return m.inv_rotates()
 
     def get_upper_corner(self) -> Point[Any, Any]:
         """
@@ -275,7 +280,7 @@ class ManhattanArc(Generic[T1, T2]):
             (4, 5)
         """
         m = self.impl.upper_corner()
-        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+        return m.inv_rotates()
 
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
         """
@@ -288,7 +293,7 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(a.nearest_point_to(Point(0, 0)))
             (4, 5)
         """
-        ms = ManhattanArc.construct(other.xcoord, other.ycoord)
+        ms = ManhattanArc.from_point(other)
         distance = self.min_dist_with(ms)
         trr = ms.enlarge_with(distance)
         lb = self.impl.lower_corner()
@@ -305,7 +310,7 @@ class ManhattanArc(Generic[T1, T2]):
             ic(lb)
             ic(ub)
             ic(trr.impl.contains(ub))
-        return Point((m.xcoord + m.ycoord) // 2, (-m.xcoord + m.ycoord) // 2)
+        return m.inv_rotates()
 
     def merge_with(
         self, other: "ManhattanArc[T1, T2]", alpha: int

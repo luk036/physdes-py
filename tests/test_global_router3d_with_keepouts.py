@@ -3,7 +3,7 @@ from physdes.interval import Interval
 from physdes.router.global_router import GlobalRouter
 from physdes.router.routing_tree import (
     visualize_routing_tree3d_svg,
-    save_routing_tree3d_svg,
+    # save_routing_tree3d_svg,
 )
 from tests.conftest import generate_3d_random_points_with_index
 
@@ -26,9 +26,9 @@ def test_route3d_with_steiner_and_keepouts():
     print(svg_output)
 
     # Save to file
-    save_routing_tree3d_svg(
-        router.tree, keepouts, scale_z, "example_route3d_with_steiner_and_keepouts.svg"
-    )
+    # save_routing_tree3d_svg(
+    #     router.tree, keepouts, scale_z, "example_route3d_with_steiner_and_keepouts.svg"
+    # )
 
 
 def test_route3d_with_constraints_and_keepouts():
@@ -49,9 +49,9 @@ def test_route3d_with_constraints_and_keepouts():
     print(svg_output)
 
     # Save to file
-    save_routing_tree3d_svg(
-        router.tree,
-        keepouts,
-        scale_z,
-        "example_route3d_with_constraint_and_keepouts.svg",
-    )
+    # save_routing_tree3d_svg(
+    #     router.tree,
+    #     keepouts,
+    #     scale_z,
+    #     "example_route3d_with_constraint_and_keepouts.svg",
+    # )
