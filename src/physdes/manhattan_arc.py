@@ -193,10 +193,16 @@ class ManhattanArc(Generic[T1, T2]):
             7
         """
         # Note: take max of xcoord and ycoord
-        return max( # ???
-            min_dist(self.impl.xcoord, other.impl.xcoord),
-            min_dist(self.impl.ycoord, other.impl.ycoord),
-        )
+        if isinstance(self.impl.xcoord, Point): # ???
+            x = min_dist(self.impl.xcoord.xcoord, other.impl.xcoord.xcoord) 
+            z = min_dist(self.impl.xcoord.ycoord, other.impl.xcoord.ycoord) 
+            y = min_dist(self.impl.ycoord, other.impl.ycoord)
+            return max(max(x, z), y) 
+        else:
+            return max(
+                min_dist(self.impl.xcoord, other.impl.xcoord),
+                min_dist(self.impl.ycoord, other.impl.ycoord),
+            )
 
     def enlarge_with(self, alpha: int) -> "ManhattanArc[Any, Any]":
         """
@@ -305,11 +311,6 @@ class ManhattanArc(Generic[T1, T2]):
             m = ub
         else:
             ic(distance)
-            ic(trr)
-            ic(self.impl)
-            ic(lb)
-            ic(ub)
-            ic(trr.impl.contains(ub))
         return m.inv_rotates()
 
     def merge_with(

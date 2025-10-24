@@ -293,7 +293,8 @@ class ElmoreDelayCalculator(DelayCalculator):
         skew = node_right.delay - node_left.delay
         r = distance * self.unit_resistance 
         c = distance * self.unit_capacitance
-        z = (skew + r * (node_right.capacitance + c / 2.0)) / (r * (c + node_right.capacitance + node_left.capacitance))
+        z = (skew + r * (node_right.capacitance + c / 2.0)) / (r * (c + node_right.capacitance 
+                                                                    + node_left.capacitance))
         extend_left = round(z * distance)
         r_left = extend_left * self.unit_resistance
         c_left = extend_left * self.unit_capacitance

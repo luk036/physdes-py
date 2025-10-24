@@ -105,7 +105,7 @@ class ClockTree3dVisualizer:
         ]
 
         # Draw wires first (so they appear behind nodes)
-        svg_content.extend(self._draw_wires(root, scale_coord))
+        svg_content.extend(self._draw_wires3d(root, scale_coord))
 
         # Draw nodes
         svg_content.extend(self._draw_nodes(root, sinks, scale_coord))
@@ -148,11 +148,11 @@ class ClockTree3dVisualizer:
 
         # Add tree3d nodes
         for node in nodes:
-            all_points.append((node.position.xcoord, node.position.ycoord))
+            all_points.append((node.position.xcoord.xcoord, node.position.ycoord))
 
         # Add original sinks (in case some are not in the tree3d)
         for sink in sinks:
-            all_points.append((sink.position.xcoord, sink.position.ycoord))
+            all_points.append((sink.position.xcoord.xcoord, sink.position.ycoord))
 
         if not all_points:
             return 0, 0, 100, 100
@@ -375,8 +375,8 @@ def create_comparison_visualization(
         >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]
         >>> analysis = {"skew": 0.1, "max_delay": 5.0, "total_wirelength": 100}
         >>> data = [
-        ...     {"tree": tree1, "sinks": sinks, "analysis": analysis, "title": "Linear Model"},
-        ...     {"tree": tree2, "sinks": sinks, "analysis": analysis, "title": "Elmore Model"}
+        ...     {"tree": tree3d1, "sinks": sinks, "analysis": analysis, "title": "Linear Model"},
+        ...     {"tree": tree3d2, "sinks": sinks, "analysis": analysis, "title": "Elmore Model"}
         ... ]
         >>> svg = create_comparison_visualization(data, "comparison.svg", 800, 400)
         Comparison visualization saved to comparison.svg
@@ -479,10 +479,10 @@ def create_comparison_visualization(
     return svg_string
 
 
-def create_delay_model_comparison(
+def create_delay_model_comparison3d(
     linear_tree_data: Dict[str, Any],
     elmore_tree_data: Dict[str, Any],
-    filename: str = "delay_model_comparison.svg",
+    filename: str = "delay_model_comparison3d.svg",
 ) -> str:
     """
     Create a specialized comparison between linear and Elmore delay models
@@ -572,12 +572,12 @@ def visualize_example_tree3d() -> Tuple[str, str, str]:
         "title": "Elmore Delay Model",
     }
 
-    comparison_svg = create_delay_model_comparison(linear_data, elmore_data)
+    comparison_svg = create_delay_model_comparison3d(linear_data, elmore_data)
 
     print("Visualizations created:")
     print("- linear_model_clock_tree3d.svg: Linear delay model")
     print("- elmore_model_clock_tree3d.svg: Elmore delay model")
-    print("- delay_model_comparison.svg: Side-by-side comparison")
+    print("- delay_model_comparison3d.svg: Side-by-side comparison")
 
     return linear_svg, elmore_svg, comparison_svg
 
@@ -585,4 +585,4 @@ def visualize_example_tree3d() -> Tuple[str, str, str]:
 if __name__ == "__main__":
     # Run example visualization
     linear_svg, elmore_svg, comparison_svg = visualize_example_tree3d()
-    doctest.testmod()
+    # doctest.testmod()

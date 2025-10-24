@@ -1,0 +1,105 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+<style>
+  .node-label { font: 10px sans-serif; fill: #333; }
+  .delay-label { font: 8px sans-serif; fill: #666; }
+  .wire-label { font: 9px sans-serif; fill: #444; }
+  .analysis-label { font: 12px sans-serif; fill: #333; }
+</style>
+<rect width="100%" height="100%" fill="white"/>
+<g class="clock-tree3d">
+<line x1="384.53237410071944" y1="96.76258992805755" x2="276.6187050359712" y2="93.16546762589928" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="330.57553956834533" y="89.96402877697841" class="wire-label" text-anchor="middle">42.0</text>
+<line x1="276.6187050359712" y1="93.16546762589928" x2="118.34532374100719" y2="201.0791366906475" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="197.48201438848918" y="142.12230215827338" class="wire-label" text-anchor="middle">89.0</text>
+<line x1="118.34532374100719" y1="201.0791366906475" x2="93.16546762589928" y2="147.12230215827338" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="105.75539568345323" y="169.10071942446044" class="wire-label" text-anchor="middle">29.0</text>
+<line x1="118.34532374100719" y1="201.0791366906475" x2="93.16546762589928" y2="291.0071942446043" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="105.75539568345323" y="241.0431654676259" class="wire-label" text-anchor="middle">35.0</text>
+<line x1="276.6187050359712" y1="93.16546762589928" x2="380.9352517985611" y2="129.136690647482" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="328.77697841726615" y="106.15107913669064" class="wire-label" text-anchor="middle">67.0</text>
+<line x1="380.9352517985611" y1="129.136690647482" x2="344.9640287769784" y2="111.15107913669064" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="362.94964028776974" y="115.14388489208632" class="wire-label" text-anchor="middle">25.0</text>
+<line x1="380.9352517985611" y1="129.136690647482" x2="380.9352517985611" y2="219.06474820143885" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="380.9352517985611" y="169.1007194244604" class="wire-label" text-anchor="middle">25.0</text>
+<line x1="384.53237410071944" y1="96.76258992805755" x2="384.53237410071944" y2="240.6474820143885" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="384.53237410071944" y="163.70503597122303" class="wire-label" text-anchor="middle">40.0</text>
+<line x1="384.53237410071944" y1="240.6474820143885" x2="226.25899280575538" y2="344.9640287769784" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="305.39568345323744" y="287.80575539568343" class="wire-label" text-anchor="middle">87.0</text>
+<line x1="226.25899280575538" y1="344.9640287769784" x2="93.16546762589928" y2="434.89208633093523" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="159.71223021582733" y="384.9280575539568" class="wire-label" text-anchor="middle">75.0</text>
+<line x1="226.25899280575538" y1="344.9640287769784" x2="237.0503597122302" y2="506.8345323741007" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="231.6546762589928" y="420.8992805755396" class="wire-label" text-anchor="middle">51.0</text>
+<line x1="384.53237410071944" y1="240.6474820143885" x2="488.84892086330933" y2="398.9208633093525" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="436.69064748201436" y="314.7841726618705" class="wire-label" text-anchor="middle">85.0</text>
+<line x1="488.84892086330933" y1="398.9208633093525" x2="524.8201438848921" y2="362.9496402877698" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="506.8345323741007" y="375.9352517985611" class="wire-label" text-anchor="middle">25.0</text>
+<line x1="488.84892086330933" y1="398.9208633093525" x2="452.8776978417266" y2="434.89208633093523" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="470.86330935251794" y="411.9064748201439" class="wire-label" text-anchor="middle">25.0</text>
+<circle cx="384.53237410071944" cy="96.76258992805755" r="10" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="384.53237410071944" y="81.76258992805755" class="node-label" text-anchor="middle">n6</text>
+<text x="384.53237410071944" y="118.76258992805755" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="276.6187050359712" cy="93.16546762589928" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="276.6187050359712" y="82.16546762589928" class="node-label" text-anchor="middle">n2</text>
+<text x="276.6187050359712" y="111.16546762589928" class="delay-label" text-anchor="middle">d:231.8</text>
+<circle cx="118.34532374100719" cy="201.0791366906475" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="118.34532374100719" y="190.0791366906475" class="node-label" text-anchor="middle">n0</text>
+<text x="118.34532374100719" y="219.0791366906475" class="delay-label" text-anchor="middle">d:435.7</text>
+<circle cx="93.16546762589928" cy="147.12230215827338" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="93.16546762589928" y="134.12230215827338" class="node-label" text-anchor="middle">s7</text>
+<text x="93.16546762589928" y="167.12230215827338" class="delay-label" text-anchor="middle">d:447.0</text>
+<text x="93.16546762589928" y="177.12230215827338" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="93.16546762589928" cy="291.0071942446043" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="93.16546762589928" y="278.0071942446043" class="node-label" text-anchor="middle">s8</text>
+<text x="93.16546762589928" y="311.0071942446043" class="delay-label" text-anchor="middle">d:451.4</text>
+<text x="93.16546762589928" y="321.0071942446043" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="380.9352517985611" cy="129.136690647482" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="380.9352517985611" y="118.136690647482" class="node-label" text-anchor="middle">n1</text>
+<text x="380.9352517985611" y="147.136690647482" class="delay-label" text-anchor="middle">d:357.1</text>
+<circle cx="344.9640287769784" cy="111.15107913669064" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="344.9640287769784" y="98.15107913669064" class="node-label" text-anchor="middle">s6</text>
+<text x="344.9640287769784" y="131.15107913669064" class="delay-label" text-anchor="middle">d:365.9</text>
+<text x="344.9640287769784" y="141.15107913669064" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="380.9352517985611" cy="219.06474820143885" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="380.9352517985611" y="206.06474820143885" class="node-label" text-anchor="middle">s5</text>
+<text x="380.9352517985611" y="239.06474820143885" class="delay-label" text-anchor="middle">d:365.9</text>
+<text x="380.9352517985611" y="249.06474820143885" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="384.53237410071944" cy="240.6474820143885" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="384.53237410071944" y="229.6474820143885" class="node-label" text-anchor="middle">n5</text>
+<text x="384.53237410071944" y="258.6474820143885" class="delay-label" text-anchor="middle">d:268.0</text>
+<circle cx="226.25899280575538" cy="344.9640287769784" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="226.25899280575538" y="333.9640287769784" class="node-label" text-anchor="middle">n3</text>
+<text x="226.25899280575538" y="362.9640287769784" class="delay-label" text-anchor="middle">d:535.1</text>
+<circle cx="93.16546762589928" cy="434.89208633093523" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="93.16546762589928" y="421.89208633093523" class="node-label" text-anchor="middle">s1</text>
+<text x="93.16546762589928" y="454.89208633093523" class="delay-label" text-anchor="middle">d:598.8</text>
+<text x="93.16546762589928" y="464.89208633093523" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="237.0503597122302" cy="506.8345323741007" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="237.0503597122302" y="493.8345323741007" class="node-label" text-anchor="middle">s2</text>
+<text x="237.0503597122302" y="526.8345323741007" class="delay-label" text-anchor="middle">d:566.2</text>
+<text x="237.0503597122302" y="536.8345323741007" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="488.84892086330933" cy="398.9208633093525" r="6" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="488.84892086330933" y="387.9208633093525" class="node-label" text-anchor="middle">n4</text>
+<text x="488.84892086330933" y="416.9208633093525" class="delay-label" text-anchor="middle">d:442.2</text>
+<circle cx="524.8201438848921" cy="362.9496402877698" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="524.8201438848921" y="349.9496402877698" class="node-label" text-anchor="middle">s4</text>
+<text x="524.8201438848921" y="382.9496402877698" class="delay-label" text-anchor="middle">d:451.0</text>
+<text x="524.8201438848921" y="392.9496402877698" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="452.8776978417266" cy="434.89208633093523" r="8" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="452.8776978417266" y="421.89208633093523" class="node-label" text-anchor="middle">s3</text>
+<text x="452.8776978417266" y="454.89208633093523" class="delay-label" text-anchor="middle">d:451.0</text>
+<text x="452.8776978417266" y="464.89208633093523" class="delay-label" text-anchor="middle">c:1.0</text>
+<g class="analysis-info">
+<rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
+<rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
+<text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
+<text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
+<tspan x="20" y="61">Delay Model: ElmoreDelayCalculator</tspan>
+<tspan x="20" y="77">Max Delay: 598.840</tspan>
+<tspan x="20" y="93">Min Delay: 365.880</tspan>
+<tspan x="20" y="109">Skew: 232.960</tspan>
+<tspan x="20" y="125">Total Wirelength: 700.0</tspan>
+<tspan x="20" y="141">Sinks: 8</tspan>
+</text>
+</g>
+</g>
+</svg>

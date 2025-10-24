@@ -75,3 +75,13 @@ def test_lt():
     assert (a < c) is True
     assert (b < a) is False
     assert (c < a) is False
+
+
+def test_rotate():
+    a = Point(3, 5)
+    assert a.rotates().inv_rotates() == a
+
+
+def test_rotate3d():
+    a = Point(Point(3, 4), 5)
+    assert a.rotates().inv_rotates() == a
