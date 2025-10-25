@@ -466,36 +466,6 @@ class DMEAlgorithm:
             distance = left_ms.min_dist_with(right_ms)
             # ic(distance)
 
-            # Compute required delay balancing using the strategy pattern
-            # left_delay = node.left.delay + self.delay_calculator.calculate_wire_delay(
-            #     distance, node.left.capacitance
-            # )
-            # right_delay = node.right.delay + self.delay_calculator.calculate_wire_delay(
-            #     distance, node.right.capacitance
-            # )
-
-            # # Adjust for zero skew
-            # skew = abs(left_delay - right_delay)
-            # if skew > 1e-6:
-            #     # Need to balance delays by adjusting wire lengths
-            #     if left_delay > right_delay:
-            #         # Right branch needs longer wire
-            #         extra_length = (
-            #             skew
-            #             / self.delay_calculator.calculate_wire_delay_per_unit(
-            #                 node.right.capacitance
-            #             )
-            #         )
-            #         right_ms = self._extend_segment(right_ms, extra_length)
-            #     else:
-            #         # Left branch needs longer wire
-            #         extra_length = (
-            #             skew
-            #             / self.delay_calculator.calculate_wire_delay_per_unit(
-            #                 node.left.capacitance
-            #             )
-            #         )
-            #         left_ms = self._extend_segment(left_ms, extra_length)
             # Calculate the tapping point and delay for the merged segment using the configured
             # delay calculator strategy. This step is crucial for achieving zero-skew by
             # determining how to balance the delays from the left and right branches.

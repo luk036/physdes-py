@@ -522,21 +522,21 @@ def visualize_example_tree() -> Tuple[str, str, str]:
         Sink,
     )
 
-    coords = generate_random_points_for_sinks()
+    # coords = generate_random_points_for_sinks()
+    # example_sinks = [Sink(f"s{i}", Point(x * 100, y * 100), 1.0) for i, (x, y) in enumerate(coords)]
 
     # Generate example clock tree with both delay models
-    # example_sinks = [
-    #     Sink("s1", Point(-100, 40), 1.0),
-    #     Sink("s2", Point(-60, 60), 1.0),
-    #     Sink("s3", Point(0, 40), 1.0),
-    #     Sink("s4", Point(20, 20), 1.0),
-    #     Sink("s5", Point(-20, -20), 1.0),
-    #     Sink("s6", Point(-30, -50), 1.0),
-    #     Sink("s7", Point(-100, -40), 1.0),
-    #     Sink("s8", Point(-100, 0), 1.0),
-    # ]
+    example_sinks = [
+        Sink("s1", Point(-100, 40), 1.0),
+        Sink("s2", Point(-60, 60), 1.0),
+        Sink("s3", Point(0, 40), 1.0),
+        Sink("s4", Point(20, 20), 1.0),
+        Sink("s5", Point(-20, -20), 1.0),
+        Sink("s6", Point(-30, -50), 1.0),
+        Sink("s7", Point(-100, -40), 1.0),
+        Sink("s8", Point(-100, 0), 1.0),
+    ]
 
-    example_sinks = [Sink(f"s{i}", Point(x * 100, y * 100), 1.0) for i, (x, y) in enumerate(coords)]
 
     print("=== Generating Clock Trees with Different Delay Models ===")
 

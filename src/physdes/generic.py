@@ -45,26 +45,6 @@ geometric objects.
 from typing import Any, Union
 
 
-def measure_of(obj: Any) -> Union[int, Any]:
-    """
-    The `measure_of` function calculates the measure of an object.
-
-    :param obj: The `obj` parameter represents the object for which the measure is to be calculated.
-    :return: the measure of the object.
-
-    Examples:
-        >>> measure_of(1)
-        1
-        >>> from physdes.interval import Interval
-        >>> measure_of(Interval(1, 2))
-        1
-    """
-    if hasattr(obj, "measure"):
-        return obj.measure()
-    else:
-        return 1
-
-
 def overlap(lhs: Any, rhs: Any) -> bool:
     """
     The `overlap` function checks if two objects have an overlapping property or are equal.
@@ -304,6 +284,25 @@ def nearest(lhs: Any, rhs: Any) -> Any:
 #         return rhs.min_dist_change_with(lhs)
 #     else:  # assume scalar
 #         return abs(lhs - rhs)
+
+def measure_of(obj: Any) -> Union[int, Any]:
+    """
+    The `measure_of` function calculates the measure of an object.
+
+    :param obj: The `obj` parameter represents the object for which the measure is to be calculated.
+    :return: the measure of the object.
+
+    Examples:
+        >>> measure_of(1)
+        1
+        >>> from physdes.interval import Interval
+        >>> measure_of(Interval(1, 2))
+        1
+    """
+    if hasattr(obj, "measure"):
+        return obj.measure()
+    else:
+        return 1
 
 
 def center(obj: Any) -> Any:

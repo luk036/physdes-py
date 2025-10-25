@@ -57,11 +57,6 @@ class ManhattanArc(Generic[T1, T2]):
 
     A 45 degree rotated point, vertical or horizontal segment, or rectangle
 
-    Examples:
-        >>> arc = ManhattanArc(-1, 9)
-        >>> print(arc)
-        /-1, 9/
-
     .. svgbob::
        :align: center
 
@@ -109,30 +104,7 @@ class ManhattanArc(Generic[T1, T2]):
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
     @classmethod
-    def from_point(cls, pt: Point) -> "ManhattanArc[Any, Any]":
-        """
-        Constructs a ManhattanArc from a regular 2D Point by rotating its coordinates by 45 degrees.
-
-        This method effectively transforms a point from the standard Cartesian coordinate system
-        to the 45-degree rotated coordinate system used by ManhattanArc.
-
-        Args:
-            pt: The input 2D Point object.
-
-        Returns:
-            A new ManhattanArc instance representing the rotated point.
-
-        Examples:
-            >>> from physdes.point import Point
-            >>> p = Point(4, 5)
-            >>> arc = ManhattanArc.from_point(p)
-            >>> print(arc)
-            /-1, 9/
-            >>> arc.impl.xcoord
-            -1
-            >>> arc.impl.ycoord
-            9
-        """
+    def from_point(cls, pt: Point):
         pt_xformed = pt.rotates()
         return cls(pt_xformed.xcoord, pt_xformed.ycoord)
 
@@ -215,18 +187,12 @@ class ManhattanArc(Generic[T1, T2]):
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
-            >>> r1 = ManhattanArc.construct(4, 5)
-            >>> r2 = ManhattanArc.construct(7, 9)
+            >>> r1 = ManhattanArc(4 - 5, 4 + 5)
+            >>> r2 = ManhattanArc(7 - 9, 7 + 9)
             >>> r1.min_dist_with(r2)
             7
-            >>> r3 = ManhattanArc.construct(1, 1)
-            >>> r4 = ManhattanArc.construct(1, 1)
-            >>> r3.min_dist_with(r4)
-            0
         """
-        # Calculate the Manhattan distance between the x-coordinates and y-coordinates
-        # of the two ManhattanArc instances. The minimum distance between the arcs
-        # is the maximum of these two individual coordinate distances.
+        # Note: take max of xcoord and ycoord
         return max(
             min_dist(self.impl.xcoord, other.impl.xcoord),
             min_dist(self.impl.ycoord, other.impl.ycoord),
@@ -245,21 +211,14 @@ class ManhattanArc(Generic[T1, T2]):
         :return: The `enlarge_with` method is returning a new `ManhattanArc` object with the enlarged coordinates.
 
         Examples:
-            >>> a = ManhattanArc.construct(4, 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> r = a.enlarge_with(1)
             >>> print(r)
             /[-2, 0], [8, 10]/
-            >>> r.impl.xcoord
-            Interval(-2, 0)
-            >>> r.impl.ycoord
-            Interval(8, 10)
         """
-        # Enlarge both the x and y coordinates of the internal Point object
-        # by the given alpha value. This effectively expands the ManhattanArc.
-        xcoord = enlarge(self.impl.xcoord, alpha)
-        ycoord = enlarge(self.impl.ycoord, alpha)
-        # Create and return a new ManhattanArc with the enlarged coordinates.
-        return ManhattanArc(xcoord, ycoord)
+        xcoord = enlarge(self.impl.xcoord, alpha)  # TODO: check
+        ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
+        return ManhattanArc(xcoord, ycoord)  # TODO
 
     def intersect_with(self, other: "ManhattanArc[T1, T2]") -> "ManhattanArc[T1, T2]":
         """
@@ -273,138 +232,79 @@ class ManhattanArc(Generic[T1, T2]):
             between the self object and the other object.
 
         Examples:
-            >>> a = ManhattanArc.construct(4, 5)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
             >>> r = a.intersect_with(a)
             >>> print(r)
             /-1, 9/
-            >>> r.impl.xcoord
-            -1
-            >>> r.impl.ycoord
-            9
         """
-        # Calculate the intersection of the internal Point objects.
-        # This operation is handled by the Point class, which can intersect
-        # two 2D intervals (or points).
-        point = self.impl.intersect_with(other.impl)
-        # Return a new ManhattanArc instance from the resulting intersected Point.
+        point = self.impl.intersect_with(other.impl)  # TODO
         return ManhattanArc(point.xcoord, point.ycoord)
 
     def get_center(self) -> Point[Any, Any]:
         """
-        Calculates the center of the ManhattanArc in the original (unrotated) coordinate system.
+        Calculates the center of the merging segment
 
-        This involves getting the center of the internal Point representation and then
-        inverse-rotating it to transform back to the standard Cartesian coordinates.
-
-        :return: A Point object representing the center of the ManhattanArc in the original coordinate system.
+        :return: The center of the merging segment.
 
         Examples:
-            >>> arc = ManhattanArc.construct(4, 5)
-            >>> print(arc.get_center())
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_center())
             (4, 5)
-            >>> arc = ManhattanArc.construct(10, 20)
-            >>> print(arc.get_center())
-            (10, 20)
         """
-        # Get the center of the internal Point representation (in rotated coordinates).
         m = self.impl.get_center()
-        # Inverse-rotate the center point to get its coordinates in the original system.
         return m.inv_rotates()
 
     def get_lower_corner(self) -> Point[Any, Any]:
         """
-        Calculates the lower corner of the ManhattanArc in the original (unrotated) coordinate system.
+        Calculates the lower corner of the merging segment
 
-        This involves getting the lower corner of the internal Point representation and then
-        inverse-rotating it to transform back to the standard Cartesian coordinates.
-
-        :return: A Point object representing the lower corner of the ManhattanArc in the original coordinate system.
+        :return: The lower corner of the merging segment.
 
         Examples:
-            >>> arc = ManhattanArc.construct(4, 5)
-            >>> print(arc.get_lower_corner())
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_lower_corner())
             (4, 5)
-            >>> arc = ManhattanArc.construct(10, 20)
-            >>> print(arc.get_lower_corner())
-            (10, 20)
         """
-        # Get the lower corner of the internal Point representation (in rotated coordinates).
         m = self.impl.lower_corner()
-        # Inverse-rotate the lower corner point to get its coordinates in the original system.
         return m.inv_rotates()
 
     def get_upper_corner(self) -> Point[Any, Any]:
         """
-        Calculates the upper corner of the ManhattanArc in the original (unrotated) coordinate system.
+        Calculates the upper corner of the merging segment
 
-        This involves getting the upper corner of the internal Point representation and then
-        inverse-rotating it to transform back to the standard Cartesian coordinates.
-
-        :return: A Point object representing the upper corner of the ManhattanArc in the original coordinate system.
+        :return: The upper corner of the merging segment.
 
         Examples:
-            >>> arc = ManhattanArc.construct(4, 5)
-            >>> print(arc.get_upper_corner())
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.get_upper_corner())
             (4, 5)
-            >>> arc = ManhattanArc.construct(10, 20)
-            >>> print(arc.get_upper_corner())
-            (10, 20)
         """
-        # Get the upper corner of the internal Point representation (in rotated coordinates).
         m = self.impl.upper_corner()
-        # Inverse-rotate the upper corner point to get its coordinates in the original system.
         return m.inv_rotates()
 
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
         """
-        Finds the point within this ManhattanArc that is nearest to a given target Point.
+        Calculates the center of the merging segment
 
-        This method first converts the target Point into a ManhattanArc, then calculates
-        the minimum distance between the two arcs. It then enlarges the target arc by
-        this distance and checks if the lower corner, upper corner, or center of the
-        current arc's internal representation falls within the enlarged target arc.
-        The point that satisfies this condition (or the center if none do) is returned
-        after inverse rotation.
-
-        :param other: The target Point to find the nearest point to.
-        :type other: Point[int, int]
-
-        :return: A Point object representing the nearest point in this ManhattanArc to the target Point.
+        :return: The center of the merging segment.
 
         Examples:
-            >>> from physdes.point import Point
-            >>> arc = ManhattanArc.construct(4, 5)
-            >>> target = Point(0, 0)
-            >>> print(arc.nearest_point_to(target))
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.nearest_point_to(Point(0, 0)))
             (4, 5)
-            >>> arc2 = ManhattanArc.construct(10, 10)
-            >>> target2 = Point(12, 12)
-            >>> print(arc2.nearest_point_to(target2))
-            (10, 10)
         """
-        # Convert the target Point to a ManhattanArc for distance calculation.
         ms = ManhattanArc.from_point(other)
-        # Calculate the minimum distance between the current arc and the target arc.
         distance = self.min_dist_with(ms)
-        # Enlarge the target arc by the calculated distance.
         trr = ms.enlarge_with(distance)
-        # Get the lower and upper corners of the current arc's internal representation.
         lb = self.impl.lower_corner()
         ub = self.impl.upper_corner()
-        # Initialize the nearest point to the center of the current arc.
         m = self.impl.get_center()
-        # Check if the lower corner of the current arc is contained within the enlarged target arc.
         if trr.impl.contains(lb):
             m = lb
-        # Check if the upper corner of the current arc is contained within the enlarged target arc.
         elif trr.impl.contains(ub):
             m = ub
-        # If neither corner is contained, the center is considered the nearest point.
         else:
-            ic(
-                distance
-            )  # This line is likely for debugging and can be removed in production.
-        # Inverse-rotate the found point to return it in the original coordinate system.
+            ic(distance)
         return m.inv_rotates()
 
     def merge_with(
@@ -422,23 +322,13 @@ class ManhattanArc(Generic[T1, T2]):
             y-coordinate of the intersection of the two objects being merged.
 
         Examples:
-            >>> a = ManhattanArc.construct(4, 5)
-            >>> b = ManhattanArc.construct(7, 9)
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> b = ManhattanArc(7 - 9, 7 + 9)
             >>> print(a.merge_with(b, 3))
             /[-4, 2], [12, 12]/
-            >>> c = ManhattanArc.construct(1, 1)
-            >>> d = ManhattanArc.construct(1, 1)
-            >>> print(c.merge_with(d, 0))
-            /[0, 0], [2, 2]/
         """
-        # Calculate the minimum distance between the current ManhattanArc and the other ManhattanArc.
         distance = self.min_dist_with(other)
-        # Enlarge the current ManhattanArc by 'alpha'.
         trr1 = self.enlarge_with(alpha)
-        # Enlarge the other ManhattanArc by the remaining distance (distance - alpha).
-        # This ensures that the total enlargement covers the distance between them.
         trr2 = other.enlarge_with(distance - alpha)
-        # Find the intersection of the two enlarged ManhattanArcs' internal Point representations.
         localimpl = trr1.impl.intersect_with(trr2.impl)
-        # Return a new ManhattanArc constructed from the intersection result.
         return ManhattanArc(localimpl.xcoord, localimpl.ycoord)

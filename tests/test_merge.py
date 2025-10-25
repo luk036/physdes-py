@@ -1,6 +1,6 @@
 from physdes.interval import Interval, min_dist
 from physdes.manhattan_arc import ManhattanArc
-
+from physdes.point import Point
 
 def test_ManhattanArc():
     r1 = ManhattanArc.construct(4, 5)
@@ -32,6 +32,16 @@ def test_merge_3():
     s2 = ManhattanArc(3, 3)
     m1 = s1.merge_with(s2, 2)
     assert m1 == ManhattanArc(Interval(3, 3), Interval(3, 3))
+
+
+def test_min_dist():
+    pa = Point(-8, 2)
+    pb = Point(3, 4)
+    dab = pa.min_dist_with(pb)
+    ma = ManhattanArc.from_point(pa)
+    mb = ManhattanArc.from_point(pb)
+    dmab = ma.min_dist_with(mb)
+    assert dab == dmab
 
 
 def test_repr():
