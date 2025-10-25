@@ -126,9 +126,7 @@ def test_RPolygon5():
     qx, qy = hgen.pop()
 
     svg_parts = []
-    svg_parts.append(
-        f'<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">'
-    )
+    svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
     svg_parts.append(
         get_polygon_svg_elements(
             S, fill_color="#88C0D0", stroke_color="black", opacity="1.0"
@@ -221,7 +219,7 @@ def test_rpolygon_make_xmonotone_hull():
 
     svg_parts = []
     svg_parts.append(
-        f'<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
+        '<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
     )
     svg_parts.append(
         get_polygon_svg_elements(
@@ -259,7 +257,7 @@ def test_rpolygon_make_ymonotone_hull():
 
     svg_parts = []
     svg_parts.append(
-        f'<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
+        '<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
     )
     svg_parts.append(
         get_polygon_svg_elements(
@@ -290,9 +288,7 @@ def test_rpolygon_make_convex_hull():
     assert not is_anticlockwise
 
     svg_parts = []
-    svg_parts.append(
-        f'<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">'
-    )
+    svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
     svg_parts.append(
         get_polygon_svg_elements(
             S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"

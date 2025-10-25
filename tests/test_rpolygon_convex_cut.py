@@ -22,9 +22,7 @@ def test_rpolygon_convex_cut():
     is_anticlockwise = P.is_anticlockwise()
 
     svg_parts = []
-    svg_parts.append(
-        f'<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">'
-    )
+    svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
     svg_parts.append(
         get_polygon_svg_elements(
             S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"

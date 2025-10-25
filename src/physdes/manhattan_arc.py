@@ -401,7 +401,9 @@ class ManhattanArc(Generic[T1, T2]):
             m = ub
         # If neither corner is contained, the center is considered the nearest point.
         else:
-            ic(distance) # This line is likely for debugging and can be removed in production.
+            ic(
+                distance
+            )  # This line is likely for debugging and can be removed in production.
         # Inverse-rotate the found point to return it in the original coordinate system.
         return m.inv_rotates()
 

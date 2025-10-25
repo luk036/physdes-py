@@ -8,6 +8,7 @@ using SVG format for clear, scalable graphics.
 import doctest
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+from lds_gen.ilds import Halton
 from physdes.point import Point
 
 
@@ -24,7 +25,7 @@ class ClockTreeVisualizer:
         root_color: str = "#F44336",
         wire_color: str = "#666666",
         text_color: str = "#333333",
-    ):
+    ): 
         """
         Initialize the visualizer with styling parameters
 
@@ -503,6 +504,14 @@ def create_delay_model_comparison(
     )
 
 
+def generate_random_points_for_sinks():
+    """Generate a set of random source and terminal points."""
+    hgen = Halton([3, 2], [7, 11])
+    hgen.reseed(19)
+    coords = [hgen.pop() for _ in range(16)]
+    return coords
+
+
 # Example usage function
 def visualize_example_tree() -> Tuple[str, str, str]:
     """Example function demonstrating clock tree visualization with different delay models"""
@@ -513,17 +522,21 @@ def visualize_example_tree() -> Tuple[str, str, str]:
         Sink,
     )
 
+    coords = generate_random_points_for_sinks()
+
     # Generate example clock tree with both delay models
-    example_sinks = [
-        Sink("s1", Point(-100, 40), 1.0),
-        Sink("s2", Point(-60, 60), 1.0),
-        Sink("s3", Point(0, 40), 1.0),
-        Sink("s4", Point(20, 20), 1.0),
-        Sink("s5", Point(-20, -20), 1.0),
-        Sink("s6", Point(-30, -50), 1.0),
-        Sink("s7", Point(-100, -40), 1.0),
-        Sink("s8", Point(-100, 0), 1.0),
-    ]
+    # example_sinks = [
+    #     Sink("s1", Point(-100, 40), 1.0),
+    #     Sink("s2", Point(-60, 60), 1.0),
+    #     Sink("s3", Point(0, 40), 1.0),
+    #     Sink("s4", Point(20, 20), 1.0),
+    #     Sink("s5", Point(-20, -20), 1.0),
+    #     Sink("s6", Point(-30, -50), 1.0),
+    #     Sink("s7", Point(-100, -40), 1.0),
+    #     Sink("s8", Point(-100, 0), 1.0),
+    # ]
+
+    example_sinks = [Sink(f"s{i}", Point(x * 100, y * 100), 1.0) for i, (x, y) in enumerate(coords)]
 
     print("=== Generating Clock Trees with Different Delay Models ===")
 

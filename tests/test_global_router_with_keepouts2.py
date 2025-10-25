@@ -4,7 +4,6 @@ from physdes.point import Point
 from physdes.interval import Interval
 from physdes.router.global_router import GlobalRouter
 from physdes.router.routing_tree import (
-    save_routing_tree_svg,
     visualize_routing_tree_svg,
 )
 
@@ -13,7 +12,7 @@ def test_route_with_steiner_and_keepouts():
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
+    coords = [hgen.pop() for _ in range(17)]
     terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     src_coord = hgen.pop()
     source = Point(src_coord[0], src_coord[1])

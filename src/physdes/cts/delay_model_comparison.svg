@@ -8,195 +8,371 @@
 <rect width="100%" height="100%" fill="white"/>
 <text x="300" y="20" class="title" text-anchor="middle">Linear Delay Model</text>
 <g transform="translate(10, 40)">
-<line x1="255.27777777777777" y1="255.27777777777777" x2="220.55555555555557" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="237.91666666666669" y="215.55555555555554" class="wire-label" text-anchor="middle">30.0</text>
-<line x1="220.55555555555557" y1="185.83333333333334" x2="81.66666666666667" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="151.11111111111111" y="180.83333333333334" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="81.66666666666667" y1="185.83333333333334" x2="81.66666666666667" y2="116.38888888888889" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="81.66666666666667" y="146.11111111111111" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="81.66666666666667" y1="185.83333333333334" x2="81.66666666666667" y2="255.27777777777777" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="81.66666666666667" y="215.55555555555554" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="220.55555555555557" y1="185.83333333333334" x2="324.72222222222223" y2="151.11111111111111" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="272.6388888888889" y="163.47222222222223" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="324.72222222222223" y1="151.11111111111111" x2="324.72222222222223" y2="81.66666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="324.72222222222223" y="111.38888888888889" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="324.72222222222223" y1="151.11111111111111" x2="359.44444444444446" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="342.08333333333337" y="163.47222222222223" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="255.27777777777777" y1="255.27777777777777" x2="255.27777777777777" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="255.27777777777777" y="285.0" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="255.27777777777777" y1="324.72222222222223" x2="185.83333333333334" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="220.55555555555554" y="354.44444444444446" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="185.83333333333334" y1="394.1666666666667" x2="81.66666666666667" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="133.75" y="389.1666666666667" class="wire-label" text-anchor="middle">30.0</text>
-<line x1="185.83333333333334" y1="394.1666666666667" x2="220.55555555555557" y2="463.61111111111114" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="203.19444444444446" y="423.8888888888889" class="wire-label" text-anchor="middle">30.0</text>
-<line x1="255.27777777777777" y1="324.72222222222223" x2="428.8888888888889" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="342.08333333333337" y="319.72222222222223" class="wire-label" text-anchor="middle">50.0</text>
-<line x1="428.8888888888889" y1="324.72222222222223" x2="498.33333333333337" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="463.61111111111114" y="319.72222222222223" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="428.8888888888889" y1="324.72222222222223" x2="428.8888888888889" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="428.8888888888889" y="354.44444444444446" class="wire-label" text-anchor="middle">20.0</text>
-<circle cx="255.27777777777777" cy="255.27777777777777" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
-<text x="255.27777777777777" y="242.27777777777777" class="node-label" text-anchor="middle">n6</text>
-<text x="255.27777777777777" y="275.27777777777777" class="delay-label" text-anchor="middle">d:0.0</text>
-<circle cx="220.55555555555557" cy="185.83333333333334" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="220.55555555555557" y="176.83333333333334" class="node-label" text-anchor="middle">n2</text>
-<text x="220.55555555555557" y="201.83333333333334" class="delay-label" text-anchor="middle">d:15.0</text>
-<circle cx="81.66666666666667" cy="185.83333333333334" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="176.83333333333334" class="node-label" text-anchor="middle">n0</text>
-<text x="81.66666666666667" y="201.83333333333334" class="delay-label" text-anchor="middle">d:35.0</text>
-<circle cx="81.66666666666667" cy="116.38888888888889" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="105.38888888888889" class="node-label" text-anchor="middle">s7</text>
-<text x="81.66666666666667" y="134.38888888888889" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="81.66666666666667" y="144.38888888888889" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="81.66666666666667" cy="255.27777777777777" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="244.27777777777777" class="node-label" text-anchor="middle">s8</text>
-<text x="81.66666666666667" y="273.27777777777777" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="81.66666666666667" y="283.27777777777777" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="324.72222222222223" cy="151.11111111111111" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="324.72222222222223" y="142.11111111111111" class="node-label" text-anchor="middle">n1</text>
-<text x="324.72222222222223" y="167.11111111111111" class="delay-label" text-anchor="middle">d:35.0</text>
-<circle cx="324.72222222222223" cy="81.66666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="324.72222222222223" y="70.66666666666667" class="node-label" text-anchor="middle">s6</text>
-<text x="324.72222222222223" y="99.66666666666667" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="324.72222222222223" y="109.66666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="359.44444444444446" cy="185.83333333333334" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="359.44444444444446" y="174.83333333333334" class="node-label" text-anchor="middle">s5</text>
-<text x="359.44444444444446" y="203.83333333333334" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="359.44444444444446" y="213.83333333333334" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="255.27777777777777" cy="324.72222222222223" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="255.27777777777777" y="315.72222222222223" class="node-label" text-anchor="middle">n5</text>
-<text x="255.27777777777777" y="340.72222222222223" class="delay-label" text-anchor="middle">d:10.0</text>
-<circle cx="185.83333333333334" cy="394.1666666666667" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="185.83333333333334" y="385.1666666666667" class="node-label" text-anchor="middle">n3</text>
-<text x="185.83333333333334" y="410.1666666666667" class="delay-label" text-anchor="middle">d:30.0</text>
-<circle cx="81.66666666666667" cy="394.1666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="383.1666666666667" class="node-label" text-anchor="middle">s1</text>
-<text x="81.66666666666667" y="412.1666666666667" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="81.66666666666667" y="422.1666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="220.55555555555557" cy="463.61111111111114" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="220.55555555555557" y="452.61111111111114" class="node-label" text-anchor="middle">s2</text>
-<text x="220.55555555555557" y="481.61111111111114" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="220.55555555555557" y="491.61111111111114" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="428.8888888888889" cy="324.72222222222223" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="428.8888888888889" y="315.72222222222223" class="node-label" text-anchor="middle">n4</text>
-<text x="428.8888888888889" y="340.72222222222223" class="delay-label" text-anchor="middle">d:35.0</text>
-<circle cx="498.33333333333337" cy="324.72222222222223" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="498.33333333333337" y="313.72222222222223" class="node-label" text-anchor="middle">s4</text>
-<text x="498.33333333333337" y="342.72222222222223" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="498.33333333333337" y="352.72222222222223" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="428.8888888888889" cy="394.1666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="428.8888888888889" y="383.1666666666667" class="node-label" text-anchor="middle">s3</text>
-<text x="428.8888888888889" y="412.1666666666667" class="delay-label" text-anchor="middle">d:45.0</text>
-<text x="428.8888888888889" y="422.1666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
+<line x1="330.3839987173321" y1="329.8829565496232" x2="330.3839987173321" y2="228.5722302388969" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="330.3839987173321" y="274.22759339426005" class="wire-label" text-anchor="middle">50550.0</text>
+<line x1="330.3839987173321" y1="228.5722302388969" x2="206.12554112554113" y2="228.5722302388969" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="268.2547699214366" y="223.5722302388969" class="wire-label" text-anchor="middle">62000.0</text>
+<line x1="206.12554112554113" y1="228.5722302388969" x2="206.12554112554113" y2="150.2092352092352" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="206.12554112554113" y="184.39073272406605" class="wire-label" text-anchor="middle">39100.0</text>
+<line x1="206.12554112554113" y1="150.2092352092352" x2="206.12554112554113" y2="113.73336540003207" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="206.12554112554113" y="126.97130030463364" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="206.12554112554113" y1="150.2092352092352" x2="227.77056277056278" y2="165.0400833734167" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="216.94805194805195" y="152.62465929132594" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="206.12554112554113" y1="228.5722302388969" x2="204.12137245470578" y2="242.00016033349368" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="205.12345679012344" y="230.2861952861953" class="wire-label" text-anchor="middle">7700.0</text>
+<line x1="204.12137245470578" y1="242.00016033349368" x2="130.36796536796538" y2="267.653519320186" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="167.24466891133557" y="249.82683982683983" class="wire-label" text-anchor="middle">49600.0</text>
+<line x1="204.12137245470578" y1="242.00016033349368" x2="303.5281385281385" y2="242.00016033349368" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="253.82475549142214" y="237.00016033349368" class="wire-label" text-anchor="middle">49600.0</text>
+<line x1="330.3839987173321" y1="228.5722302388969" x2="422.57575757575756" y2="186.88552188552188" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="376.4798781465448" y="202.7288760622094" class="wire-label" text-anchor="middle">66800.0</text>
+<line x1="422.57575757575756" y1="186.88552188552188" x2="422.57575757575756" y2="121.34920634920636" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="422.57575757575756" y="149.1173641173641" class="wire-label" text-anchor="middle">32700.0</text>
+<line x1="422.57575757575756" y1="121.34920634920636" x2="400.9307359307359" y2="139.38672438672438" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="411.75324675324674" y="125.36796536796538" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="422.57575757575756" y1="121.34920634920636" x2="422.57575757575756" y2="81.66666666666666" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="422.57575757575756" y="96.5079365079365" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="422.57575757575756" y1="186.88552188552188" x2="411.75324675324674" y2="200.31345198011866" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="417.16450216450215" y="188.59948693282027" class="wire-label" text-anchor="middle">12100.0</text>
+<line x1="411.75324675324674" y1="200.31345198011866" x2="325.17316017316017" y2="184.28010261343596" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="368.46320346320346" y="187.2967772967773" class="wire-label" text-anchor="middle">51200.0</text>
+<line x1="411.75324675324674" y1="200.31345198011866" x2="498.33333333333337" y2="216.34680134680136" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="455.0432900432901" y="203.33012666346002" class="wire-label" text-anchor="middle">51200.0</text>
+<line x1="330.3839987173321" y1="329.8829565496232" x2="278.4760301426968" y2="402.9349046015713" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="304.43001443001447" y="361.40893057559725" class="wire-label" text-anchor="middle">62350.0</text>
+<line x1="278.4760301426968" y1="402.9349046015713" x2="204.7226230559564" y2="402.9349046015713" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="241.59932659932662" y="397.9349046015713" class="wire-label" text-anchor="middle">36800.0</text>
+<line x1="204.7226230559564" y1="402.9349046015713" x2="179.06926406926408" y2="326.5760782427449" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="191.89594356261023" y="359.7554914221581" class="wire-label" text-anchor="middle">50900.0</text>
+<line x1="179.06926406926408" y1="326.5760782427449" x2="157.42424242424244" y2="344.613596280263" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="168.24675324675326" y="330.5948372615039" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="179.06926406926408" y1="326.5760782427449" x2="179.06926406926408" y2="286.89353856020523" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="179.06926406926408" y="301.7348084014751" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="204.7226230559564" y1="402.9349046015713" x2="204.7226230559564" y2="421.57367324033993" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="204.7226230559564" y="407.2542889209556" class="wire-label" text-anchor="middle">9300.0</text>
+<line x1="204.7226230559564" y1="421.57367324033993" x2="81.66666666666666" y2="421.57367324033993" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="143.19464486131153" y="416.57367324033993" class="wire-label" text-anchor="middle">61400.0</text>
+<line x1="204.7226230559564" y1="421.57367324033993" x2="276.4718614718615" y2="472.8803912137246" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="240.59724226390892" y="442.2270322270323" class="wire-label" text-anchor="middle">61400.0</text>
+<line x1="278.4760301426968" y1="402.9349046015713" x2="376.4798781465448" y2="407.5444925444925" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="327.4779541446208" y="400.2396985730319" class="wire-label" text-anchor="middle">51200.0</text>
+<line x1="376.4798781465448" y1="407.5444925444925" x2="352.2294372294372" y2="355.4361071027738" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="364.354657687991" y="376.49029982363317" class="wire-label" text-anchor="middle">38100.0</text>
+<line x1="352.2294372294372" y1="355.4361071027738" x2="352.2294372294372" y2="318.96023729357063" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.2294372294372" y="332.1981721981722" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="352.2294372294372" y1="355.4361071027738" x2="373.87445887445887" y2="370.2669552669553" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="363.05194805194805" y="357.85153118486454" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="376.4798781465448" y1="407.5444925444925" x2="449.6320346320346" y2="407.5444925444925" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="413.0559563892897" y="402.5444925444925" class="wire-label" text-anchor="middle">36500.0</text>
+<line x1="449.6320346320346" y1="407.5444925444925" x2="449.6320346320346" y2="447.2270322270322" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="449.6320346320346" y="422.3857623857624" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="449.6320346320346" y1="407.5444925444925" x2="471.27705627705626" y2="389.50697450697453" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="460.45454545454544" y="393.52573352573353" class="wire-label" text-anchor="middle">19800.0</text>
+<circle cx="330.3839987173321" cy="329.8829565496232" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="330.3839987173321" y="316.8829565496232" class="node-label" text-anchor="middle">n14</text>
+<text x="330.3839987173321" y="349.8829565496232" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="330.3839987173321" cy="228.5722302388969" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="330.3839987173321" y="219.5722302388969" class="node-label" text-anchor="middle">n6</text>
+<text x="330.3839987173321" y="244.5722302388969" class="delay-label" text-anchor="middle">d:25275.0</text>
+<circle cx="206.12554112554113" cy="228.5722302388969" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="219.5722302388969" class="node-label" text-anchor="middle">n2</text>
+<text x="206.12554112554113" y="244.5722302388969" class="delay-label" text-anchor="middle">d:56275.0</text>
+<circle cx="206.12554112554113" cy="150.2092352092352" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="141.2092352092352" class="node-label" text-anchor="middle">n0</text>
+<text x="206.12554112554113" y="166.2092352092352" class="delay-label" text-anchor="middle">d:75825.0</text>
+<circle cx="206.12554112554113" cy="113.73336540003207" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="102.73336540003207" class="node-label" text-anchor="middle">s4</text>
+<text x="206.12554112554113" y="131.73336540003208" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="206.12554112554113" y="141.73336540003208" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="227.77056277056278" cy="165.0400833734167" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="227.77056277056278" y="154.0400833734167" class="node-label" text-anchor="middle">s8</text>
+<text x="227.77056277056278" y="183.0400833734167" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="227.77056277056278" y="193.0400833734167" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="204.12137245470578" cy="242.00016033349368" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.12137245470578" y="233.00016033349368" class="node-label" text-anchor="middle">n1</text>
+<text x="204.12137245470578" y="258.0001603334937" class="delay-label" text-anchor="middle">d:60125.0</text>
+<circle cx="130.36796536796538" cy="267.653519320186" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="130.36796536796538" y="256.653519320186" class="node-label" text-anchor="middle">s10</text>
+<text x="130.36796536796538" y="285.653519320186" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="130.36796536796538" y="295.653519320186" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="303.5281385281385" cy="242.00016033349368" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="303.5281385281385" y="231.00016033349368" class="node-label" text-anchor="middle">s2</text>
+<text x="303.5281385281385" y="260.0001603334937" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="303.5281385281385" y="270.0001603334937" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="422.57575757575756" cy="186.88552188552188" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="177.88552188552188" class="node-label" text-anchor="middle">n5</text>
+<text x="422.57575757575756" y="202.88552188552188" class="delay-label" text-anchor="middle">d:58675.0</text>
+<circle cx="422.57575757575756" cy="121.34920634920636" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="112.34920634920636" class="node-label" text-anchor="middle">n3</text>
+<text x="422.57575757575756" y="137.34920634920636" class="delay-label" text-anchor="middle">d:75025.0</text>
+<circle cx="400.9307359307359" cy="139.38672438672438" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="400.9307359307359" y="128.38672438672438" class="node-label" text-anchor="middle">s0</text>
+<text x="400.9307359307359" y="157.38672438672438" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="400.9307359307359" y="167.38672438672438" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="422.57575757575756" cy="81.66666666666666" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="70.66666666666666" class="node-label" text-anchor="middle">s12</text>
+<text x="422.57575757575756" y="99.66666666666666" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="422.57575757575756" y="109.66666666666666" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="411.75324675324674" cy="200.31345198011866" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="411.75324675324674" y="191.31345198011866" class="node-label" text-anchor="middle">n4</text>
+<text x="411.75324675324674" y="216.31345198011866" class="delay-label" text-anchor="middle">d:64725.0</text>
+<circle cx="325.17316017316017" cy="184.28010261343596" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="325.17316017316017" y="173.28010261343596" class="node-label" text-anchor="middle">s14</text>
+<text x="325.17316017316017" y="202.28010261343596" class="delay-label" text-anchor="middle">d:90325.0</text>
+<text x="325.17316017316017" y="212.28010261343596" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="498.33333333333337" cy="216.34680134680136" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="498.33333333333337" y="205.34680134680136" class="node-label" text-anchor="middle">s6</text>
+<text x="498.33333333333337" y="234.34680134680136" class="delay-label" text-anchor="middle">d:90325.0</text>
+<text x="498.33333333333337" y="244.34680134680136" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="278.4760301426968" cy="402.9349046015713" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="278.4760301426968" y="393.9349046015713" class="node-label" text-anchor="middle">n13</text>
+<text x="278.4760301426968" y="418.9349046015713" class="delay-label" text-anchor="middle">d:31175.0</text>
+<circle cx="204.7226230559564" cy="402.9349046015713" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.7226230559564" y="393.9349046015713" class="node-label" text-anchor="middle">n9</text>
+<text x="204.7226230559564" y="418.9349046015713" class="delay-label" text-anchor="middle">d:49575.0</text>
+<circle cx="179.06926406926408" cy="326.5760782427449" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="179.06926406926408" y="317.5760782427449" class="node-label" text-anchor="middle">n7</text>
+<text x="179.06926406926408" y="342.5760782427449" class="delay-label" text-anchor="middle">d:75025.0</text>
+<circle cx="157.42424242424244" cy="344.613596280263" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="157.42424242424244" y="333.613596280263" class="node-label" text-anchor="middle">s1</text>
+<text x="157.42424242424244" y="362.613596280263" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="157.42424242424244" y="372.613596280263" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="179.06926406926408" cy="286.89353856020523" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="179.06926406926408" y="275.89353856020523" class="node-label" text-anchor="middle">s13</text>
+<text x="179.06926406926408" y="304.89353856020523" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="179.06926406926408" y="314.89353856020523" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="204.7226230559564" cy="421.57367324033993" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.7226230559564" y="412.57367324033993" class="node-label" text-anchor="middle">n8</text>
+<text x="204.7226230559564" y="437.57367324033993" class="delay-label" text-anchor="middle">d:54225.0</text>
+<circle cx="81.66666666666666" cy="421.57367324033993" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="81.66666666666666" y="410.57367324033993" class="node-label" text-anchor="middle">s7</text>
+<text x="81.66666666666666" y="439.57367324033993" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="81.66666666666666" y="449.57367324033993" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="276.4718614718615" cy="472.8803912137246" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="276.4718614718615" y="461.8803912137246" class="node-label" text-anchor="middle">s11</text>
+<text x="276.4718614718615" y="490.8803912137246" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="276.4718614718615" y="500.8803912137246" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="376.4798781465448" cy="407.5444925444925" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="376.4798781465448" y="398.5444925444925" class="node-label" text-anchor="middle">n12</text>
+<text x="376.4798781465448" y="423.5444925444925" class="delay-label" text-anchor="middle">d:56775.0</text>
+<circle cx="352.2294372294372" cy="355.4361071027738" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="352.2294372294372" y="346.4361071027738" class="node-label" text-anchor="middle">n10</text>
+<text x="352.2294372294372" y="371.4361071027738" class="delay-label" text-anchor="middle">d:75825.0</text>
+<circle cx="352.2294372294372" cy="318.96023729357063" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="352.2294372294372" y="307.96023729357063" class="node-label" text-anchor="middle">s5</text>
+<text x="352.2294372294372" y="336.96023729357063" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="352.2294372294372" y="346.96023729357063" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="373.87445887445887" cy="370.2669552669553" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="373.87445887445887" y="359.2669552669553" class="node-label" text-anchor="middle">s9</text>
+<text x="373.87445887445887" y="388.2669552669553" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="373.87445887445887" y="398.2669552669553" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="449.6320346320346" cy="407.5444925444925" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="449.6320346320346" y="398.5444925444925" class="node-label" text-anchor="middle">n11</text>
+<text x="449.6320346320346" y="423.5444925444925" class="delay-label" text-anchor="middle">d:75025.0</text>
+<circle cx="449.6320346320346" cy="447.2270322270322" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="449.6320346320346" y="436.2270322270322" class="node-label" text-anchor="middle">s3</text>
+<text x="449.6320346320346" y="465.2270322270322" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="449.6320346320346" y="475.2270322270322" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="471.27705627705626" cy="389.50697450697453" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="471.27705627705626" y="378.50697450697453" class="node-label" text-anchor="middle">s15</text>
+<text x="471.27705627705626" y="407.50697450697453" class="delay-label" text-anchor="middle">d:84925.0</text>
+<text x="471.27705627705626" y="417.50697450697453" class="delay-label" text-anchor="middle">c:1.0</text>
 <g class="analysis-info">
 <rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
 <rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
 <text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
 <text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
 <tspan x="20" y="61">Delay Model: LinearDelayCalculator</tspan>
-<tspan x="20" y="77">Max Delay: 45.000</tspan>
-<tspan x="20" y="93">Min Delay: 45.000</tspan>
-<tspan x="20" y="109">Skew: 0.000</tspan>
-<tspan x="20" y="125">Total Wirelength: 400.0</tspan>
-<tspan x="20" y="141">Sinks: 8</tspan>
+<tspan x="20" y="77">Max Delay: 90325.000</tspan>
+<tspan x="20" y="93">Min Delay: 84925.000</tspan>
+<tspan x="20" y="109">Skew: 5400.000</tspan>
+<tspan x="20" y="125">Total Wirelength: 1072100.0</tspan>
+<tspan x="20" y="141">Sinks: 16</tspan>
 </text>
 </g>
 </g>
 <text x="900" y="20" class="title" text-anchor="middle">Elmore Delay Model</text>
 <g transform="translate(610, 40)">
-<line x1="251.80555555555557" y1="251.80555555555557" x2="220.55555555555557" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="236.18055555555557" y="213.81944444444446" class="wire-label" text-anchor="middle">28.0</text>
-<line x1="220.55555555555557" y1="185.83333333333334" x2="81.66666666666667" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="151.11111111111111" y="180.83333333333334" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="81.66666666666667" y1="185.83333333333334" x2="81.66666666666667" y2="116.38888888888889" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="81.66666666666667" y="146.11111111111111" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="81.66666666666667" y1="185.83333333333334" x2="81.66666666666667" y2="255.27777777777777" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="81.66666666666667" y="215.55555555555554" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="220.55555555555557" y1="185.83333333333334" x2="324.72222222222223" y2="151.11111111111111" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="272.6388888888889" y="163.47222222222223" class="wire-label" text-anchor="middle">40.0</text>
-<line x1="324.72222222222223" y1="151.11111111111111" x2="324.72222222222223" y2="81.66666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="324.72222222222223" y="111.38888888888889" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="324.72222222222223" y1="151.11111111111111" x2="359.44444444444446" y2="185.83333333333334" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="342.08333333333337" y="163.47222222222223" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="251.80555555555557" y1="251.80555555555557" x2="251.80555555555557" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="251.80555555555557" y="283.2638888888889" class="wire-label" text-anchor="middle">21.0</text>
-<line x1="251.80555555555557" y1="324.72222222222223" x2="185.83333333333334" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="218.81944444444446" y="354.44444444444446" class="wire-label" text-anchor="middle">39.0</text>
-<line x1="185.83333333333334" y1="394.1666666666667" x2="81.66666666666667" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="133.75" y="389.1666666666667" class="wire-label" text-anchor="middle">30.0</text>
-<line x1="185.83333333333334" y1="394.1666666666667" x2="220.55555555555557" y2="463.61111111111114" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="203.19444444444446" y="423.8888888888889" class="wire-label" text-anchor="middle">30.0</text>
-<line x1="251.80555555555557" y1="324.72222222222223" x2="428.8888888888889" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="340.34722222222223" y="319.72222222222223" class="wire-label" text-anchor="middle">51.0</text>
-<line x1="428.8888888888889" y1="324.72222222222223" x2="498.33333333333337" y2="324.72222222222223" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="463.61111111111114" y="319.72222222222223" class="wire-label" text-anchor="middle">20.0</text>
-<line x1="428.8888888888889" y1="324.72222222222223" x2="428.8888888888889" y2="394.1666666666667" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
-<text x="428.8888888888889" y="354.44444444444446" class="wire-label" text-anchor="middle">20.0</text>
-<circle cx="251.80555555555557" cy="251.80555555555557" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
-<text x="251.80555555555557" y="238.80555555555557" class="node-label" text-anchor="middle">n6</text>
-<text x="251.80555555555557" y="271.80555555555554" class="delay-label" text-anchor="middle">d:0.0</text>
-<circle cx="220.55555555555557" cy="185.83333333333334" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="220.55555555555557" y="176.83333333333334" class="node-label" text-anchor="middle">n2</text>
-<text x="220.55555555555557" y="201.83333333333334" class="delay-label" text-anchor="middle">d:108.6</text>
-<circle cx="81.66666666666667" cy="185.83333333333334" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="176.83333333333334" class="node-label" text-anchor="middle">n0</text>
-<text x="81.66666666666667" y="201.83333333333334" class="delay-label" text-anchor="middle">d:164.6</text>
-<circle cx="81.66666666666667" cy="116.38888888888889" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="105.38888888888889" class="node-label" text-anchor="middle">s7</text>
-<text x="81.66666666666667" y="134.38888888888889" class="delay-label" text-anchor="middle">d:170.6</text>
-<text x="81.66666666666667" y="144.38888888888889" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="81.66666666666667" cy="255.27777777777777" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="244.27777777777777" class="node-label" text-anchor="middle">s8</text>
-<text x="81.66666666666667" y="273.27777777777777" class="delay-label" text-anchor="middle">d:170.6</text>
-<text x="81.66666666666667" y="283.27777777777777" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="324.72222222222223" cy="151.11111111111111" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="324.72222222222223" y="142.11111111111111" class="node-label" text-anchor="middle">n1</text>
-<text x="324.72222222222223" y="167.11111111111111" class="delay-label" text-anchor="middle">d:164.6</text>
-<circle cx="324.72222222222223" cy="81.66666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="324.72222222222223" y="70.66666666666667" class="node-label" text-anchor="middle">s6</text>
-<text x="324.72222222222223" y="99.66666666666667" class="delay-label" text-anchor="middle">d:170.6</text>
-<text x="324.72222222222223" y="109.66666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="359.44444444444446" cy="185.83333333333334" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="359.44444444444446" y="174.83333333333334" class="node-label" text-anchor="middle">s5</text>
-<text x="359.44444444444446" y="203.83333333333334" class="delay-label" text-anchor="middle">d:170.6</text>
-<text x="359.44444444444446" y="213.83333333333334" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="251.80555555555557" cy="324.72222222222223" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="251.80555555555557" y="315.72222222222223" class="node-label" text-anchor="middle">n5</text>
-<text x="251.80555555555557" y="340.72222222222223" class="delay-label" text-anchor="middle">d:92.6</text>
-<circle cx="185.83333333333334" cy="394.1666666666667" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="185.83333333333334" y="385.1666666666667" class="node-label" text-anchor="middle">n3</text>
-<text x="185.83333333333334" y="410.1666666666667" class="delay-label" text-anchor="middle">d:162.4</text>
-<circle cx="81.66666666666667" cy="394.1666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="81.66666666666667" y="383.1666666666667" class="node-label" text-anchor="middle">s1</text>
-<text x="81.66666666666667" y="412.1666666666667" class="delay-label" text-anchor="middle">d:174.4</text>
-<text x="81.66666666666667" y="422.1666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="220.55555555555557" cy="463.61111111111114" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="220.55555555555557" y="452.61111111111114" class="node-label" text-anchor="middle">s2</text>
-<text x="220.55555555555557" y="481.61111111111114" class="delay-label" text-anchor="middle">d:174.4</text>
-<text x="220.55555555555557" y="491.61111111111114" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="428.8888888888889" cy="324.72222222222223" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
-<text x="428.8888888888889" y="315.72222222222223" class="node-label" text-anchor="middle">n4</text>
-<text x="428.8888888888889" y="340.72222222222223" class="delay-label" text-anchor="middle">d:169.6</text>
-<circle cx="498.33333333333337" cy="324.72222222222223" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="498.33333333333337" y="313.72222222222223" class="node-label" text-anchor="middle">s4</text>
-<text x="498.33333333333337" y="342.72222222222223" class="delay-label" text-anchor="middle">d:175.6</text>
-<text x="498.33333333333337" y="352.72222222222223" class="delay-label" text-anchor="middle">c:1.0</text>
-<circle cx="428.8888888888889" cy="394.1666666666667" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
-<text x="428.8888888888889" y="383.1666666666667" class="node-label" text-anchor="middle">s3</text>
-<text x="428.8888888888889" y="412.1666666666667" class="delay-label" text-anchor="middle">d:175.6</text>
-<text x="428.8888888888889" y="422.1666666666667" class="delay-label" text-anchor="middle">c:1.0</text>
+<line x1="333.2339265672599" y1="330.3579445246112" x2="333.2339265672599" y2="224.94869328202662" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="333.2339265672599" y="272.6533189033189" class="wire-label" text-anchor="middle">52595.0</text>
+<line x1="333.2339265672599" y1="224.94869328202662" x2="206.12554112554113" y2="224.94869328202662" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="269.6797338464005" y="219.94869328202662" class="wire-label" text-anchor="middle">63422.0</text>
+<line x1="206.12554112554113" y1="224.94869328202662" x2="206.12554112554113" y2="150.2092352092352" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="206.12554112554113" y="182.5789642456309" class="wire-label" text-anchor="middle">37292.0</text>
+<line x1="206.12554112554113" y1="150.2092352092352" x2="206.12554112554113" y2="113.73336540003207" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="206.12554112554113" y="126.97130030463364" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="206.12554112554113" y1="150.2092352092352" x2="227.77056277056278" y2="165.0400833734167" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="216.94805194805195" y="152.62465929132594" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="206.12554112554113" y1="224.94869328202662" x2="204.12137245470578" y2="242.00016033349368" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="205.12345679012344" y="228.47442680776015" class="wire-label" text-anchor="middle">9508.0</text>
+<line x1="204.12137245470578" y1="242.00016033349368" x2="130.36796536796538" y2="267.653519320186" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="167.24466891133557" y="249.82683982683983" class="wire-label" text-anchor="middle">49600.0</text>
+<line x1="204.12137245470578" y1="242.00016033349368" x2="303.5281385281385" y2="242.00016033349368" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="253.82475549142214" y="237.00016033349368" class="wire-label" text-anchor="middle">49600.0</text>
+<line x1="333.2339265672599" y1="224.94869328202662" x2="422.57575757575756" y2="180.26976110309445" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="377.9048420715087" y="197.60922719256052" class="wire-label" text-anchor="middle">66871.0</text>
+<line x1="422.57575757575756" y1="180.26976110309445" x2="422.57575757575756" y2="121.34920634920636" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="422.57575757575756" y="145.8094837261504" class="wire-label" text-anchor="middle">29399.0</text>
+<line x1="422.57575757575756" y1="121.34920634920636" x2="400.9307359307359" y2="139.38672438672438" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="411.75324675324674" y="125.36796536796538" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="422.57575757575756" y1="121.34920634920636" x2="422.57575757575756" y2="81.66666666666666" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="422.57575757575756" y="96.5079365079365" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="422.57575757575756" y1="180.26976110309445" x2="427.78659611992947" y2="184.28010261343596" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="425.1811768478435" y="177.2749318582652" class="wire-label" text-anchor="middle">4601.0</text>
+<line x1="427.78659611992947" y1="184.28010261343596" x2="325.17316017316017" y2="184.28010261343596" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="376.4798781465448" y="179.28010261343596" class="wire-label" text-anchor="middle">51200.0</text>
+<line x1="427.78659611992947" y1="184.28010261343596" x2="498.33333333333337" y2="216.34680134680136" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="463.0599647266314" y="195.31345198011866" class="wire-label" text-anchor="middle">51200.0</text>
+<line x1="333.2339265672599" y1="330.3579445246112" x2="276.53799903799904" y2="399.0007215007215" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="304.8859628026295" y="359.67933301266635" class="wire-label" text-anchor="middle">62539.0</text>
+<line x1="276.53799903799904" y1="399.0007215007215" x2="204.7226230559564" y2="399.0007215007215" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="240.63031104697774" y="394.0007215007215" class="wire-label" text-anchor="middle">35833.0</text>
+<line x1="204.7226230559564" y1="399.0007215007215" x2="179.06926406926408" y2="326.5760782427449" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="191.89594356261023" y="357.7883998717332" class="wire-label" text-anchor="middle">48937.0</text>
+<line x1="179.06926406926408" y1="326.5760782427449" x2="157.42424242424244" y2="344.613596280263" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="168.24675324675326" y="330.5948372615039" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="179.06926406926408" y1="326.5760782427449" x2="179.06926406926408" y2="286.89353856020523" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="179.06926406926408" y="301.7348084014751" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="204.7226230559564" y1="399.0007215007215" x2="204.7226230559564" y2="421.57367324033993" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="204.7226230559564" y="405.28719737053075" class="wire-label" text-anchor="middle">11263.0</text>
+<line x1="204.7226230559564" y1="421.57367324033993" x2="81.66666666666666" y2="421.57367324033993" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="143.19464486131153" y="416.57367324033993" class="wire-label" text-anchor="middle">61400.0</text>
+<line x1="204.7226230559564" y1="421.57367324033993" x2="276.4718614718615" y2="472.8803912137246" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="240.59724226390892" y="442.2270322270323" class="wire-label" text-anchor="middle">61400.0</text>
+<line x1="276.53799903799904" y1="399.0007215007215" x2="376.8686868686869" y2="407.5444925444925" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="326.70334295334294" y="398.272607022607" class="wire-label" text-anchor="middle">54324.0</text>
+<line x1="376.8686868686869" y1="407.5444925444925" x2="352.2294372294372" y2="355.4361071027738" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="364.54906204906206" y="376.49029982363317" class="wire-label" text-anchor="middle">38294.0</text>
+<line x1="352.2294372294372" y1="355.4361071027738" x2="352.2294372294372" y2="318.96023729357063" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="352.2294372294372" y="332.1981721981722" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="352.2294372294372" y1="355.4361071027738" x2="373.87445887445887" y2="370.2669552669553" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="363.05194805194805" y="357.85153118486454" class="wire-label" text-anchor="middle">18200.0</text>
+<line x1="376.8686868686869" y1="407.5444925444925" x2="449.6320346320346" y2="407.5444925444925" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="413.25036075036076" y="402.5444925444925" class="wire-label" text-anchor="middle">36306.0</text>
+<line x1="449.6320346320346" y1="407.5444925444925" x2="449.6320346320346" y2="447.2270322270322" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="449.6320346320346" y="422.3857623857624" class="wire-label" text-anchor="middle">19800.0</text>
+<line x1="449.6320346320346" y1="407.5444925444925" x2="471.27705627705626" y2="389.50697450697453" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="460.45454545454544" y="393.52573352573353" class="wire-label" text-anchor="middle">19800.0</text>
+<circle cx="333.2339265672599" cy="330.3579445246112" r="8" fill="#F44336" stroke="#333" stroke-width="1"/>
+<text x="333.2339265672599" y="317.3579445246112" class="node-label" text-anchor="middle">n14</text>
+<text x="333.2339265672599" y="350.3579445246112" class="delay-label" text-anchor="middle">d:0.0</text>
+<circle cx="333.2339265672599" cy="224.94869328202662" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="333.2339265672599" y="215.94869328202662" class="node-label" text-anchor="middle">n6</text>
+<text x="333.2339265672599" y="240.94869328202662" class="delay-label" text-anchor="middle">d:541760583.0</text>
+<circle cx="206.12554112554113" cy="224.94869328202662" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="215.94869328202662" class="node-label" text-anchor="middle">n2</text>
+<text x="206.12554112554113" y="240.94869328202662" class="delay-label" text-anchor="middle">d:813372908.6</text>
+<circle cx="206.12554112554113" cy="150.2092352092352" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="141.2092352092352" class="node-label" text-anchor="middle">n0</text>
+<text x="206.12554112554113" y="166.2092352092352" class="delay-label" text-anchor="middle">d:854435875.6</text>
+<circle cx="206.12554112554113" cy="113.73336540003207" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="206.12554112554113" y="102.73336540003207" class="node-label" text-anchor="middle">s4</text>
+<text x="206.12554112554113" y="131.73336540003208" class="delay-label" text-anchor="middle">d:857750095.6</text>
+<text x="206.12554112554113" y="141.73336540003208" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="227.77056277056278" cy="165.0400833734167" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="227.77056277056278" y="154.0400833734167" class="node-label" text-anchor="middle">s8</text>
+<text x="227.77056277056278" y="183.0400833734167" class="delay-label" text-anchor="middle">d:857750095.6</text>
+<text x="227.77056277056278" y="193.0400833734167" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="204.12137245470578" cy="242.00016033349368" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.12137245470578" y="233.00016033349368" class="node-label" text-anchor="middle">n1</text>
+<text x="204.12137245470578" y="258.0001603334937" class="delay-label" text-anchor="middle">d:833142702.8</text>
+<circle cx="130.36796536796538" cy="267.653519320186" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="130.36796536796538" y="256.653519320186" class="node-label" text-anchor="middle">s10</text>
+<text x="130.36796536796538" y="285.653519320186" class="delay-label" text-anchor="middle">d:857749262.8</text>
+<text x="130.36796536796538" y="295.653519320186" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="303.5281385281385" cy="242.00016033349368" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="303.5281385281385" y="231.00016033349368" class="node-label" text-anchor="middle">s2</text>
+<text x="303.5281385281385" y="260.0001603334937" class="delay-label" text-anchor="middle">d:857749262.8</text>
+<text x="303.5281385281385" y="270.0001603334937" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="422.57575757575756" cy="180.26976110309445" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="171.26976110309445" class="node-label" text-anchor="middle">n5</text>
+<text x="422.57575757575756" y="196.26976110309445" class="delay-label" text-anchor="middle">d:821890557.8</text>
+<circle cx="422.57575757575756" cy="121.34920634920636" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="112.34920634920636" class="node-label" text-anchor="middle">n3</text>
+<text x="422.57575757575756" y="137.34920634920636" class="delay-label" text-anchor="middle">d:853823457.6</text>
+<circle cx="400.9307359307359" cy="139.38672438672438" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="400.9307359307359" y="128.38672438672438" class="node-label" text-anchor="middle">s0</text>
+<text x="400.9307359307359" y="157.38672438672438" class="delay-label" text-anchor="middle">d:857745837.6</text>
+<text x="400.9307359307359" y="167.38672438672438" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="422.57575757575756" cy="81.66666666666666" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="422.57575757575756" y="70.66666666666666" class="node-label" text-anchor="middle">s12</text>
+<text x="422.57575757575756" y="99.66666666666666" class="delay-label" text-anchor="middle">d:857745837.6</text>
+<text x="422.57575757575756" y="109.66666666666666" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="427.78659611992947" cy="184.28010261343596" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="427.78659611992947" y="175.28010261343596" class="node-label" text-anchor="middle">n4</text>
+<text x="427.78659611992947" y="200.28010261343596" class="delay-label" text-anchor="middle">d:831526018.0</text>
+<circle cx="325.17316017316017" cy="184.28010261343596" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="325.17316017316017" y="173.28010261343596" class="node-label" text-anchor="middle">s14</text>
+<text x="325.17316017316017" y="202.28010261343596" class="delay-label" text-anchor="middle">d:857745538.0</text>
+<text x="325.17316017316017" y="212.28010261343596" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="498.33333333333337" cy="216.34680134680136" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="498.33333333333337" y="205.34680134680136" class="node-label" text-anchor="middle">s6</text>
+<text x="498.33333333333337" y="234.34680134680136" class="delay-label" text-anchor="middle">d:857745538.0</text>
+<text x="498.33333333333337" y="244.34680134680136" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="276.53799903799904" cy="399.0007215007215" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="276.53799903799904" y="390.0007215007215" class="node-label" text-anchor="middle">n13</text>
+<text x="276.53799903799904" y="415.0007215007215" class="delay-label" text-anchor="middle">d:618718964.9</text>
+<circle cx="204.7226230559564" cy="399.0007215007215" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.7226230559564" y="390.0007215007215" class="node-label" text-anchor="middle">n9</text>
+<text x="204.7226230559564" y="415.0007215007215" class="delay-label" text-anchor="middle">d:791101853.0</text>
+<circle cx="179.06926406926408" cy="326.5760782427449" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="179.06926406926408" y="317.5760782427449" class="node-label" text-anchor="middle">n7</text>
+<text x="179.06926406926408" y="342.5760782427449" class="delay-label" text-anchor="middle">d:853818044.1</text>
+<circle cx="157.42424242424244" cy="344.613596280263" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="157.42424242424244" y="333.613596280263" class="node-label" text-anchor="middle">s1</text>
+<text x="157.42424242424244" y="362.613596280263" class="delay-label" text-anchor="middle">d:857740424.1</text>
+<text x="157.42424242424244" y="372.613596280263" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="179.06926406926408" cy="286.89353856020523" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="179.06926406926408" y="275.89353856020523" class="node-label" text-anchor="middle">s13</text>
+<text x="179.06926406926408" y="304.89353856020523" class="delay-label" text-anchor="middle">d:857740424.1</text>
+<text x="179.06926406926408" y="314.89353856020523" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="204.7226230559564" cy="421.57367324033993" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="204.7226230559564" y="412.57367324033993" class="node-label" text-anchor="middle">n8</text>
+<text x="204.7226230559564" y="437.57367324033993" class="delay-label" text-anchor="middle">d:820034585.2</text>
+<circle cx="81.66666666666666" cy="421.57367324033993" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="81.66666666666666" y="410.57367324033993" class="node-label" text-anchor="middle">s7</text>
+<text x="81.66666666666666" y="439.57367324033993" class="delay-label" text-anchor="middle">d:857740325.2</text>
+<text x="81.66666666666666" y="449.57367324033993" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="276.4718614718615" cy="472.8803912137246" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="276.4718614718615" y="461.8803912137246" class="node-label" text-anchor="middle">s11</text>
+<text x="276.4718614718615" y="490.8803912137246" class="delay-label" text-anchor="middle">d:857740325.2</text>
+<text x="276.4718614718615" y="500.8803912137246" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="376.8686868686869" cy="407.5444925444925" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="376.8686868686869" y="398.5444925444925" class="node-label" text-anchor="middle">n12</text>
+<text x="376.8686868686869" y="423.5444925444925" class="delay-label" text-anchor="middle">d:811875552.2</text>
+<circle cx="352.2294372294372" cy="355.4361071027738" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="352.2294372294372" y="346.4361071027738" class="node-label" text-anchor="middle">n10</text>
+<text x="352.2294372294372" y="371.4361071027738" class="delay-label" text-anchor="middle">d:854425547.4</text>
+<circle cx="352.2294372294372" cy="318.96023729357063" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="352.2294372294372" y="307.96023729357063" class="node-label" text-anchor="middle">s5</text>
+<text x="352.2294372294372" y="336.96023729357063" class="delay-label" text-anchor="middle">d:857739767.4</text>
+<text x="352.2294372294372" y="346.96023729357063" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="373.87445887445887" cy="370.2669552669553" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="373.87445887445887" y="359.2669552669553" class="node-label" text-anchor="middle">s9</text>
+<text x="373.87445887445887" y="388.2669552669553" class="delay-label" text-anchor="middle">d:857739767.4</text>
+<text x="373.87445887445887" y="398.2669552669553" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="449.6320346320346" cy="407.5444925444925" r="4" fill="#2196F3" stroke="#333" stroke-width="1"/>
+<text x="449.6320346320346" y="398.5444925444925" class="node-label" text-anchor="middle">n11</text>
+<text x="449.6320346320346" y="423.5444925444925" class="delay-label" text-anchor="middle">d:853818421.8</text>
+<circle cx="449.6320346320346" cy="447.2270322270322" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="449.6320346320346" y="436.2270322270322" class="node-label" text-anchor="middle">s3</text>
+<text x="449.6320346320346" y="465.2270322270322" class="delay-label" text-anchor="middle">d:857740801.8</text>
+<text x="449.6320346320346" y="475.2270322270322" class="delay-label" text-anchor="middle">c:1.0</text>
+<circle cx="471.27705627705626" cy="389.50697450697453" r="6" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+<text x="471.27705627705626" y="378.50697450697453" class="node-label" text-anchor="middle">s15</text>
+<text x="471.27705627705626" y="407.50697450697453" class="delay-label" text-anchor="middle">d:857740801.8</text>
+<text x="471.27705627705626" y="417.50697450697453" class="delay-label" text-anchor="middle">c:1.0</text>
 <g class="analysis-info">
 <rect x="10" y="10" width="220" height="140" fill="white" stroke="#ccc" stroke-width="1" rx="5"/>
 <rect x="10" y="10" width="220" height="20" fill="#f0f0f0" stroke="#ccc" stroke-width="1" rx="5"/>
 <text x="20" y="25" font-family="sans-serif" font-size="12" font-weight="bold" fill="#333">Clock Tree Analysis</text>
 <text x="20" y="45" font-family="monospace" font-size="11" fill="#333">
 <tspan x="20" y="61">Delay Model: ElmoreDelayCalculator</tspan>
-<tspan x="20" y="77">Max Delay: 175.620</tspan>
-<tspan x="20" y="93">Min Delay: 170.640</tspan>
-<tspan x="20" y="109">Skew: 4.980</tspan>
-<tspan x="20" y="125">Total Wirelength: 399.0</tspan>
-<tspan x="20" y="141">Sinks: 8</tspan>
+<tspan x="20" y="77">Max Delay: 857750095.630</tspan>
+<tspan x="20" y="93">Min Delay: 857739767.390</tspan>
+<tspan x="20" y="109">Skew: 10328.240</tspan>
+<tspan x="20" y="125">Total Wirelength: 1067184.0</tspan>
+<tspan x="20" y="141">Sinks: 16</tspan>
 </text>
 </g>
 </g>

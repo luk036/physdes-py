@@ -56,11 +56,11 @@ def test_route_with_constraints_special():
     """Test routing with constraints for a special case."""
     source, terminals = generate_special_points()
     router = GlobalRouter(source, terminals)
-    router.route_with_constraints(1.8)
+    router.route_with_constraints(1.0)
 
     # Generate and print SVG
     svg_output = visualize_routing_tree_svg(router.tree, width=1000, height=1000)
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, filename="neg_specical18.svg")
+    save_routing_tree_svg(router.tree, filename="neg_specical10.svg")

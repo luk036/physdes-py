@@ -19,7 +19,7 @@ def generate_random_points():
     """Generate a set of random source and terminal points."""
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
+    coords = [hgen.pop() for _ in range(17)]
     terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     src_coord = hgen.pop()
     source = Point(src_coord[0], src_coord[1])
@@ -51,7 +51,7 @@ def generate_3d_random_points():
     scale_z = 100
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
+    coords = [hgen.pop() for _ in range(17)]
     terminals = [
         Point(Point(xcoord, randint(0, 3) * scale_z), ycoord)
         for xcoord, ycoord in coords
@@ -66,7 +66,7 @@ def generate_3d_random_points_with_index():
     scale_z = 100
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
-    coords = [(hgen.pop(), i) for i in range(7)]
+    coords = [(hgen.pop(), i) for i in range(17)]
     terminals = [
         Point(Point(xcoord, (i % 4) * scale_z), ycoord)
         for ([xcoord, ycoord], i) in coords
