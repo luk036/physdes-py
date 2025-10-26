@@ -285,6 +285,7 @@ def nearest(lhs: Any, rhs: Any) -> Any:
 #     else:  # assume scalar
 #         return abs(lhs - rhs)
 
+
 def measure_of(obj: Any) -> Union[int, Any]:
     """
     The `measure_of` function calculates the measure of an object.

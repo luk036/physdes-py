@@ -25,7 +25,7 @@ class ClockTreeVisualizer:
         root_color: str = "#F44336",
         wire_color: str = "#666666",
         text_color: str = "#333333",
-    ): 
+    ):
         """
         Initialize the visualizer with styling parameters
 
@@ -536,7 +536,6 @@ def visualize_example_tree() -> Tuple[str, str, str]:
         Sink("s7", Point(-100, -40), 1.0),
         Sink("s8", Point(-100, 0), 1.0),
     ]
-
 
     print("=== Generating Clock Trees with Different Delay Models ===")
 

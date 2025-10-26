@@ -124,31 +124,3 @@ def get_circle_svg_elements(points, circle_radius=10, fill_color="black"):
             f'  <circle cx="{p.xcoord}" cy="{p.ycoord}" r="{circle_radius}" fill="{fill_color}" />'
         )
     return "\n".join(circle_svgs)
-
-
-# def generate_2d_init_points():
-#     """Generate 2D points for global router initialization test."""
-#     source = Point(0, 0)
-#     terminals = [Point(10, 0), Point(1, 0), Point(5, 0)]
-#     return source, terminals
-
-
-# def generate_3d_init_points():
-#     """Generate 3D points for global router 3D initialization test."""
-#     source = Point(Point(0, 0), 0)
-#     terminals = [Point(Point(10, 0), 0), Point(Point(1, 0), 0), Point(Point(5, 0), 0)]
-#     return source, terminals
-
-
-# def generate_2d_simple_points():
-#     """Generate 2D points for simple routing test."""
-#     source = Point(0, 0)
-#     terminals = [Point(1, 1), Point(2, 2)]
-#     return source, terminals
-
-
-# def generate_3d_simple_points():
-#     """Generate 3D points for simple 3D routing test."""
-#     source = Point(Point(0, 0), 0)
-#     terminals = [Point(Point(1, 1), 1), Point(Point(2, 2), 2)]
-#     return source, terminals

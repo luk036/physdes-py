@@ -2,6 +2,7 @@ from physdes.interval import Interval, min_dist
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
 
+
 def test_ManhattanArc():
     r1 = ManhattanArc.construct(4, 5)
     r2 = ManhattanArc.construct(7, 9)

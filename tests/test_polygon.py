@@ -36,8 +36,6 @@ def test_polygon():
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     S = create_test_polygon(S)
     assert polygon_is_anticlockwise(S)
-    for p in S:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 110
     assert P.is_anticlockwise()
@@ -68,10 +66,6 @@ def test_ymono_polygon():
     S = create_ymono_polygon(S)
     assert polygon_is_ymonotone(S)
     assert not polygon_is_xmonotone(S)
-    assert polygon_is_anticlockwise(S)
-
-    for p in S:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 102
     assert P.is_anticlockwise()
@@ -99,8 +93,6 @@ def test_xmono_polygon():
     assert polygon_is_xmonotone(S)
     assert not polygon_is_ymonotone(S)
     assert polygon_is_anticlockwise(S)
-    for p in S:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == 111
     assert P.is_anticlockwise()
@@ -136,31 +128,10 @@ def test_polygon4():
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_polygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
-    print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    print('  <polygon points="', end=" ")
-    for p in S:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    print('"')
-    print('  fill="#88C0D0" stroke="black" />')
-    for p in S:
-        print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
     qx, qy = hgen.pop()
-    print('  <circle cx="{}" cy="{}" r="10" fill="#BF616A" />'.format(qx, qy))
-    print("</svg>")
     P = Polygon.from_pointset(S)
     assert P.signed_area_x2 == -4449600
     assert point_in_polygon(S, Point(qx, qy))
-
-
-# def test_polygon3():
-#     hgen = Halton([2, 3], [11, 7])
-#     coords = [hgen() for _ in range(40)]
-#     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-#     S = create_ymono_polygon(S)
-#     for p in S:
-#         print("{},{}".format(p.xcoord, p.ycoord), end=' ')
-#     P = Polygon.from_pointset(S)
-#     assert P.signed_area_x2 == 3198528000
 
 
 def test_is_rectilinear():
@@ -304,8 +275,6 @@ def test_make_convex_hull():
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     assert polygon_is_anticlockwise(S)
     C = polygon_make_convex_hull(S)
-    for p in C:
-        print("({},{})".format(p.xcoord, p.ycoord), end=" ")
     assert polygon_is_anticlockwise(C)
 
 
@@ -314,23 +283,5 @@ def test_convex_hull():
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_polygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     C = polygon_make_convex_hull(S)
-
-    print('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-
-    print('  <polygon points="', end=" ")
-    for p in C:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    print('"')
-    print('  fill="#C0D088" stroke="black" opacity="0.3" />')
-
-    print('  <polygon points="', end=" ")
-    for p in S:
-        print("{},{}".format(p.xcoord, p.ycoord), end=" ")
-    print('"')
-    print('  fill="#88C0D0" stroke="black" opacity="0.5" />')
-    for p in S:
-        print('  <circle cx="{}" cy="{}" r="10" />'.format(p.xcoord, p.ycoord))
-
-    print("</svg>")
 
     assert not polygon_is_anticlockwise(C)
