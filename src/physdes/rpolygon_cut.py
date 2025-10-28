@@ -23,7 +23,7 @@ and efficient, handling various polygon shapes and complexities.
 import math
 from typing import Callable, List, Optional, Tuple
 
-from mywheel.dllist import Dllink
+from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
 from .rdllist import RDllist

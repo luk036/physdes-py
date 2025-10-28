@@ -374,7 +374,7 @@ class GlobalRoutingTree:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
                 if distance < min_distance:
-                    nearest_pt = possible_path.nearest_to(pt)
+                    nearest_pt = possible_path.nearest_to(pt)  # type: ignore
                     block = False
                     if keepouts is not None:
                         path1 = nearest_pt.hull_with(pt)
@@ -446,7 +446,7 @@ class GlobalRoutingTree:
             self.next_steiner_id += 1
 
             possible_path = parent_node.pt.hull_with(nearest_node.pt)
-            nearest_pt = possible_path.nearest_to(pt)
+            nearest_pt = possible_path.nearest_to(pt)  # type: ignore
             new_node = RoutingNode(node_id, NodeType.STEINER, nearest_pt)
             self.nodes[node_id] = new_node
 

@@ -48,7 +48,7 @@ from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Any, Callable, Generic, Iterable, List, Tuple, TypeVar
 
-from mywheel.dllist import Dllink
+from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
 from .rdllist import RDllist

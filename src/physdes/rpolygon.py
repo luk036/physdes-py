@@ -49,7 +49,7 @@ from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Any, Callable, Iterable, List, Tuple
 
-from mywheel.dllist import Dllink
+from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
 from .polygon import Polygon

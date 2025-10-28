@@ -301,7 +301,7 @@ class Interval(Generic[T]):
         S = type(self)
         return S(-self.ub, -self.lb)
 
-    def __iadd__(self, rhs: T) -> "Interval[T]":
+    def __iadd__(self, rhs: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The `__iadd__` method allows for in-place addition of an `Interval` object.
 
@@ -318,11 +318,15 @@ class Interval(Generic[T]):
             >>> print(a)
             [13, 14]
         """
-        self._lb += rhs
-        self._ub += rhs
+        if isinstance(rhs, Interval):
+            self._lb += rhs.lb
+            self._ub += rhs.ub
+        else:
+            self._lb += rhs
+            self._ub += rhs
         return self
 
-    def __add__(self, rhs: T) -> "Interval[T]":
+    def __add__(self, rhs: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The function overloads the "+" operator to add a constant value to the lower and upper bounds of
         an Interval object.
@@ -341,9 +345,24 @@ class Interval(Generic[T]):
             [13, 14]
         """
         S = type(self)
+        if isinstance(rhs, Interval):
+            return S(self.lb + rhs.lb, self.ub + rhs.ub)
         return S(self.lb + rhs, self.ub + rhs)
 
-    def __isub__(self, rhs: T) -> "Interval[T]":
+    def __radd__(self, lhs: T) -> "Interval[T]":
+        """
+        The `__radd__` function allows for in-place addition of an `Interval` object.
+
+        :param lhs: The parameter `lhs` represents the left-hand side value that is being added to the
+            current object. In this case, it is expected to be of type `T`, which is a generic type
+
+        :type lhs: T
+
+        :return: The method `__radd__` returns `self`, which is an instance of the class `"Interval[T]"`.
+        """
+        return self + lhs
+
+    def __isub__(self, rhs: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The function subtracts a value from both the lower and upper bounds of an Interval object and
         returns the modified object.
@@ -362,11 +381,15 @@ class Interval(Generic[T]):
             >>> print(a)
             [2, 3]
         """
-        self._lb -= rhs
-        self._ub -= rhs
+        if isinstance(rhs, Interval):
+            self._lb -= rhs.lb
+            self._ub -= rhs.ub
+        else:
+            self._lb -= rhs
+            self._ub -= rhs
         return self
 
-    def __sub__(self, rhs: T) -> "Interval[T]":
+    def __sub__(self, rhs: Union["Interval[T]", T]) -> "Interval[T]":
         """
         The function subtracts a value from the lower and upper bounds of an interval and returns a new
         interval.
@@ -385,7 +408,23 @@ class Interval(Generic[T]):
             [2, 3]
         """
         S = type(self)
+        if isinstance(rhs, Interval):
+            return S(self.lb - rhs.lb, self.ub - rhs.ub)
         return S(self.lb - rhs, self.ub - rhs)
+
+    def __rsub__(self, lhs: T) -> "Interval[T]":
+        """
+        The `__rsub__` function allows for in-place subtraction of an `Interval` object.
+
+        :param lhs: The parameter `lhs` represents the left-hand side value that is being subtracted from the
+            current object. In this case, it is expected to be of type `T`, which is a generic type
+
+        :type lhs: T
+
+        :return: The method `__rsub__` returns `self`, which is an instance of the class `"Interval[T]"`.
+        """
+        S = type(self)
+        return S(lhs - self.lb, lhs - self.ub)
 
     def __imul__(self, rhs: T) -> "Interval[T]":
         """
@@ -428,6 +467,32 @@ class Interval(Generic[T]):
         """
         S = type(self)
         return S(self.lb * rhs, self.ub * rhs)
+
+    def __truediv__(self, rhs: T) -> "Interval[T]":
+        """
+        The function overloads the "/" operator to divide a constant value to the lower and upper bounds of
+        an Interval object.
+        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
+            being divided to the current object
+        :type rhs: T
+        :return: The method is returning a new instance of the class `S` (which is the same type as
+            `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
+        """
+        S = type(self)
+        return S(self.lb / rhs, self.ub / rhs)  # type: ignore
+
+    def __floordiv__(self, rhs: T) -> "Interval[T]":
+        """
+        The function overloads the "//" operator to floor divide a constant value to the lower and upper bounds of
+        an Interval object.
+        :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
+            being divided to the current object
+        :type rhs: T
+        :return: The method is returning a new instance of the class `S` (which is the same type as
+            `self`) with the lower bound (`lb`) and upper bound (`ub`) incremented by `rhs`.
+        """
+        S = type(self)
+        return S(self.lb // rhs, self.ub // rhs)
 
     def overlaps(self, other: Union["Interval[T]", T]) -> bool:
         """

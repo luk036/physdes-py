@@ -1,6 +1,6 @@
 from typing import List, TypeVar
 
-from mywheel.dllist import Dllink
+from mywheel.dllist import Dllink  # type: ignore
 
 T = TypeVar("T")
 
