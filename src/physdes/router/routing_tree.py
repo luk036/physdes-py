@@ -349,6 +349,20 @@ class GlobalRoutingTree:
         Returns:
             A tuple containing the parent node and the nearest node for insertion.
 
+        .. svgbob::
+           :align: center
+
+            source          "nearest_pt"
+               O-------#--------o-----------o sink 2
+                       |        :
+                       |  +---+ :
+                       |  |   | :
+                       |  |   | :
+                       |  |   | o pt
+                       |  +---+
+                       o   keepout
+                  sink 1
+
         Examples:
             >>> from physdes.point import Point
             >>> from physdes.interval import Interval
