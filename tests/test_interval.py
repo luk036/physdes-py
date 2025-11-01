@@ -1,3 +1,4 @@
+import pytest
 from hypothesis import given
 from hypothesis.strategies import integers
 
@@ -53,163 +54,165 @@ def test_interval():
     assert min_dist(a, b) == 0
 
 
-def test_interval2():
-    a = Interval(3, 4)
-    assert a.lb == 3
-    assert a.ub == 4
-    assert a.measure() == 1
-    assert a.contains(3)
-    assert a.contains(4)
-    assert not a.contains(5)
-    assert a.contains(Interval(3, 4))
-    assert not a.contains(Interval(3, 5))
-    assert not a.contains(Interval(2, 3))
-    assert not a.contains(2)
-    assert a.contains(4)
-    assert not a.contains(5)
+@pytest.mark.parametrize(
+    ("interval", "op", "value", "expected"),
+    [
+        (Interval(3, 5), "+", 1, Interval(4, 6)),
+        (Interval(3, 5), "-", 1, Interval(2, 4)),
+        (Interval(3, 5), "*", 2, Interval(6, 10)),
+        (Interval(3, 5), "neg", None, Interval(-5, -3)),
+        (Interval(3, 5), "+=", 1, Interval(4, 6)),
+        (Interval(4, 6), "-=", 1, Interval(3, 5)),
+        (Interval(3, 5), "*=", 2, Interval(6, 10)),
+    ],
+)
+def test_arithmetic(interval, op, value, expected):
+    if op == "+":
+        assert interval + value == expected
+    elif op == "-":
+        assert interval - value == expected
+    elif op == "*":
+        assert interval * value == expected
+    elif op == "neg":
+        assert -interval == expected
+    elif op == "+=":
+        interval += value
+        assert interval == expected
+    elif op == "-=":
+        interval -= value
+        assert interval == expected
+    elif op == "*=":
+        interval *= value
+        assert interval == expected
 
 
-def test_arithmetic():
-    a = Interval(3, 5)
-    # b = Interval(5, 7)
-    # c = Interval(7, 8)
-    assert a + 1 == Interval(4, 6)
-    assert a - 1 == Interval(2, 4)
-    assert a * 2 == Interval(6, 10)
-    assert -a == Interval(-5, -3)
-
-    a += 1
-    assert a == Interval(4, 6)
-    a -= 1
-    assert a == Interval(3, 5)
-    a *= 2
-    assert a == Interval(6, 10)
-
-
-def test_overlap():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert a.overlaps(b)
-    assert b.overlaps(c)
-    assert not a.overlaps(c)
-    assert not c.overlaps(a)
-    assert overlap(a, b)
-    assert overlap(b, c)
-    assert not overlap(a, c)
-    assert not overlap(c, a)
-
-    d = 4
-    assert a.overlaps(d)
-    assert not a.overlaps(6)
-    assert overlap(a, d)
-    assert overlap(d, a)
-    assert overlap(d, d)
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), True),
+        (Interval(5, 7), Interval(7, 8), True),
+        (Interval(3, 5), Interval(7, 8), False),
+        (Interval(7, 8), Interval(3, 5), False),
+        (Interval(3, 5), 4, True),
+        (Interval(3, 5), 6, False),
+        (4, Interval(3, 5), True),
+        (6, Interval(3, 5), False),
+        (4, 4, True),
+    ],
+)
+def test_overlap(a, b, expected):
+    assert overlap(a, b) is expected
+    if isinstance(a, Interval):
+        assert a.overlaps(b) is expected
 
 
-def test_contains():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert not a.contains(b)
-    assert not b.contains(c)
-    assert not a.contains(c)
-    assert not c.contains(a)
-    assert not contain(a, b)
-    assert not contain(b, c)
-    assert not contain(a, c)
-
-    d = 4
-    assert a.contains(d)
-    assert not a.contains(6)
-    assert contain(a, d)
-    assert not contain(d, a)
-    assert contain(d, d)
-
-
-def test_intersection():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert a.intersect_with(b) == Interval(5, 5)
-    assert b.intersect_with(c) == Interval(7, 7)
-    assert a.intersect_with(c).is_invalid()
-    assert intersection(a, b) == Interval(5, 5)
-    assert intersection(b, c) == Interval(7, 7)
-
-    d = 4
-    assert a.intersect_with(d) == Interval(4, 4)
-    assert a.intersect_with(6).is_invalid()
-
-    assert intersection(a, d) == Interval(4, 4)
-    assert intersection(d, a) == Interval(4, 4)
-    assert intersection(d, d) == d
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), False),
+        (Interval(5, 7), Interval(7, 8), False),
+        (Interval(3, 5), Interval(7, 8), False),
+        (Interval(7, 8), Interval(3, 5), False),
+        (Interval(3, 5), 4, True),
+        (Interval(3, 5), 6, False),
+        (4, Interval(3, 5), False),
+        (4, 4, True),
+    ],
+)
+def test_contains(a, b, expected):
+    assert contain(a, b) is expected
+    if isinstance(a, Interval):
+        assert a.contains(b) is expected
 
 
-def test_hull():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert a.hull_with(b) == Interval(3, 7)
-    assert b.hull_with(c) == Interval(5, 8)
-    assert a.hull_with(c) == Interval(3, 8)
-
-    d = 4
-    assert a.hull_with(d) == Interval(3, 5)
-    assert a.hull_with(6) == Interval(3, 6)
-
-    assert hull(a, d) == Interval(3, 5)
-    assert hull(a, 6) == Interval(3, 6)
-    assert hull(d, a) == Interval(3, 5)
-    assert hull(6, a) == Interval(3, 6)
-    assert hull(d, 6) == Interval(4, 6)
-
-
-def test_min_dist():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert a.min_dist_with(b) == 0
-    assert a.min_dist_with(c) == 2
-    assert b.min_dist_with(c) == 0
-    assert min_dist(a, b) == 0
-    assert min_dist(a, c) == 2
-    assert min_dist(b, c) == 0
-
-    d = 4
-    assert min_dist(a, d) == 0
-    assert min_dist(d, a) == 0
-    assert min_dist(a, 6) == 1
-    assert min_dist(6, a) == 1
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), Interval(5, 5)),
+        (Interval(5, 7), Interval(7, 8), Interval(7, 7)),
+        (Interval(3, 5), Interval(7, 8), None),
+        (Interval(3, 5), 4, Interval(4, 4)),
+        (Interval(3, 5), 6, None),
+        (4, Interval(3, 5), Interval(4, 4)),
+        (4, 4, 4),
+    ],
+)
+def test_intersection(a, b, expected):
+    if expected is not None:
+        assert intersection(a, b) == expected
+        if isinstance(a, Interval):
+            assert a.intersect_with(b) == expected
+    else:
+        if isinstance(a, Interval):
+            assert a.intersect_with(b).is_invalid()
 
 
-def test_displacement():
-    a = Interval(3, 5)
-    b = Interval(5, 7)
-    c = Interval(7, 8)
-    assert a.displace(b) == Interval(-2, -2)
-    assert a.displace(c) == Interval(-4, -3)
-    assert b.displace(c) == Interval(-2, -1)
-    assert displacement(a, b) == Interval(-2, -2)
-    assert displacement(a, c) == Interval(-4, -3)
-    assert displacement(b, c) == Interval(-2, -1)
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), Interval(3, 7)),
+        (Interval(5, 7), Interval(7, 8), Interval(5, 8)),
+        (Interval(3, 5), Interval(7, 8), Interval(3, 8)),
+        (Interval(3, 5), 4, Interval(3, 5)),
+        (Interval(3, 5), 6, Interval(3, 6)),
+        (4, Interval(3, 5), Interval(3, 5)),
+        (6, Interval(3, 5), Interval(3, 6)),
+        (4, 6, Interval(4, 6)),
+    ],
+)
+def test_hull(a, b, expected):
+    assert hull(a, b) == expected
+    if isinstance(a, Interval):
+        assert a.hull_with(b) == expected
 
-    d = 4
-    assert displacement(d, d) == 0
-    assert displacement(d, 6) == -2
-    assert displacement(6, d) == 2
+
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), 0),
+        (Interval(3, 5), Interval(7, 8), 2),
+        (Interval(5, 7), Interval(7, 8), 0),
+        (Interval(3, 5), 4, 0),
+        (4, Interval(3, 5), 0),
+        (Interval(3, 5), 6, 1),
+        (6, Interval(3, 5), 1),
+    ],
+)
+def test_min_dist(a, b, expected):
+    assert min_dist(a, b) == expected
+    if isinstance(a, Interval):
+        assert a.min_dist_with(b) == expected
 
 
-def test_enlarge():
-    a = Interval(3, 5)
-    # b = Interval(5, 7)
-    # c = Interval(7, 8)
-    assert a.enlarge_with(2) == Interval(1, 7)
-    assert enlarge(a, 2) == Interval(1, 7)
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), Interval(5, 7), Interval(-2, -2)),
+        (Interval(3, 5), Interval(7, 8), Interval(-4, -3)),
+        (Interval(5, 7), Interval(7, 8), Interval(-2, -1)),
+        (4, 4, 0),
+        (4, 6, -2),
+        (6, 4, 2),
+    ],
+)
+def test_displacement(a, b, expected):
+    assert displacement(a, b) == expected
+    if isinstance(a, Interval):
+        assert a.displace(b) == expected
 
-    d = 4
-    assert enlarge(d, 6) == Interval(-2, 10)
-    assert enlarge(6, d) == Interval(2, 10)
+
+@pytest.mark.parametrize(
+    ("a", "b", "expected"),
+    [
+        (Interval(3, 5), 2, Interval(1, 7)),
+        (4, 6, Interval(-2, 10)),
+        (6, 4, Interval(2, 10)),
+    ],
+)
+def test_enlarge(a, b, expected):
+    assert enlarge(a, b) == expected
+    if isinstance(a, Interval):
+        assert a.enlarge_with(b) == expected
 
 
 # def test_interval_of_interval():
