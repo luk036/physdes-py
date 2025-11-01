@@ -382,26 +382,14 @@ class Point(Generic[T1, T2]):
         return Point(self.ycoord, self.xcoord)
 
     def rotates(self) -> "Point[T1, T2]":
-        if isinstance(self.xcoord, Point):
-            pt = self.xcoord.rotates()
-            pt2 = Point(pt.ycoord, self.ycoord).rotates()
-            pt3 = Point(pt.xcoord, pt2.ycoord).rotates()
-            return Point(Point(pt3.xcoord, pt2.xcoord), pt3.ycoord)
-        else:
-            xcoord = self.xcoord - self.ycoord  # type: ignore
-            ycoord = self.xcoord + self.ycoord  # type: ignore
-            return Point(xcoord, ycoord)
+        xcoord = self.xcoord - self.ycoord  # type: ignore
+        ycoord = self.xcoord + self.ycoord  # type: ignore
+        return Point(xcoord, ycoord)
 
     def inv_rotates(self) -> "Point[T1, T2]":
-        if isinstance(self.xcoord, Point):
-            pt = Point(self.xcoord.xcoord, self.ycoord).inv_rotates()
-            pt2 = Point(self.xcoord.ycoord, pt.ycoord).inv_rotates()
-            pt3 = Point(pt.xcoord, pt2.xcoord).inv_rotates()
-            return Point(Point(pt3.xcoord, pt3.ycoord), pt2.ycoord)
-        else:
-            xcoord = (self.xcoord + self.ycoord) // 2  # type: ignore
-            ycoord = (-self.xcoord + self.ycoord) // 2  # type: ignore
-            return Point(xcoord, ycoord)
+        xcoord = (self.xcoord + self.ycoord) // 2  # type: ignore
+        ycoord = (-self.xcoord + self.ycoord) // 2  # type: ignore
+        return Point(xcoord, ycoord)
 
     def overlaps(self, other: "Point[T1, T2]") -> bool:
         """

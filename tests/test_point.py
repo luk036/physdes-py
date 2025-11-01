@@ -80,8 +80,3 @@ def test_lt():
 def test_rotate():
     a = Point(3, 5)
     assert a.rotates().inv_rotates() == a
-
-
-def test_rotate3d():
-    a = Point(Point(3, 4), 5)
-    assert a.rotates().inv_rotates() == a

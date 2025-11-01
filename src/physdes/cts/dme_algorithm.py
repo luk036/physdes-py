@@ -291,15 +291,19 @@ class ElmoreDelayCalculator(DelayCalculator):
         """Calculate extra length based on skew"""
         # Compute required delay balancing
         skew = node_right.delay - node_left.delay
-        r = distance * self.unit_resistance
-        c = distance * self.unit_capacitance
-        z = (skew + r * (node_right.capacitance + c / 2.0)) / (
-            r * (c + node_right.capacitance + node_left.capacitance)
+        resistance = distance * self.unit_resistance
+        capacitance = distance * self.unit_capacitance
+        tapping_pt = (
+            skew + resistance * (node_right.capacitance + capacitance / 2.0)
+        ) / (
+            resistance * (capacitance + node_right.capacitance + node_left.capacitance)
         )
-        extend_left = round(z * distance)
-        r_left = extend_left * self.unit_resistance
-        c_left = extend_left * self.unit_capacitance
-        delay_left = node_left.delay + r_left * (c_left / 2.0 + node_left.capacitance)
+        extend_left = round(tapping_pt * distance)
+        res_left = extend_left * self.unit_resistance
+        cap_left = extend_left * self.unit_capacitance
+        delay_left = node_left.delay + res_left * (
+            cap_left / 2.0 + node_left.capacitance
+        )
         node_left.wire_length = extend_left
         node_right.wire_length = distance - extend_left
         # delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
@@ -769,9 +773,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple[
-    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
-]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks
