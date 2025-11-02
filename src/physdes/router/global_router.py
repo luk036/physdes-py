@@ -23,7 +23,6 @@ from typing import List, Optional
 
 from physdes.point import Point
 from physdes.router.routing_tree import GlobalRoutingTree
-from icecream import ic
 
 
 class GlobalRouter:
@@ -78,8 +77,6 @@ class GlobalRouter:
         self.worst_wirelength = source_position.min_dist_with(
             self.terminal_positions[0]
         )
-        ic(self.terminal_positions[0])
-        ic(self.terminal_positions[1])
         """The wirelength of the longest connection from the source to a terminal."""
         self.keepouts = keepouts
 
@@ -151,9 +148,3 @@ class GlobalRouter:
             self.tree.insert_terminal_with_constraints(
                 t, allowed_wirelength, self.keepouts
             )
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()

@@ -1,7 +1,7 @@
 from physdes.point import Point
 from physdes.interval import Interval
 from physdes.router.global_router import GlobalRouter
-from physdes.router.routing_tree import (
+from physdes.router.routing_visualizer import (
     save_routing_tree_svg,
     visualize_routing_tree_svg,
 )

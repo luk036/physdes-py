@@ -21,9 +21,7 @@ class RoutingNode:
         self.type = node_type
         self.pt = pt
         self.children: List["RoutingNode"] = []
-        self.parent: Optional["RoutingNode"] = (
-            None  # look likes not maintained properly!
-        )
+        self.parent: Optional["RoutingNode"] = None
         self.capacitance = 0.0
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing
@@ -334,10 +332,11 @@ class GlobalRoutingTree:
 
         return node_id
 
-    def _find_nearest_insertion(
+    def _find_insertion_point(
         self,
         pt: Point[Any, Any],
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
+        allowed_wirelength: Optional[int] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
         """
         Find the nearest insertion point to the given coordinates, avoiding keepouts.
@@ -345,6 +344,7 @@ class GlobalRoutingTree:
         Args:
             pt: The point to insert.
             keepouts: A list of rectangular regions to avoid.
+            allowed_wirelength: The maximum allowed wirelength from the source.
 
         Returns:
             A tuple containing the parent node and the nearest node for insertion.
@@ -369,7 +369,7 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> _ = tree.insert_terminal_node(Point(10, 0))
             >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
-            >>> parent, nearest = tree._find_nearest_insertion(Point(5, 5), keepouts)
+            >>> parent, nearest = tree._find_insertion_point(Point(5, 5), keepouts)
             >>> nearest.pt
             Point(0, 0)
         """
@@ -387,23 +387,32 @@ class GlobalRoutingTree:
             for child in node.children:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(pt)
+                nearest_pt = possible_path.nearest_to(pt)
+
+                if allowed_wirelength is not None:
+                    path_length = (
+                        node.path_length
+                        + node.pt.min_dist_with(nearest_pt)
+                        + distance
+                    )
+                    if path_length > allowed_wirelength:
+                        continue
+
                 if distance < min_distance:
-                    nearest_pt = possible_path.nearest_to(pt)  # type: ignore
                     block = False
                     if keepouts is not None:
                         path1 = nearest_pt.hull_with(pt)
                         path2 = nearest_pt.hull_with(node.pt)
                         path3 = nearest_pt.hull_with(child.pt)
-                        block = False
                         for keepout in keepouts:
-                            if keepout.contains(nearest_pt):
-                                block = True
                             if (
-                                keepout.blocks(path1)
+                                keepout.contains(nearest_pt)
+                                or keepout.blocks(path1)
                                 or keepout.blocks(path2)
                                 or keepout.blocks(path3)
                             ):
                                 block = True
+                                break
                     if not block:
                         min_distance = distance
                         if nearest_pt == node.pt:
@@ -451,7 +460,7 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
-        parent_node, nearest_node = self._find_nearest_insertion(pt, keepouts)
+        parent_node, nearest_node = self._find_insertion_point(pt, keepouts)
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
@@ -476,88 +485,6 @@ class GlobalRoutingTree:
 
         return
 
-    def _find_nearest_insertion_with_constraints(
-        self,
-        pt: Point[Any, Any],
-        allowed_wirelength: int,
-        keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-    ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
-        """
-        Find the nearest insertion point to the given coordinates with wirelength constraints.
-
-        Args:
-            pt: The point to insert.
-            allowed_wirelength: The maximum allowed wirelength from the source.
-            keepouts: A list of rectangular regions to avoid.
-
-        Returns:
-            A tuple containing the parent node and the nearest node for insertion.
-
-        Examples:
-            >>> from physdes.point import Point
-            >>> from physdes.interval import Interval
-            >>> tree = GlobalRoutingTree(Point(0, 0))
-            >>> _ = tree.insert_terminal_node(Point(10, 0))
-            >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
-            >>> parent, nearest = tree._find_nearest_insertion_with_constraints(
-            ...     Point(5, 5), 100, keepouts
-            ... )
-            >>> nearest.pt
-            Point(0, 0)
-        """
-        if not self.nodes:
-            return None, self.source
-
-        nearest_node = self.source
-        parent_node = None
-        min_distance = self.source.pt.min_dist_with(pt)
-
-        def traverse(node: "RoutingNode"):
-            nonlocal nearest_node
-            nonlocal parent_node
-            nonlocal min_distance
-            for child in node.children:
-                possible_path = node.pt.hull_with(child.pt)
-                distance = possible_path.min_dist_with(pt)
-                nearest_pt = possible_path.nearest_to(pt)
-
-                path_length = (
-                    node.path_length + node.pt.min_dist_with(nearest_pt) + distance
-                )
-                if path_length > allowed_wirelength:
-                    continue
-
-                if distance < min_distance:
-                    block = False
-                    if keepouts is not None:
-                        path1 = nearest_pt.hull_with(pt)
-                        path2 = nearest_pt.hull_with(node.pt)
-                        path3 = nearest_pt.hull_with(child.pt)
-                        block = False
-                        for keepout in keepouts:
-                            if keepout.contains(nearest_pt):
-                                block = True
-                            if (
-                                keepout.blocks(path1)
-                                or keepout.blocks(path2)
-                                or keepout.blocks(path3)
-                            ):
-                                block = True
-                    if not block:
-                        min_distance = distance
-                        if nearest_pt == node.pt:
-                            nearest_node = node
-                            parent_node = None
-                        elif nearest_pt == child.pt:
-                            nearest_node = child
-                            parent_node = None
-                        else:  # need to insert steiner point
-                            nearest_node = child
-                            parent_node = node
-                traverse(child)
-
-        traverse(self.source)
-        return parent_node, nearest_node
 
     def insert_terminal_with_constraints(
         self,
@@ -596,8 +523,8 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, pt)
 
-        parent_node, nearest_node = self._find_nearest_insertion_with_constraints(
-            pt, allowed_wirelength, keepouts
+        parent_node, nearest_node = self._find_insertion_point(
+            pt, keepouts, allowed_wirelength
         )
 
         if parent_node is None:
@@ -822,509 +749,3 @@ class GlobalRoutingTree:
         print(f"Total nodes: {len(self.nodes)}")
         print(f"Terminals: {len(self.get_all_terminals())}")
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
-
-
-def visualize_routing_tree_svg(
-    tree: "GlobalRoutingTree",
-    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-    width: int = 800,
-    height: int = 600,
-    margin: int = 50,
-) -> str:
-    """
-    Visualize a GlobalRoutingTree in SVG format.
-
-    Args:
-        tree: GlobalRoutingTree instance to visualize
-        width: SVG canvas width
-        height: SVG canvas height
-        margin: Margin around the drawing area
-
-    Returns:
-        SVG string representation
-    """
-    # Calculate bounds to scale the coordinates
-    all_nodes = list(tree.nodes.values())
-    if not all_nodes:
-        return "<svg></svg>"
-
-    # Get all coordinates to determine bounds
-    all_x = [node.pt.xcoord for node in all_nodes]
-    all_y = [node.pt.ycoord for node in all_nodes]
-
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
-
-    # Add some padding to bounds
-    range_x = max_x - min_x
-    range_y = max_y - min_y
-    if range_x == 0:
-        range_x = 1
-    if range_y == 0:
-        range_y = 1
-
-    # Scale factors
-    scale_x = (width - 2 * margin) / range_x
-    scale_y = (height - 2 * margin) / range_y
-    scale = min(scale_x, scale_y)
-
-    def scale_coords(x, y):
-        """Scale coordinates to fit SVG canvas"""
-        scaled_x = margin + (x - min_x) * scale
-        scaled_y = margin + (y - min_y) * scale
-        return scaled_x, scaled_y
-
-    svg_parts = []
-
-    # SVG header
-    svg_parts.append(
-        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
-    )
-    svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
-
-    # Draw connections first (so nodes appear on top)
-    def draw_connections(node: "RoutingNode"):
-        for child in node.children:
-            # Get scaled coordinates
-            x1, y1 = scale_coords(node.pt.xcoord, node.pt.ycoord)
-            x2, y2 = scale_coords(child.pt.xcoord, child.pt.ycoord)
-
-            # Draw line
-            svg_parts.append(
-                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-                f'stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>'
-            )
-
-        for child in node.children:
-            draw_connections(child)
-
-    # Add arrowhead marker definition
-    svg_parts.append("<defs>")
-    svg_parts.append(
-        '<marker id="arrowhead" markerWidth="10" markerHeight="7" '
-        'refX="9" refY="3.5" orient="auto">'
-    )
-    svg_parts.append('<polygon points="0 0, 10 3.5, 0 7" fill="black"/>')
-    svg_parts.append("</marker>")
-    svg_parts.append("</defs>")
-
-    # Draw all connections starting from source
-    draw_connections(tree.source)
-
-    # Draw nodes
-    for node in all_nodes:
-        x, y = scale_coords(node.pt.xcoord, node.pt.ycoord)
-
-        # Different colors and sizes for different node types
-        if node.type == NodeType.SOURCE:
-            color = "red"
-            radius = 8
-            label = "S"
-        elif node.type == NodeType.STEINER:
-            color = "blue"
-            radius = 6
-            label = f"S{node.id.split('_')[1]}"
-        elif node.type == NodeType.TERMINAL:
-            color = "green"
-            radius = 6
-            label = f"T{node.id.split('_')[1]}"
-        else:
-            color = "gray"
-            radius = 5
-            label = node.id
-
-        # Draw node circle
-        svg_parts.append(
-            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
-        )
-
-        # Draw node label
-        svg_parts.append(
-            f'<text x="{x + radius + 2}" y="{y + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
-        )
-
-        # Draw coordinates
-        svg_parts.append(
-            f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
-            f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>'
-        )
-
-    # Draw keepouts
-    if keepouts is not None:
-        for keepout in keepouts:
-            x1, y1 = scale_coords(keepout.xcoord.lb, keepout.ycoord.lb)
-            x2, y2 = scale_coords(keepout.xcoord.ub, keepout.ycoord.ub)
-            rwidth = x2 - x1
-            rheight = y2 - y1
-            color = "orange"
-            svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
-            )
-
-    # Add legend
-    legend_y = 20
-    svg_parts.append(
-        f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>'
-    )
-
-    legend_items = [
-        ("Source", "red", 20, legend_y + 20),
-        ("Steiner", "blue", 20, legend_y + 40),
-        ("Terminal", "green", 20, legend_y + 60),
-    ]
-
-    for text, color, x_pos, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
-
-    # Display statistics
-    stats_y = legend_y + 90
-    svg_parts.append(
-        f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree.nodes)}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree.get_all_terminals())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree.get_all_steiner_nodes())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree.calculate_wirelength():.2f}</text>'
-    )
-
-    svg_parts.append("</svg>")
-
-    return "\n".join(svg_parts)
-
-
-def save_routing_tree_svg(
-    tree: "GlobalRoutingTree",
-    keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-    filename: str = "routing_tree.svg",
-    width: int = 800,
-    height: int = 600,
-) -> None:
-    """
-    Save the routing tree visualization as an SVG file.
-
-    Args:
-        tree: GlobalRoutingTree instance
-        filename: Output filename
-        width: SVG canvas width
-        height: SVG canvas height
-    """
-    svg_content = visualize_routing_tree_svg(tree, keepouts, width, height, 50)
-    with open(filename, "w") as f:
-        f.write(svg_content)
-    print(f"Routing tree saved to {filename}")
-
-
-def visualize_routing_tree3d_svg(
-    tree3d: "GlobalRoutingTree",
-    keepouts: Optional[
-        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
-    ] = None,
-    scale_z: int = 100,
-    width: int = 800,
-    height: int = 600,
-    margin: int = 50,
-) -> str:
-    """
-    Visualize a GlobalRoutingTree in SVG format.
-
-    Args:
-        tree3d: GlobalRoutingTree instance to visualize
-        width: SVG canvas width
-        height: SVG canvas height
-        margin: Margin around the drawing area
-
-    Returns:
-        SVG string representation
-    """
-    # Calculate bounds to scale the coordinates
-    all_nodes = list(tree3d.nodes.values())
-    if not all_nodes:
-        return "<svg></svg>"
-
-    layer_colors = ["red", "orange", "blue", "green"]
-
-    # Get all coordinates to determine bounds
-    all_x = [node.pt.xcoord.xcoord for node in all_nodes]
-    # all_z = [node.pt.xcoord.ycoord for node in all_nodes]
-    all_y = [node.pt.ycoord for node in all_nodes]
-
-    min_x, max_x = min(all_x), max(all_x)
-    min_y, max_y = min(all_y), max(all_y)
-
-    # Add some padding to bounds
-    range_x = max_x - min_x
-    range_y = max_y - min_y
-    if range_x == 0:
-        range_x = 1
-    if range_y == 0:
-        range_y = 1
-
-    # Scale factors
-    scale_x = (width - 2 * margin) / range_x
-    scale_y = (height - 2 * margin) / range_y
-    scale = min(scale_x, scale_y)
-
-    def scale_coords(x, y):
-        """Scale coordinates to fit SVG canvas"""
-        scaled_x = margin + (x - min_x) * scale
-        scaled_y = margin + (y - min_y) * scale
-        return scaled_x, scaled_y
-
-    svg_parts = []
-
-    # SVG header
-    svg_parts.append(
-        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
-    )
-    svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
-
-    # Draw connections first (so nodes appear on top)
-    def draw_connections(node: "RoutingNode"):
-        for child in node.children:
-            # Get scaled coordinates
-            x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
-            x2, y2 = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
-            color = layer_colors[
-                (child.pt.xcoord.ycoord // scale_z) % len(layer_colors)
-            ]
-            # Draw line
-            svg_parts.append(
-                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
-                f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>'
-            )
-
-        for child in node.children:
-            draw_connections(child)
-
-    # Add arrowhead marker definition
-    svg_parts.append("<defs>")
-    svg_parts.append(
-        '<marker id="arrowhead" markerWidth="10" markerHeight="7" '
-        'refX="9" refY="3.5" orient="auto">'
-    )
-    svg_parts.append('<polygon points="0 0, 10 3.5, 0 7" fill="black"/>')
-    svg_parts.append("</marker>")
-    svg_parts.append("</defs>")
-
-    # Draw all connections starting from source
-    draw_connections(tree3d.source)
-
-    # Draw nodes
-    for node in all_nodes:
-        x, y = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
-
-        # Different colors and sizes for different node types
-        if node.type == NodeType.SOURCE:
-            color = "red"
-            radius = 8
-            label = "S"
-        elif node.type == NodeType.STEINER:
-            color = "blue"
-            radius = 6
-            label = f"S{node.id.split('_')[1]}"
-        elif node.type == NodeType.TERMINAL:
-            color = "green"
-            radius = 6
-            label = f"T{node.id.split('_')[1]}"
-        else:
-            color = "gray"
-            radius = 5
-            label = node.id
-
-        # Draw node circle
-        svg_parts.append(
-            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
-        )
-
-        # Draw node label
-        svg_parts.append(
-            f'<text x="{x + radius + 2}" y="{y + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
-        )
-
-        # Draw coordinates
-        svg_parts.append(
-            f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
-            f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
-        )
-
-    # Draw keepouts
-    if keepouts is not None:
-        for keepout in keepouts:
-            x1, y1 = scale_coords(keepout.xcoord.xcoord.lb, keepout.ycoord.lb)
-            x2, y2 = scale_coords(keepout.xcoord.xcoord.ub, keepout.ycoord.ub)
-            rwidth = x2 - x1
-            rheight = y2 - y1
-            color = "pink"
-            svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
-            )
-
-    # Add legend
-    legend_y = 20
-    svg_parts.append(
-        f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>'
-    )
-
-    legend_items = [
-        ("Source", "red", 20, legend_y + 20),
-        ("Steiner", "blue", 20, legend_y + 40),
-        ("Terminal", "green", 20, legend_y + 60),
-    ]
-
-    for text, color, x_pos, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
-
-    # Display statistics
-    stats_y = legend_y + 90
-    svg_parts.append(
-        f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree3d.nodes)}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree3d.get_all_terminals())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>'
-    )
-
-    svg_parts.append("</svg>")
-
-    return "\n".join(svg_parts)
-
-
-def save_routing_tree3d_svg(
-    tree3d: "GlobalRoutingTree",
-    keepouts: Optional[
-        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
-    ] = None,
-    scale_z: int = 100,
-    filename: str = "routing_tree3d.svg",
-    width: int = 800,
-    height: int = 600,
-) -> None:
-    """
-    Save the routing tree3d visualization as an SVG file.
-
-    Args:
-        tree3d: GlobalRoutingTree instance
-        filename: Output filename
-        width: SVG canvas width
-        height: SVG canvas height
-    """
-    svg_content = visualize_routing_tree3d_svg(tree3d, keepouts, scale_z, width, height)
-    with open(filename, "w") as f:
-        f.write(svg_content)
-    print(f"Routing tree3d saved to {filename}")
-
-
-# Example usage with the provided GlobalRoutingTree class
-if __name__ == "__main__":
-    # Create a sample routing tree (using the provided class)
-    routing_tree = GlobalRoutingTree(Point(2, 1))
-
-    # Build a sample tree
-    steiner1 = routing_tree.insert_steiner_node(Point(2, 3))
-    steiner2 = routing_tree.insert_steiner_node(Point(4, 1), steiner1)
-    steiner3 = routing_tree.insert_steiner_node(Point(1, 5))
-
-    terminal1 = routing_tree.insert_terminal_node(Point(3, 6))
-    terminal2 = routing_tree.insert_terminal_node(Point(5, 2), steiner2)
-    terminal3 = routing_tree.insert_terminal_node(Point(2, 8))
-
-    # Insert a node on an existing branch
-    routing_tree.insert_node_on_branch(
-        NodeType.STEINER, Point(3, 4), steiner1, steiner2
-    )
-
-    # Generate and print SVG
-    svg_output = visualize_routing_tree_svg(routing_tree)
-    print(svg_output)
-
-    # Save to file
-    save_routing_tree_svg(routing_tree, filename="example_routing_tree.svg")
-
-
-# Example usage and demonstration
-# if __name__ == "__main__":
-#     # Create a global routing tree with source at (0, 0)
-#     routing_tree = GlobalRoutingTree(Point(0, 0))
-
-#     print("=== Global Routing Tree Demo ===")
-
-#     # Insert some Steiner nodes
-#     steiner1 = routing_tree.insert_steiner_node(Point(2, 3))
-#     steiner2 = routing_tree.insert_steiner_node(Point(4, 1), steiner1)
-#     steiner3 = routing_tree.insert_steiner_node(Point(1, 5))
-
-#     print(f"Inserted Steiner nodes: {steiner1}, {steiner2}, {steiner3}")
-
-#     # Insert terminal nodes
-#     terminal1 = routing_tree.insert_terminal_node(Point(3, 6))
-#     terminal2 = routing_tree.insert_terminal_node(Point(5, 2), steiner2)
-#     terminal3 = routing_tree.insert_terminal_node(Point(2, 8))
-
-#     print(f"Inserted terminal nodes: {terminal1}, {terminal2}, {terminal3}")
-
-#     # Insert a node on an existing branch
-#     new_steiner = routing_tree.insert_node_on_branch(
-#         NodeType.STEINER, Point(3, 4), steiner1, steiner2
-#     )
-#     print(f"Inserted new Steiner node on branch: {new_steiner}")
-
-#     # Display tree structure
-#     routing_tree.visualize_tree()
-
-#     # Demonstrate path finding
-#     print("\n=== Path Finding ===")
-#     path = routing_tree.find_path_to_source(terminal2)
-#     print(f"Path from source to {terminal2}:")
-#     for node in path:
-#         print(f"  {node}")
-
-#     # Calculate wirelength
-#     print(f"\nTotal wirelength: {routing_tree.calculate_wirelength():.2f}")
-
-#     # Show optimization
-#     print("\n=== After Optimization ===")
-#     routing_tree.optimize_steiner_points()
-#     routing_tree.visualize_tree()
-
-#     # Add more complex example
-#     print("\n=== Complex Example ===")
-#     complex_tree = GlobalRoutingTree(Point(5, 5))
-
-#     # Create a more complex routing structure
-#     s1 = complex_tree.insert_steiner_node(Point(3, 3))
-#     s2 = complex_tree.insert_steiner_node(Point(7, 3))
-#     s3 = complex_tree.insert_steiner_node(Point(3, 7))
-#     s4 = complex_tree.insert_steiner_node(Point(7, 7))
-
-#     # Add terminals at the corners
-#     t1 = complex_tree.insert_terminal_node(Point(1, 1), s1)
-#     t2 = complex_tree.insert_terminal_node(Point(9, 1), s2)
-#     t3 = complex_tree.insert_terminal_node(Point(1, 9), s3)
-#     t4 = complex_tree.insert_terminal_node(Point(9, 9), s4)
-
-#     complex_tree.visualize_tree()
