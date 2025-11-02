@@ -391,9 +391,7 @@ class GlobalRoutingTree:
 
                 if allowed_wirelength is not None:
                     path_length = (
-                        node.path_length
-                        + node.pt.min_dist_with(nearest_pt)
-                        + distance
+                        node.path_length + node.pt.min_dist_with(nearest_pt) + distance
                     )
                     if path_length > allowed_wirelength:
                         continue
@@ -484,7 +482,6 @@ class GlobalRoutingTree:
         self.nodes[terminal_id] = terminal_node
 
         return
-
 
     def insert_terminal_with_constraints(
         self,
