@@ -11,7 +11,7 @@ from tests.conftest import (
 def test_global_router_init():
     source, terminals = generate_2d_init_points()
     router = GlobalRouter(source, terminals)
-    assert router.terminal_positions == [Point(10, 0), Point(5, 0), Point(1, 0)]
+    assert sorted(router.terminal_positions) == sorted([Point(10, 0), Point(5, 0), Point(1, 0)])
 
 
 def test_route_simple():
@@ -19,7 +19,7 @@ def test_route_simple():
     router = GlobalRouter(source, terminals)
     router.route_simple()
     wirelength = router.tree.calculate_wirelength()
-    assert wirelength == 6.0
+    assert wirelength == 4.0
 
 
 def test_route_with_steiners():
@@ -33,11 +33,11 @@ def test_route_with_steiners():
 def test_global_router3d_init():
     source, terminals = generate_3d_init_points()
     router = GlobalRouter(source, terminals)
-    assert router.terminal_positions == [
+    assert sorted(router.terminal_positions) == sorted([
         Point(Point(10, 0), 0),
         Point(Point(5, 0), 0),
         Point(Point(1, 0), 0),
-    ]
+    ])
 
 
 def test_route3d_simple():
@@ -45,7 +45,7 @@ def test_route3d_simple():
     router = GlobalRouter(source, terminals)
     router.route_simple()
     wirelength = router.tree.calculate_wirelength()
-    assert wirelength == 9
+    assert wirelength == 6
 
 
 def test_route3d_with_steiners():

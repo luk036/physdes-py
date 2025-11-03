@@ -67,7 +67,7 @@ class GlobalRouter:
         self.terminal_positions = sorted(
             terminal_positions,
             key=lambda t: (
-                -source_position.min_dist_with(t),  # Negative for descending order
+                source_position.min_dist_with(t),  # Negative for descending order
                 source_position.hull_with(t).measure(),  # Negative for descending order
             ),
         )
