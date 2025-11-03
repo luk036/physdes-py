@@ -387,7 +387,7 @@ class Point(Generic[T1, T2]):
         return Point(xcoord, ycoord)
 
     def inv_rotates(self) -> "Point[T1, T2]":
-        xcoord = (self.xcoord + self.ycoord) // 2  # type: ignore
+        xcoord = self.ycoord + (self.xcoord - self.ycoord) // 2  # type: ignore
         ycoord = (-self.xcoord + self.ycoord) // 2  # type: ignore
         return Point(xcoord, ycoord)
 
