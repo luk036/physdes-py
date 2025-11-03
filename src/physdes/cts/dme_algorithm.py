@@ -26,7 +26,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
-from icecream import ic  # type: ignore
+
 
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
@@ -187,27 +187,43 @@ class LinearDelayCalculator(DelayCalculator):
         self, node_left: TreeNode, node_right: TreeNode, distance: int
     ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
+        if distance == 0:
+            return 0, max(node_left.delay, node_right.delay)
+
         # Compute required delay balancing
         skew = node_right.delay - node_left.delay
         extend_left = round((skew / self.delay_per_unit + distance) / 2)
         delay_left = node_left.delay + extend_left * self.delay_per_unit
-        node_left.wire_length = extend_left
-        node_right.wire_length = distance - extend_left
-        # delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
+
+        extend_left, delay_left = self._handle_boundary_conditions(
+            extend_left, distance, node_left, node_right, delay_left
+        )
+        return extend_left, delay_left
+
+    def _handle_boundary_conditions(
+        self,
+        extend_left: int,
+        distance: int,
+        node_left: TreeNode,
+        node_right: TreeNode,
+        delay_left: float,
+    ) -> Tuple[int, float]:
         if extend_left < 0:
-            ic(extend_left)
             node_left.wire_length = 0
-            node_right.wire_length = distance - extend_left
+            node_right.wire_length = distance
             extend_left = 0
             delay_left = node_left.delay
             node_right.need_elongation = True
         elif extend_left > distance:
-            ic(extend_left)
             node_right.wire_length = 0
-            node_right.wire_length = extend_left
+            node_left.wire_length = distance
             extend_left = distance
             delay_left = node_right.delay
             node_left.need_elongation = True
+        else:
+            node_left.wire_length = extend_left
+            node_right.wire_length = distance - extend_left
+
         return extend_left, delay_left
 
 
@@ -289,6 +305,9 @@ class ElmoreDelayCalculator(DelayCalculator):
         self, node_left: TreeNode, node_right: TreeNode, distance: int
     ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
+        if distance == 0:
+            return 0, max(node_left.delay, node_right.delay)
+
         # Compute required delay balancing
         skew = node_right.delay - node_left.delay
         resistance = distance * self.unit_resistance
@@ -304,23 +323,36 @@ class ElmoreDelayCalculator(DelayCalculator):
         delay_left = node_left.delay + res_left * (
             cap_left / 2.0 + node_left.capacitance
         )
-        node_left.wire_length = extend_left
-        node_right.wire_length = distance - extend_left
-        # delay_right = node_right.delay + (distance - extend_left) * self.delay_per_unit
+
+        extend_left, delay_left = self._handle_boundary_conditions(
+            extend_left, distance, node_left, node_right, delay_left
+        )
+        return extend_left, delay_left
+
+    def _handle_boundary_conditions(
+        self,
+        extend_left: int,
+        distance: int,
+        node_left: TreeNode,
+        node_right: TreeNode,
+        delay_left: float,
+    ) -> Tuple[int, float]:
         if extend_left < 0:
-            ic(extend_left)
             node_left.wire_length = 0
-            node_right.wire_length = distance - extend_left
+            node_right.wire_length = distance
             extend_left = 0
             delay_left = node_left.delay
             node_right.need_elongation = True
         elif extend_left > distance:
-            ic(extend_left)
             node_right.wire_length = 0
-            node_right.wire_length = extend_left
+            node_left.wire_length = distance
             extend_left = distance
             delay_left = node_right.delay
             node_left.need_elongation = True
+        else:
+            node_left.wire_length = extend_left
+            node_right.wire_length = distance - extend_left
+
         return extend_left, delay_left
 
 
@@ -572,71 +604,6 @@ class DMEAlgorithm:
 
         compute_delays(root)
 
-    # def _extend_segment(self, segment: ManhattanArc, extra_length: int) -> ManhattanArc:
-    #     """
-    #     Extend a merging segment to increase wire length
-
-    #     Args:
-    #         segment: Original merging segment
-    #         extra_length: Amount to extend
-
-    #     Returns:
-    #         Extended merging segment
-    #     """
-    #     # For simplicity, extend in both x and y directions
-    #     return segment.enlarge_with(extra_length // 2)
-
-    # def _segment_center(self, segment: ManhattanArc) -> Point[int, int]:
-    #     """
-    #     Find the center point of a merging segment
-
-    #     Args:
-    #         segment: Merging segment
-
-    #     Returns:
-    #         Center point
-    #     """
-    #     x_center = self._get_center(segment.impl.xcoord)
-    #     y_center = self._get_center(segment.impl.ycoord)
-    #     return Point(x_center, y_center)
-
-    # def _get_center(self, coord: Any) -> int:
-    #     """
-    #     Get center value from coordinate (handles both int and Interval)
-
-    #     Args:
-    #         coord: Coordinate value (int or Interval)
-
-    #     Returns:
-    #         Center value as integer
-
-    #     Examples:
-    #         >>> dme = DMEAlgorithm(LinearDelayCalculator())
-    #         >>> dme._get_center(10)
-    #         10
-    #         >>> dme._get_center(Interval(10, 20))
-    #         15
-    #     """
-    #     if isinstance(coord, Interval):
-    #         return (coord.lb + coord.ub) // 2
-    #     return coord
-
-    # def _nearest_point_in_segment(
-    #     self, segment: ManhattanArc, target_segment: ManhattanArc
-    # ):
-    #     """
-    #     Find the point in segment that is nearest to the target segment
-
-    #     Args:
-    #         segment: Source segment to find point in
-    #         target_segment: Target segment to get close to
-
-    #     Returns:
-    #         Nearest point in source segment to target segment
-    #     """
-    #     # For simplicity, use the segment center
-    #     # return segment.get_center()
-    #     return segment.nearest_point_to(target_segment)
 
     def analyze_skew(self, root: "TreeNode") -> Dict[str, Any]:
         """
