@@ -55,8 +55,8 @@ from .generic import (
 from .interval import Interval, enlarge, hull
 from .vector2 import Vector2
 
-T1 = TypeVar("T1", int, float, "Interval[int]", "Interval[float]", Any)
-T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]", Any)
+T1 = TypeVar("T1")
+T2 = TypeVar("T2")
 
 
 class Point(Generic[T1, T2]):
