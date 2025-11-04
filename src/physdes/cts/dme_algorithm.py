@@ -27,7 +27,6 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 
-
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
 
@@ -603,7 +602,6 @@ class DMEAlgorithm:
             compute_delays(node.right, node.delay)
 
         compute_delays(root)
-
 
     def analyze_skew(self, root: "TreeNode") -> Dict[str, Any]:
         """

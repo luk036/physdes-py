@@ -330,5 +330,4 @@ class ManhattanArc(Generic[T1, T2]):
         distance = self.min_dist_with(other)
         trr1 = self.enlarge_with(alpha)
         trr2 = other.enlarge_with(distance - alpha)
-        localimpl = trr1.impl.intersect_with(trr2.impl)
-        return ManhattanArc(localimpl.xcoord, localimpl.ycoord)
+        return trr1.intersect_with(trr2)
