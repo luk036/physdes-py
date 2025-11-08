@@ -190,8 +190,8 @@ def steiner_forest_grid(h, w, pairs):
 h = 8  # Height
 w = 8  # Width
 pairs = [
-    ((0, 0), (7, 0)),
-    ((0, 2), (7, 2)),
+    ((0, 0), (3, 2)),
+    ((0, 0), (0, 5)),
     ((5, 5), (7, 6)),
     ((5, 5), (6, 7)),
 ]  # Terminal pairs
@@ -253,7 +253,7 @@ for u, v, c in F_pruned:
 svg += "</svg>"
 
 # Write to SVG file
-with open("steiner_forest.svg", "w") as f:
+with open("steiner_forest_diagonal.svg", "w") as f:
     f.write(svg)
 
 print("SVG file 'steiner_forest.svg' generated successfully.")

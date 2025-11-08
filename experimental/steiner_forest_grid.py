@@ -167,10 +167,10 @@ def steiner_forest_grid(h, w, pairs):
 h = 8  # Height
 w = 8  # Width
 pairs = [
-    ((0, 2), (7, 0)),
-    ((0, 0), (7, 2)),
-    ((5, 5), (7, 6)),
-    ((5, 5), (6, 7)),
+    ((0, 0), (3, 2)),
+    ((0, 0), (0, 5)),
+    ((4, 4), (7, 5)),
+    ((4, 4), (5, 7)),
 ]  # Terminal pairs
 
 F_pruned, total_cost = steiner_forest_grid(h, w, pairs)
