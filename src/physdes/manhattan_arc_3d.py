@@ -82,7 +82,8 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
     def from_point(cls, pt: Point):
         ma1 = ManhattanArc.from_point(Point(pt.xcoord.xcoord, pt.ycoord))  # x-y
         ma2 = ManhattanArc.from_point(Point(pt.ycoord, pt.xcoord.ycoord))  # y-z
-        ma3 = ManhattanArc.from_point(Point(pt.xcoord.xcoord, pt.xcoord.ycoord))  # x-z
+        ma3 = ManhattanArc.from_point(pt.xcoord)  # x-z
+        # assert pt.xcoord.ycoord == 0
         return cls(ma1, ma2, ma3)
 
     def __repr__(self) -> str:
@@ -174,8 +175,9 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: The center of the merging segment.
         """
         p1 = self.ma1.get_center()  # x-y
-        p2 = self.ma2.get_center()  # y-z
-        return Point(Point(p1.xcoord, p2.ycoord), p1.ycoord)
+        p3 = self.ma3.get_center()  # x-z
+        # assert p3.ycoord == 0
+        return Point(p3, p1.ycoord)
 
     def get_lower_corner(self) -> Point[Any, Any]:
         """
@@ -183,9 +185,10 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
         :return: The lower corner of the merging segment.
         """
-        p1 = self.ma1.get_lower_corner()  # TODO: check
-        p2 = self.ma2.get_lower_corner()  # TODO: check
-        return Point(Point(p1.xcoord, p2.ycoord), p1.ycoord)
+        p1 = self.ma1.get_lower_corner()  # x-y
+        p3 = self.ma3.get_lower_corner()  # TODO: check
+        # assert p3.ycoord == 0
+        return Point(p3, p1.ycoord)
 
     def get_upper_corner(self) -> Point[Any, Any]:
         """
@@ -194,45 +197,60 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: The upper corner of the merging segment.
         """
         p1 = self.ma1.get_upper_corner()  # TODO: check
-        p2 = self.ma2.get_upper_corner()  # TODO: check
-        return Point(Point(p1.xcoord, p2.ycoord), p1.ycoord)
+        p3 = self.ma3.get_upper_corner()  # TODO: check
+        # assert p3.ycoord == 0
+        return Point(p3, p1.ycoord)
 
-    def nearest_point_to(self, other) -> Point[Any, Any]:
+    def nearest_point_to(self, other: Point) -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
 
         :return: The center of the merging segment.
         """
         ms = ManhattanArc3D.from_point(other)
-        distance = self.min_dist_with(ms)
-        trr1 = ms.ma1.enlarge_with(distance)  # TODO: check
-        trr2 = ms.ma2.enlarge_with(distance)  # TODO: check
+        p1 = self.ma1._nearest_point_to(ms.ma1)
+        p2 = self.ma2._nearest_point_to(ms.ma2)
+        p3 = self.ma3._nearest_point_to(ms.ma3)
+        ic(self)
+        ic(other)
+        ic(ms)
+        ic(p1)
+        ic(p2)
+        ic(p3)
+        assert p1.ycoord == p2.xcoord
+        assert p2.ycoord == p3.ycoord
+        assert p1.xcoord == p3.xcoord
+        return Point(p3, p1.ycoord) 
 
-        pl1 = self.ma1.impl.lower_corner()  # TODO: check
-        pl2 = self.ma2.impl.lower_corner()  # TODO: check
+        # distance = self.min_dist_with(ms)
+        # trr1 = ms.ma1.enlarge_with(distance)  # TODO: check
+        # trr2 = ms.ma2.enlarge_with(distance)  # TODO: check
 
-        pu1 = self.ma1.impl.upper_corner()  # TODO: check
-        pu2 = self.ma2.impl.upper_corner()  # TODO: check
+        # pl1 = self.ma1.impl.lower_corner()  # TODO: check
+        # pl2 = self.ma2.impl.lower_corner()  # TODO: check
 
-        pli1 = pl1.inv_rotates()
-        pli2 = pl2.inv_rotates()
-        pui1 = pu1.inv_rotates()
-        pui2 = pu2.inv_rotates()
+        # pu1 = self.ma1.impl.upper_corner()  # TODO: check
+        # pu2 = self.ma2.impl.upper_corner()  # TODO: check
 
-        nearest_point = self.get_center()
-        if trr1.impl.contains(pl1):
-            if trr2.impl.contains(pl2):
-                nearest_point = Point(Point(pli1.xcoord, pli2.ycoord), pli1.ycoord)
-            elif trr2.impl.contains(pu2):
-                nearest_point = Point(Point(pli1.xcoord, pui2.ycoord), pli1.ycoord)
-        elif trr1.impl.contains(pu1):
-            if trr2.impl.contains(pl2):
-                nearest_point = Point(Point(pui1.xcoord, pli2.ycoord), pui1.ycoord)
-            elif trr2.impl.contains(pu2):
-                nearest_point = Point(Point(pui1.xcoord, pui2.ycoord), pui1.ycoord)
-        else:
-            ic(ms)
-        return nearest_point
+        # pli1 = pl1.inv_rotates()
+        # pli2 = pl2.inv_rotates()
+        # pui1 = pu1.inv_rotates()
+        # pui2 = pu2.inv_rotates()
+
+        # nearest_point = self.get_center()
+        # if trr1.impl.contains(pl1):
+        #     if trr2.impl.contains(pl2):
+        #         nearest_point = Point(Point(pli1.xcoord, pli2.ycoord), pli1.ycoord)
+        #     elif trr2.impl.contains(pu2):
+        #         nearest_point = Point(Point(pli1.xcoord, pui2.ycoord), pli1.ycoord)
+        # elif trr1.impl.contains(pu1):
+        #     if trr2.impl.contains(pl2):
+        #         nearest_point = Point(Point(pui1.xcoord, pli2.ycoord), pui1.ycoord)
+        #     elif trr2.impl.contains(pu2):
+        #         nearest_point = Point(Point(pui1.xcoord, pui2.ycoord), pui1.ycoord)
+        # else:
+        #     ic()
+        # return nearest_point
 
     def merge_with(self, other: "ManhattanArc3D", alpha: int) -> "ManhattanArc3D":
         """
@@ -246,6 +264,14 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: The `merge_with` method returns a new `ManhattanArc3D` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
         """
+        distance = self.min_dist_with(other)
+        trr1 = self.enlarge_with(alpha)
+        trr2 = other.enlarge_with(distance - alpha)
+        return trr1.intersect_with(trr2)
+        distance = self.min_dist_with(other)
+        trr1 = self.enlarge_with(alpha)
+        trr2 = other.enlarge_with(distance - alpha)
+        return trr1.intersect_with(trr2)
         distance = self.min_dist_with(other)
         trr1 = self.enlarge_with(alpha)
         trr2 = other.enlarge_with(distance - alpha)

@@ -282,6 +282,21 @@ class ManhattanArc(Generic[T1, T2]):
         m = self.impl.upper_corner()
         return m.inv_rotates()
 
+    def _nearest_point_to(self, ms) -> Point[Any, Any]:
+        """
+        Calculates the center of the merging segment
+
+        :return: The center of the merging segment.
+
+        Examples:
+            >>> a = ManhattanArc(4 - 5, 4 + 5)
+            >>> print(a.nearest_point_to(Point(0, 0)))
+            (4, 5)
+        """
+        nearest_pt = self.impl.nearest_to(ms.impl)
+        ic(nearest_pt)
+        return nearest_pt.inv_rotates()
+
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
@@ -294,18 +309,22 @@ class ManhattanArc(Generic[T1, T2]):
             (4, 5)
         """
         ms = ManhattanArc.from_point(other)
-        distance = self.min_dist_with(ms)
-        trr = ms.enlarge_with(distance)
-        lb = self.impl.lower_corner()
-        ub = self.impl.upper_corner()
-        m = self.impl.get_center()
-        if trr.impl.contains(lb):
-            m = lb
-        elif trr.impl.contains(ub):
-            m = ub
-        else:
-            ic(distance)
-        return m.inv_rotates()
+        ic(self)
+        ic(ms)
+        return self._nearest_point_to(ms)
+    
+        # distance = self.min_dist_with(ms)
+        # trr = ms.enlarge_with(distance)
+        # lb = self.impl.lower_corner()
+        # ub = self.impl.upper_corner()
+        # m = self.impl.get_center()
+        # if trr.impl.contains(lb):
+        #     m = lb
+        # elif trr.impl.contains(ub):
+        #     m = ub
+        # else:
+        #     ic(self)
+        # return m.inv_rotates()
 
     def merge_with(
         self, other: "ManhattanArc[T1, T2]", alpha: int

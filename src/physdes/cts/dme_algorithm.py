@@ -28,8 +28,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 
 from physdes.manhattan_arc import ManhattanArc
+from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
-
+from icecream import ic
 
 @dataclass
 class Sink:
@@ -361,7 +362,7 @@ class DMEAlgorithm:
     with configurable delay calculation strategy
     """
 
-    def __init__(self, sinks: List[Sink], delay_calculator: DelayCalculator):
+    def __init__(self, sinks: List[Sink], delay_calculator: DelayCalculator, source: Optional[Point] = None):
         """
         Initialize DME algorithm with delay calculation strategy
 
@@ -387,6 +388,11 @@ class DMEAlgorithm:
         self.sinks = sinks
         self.delay_calculator = delay_calculator
         self.node_id = 0
+        if isinstance(sinks[0].position.xcoord, Point): # 3D
+            self.MA_TYPE = ManhattanArc3D
+        else:
+            self.MA_TYPE = ManhattanArc
+        self.source = source
 
     def build_clock_tree(self) -> TreeNode:
         """
@@ -469,7 +475,7 @@ class DMEAlgorithm:
 
         return parent
 
-    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, ManhattanArc]:
+    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, Any]:
         """
         Compute merging segments for all nodes in bottom-up order
 
@@ -481,11 +487,12 @@ class DMEAlgorithm:
         """
         merging_segments = {}
 
-        def compute_segment(node: "TreeNode") -> ManhattanArc:
+        def compute_segment(node: "TreeNode"):
             if node.left is None and node.right is None:
                 # If it's a leaf node (a sink), its merging segment is simply its position.
                 # The delay for a leaf node is considered 0.0 at this stage.
-                ms = ManhattanArc.from_point(node.position)
+
+                ms = self.MA_TYPE.from_point(node.position)
                 merging_segments[node.name] = ms
                 return ms
 
@@ -515,6 +522,10 @@ class DMEAlgorithm:
             # The 'extend_left' parameter dictates how much the left segment needs to be
             # extended to meet the zero-skew requirement.
             merged_segment = left_ms.merge_with(right_ms, extend_left)
+            ic(node.name)
+            ic(left_ms)
+            ic(right_ms)
+            ic(merged_segment)
             merging_segments[node.name] = merged_segment
 
             # Update the capacitance of the current node. This includes the capacitances
@@ -527,7 +538,7 @@ class DMEAlgorithm:
         return merging_segments
 
     def _embed_tree(
-        self, merging_tree: "TreeNode", merging_segments: Dict[str, ManhattanArc]
+        self, merging_tree: "TreeNode", merging_segments: Dict[str, Any]
     ) -> "TreeNode":
         """
         Embed the clock tree by selecting actual positions for internal nodes
@@ -541,7 +552,7 @@ class DMEAlgorithm:
         """
 
         def embed_node(
-            node: Optional["TreeNode"], parent_segment: Optional[ManhattanArc] = None
+            node: Optional["TreeNode"], parent_segment: Optional[Any] = None
         ):
             if node is None:
                 return
@@ -551,7 +562,12 @@ class DMEAlgorithm:
                 # the upper corner of its merging segment. This is an arbitrary but consistent
                 # choice for the root's physical location.
                 node_segment = merging_segments[node.name]
-                node.position = node_segment.get_upper_corner()
+                if self.source is None:
+                    node.position = node_segment.get_upper_corner()
+                else:
+                    ic(node_segment)
+                    node.position = node_segment.nearest_point_to(self.source)
+                    assert node.position.xcoord.ycoord == 0
             else:
                 # For internal nodes, the actual position is determined by finding the point
                 # within its merging segment that is closest to its parent's position.
@@ -559,6 +575,8 @@ class DMEAlgorithm:
                 node_segment = merging_segments[node.name]
                 # Compute wire length to parent
                 if node.parent:
+                    ic(node.name)
+                    ic(node.parent.name)
                     node.position = node_segment.nearest_point_to(node.parent.position)
                     node.wire_length = node.position.min_dist_with(node.parent.position)
 

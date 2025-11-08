@@ -519,27 +519,29 @@ def visualize_example_tree3d() -> Tuple[str, str, str]:
 
     # Generate example clock tree3d with both delay models
     example_sinks = [
-        Sink("s1", Point(Point(-100, 30), 40), 1.0),
-        Sink("s2", Point(Point(-60, 20), 60), 1.0),
-        Sink("s3", Point(Point(0, 10), 40), 1.0),
-        Sink("s4", Point(Point(20, 20), 20), 1.0),
-        Sink("s5", Point(Point(-20, 20), -20), 1.0),
-        Sink("s6", Point(Point(-30, 30), -50), 1.0),
+        Sink("s1", Point(Point(-100, 0), 40), 1.0),
+        Sink("s2", Point(Point(-60, 0), 60), 1.0),
+        Sink("s3", Point(Point(0, 0), 40), 1.0),
+        Sink("s4", Point(Point(20, 0), 20), 1.0),
+        Sink("s5", Point(Point(-20, 0), -20), 1.0),
+        Sink("s6", Point(Point(-30, 0), -50), 1.0),
         Sink("s7", Point(Point(-100, 0), -40), 1.0),
-        Sink("s8", Point(Point(-100, 10), 0), 1.0),
+        Sink("s8", Point(Point(-100, 0), 0), 1.0),
     ]
 
     print("=== Generating Clock Trees with Different Delay Models ===")
 
+    source = Point(Point(40, 0), -10)
+
     # Linear delay model
     linear_calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
-    dme_linear = DMEAlgorithm(example_sinks, delay_calculator=linear_calc)
+    dme_linear = DMEAlgorithm(example_sinks, linear_calc, source)
     clock_tree_linear = dme_linear.build_clock_tree()
     analysis_linear = dme_linear.analyze_skew(clock_tree_linear)
 
     # Elmore delay model
     elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-    dme_elmore = DMEAlgorithm(example_sinks, delay_calculator=elmore_calc)
+    dme_elmore = DMEAlgorithm(example_sinks, elmore_calc, source)
     clock_tree_elmore = dme_elmore.build_clock_tree()
     analysis_elmore = dme_elmore.analyze_skew(clock_tree_elmore)
 

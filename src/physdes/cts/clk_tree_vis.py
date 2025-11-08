@@ -539,15 +539,16 @@ def visualize_example_tree() -> Tuple[str, str, str]:
 
     print("=== Generating Clock Trees with Different Delay Models ===")
 
+    source = Point(4, -1)
     # Linear delay model
     linear_calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
-    dme_linear = DMEAlgorithm(example_sinks, delay_calculator=linear_calc)
+    dme_linear = DMEAlgorithm(example_sinks, linear_calc, source)
     clock_tree_linear = dme_linear.build_clock_tree()
     analysis_linear = dme_linear.analyze_skew(clock_tree_linear)
 
     # Elmore delay model
     elmore_calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-    dme_elmore = DMEAlgorithm(example_sinks, delay_calculator=elmore_calc)
+    dme_elmore = DMEAlgorithm(example_sinks, elmore_calc, source)
     clock_tree_elmore = dme_elmore.build_clock_tree()
     analysis_elmore = dme_elmore.analyze_skew(clock_tree_elmore)
 
