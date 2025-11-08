@@ -505,6 +505,12 @@ class Interval(Generic[T]):
 
         :return: a boolean value, either True or False.
 
+        .. svgbob::
+           :align: center
+
+              <-- self -->
+                    <-- other -->
+
         Examples:
             >>> a = Interval(3, 5)
             >>> a.overlaps(Interval(4, 9))
@@ -526,6 +532,12 @@ class Interval(Generic[T]):
         :type obj: Union["Interval[T]", T]
         :return: The `contains` method returns a boolean value indicating whether the given object is
             contained within the interval.
+
+        .. svgbob::
+           :align: center
+
+            <---- self ---->
+               <-- obj -->
 
         Examples:
             >>> a = Interval(3, 8)
@@ -556,6 +568,13 @@ class Interval(Generic[T]):
         :type obj: Union["Interval[T]", T]
         :return: The method `hull_with` returns an `Interval` object.
 
+        .. svgbob::
+           :align: center
+
+            <---- hull ---->
+            <-- self -->
+                   <-- obj -->
+
         Examples:
             >>> a = Interval(3, 8)
             >>> print(a.hull_with(Interval(4, 7)))
@@ -582,6 +601,14 @@ class Interval(Generic[T]):
 
         :return: The `intersect_with` method returns an `Interval` object that represents the
             intersection between the current `Interval` object (`self`) and the input object (`obj`).
+
+        .. svgbob::
+           :align: center
+
+              <-- self -->
+                    <-- obj -->
+                    <->
+               intersection
 
         Examples:
             >>> a = Interval(3, 8)
@@ -619,6 +646,11 @@ class Interval(Generic[T]):
         :type obj: Union["Interval[T]", T]
         :return: The function `min_dist_with` returns the minimum distance between the given object
             `obj` and the current object `self`.
+
+        .. svgbob::
+           :align: center
+
+              <-- self -->   <-- dist -->   <-- obj -->
 
         Examples:
             >>> a = Interval(3, 5)

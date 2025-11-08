@@ -5,10 +5,9 @@ Unit tests for DME Algorithm with delay calculator strategy pattern
 import sys
 from pathlib import Path
 
-import pytest
-
-# Add the parent directory to Python path to import the modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import pytest
 
 from physdes.cts.dme_algorithm import (
     DMEAlgorithm,

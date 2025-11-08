@@ -106,7 +106,10 @@ class DelayCalculator(ABC):
 
     @abstractmethod
     def calculate_tapping_point(
-        self, node_left: TreeNode, node_right: TreeNode, distance: int
+        self,
+        node_left: TreeNode,
+        node_right: TreeNode,
+        distance: int,
     ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         pass
@@ -184,7 +187,10 @@ class LinearDelayCalculator(DelayCalculator):
         return self.capacitance_per_unit * length
 
     def calculate_tapping_point(
-        self, node_left: TreeNode, node_right: TreeNode, distance: int
+        self,
+        node_left: TreeNode,
+        node_right: TreeNode,
+        distance: int,
     ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         if distance == 0:
@@ -302,7 +308,10 @@ class ElmoreDelayCalculator(DelayCalculator):
         return self.unit_capacitance * length
 
     def calculate_tapping_point(
-        self, node_left: TreeNode, node_right: TreeNode, distance: int
+        self,
+        node_left: TreeNode,
+        node_right: TreeNode,
+        distance: int,
     ) -> Tuple[int, float]:
         """Calculate extra length based on skew"""
         if distance == 0:
@@ -360,6 +369,51 @@ class DMEAlgorithm:
     """
     Deferred Merge Embedding (DME) Algorithm for Clock Tree Synthesis
     with configurable delay calculation strategy
+
+    .. svgbob::
+       :align: center
+
+        . v
+       .
+      .
+     .
+    . L ______ R
+   .          .
+  .           .
+ ._____________
+
+    This diagram represents a single step in the **bottom-up merging phase** of the DME algorithm. Here's what each part signifies:
+
+    *   **L and R**: These represent two **subtrees** that have already been constructed. They could be individual sinks (leaf nodes) or more complex subtrees that have been built in previous steps. In the context of the diagram, they are the "children" being merged.
+
+    *   **The Boxes Around L and R**: These boxes represent the **merging segments** (MS) of the left and right subtrees, respectively. A merging segment is a set of all possible locations where a new parent node can be placed to connect the children while satisfying the zero-skew constraint.
+
+    *   **v**: This is the **new parent node** being created to merge the left and right subtrees. Its exact position is not yet determined; it will be chosen from the new merging segment.
+
+    *   **The Dashed Lines**: These lines show the **projection** of the child merging segments to form the new merging segment for the parent node `v`. The new merging segment is the set of all points that are equidistant (in terms of delay) from the child merging segments.
+
+    **How it Relates to the DME Algorithm**
+
+    The DME algorithm works in two main phases:
+
+    1.  **Bottom-Up Merging (Construction of Merging Segments)**:
+        *   The algorithm starts with the individual sinks (leaf nodes) of the clock tree.
+        *   It iteratively merges the two closest subtrees (initially, these are just sinks).
+        *   For each merge, it computes a **new merging segment** for the parent node. This is where the `svgbob` diagram comes in. The new merging segment is calculated based on the merging segments of the two children being merged.
+        *   This process continues until all subtrees have been merged into a single root node.
+
+    2.  **Top-Down Embedding (Placement of Internal Nodes)**:
+        *   Once the merging segments for all nodes have been computed, the algorithm works its way down from the root.
+        *   It **chooses a specific physical location** for each internal node from its pre-computed merging segment.
+        *   The choice of location is typically made to minimize wire length or other optimization objectives.
+
+    **In the Context of the Code**
+
+    *   `_build_merging_tree`: This function builds the initial tree structure by recursively partitioning the sinks.
+    *   `_compute_merging_segments`: This is the core of the bottom-up phase. It traverses the tree from the leaves to the root, and for each internal node, it computes its merging segment based on its children's segments. This is where the logic represented by the `svgbob` diagram is implemented.
+    *   `_embed_tree`: This function performs the top-down embedding, selecting the final positions for the internal nodes.
+
+    By adding this `svgbob` diagram, the documentation provides a quick visual reference that helps users understand the fundamental concept of how merging segments are constructed in the DME algorithm, making the code easier to grasp.
     """
 
     def __init__(self, sinks: List[Sink], delay_calculator: DelayCalculator, source: Optional[Point] = None):
@@ -422,7 +476,9 @@ class DMEAlgorithm:
         return clock_tree
 
     def _build_merging_tree(
-        self, nodes: List["TreeNode"], vertical: bool
+        self,
+        nodes: List["TreeNode"],
+        vertical: bool,
     ) -> "TreeNode":
         """
         Build a balanced merging tree using recursive bipartition
@@ -538,7 +594,9 @@ class DMEAlgorithm:
         return merging_segments
 
     def _embed_tree(
-        self, merging_tree: "TreeNode", merging_segments: Dict[str, Any]
+        self,
+        merging_tree: "TreeNode",
+        merging_segments: Dict[str, Any],
     ) -> "TreeNode":
         """
         Embed the clock tree by selecting actual positions for internal nodes
@@ -552,7 +610,8 @@ class DMEAlgorithm:
         """
 
         def embed_node(
-            node: Optional["TreeNode"], parent_segment: Optional[Any] = None
+            node: Optional["TreeNode"],
+            parent_segment: Optional[Any] = None,
         ):
             if node is None:
                 return
@@ -655,7 +714,7 @@ class DMEAlgorithm:
             "skew": skew,
             "sink_delays": sink_delays,
             "total_wirelength": self._total_wirelength(root),
-            "delay_model": self.delay_calculator.__class__.__name__,
+            "delay_model": self.delay_calculator.__class__.__name__
         }
 
     def _total_wirelength(self, root: "TreeNode") -> int:

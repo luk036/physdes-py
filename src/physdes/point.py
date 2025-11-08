@@ -400,6 +400,17 @@ class Point(Generic[T1, T2]):
 
         :return: a boolean value, indicating whether there is an overlap between the coordinates of the two objects.
 
+        .. svgbob::
+           :align: center
+
+                 .----------.
+                 | other    |
+                 | .--------+----.
+                 | |        |   |
+                 '-+--------'   |
+                   | self       |
+                   '------------'
+
         Examples:
             >>> a = Point(3, 4)
             >>> b = Point(5, 6)
@@ -426,6 +437,17 @@ class Point(Generic[T1, T2]):
             instance
 
         :return: The `contains` method is returning a boolean value.
+
+        .. svgbob::
+           :align: center
+
+            .-----------------.
+            | self            |
+            |   .---------.   |
+            |   | other   |   |
+            |   '---------'   |
+            |                 |
+            '-----------------'
 
         Examples:
             >>> a = Point(3, 4)
@@ -462,6 +484,20 @@ class Point(Generic[T1, T2]):
         :return: an instance of the same class as `self` (type `T`). The instance is created using the
             `hull` function, which takes the x-coordinates and y-coordinates of `self` and `other` as arguments.
 
+        .. svgbob::
+           :align: center
+
+            .------------------.
+            | hull             |
+            | .-----------.    |
+            | | self      |    |
+            | '-----------'    |
+            |                  |
+            |      .-----------.
+            |      | other     |
+            |      '-----------'
+            '------------------'
+
         Examples:
             >>> a = Point(3, 4)
             >>> b = Point(5, 6)
@@ -485,6 +521,17 @@ class Point(Generic[T1, T2]):
         :return: The method `intersect_with` returns an instance of the same class as `self` (i.e.,
             `type(self)`). The instance is created using the `T` constructor and takes the intersection of
             the `xcoord` and `ycoord` attributes of `self` and `other`.
+
+        .. svgbob::
+           :align: center
+
+                 .----------.
+                 | other    |
+                 | .--------+----.
+                 | | inter  |   |
+                 '-+--------'   |
+                   | self       |
+                   '------------'
 
         Examples:
             >>> a = Point(3, 5)
@@ -517,6 +564,20 @@ class Point(Generic[T1, T2]):
             function calculates the minimum Manhattan distance between the
 
         :return: the sum of the minimum distances between the x-coordinates and the y-coordinates of two objects.
+
+        .. svgbob::
+           :align: center
+
+            .-----------.
+            | self      |
+            '-----------'
+                   |
+                  dy
+                   |
+            .-----------.
+            | other     |
+            '-----------'
+            <-- dx -->
 
         Examples:
             >>> a = Point(3, 4)

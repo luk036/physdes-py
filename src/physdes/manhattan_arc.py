@@ -84,16 +84,11 @@ class ManhattanArc(Generic[T1, T2]):
 
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """
-        The function initializes an object with x and y coordinates and stores them in a Point object.
+        Initializes a ManhattanArc object with the given x and y coordinates.
 
-        :param xcoord: The parameter `xcoord` represents the x-coordinate of a point in a 2D space. It
-            can be of any type `T1`
-
+        :param xcoord: The x-coordinate in the 45-degree rotated space.
         :type xcoord: T1
-
-        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a
-            two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
-
+        :param ycoord: The y-coordinate in the 45-degree rotated space.
         :type ycoord: T2
 
         Examples:
@@ -105,24 +100,28 @@ class ManhattanArc(Generic[T1, T2]):
 
     @classmethod
     def from_point(cls, pt: Point):
+        """
+        Create a ManhattanArc object from a 2D point.
+
+        :param pt: A 2D point.
+        :type pt: Point
+        :return: A new ManhattanArc object.
+        :rtype: ManhattanArc
+        """
         pt_xformed = pt.rotates()
         return cls(pt_xformed.xcoord, pt_xformed.ycoord)
 
     @staticmethod
     def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
         """
-        The function constructs a ManhattanArc object from the given x and y coordinates.
+        Constructs a ManhattanArc object from standard x and y coordinates.
 
-        :param xcoord: An integer representing the x-coordinate of the point
+        :param xcoord: The x-coordinate.
         :type xcoord: int
-        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a Cartesian coordinate system
+        :param ycoord: The y-coordinate.
         :type ycoord: int
-        :return: an instance of the `ManhattanArc` class with the `xcoord` and `ycoord` values of the `impl` object.
-
-        Examples:
-            >>> a = ManhattanArc.construct(4, 5)
-            >>> print(a)
-            /-1, 9/
+        :return: A new ManhattanArc object.
+        :rtype: ManhattanArc[int, int]
         """
         impl = Point(xcoord - ycoord, xcoord + ycoord)
         return ManhattanArc(impl.xcoord, impl.ycoord)

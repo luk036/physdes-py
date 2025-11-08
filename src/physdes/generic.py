@@ -57,6 +57,12 @@ def overlap(lhs: Any, rhs: Any) -> bool:
 
     :return: a boolean value.
 
+    .. svgbob::
+       :align: center
+
+          <-- lhs -->
+                <-- rhs -->
+
     Examples:
         >>> overlap(1, 1)
         True
@@ -98,6 +104,12 @@ def contain(lhs: Any, rhs: Any) -> bool:
 
     :return: a boolean value.
 
+    .. svgbob::
+       :align: center
+
+        <---- lhs ---->
+           <-- rhs -->
+
     Examples:
         >>> contain(1, 1)
         True
@@ -137,6 +149,14 @@ def intersection(lhs: Any, rhs: Any) -> Any:
         the right-hand side of the intersection operation
 
     :return: the intersection of `lhs` and `rhs`.
+
+    .. svgbob::
+       :align: center
+
+          <-- lhs -->
+                <-- rhs -->
+                <--->
+           intersection
 
     Examples:
         >>> print(intersection(1, 1))
@@ -179,6 +199,11 @@ def min_dist(lhs: Any, rhs: Any) -> Any:
         compare with the left-hand side value or object `lhs`
 
     :return: the minimum Manhattan distance between `lhs` and `rhs`.
+
+    .. svgbob::
+       :align: center
+
+          <-- lhs -->   <-- dist -->   <-- rhs -->
 
     Examples:
         >>> min_dist(1, 1)

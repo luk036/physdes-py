@@ -3,13 +3,13 @@ Unit tests for Clock Tree Visualization module
 """
 
 import sys
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
-import pytest
-
-# Add the parent directory to Python path to import the modules
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import xml.etree.ElementTree as ET
+
+import pytest
 
 from physdes.cts.clk_tree_vis import (
     ClockTreeVisualizer,
