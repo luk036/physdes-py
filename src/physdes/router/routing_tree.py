@@ -265,6 +265,19 @@ class GlobalRoutingTree:
     ) -> str:
         """Insert a new node on an existing branch between two nodes.
 
+        .. svgbob::
+           :align: center
+
+            Before:
+            +-------------+      +-----------+
+            | branch_start|----->| branch_end|
+            +-------------+      +-----------+
+
+            After:
+            +-------------+      +----------+      +-----------+
+            | branch_start|----->| new_node |----->| branch_end|
+            +-------------+      +----------+      +-----------+
+
         Args:
             new_node_type: The type of the new node (NodeType.STEINER or NodeType.TERMINAL).
             x: The x-coordinate of the new node.
@@ -434,6 +447,18 @@ class GlobalRoutingTree:
     ):
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
+
+        .. svgbob::
+           :align: center
+
+                parent
+                  O
+                  |
+                  |
+                  o-----------o child
+                 /
+                /
+               o pt
 
         Examples:
             >>> from physdes.point import Point
