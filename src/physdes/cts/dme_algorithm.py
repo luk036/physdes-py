@@ -32,6 +32,7 @@ from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
 from icecream import ic
 
+
 @dataclass
 class Sink:
     """Represents a clock sink with position and capacitance
@@ -373,14 +374,14 @@ class DMEAlgorithm:
     .. svgbob::
        :align: center
 
-        . v
-       .
-      .
-     .
-    . L ______ R
-   .          .
-  .           .
- ._____________
+                . v
+               .
+              .
+             .
+            . L ______ R
+           .          .
+          .           .
+         ._____________
 
     This diagram represents a single step in the **bottom-up merging phase** of the DME algorithm. Here's what each part signifies:
 
@@ -416,7 +417,12 @@ class DMEAlgorithm:
     By adding this `svgbob` diagram, the documentation provides a quick visual reference that helps users understand the fundamental concept of how merging segments are constructed in the DME algorithm, making the code easier to grasp.
     """
 
-    def __init__(self, sinks: List[Sink], delay_calculator: DelayCalculator, source: Optional[Point] = None):
+    def __init__(
+        self,
+        sinks: List[Sink],
+        delay_calculator: DelayCalculator,
+        source: Optional[Point] = None,
+    ):
         """
         Initialize DME algorithm with delay calculation strategy
 
@@ -442,7 +448,7 @@ class DMEAlgorithm:
         self.sinks = sinks
         self.delay_calculator = delay_calculator
         self.node_id = 0
-        if isinstance(sinks[0].position.xcoord, Point): # 3D
+        if isinstance(sinks[0].position.xcoord, Point):  # 3D
             self.MA_TYPE = ManhattanArc3D
         else:
             self.MA_TYPE = ManhattanArc
@@ -714,7 +720,7 @@ class DMEAlgorithm:
             "skew": skew,
             "sink_delays": sink_delays,
             "total_wirelength": self._total_wirelength(root),
-            "delay_model": self.delay_calculator.__class__.__name__
+            "delay_model": self.delay_calculator.__class__.__name__,
         }
 
     def _total_wirelength(self, root: "TreeNode") -> int:

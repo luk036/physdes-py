@@ -220,7 +220,7 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         assert p1.ycoord == p2.xcoord
         assert p2.ycoord == p3.ycoord
         assert p1.xcoord == p3.xcoord
-        return Point(p3, p1.ycoord) 
+        return Point(p3, p1.ycoord)
 
         # distance = self.min_dist_with(ms)
         # trr1 = ms.ma1.enlarge_with(distance)  # TODO: check

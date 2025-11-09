@@ -52,7 +52,7 @@ from .generic import (
     overlap,
     upper,
 )
-from .interval import Interval, enlarge, hull
+from .interval import enlarge, hull
 from .vector2 import Vector2
 
 T1 = TypeVar("T1")
@@ -405,7 +405,7 @@ class Point(Generic[T1, T2]):
 
                  .----------.
                  | other    |
-                 | .--------+----.
+                 | .--------+---.
                  | |        |   |
                  '-+--------'   |
                    | self       |
@@ -466,6 +466,22 @@ class Point(Generic[T1, T2]):
         return contain(self.xcoord, other.xcoord) and contain(self.ycoord, other.ycoord)
 
     def blocks(self, other: "Point[T1, T2]") -> bool:
+        """
+        :param other: The `other` parameter is an object of the same type as `self`. It represents another
+            instance of the class that the `blocks` method belongs to
+
+        .. svgbob::
+           :align: center
+
+                    .------.
+                    | self |
+            .-------+------+---.
+            | other |      |   |
+            '-------+------+---'
+                    |      |
+                    '------'
+
+        """
         return (
             contain(self.xcoord, other.xcoord)
             and contain(other.ycoord, self.ycoord)
@@ -487,16 +503,14 @@ class Point(Generic[T1, T2]):
         .. svgbob::
            :align: center
 
-            .------------------.
+            .-----------.------.
+            | self      |      |
+            '-----------'      |
             | hull             |
-            | .-----------.    |
-            | | self      |    |
-            | '-----------'    |
             |                  |
             |      .-----------.
             |      | other     |
-            |      '-----------'
-            '------------------'
+            '------'-----------'
 
         Examples:
             >>> a = Point(3, 4)
@@ -527,7 +541,7 @@ class Point(Generic[T1, T2]):
 
                  .----------.
                  | other    |
-                 | .--------+----.
+                 | .--------+---.
                  | | inter  |   |
                  '-+--------'   |
                    | self       |
@@ -577,7 +591,6 @@ class Point(Generic[T1, T2]):
             .-----------.
             | other     |
             '-----------'
-            <-- dx -->
 
         Examples:
             >>> a = Point(3, 4)
@@ -610,6 +623,16 @@ class Point(Generic[T1, T2]):
         :type other: Point
         :return: A new `Point` object representing the nearest point on `self`.
 
+           .. svgbob::
+           :align: center
+
+            .-----------.
+            | self      |
+            '-----------o nearest point
+                        :
+                        '~~~~~~~~o
+                                other
+
         Examples:
             >>> a = Point(3, 4)
             >>> b = Point(5, 6)
@@ -640,6 +663,18 @@ class Point(Generic[T1, T2]):
         :param alpha: The amount to enlarge the point by. This can be an integer or a float.
         :type alpha: float
         :return: A new object of the same type as `self` with enlarged coordinates.
+
+        .. svgbob::
+           :align: center
+
+            .-------------------.
+            |                   |
+            |    .---------.    |
+            |    | self    |    |
+            |    '---------'    |
+            |                   |
+            '-------------------'
+                           <----> alpha
 
         Examples:
             >>> a = Point(9, -1)

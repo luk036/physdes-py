@@ -571,7 +571,7 @@ class Interval(Generic[T]):
         .. svgbob::
            :align: center
 
-            <---- hull ---->
+            <---- hull ------>
             <-- self -->
                    <-- obj -->
 
@@ -607,7 +607,7 @@ class Interval(Generic[T]):
 
               <-- self -->
                     <-- obj -->
-                    <->
+                    <---->
                intersection
 
         Examples:

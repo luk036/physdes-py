@@ -311,7 +311,7 @@ class ManhattanArc(Generic[T1, T2]):
         ic(self)
         ic(ms)
         return self._nearest_point_to(ms)
-    
+
         # distance = self.min_dist_with(ms)
         # trr = ms.enlarge_with(distance)
         # lb = self.impl.lower_corner()
