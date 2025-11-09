@@ -27,46 +27,47 @@ class UnionFind:
 
 
 def steiner_forest_grid(h, w, pairs):
-    """
-    Solves the Steiner Forest Problem on a grid graph.
-
-    .. code-block:: text
-
-             +--.----------o
-             |   `.        |
-             |     `.      |
-             |       `.    |
-             o---------`---+
-
-    """
     n = h * w
     uf = UnionFind(n)
+    sources = set()
     terminals = set()
     pair_dict = collections.defaultdict(list)
     for (sx, sy), (tx, ty) in pairs:
         s = sx * w + sy
         t = tx * w + ty
-        terminals.add(s)
+        sources.add(s)
         terminals.add(t)
         pair_dict[s].append(t)
         pair_dict[t].append(s)
 
-    # Generate all possible grid edges: (u, v, c)
+    all_term = sources | terminals
+
+    # Generate all possible grid edges: horizontal, vertical, diagonal
     edges = []
+    # diag_cost = 1.0  # Unit cost for demonstration; alternatively use math.sqrt(2) for Euclidean distance
+    # diag_cost = 1.4142
     for i in range(h):
         for j in range(w):
             node = i * w + j
+            # Horizontal
             if j + 1 < w:
-                edges.append((node, node + 1, 1))
+                edges.append((node, node + 1, 1.0))
+            # Vertical
             if i + 1 < h:
-                edges.append((node, node + w, 1))
+                edges.append((node, node + w, 1.0))
+            # # Diagonal \
+            # if i + 1 < h and j + 1 < w:
+            #     edges.append((node, node + w + 1, diag_cost))
+            # # Diagonal /
+            # if i + 1 < h and j - 1 >= 0:
+            #     edges.append((node, node + w - 1, diag_cost))
 
     paid = collections.defaultdict(float)
     F = []  # list of (u, v, c) added in order
 
     while True:
         # Compute term_root
-        term_root = {t: uf.find(t) for t in terminals}
+        term_root = {t: uf.find(t) for t in all_term}
         # Check if feasible
         feasible = True
         for s in pair_dict:
@@ -82,7 +83,7 @@ def steiner_forest_grid(h, w, pairs):
 
         # Compute comp_terms
         comp_terms = collections.defaultdict(set)
-        for t in terminals:
+        for t in all_term:
             comp_terms[term_root[t]].add(t)
 
         # Compute active_comps
@@ -118,7 +119,7 @@ def steiner_forest_grid(h, w, pairs):
             paid_val = paid[key]
             if paid_val > c:
                 continue
-            delta_e = (c - paid_val) / num
+            delta_e = (c - paid_val) / num if num > 0 else float("inf")
             if delta_e < min_delta:
                 min_delta = delta_e
                 candidate_es = [(u, v, c, key)]
@@ -131,7 +132,7 @@ def steiner_forest_grid(h, w, pairs):
         # Pick first candidate
         chosen_u, chosen_v, chosen_c, chosen_key = candidate_es[0]
 
-        # Update paid for all candidate edges
+        # Update paid for all eligible edges
         for u2, v2, c2 in edges:
             if uf.find(u2) == uf.find(v2):
                 continue
@@ -146,10 +147,13 @@ def steiner_forest_grid(h, w, pairs):
                 continue
             key2 = (min(u2, v2), max(u2, v2))
             paid[key2] += min_delta * num2
+            if paid[key2] > c2 + 1e-6:  # tolerance
+                paid[key2] = c2
 
-        # Add chosen edge
-        F.append((chosen_u, chosen_v, chosen_c))
-        uf.union(chosen_u, chosen_v)
+        # Add chosen edge if not overpaid
+        if paid[chosen_key] >= chosen_c - 1e-6:
+            F.append((chosen_u, chosen_v, chosen_c))
+            uf.union(chosen_u, chosen_v)
 
     # Reverse delete
     F_pruned = F[:]
@@ -160,11 +164,12 @@ def steiner_forest_grid(h, w, pairs):
                 u, v, _ = F[j]
                 temp_uf.union(u, v)
         connected = True
-        for (sx, sy), (tx, ty) in pairs:
-            s = sx * w + sy
-            t = tx * w + ty
-            if temp_uf.find(s) != temp_uf.find(t):
-                connected = False
+        for s in sources:
+            for t in pair_dict[s]:
+                if temp_uf.find(s) != temp_uf.find(t):
+                    connected = False
+                    break
+            if not connected:
                 break
         if connected:
             del F_pruned[i]
@@ -172,7 +177,14 @@ def steiner_forest_grid(h, w, pairs):
     # Compute cost
     total_cost = sum(c for _, _, c in F_pruned)
 
-    return F_pruned, total_cost
+    # Identify Steiner nodes
+    used_nodes = set()
+    for u, v, _ in F_pruned:
+        used_nodes.add(u)
+        used_nodes.add(v)
+    steiner_nodes = used_nodes - all_term
+
+    return F_pruned, total_cost, sources, terminals, steiner_nodes
 
 
 # Example parameters (modify as needed)
@@ -183,9 +195,13 @@ pairs = [
     ((0, 0), (0, 5)),
     ((4, 4), (7, 5)),
     ((4, 4), (5, 7)),
+    ((0, 1), (4, 1)),
 ]  # Terminal pairs
 
-F_pruned, total_cost = steiner_forest_grid(h, w, pairs)
+
+F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+    h, w, pairs
+)
 
 # Generate SVG and write to file
 cell_size = 50
@@ -205,18 +221,24 @@ for j in range(w + 1):
     svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
 
 # Nodes
-terminals = set()
-for (sx, sy), (tx, ty) in pairs:
-    terminals.add(sx * w + sy)
-    terminals.add(tx * w + ty)
-
+all_term = sources | terminals
 for i in range(h):
     for j in range(w):
         cx = margin + j * cell_size + cell_size / 2
         cy = margin + i * cell_size + cell_size / 2
         node = i * w + j
-        r = 10 if node in terminals else 5
-        fill = "red" if node in terminals else "black"
+        if node in sources:
+            r = 10
+            fill = "red"
+        elif node in terminals:
+            r = 10
+            fill = "green"
+        elif node in steiner_nodes:
+            r = 7
+            fill = "blue"
+        else:
+            r = 5
+            fill = "black"
         svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
         svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
 
@@ -228,7 +250,7 @@ for u, v, c in F_pruned:
     uy = margin + ui * cell_size + cell_size / 2
     vx = margin + vj * cell_size + cell_size / 2
     vy = margin + vi * cell_size + cell_size / 2
-    svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="blue" stroke-width="5"/>'
+    svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="orange" stroke-width="5" opacity="0.5"/>'
 
 svg += "</svg>"
 
