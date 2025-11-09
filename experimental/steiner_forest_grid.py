@@ -27,6 +27,67 @@ class UnionFind:
 
 
 def steiner_forest_grid(h, w, pairs):
+    """
+    Computes an approximate Steiner forest on a grid graph.
+
+    The algorithm is based on the primal-dual approach for the Steiner
+    network problem. It iteratively pays for edges until all terminal
+    pairs are connected.
+
+    The following diagram illustrates the concept of a Steiner tree,
+    where 'o' represents terminals and '*' represents Steiner points.
+
+         +--.----------o
+         |   `.        |
+         |     `.      |
+         |       `.    |
+         o---------`---+
+
+    In our case, we are looking for a Steiner forest, which is a collection
+    of Steiner trees connecting specified pairs of terminals.
+
+    The algorithm works by "growing" paths from terminals. Each active
+    component (a connected component containing at least one terminal
+    that needs to be connected to a terminal in another component)
+    contributes to the cost of edges.
+
+                +--<---o
+                |
+                *-------->---o
+                |
+         o--->--+
+
+    When the cost paid for an edge equals its weight, the edge is
+    added to the forest.
+
+                     +-o
+                     |
+                     v       o
+                     |       |
+         o---<-------*--->---+
+
+    The following diagrams illustrate the concept in 3D as well.
+
+        +z
+          ^
+          |
+          |
+          +-----> +x
+         /
+        v
+      +y
+
+                              +
+                             /|           b
+                            * +----<------o
+                           /|
+                          + +---------->--------o c
+              a           |
+              o-----<-----+
+
+    After the growing phase, a reverse-delete step is performed to
+    remove redundant edges from the forest.
+    """
     n = h * w
     uf = UnionFind(n)
     sources = set()
@@ -187,77 +248,87 @@ def steiner_forest_grid(h, w, pairs):
     return F_pruned, total_cost, sources, terminals, steiner_nodes
 
 
-# Example parameters (modify as needed)
-h = 8  # Height
-w = 8  # Width
-pairs = [
-    ((0, 0), (3, 2)),
-    ((0, 0), (0, 5)),
-    ((4, 4), (7, 5)),
-    ((4, 4), (5, 7)),
-    ((0, 1), (4, 1)),
-]  # Terminal pairs
+def generate_svg(h, w, F_pruned, sources, terminals, steiner_nodes, cell_size, margin, filename):
+    """Generates an SVG visualization of the Steiner forest."""
+    width = w * cell_size + 2 * margin
+    height = h * cell_size + 2 * margin
+    svg = f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
+
+    # Grid lines horizontal
+    for i in range(h + 1):
+        y = margin + i * cell_size
+        svg += f'<line x1="{margin}" y1="{y}" x2="{width - margin}" y2="{y}" stroke="gray" stroke-width="1"/>'
+
+    # Vertical
+    for j in range(w + 1):
+        x = margin + j * cell_size
+        svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
+
+    # Nodes
+    all_term = sources | terminals
+    for i in range(h):
+        for j in range(w):
+            cx = margin + j * cell_size + cell_size / 2
+            cy = margin + i * cell_size + cell_size / 2
+            node = i * w + j
+            if node in sources:
+                r = 10
+                fill = "red"
+            elif node in terminals:
+                r = 10
+                fill = "green"
+            elif node in steiner_nodes:
+                r = 7
+                fill = "blue"
+            else:
+                r = 5
+                fill = "black"
+            svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
+            svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
+
+    # Selected edges
+    for u, v, c in F_pruned:
+        ui, uj = divmod(u, w)
+        vi, vj = divmod(v, w)
+        ux = margin + uj * cell_size + cell_size / 2
+        uy = margin + ui * cell_size + cell_size / 2
+        vx = margin + vj * cell_size + cell_size / 2
+        vy = margin + vi * cell_size + cell_size / 2
+        svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="orange" stroke-width="5" opacity="0.5"/>'
+
+    svg += "</svg>"
+
+    # Write to SVG file
+    with open(filename, "w") as f:
+        f.write(svg)
+    print(f"SVG file '{filename}' generated successfully.")
 
 
-F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
-    h, w, pairs
-)
+def main():
+    """Main function to run the example."""
+    # Example parameters (modify as needed)
+    h = 8  # Height
+    w = 8  # Width
+    pairs = [
+        ((0, 0), (3, 2)),
+        ((0, 0), (0, 5)),
+        ((4, 4), (7, 5)),
+        ((4, 4), (5, 7)),
+        ((0, 1), (4, 1)),
+    ]  # Terminal pairs
 
-# Generate SVG and write to file
-cell_size = 50
-margin = 20
-width = w * cell_size + 2 * margin
-height = h * cell_size + 2 * margin
-svg = f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        h, w, pairs
+    )
 
-# Grid lines horizontal
-for i in range(h + 1):
-    y = margin + i * cell_size
-    svg += f'<line x1="{margin}" y1="{y}" x2="{width - margin}" y2="{y}" stroke="gray" stroke-width="1"/>'
+    print(f"Total cost: {total_cost}")
+    print(f"Edges: {F_pruned}")
 
-# Vertical
-for j in range(w + 1):
-    x = margin + j * cell_size
-    svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
+    generate_svg(
+        h, w, F_pruned, sources, terminals, steiner_nodes,
+        cell_size=50, margin=20, filename="steiner_forest.svg"
+    )
 
-# Nodes
-all_term = sources | terminals
-for i in range(h):
-    for j in range(w):
-        cx = margin + j * cell_size + cell_size / 2
-        cy = margin + i * cell_size + cell_size / 2
-        node = i * w + j
-        if node in sources:
-            r = 10
-            fill = "red"
-        elif node in terminals:
-            r = 10
-            fill = "green"
-        elif node in steiner_nodes:
-            r = 7
-            fill = "blue"
-        else:
-            r = 5
-            fill = "black"
-        svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
-        svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
 
-# Selected edges
-for u, v, c in F_pruned:
-    ui, uj = divmod(u, w)
-    vi, vj = divmod(v, w)
-    ux = margin + uj * cell_size + cell_size / 2
-    uy = margin + ui * cell_size + cell_size / 2
-    vx = margin + vj * cell_size + cell_size / 2
-    vy = margin + vi * cell_size + cell_size / 2
-    svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="orange" stroke-width="5" opacity="0.5"/>'
-
-svg += "</svg>"
-
-# Write to SVG file
-with open("steiner_forest.svg", "w") as f:
-    f.write(svg)
-
-print("SVG file 'steiner_forest.svg' generated successfully.")
-print(f"Total cost: {total_cost}")
-print(f"Edges: {F_pruned}")
+if __name__ == "__main__":
+    main()
