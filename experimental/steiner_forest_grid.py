@@ -2,6 +2,18 @@ import collections
 
 
 class UnionFind:
+    """
+    >>> uf = UnionFind(10)
+    >>> uf.union(1, 2)
+    True
+    >>> uf.union(2, 3)
+    True
+    >>> uf.find(1) == uf.find(3)
+    True
+    >>> uf.union(1, 3)
+    False
+    """
+
     def __init__(self, size):
         self.parent = list(range(size))
         self.rank = [0] * size
@@ -87,6 +99,21 @@ def steiner_forest_grid(h, w, pairs):
 
     After the growing phase, a reverse-delete step is performed to
     remove redundant edges from the forest.
+
+    >>> h = 2
+    >>> w = 2
+    >>> pairs = [((0, 0), (1, 1))]
+    >>> F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+    >>> sorted(F_pruned)
+    [(0, 1, 1.0), (1, 3, 1.0)]
+    >>> total_cost
+    2.0
+    >>> sources
+    {0}
+    >>> terminals
+    {3}
+    >>> steiner_nodes
+    {1}
     """
     n = h * w
     uf = UnionFind(n)

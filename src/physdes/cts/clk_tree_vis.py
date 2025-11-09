@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from lds_gen.ilds import Halton
 from physdes.point import Point
+from physdes.cts.dme_algorithm import TreeNode, Sink
 
 
 class ClockTreeVisualizer:
@@ -77,6 +78,22 @@ class ClockTreeVisualizer:
 
         Returns:
             SVG string content
+
+        Examples:
+            >>> s1 = TreeNode(name="s1", position=Point(10, 20))
+            >>> s2 = TreeNode(name="s2", position=Point(30, 40))
+            >>> root = TreeNode(name="n1", position=Point(20, 30), left=s1, right=s2)
+            >>> s1.parent = root
+            >>> s2.parent = root
+            >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]
+            >>> viz = ClockTreeVisualizer()
+            >>> svg = viz.visualize_tree(root, sinks, filename="", width=200, height=200)
+            >>> '<circle cx="75.0" cy="75.0"' in svg
+            True
+            >>> '<circle cx="125.0" cy="125.0"' in svg
+            True
+            >>> '<circle cx="100.0" cy="100.0"' in svg
+            True
         """
         # Collect all nodes and calculate bounds
         all_nodes = self._collect_all_nodes(root)
@@ -121,7 +138,7 @@ class ClockTreeVisualizer:
         svg_string = "\n".join(svg_content)
 
         # Save to file
-        if filename != "":
+        if filename:
             with open(filename, "w") as f:
                 f.write(svg_string)
             print(f"Clock tree visualization saved to {filename}")
@@ -142,7 +159,9 @@ class ClockTreeVisualizer:
         return nodes
 
     def _calculate_bounds(
-        self, nodes: List, sinks: List
+        self,
+        nodes: List,
+        sinks: List
     ) -> Tuple[float, float, float, float]:
         """Calculate the bounding box of all nodes and sinks"""
         all_points = []
@@ -169,7 +188,9 @@ class ClockTreeVisualizer:
         return (min_x - padding, min_y - padding, max_x + padding, max_y + padding)
 
     def _draw_wires(
-        self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]
+        self,
+        root: Any,
+        scale_coord: Callable[[Any, Any], Tuple[float, float]]
     ) -> List[str]:
         """Draw all wires in the clock tree"""
         svg_elements = []
@@ -274,7 +295,9 @@ class ClockTreeVisualizer:
         return svg_elements
 
     def _create_analysis_box(
-        self, analysis: Dict[str, Any], svg_width: int
+        self,
+        analysis: Dict[str, Any],
+        svg_width: int
     ) -> List[str]:
         """Create analysis information box"""
         delay_model = analysis.get("delay_model", "Unknown")
@@ -369,8 +392,6 @@ def create_comparison_visualization(
         SVG string content
 
     Examples:
-        >>> from physdes.point import Point
-        >>> from physdes.cts.dme_algorithm import TreeNode, Sink
         >>> tree1 = TreeNode("root1", Point(50, 50))
         >>> tree2 = TreeNode("root2", Point(150, 50))
         >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]
@@ -379,9 +400,10 @@ def create_comparison_visualization(
         ...     {"tree": tree1, "sinks": sinks, "analysis": analysis, "title": "Linear Model"},
         ...     {"tree": tree2, "sinks": sinks, "analysis": analysis, "title": "Elmore Model"}
         ... ]
-        >>> svg = create_comparison_visualization(data, "comparison.svg", 800, 400)
-        Comparison visualization saved to comparison.svg
+        >>> svg = create_comparison_visualization(data, "", 800, 400)
         >>> "Linear Model" in svg
+        True
+        >>> "Elmore Model" in svg
         True
     """
     if not trees_data:
@@ -473,10 +495,10 @@ def create_comparison_visualization(
     svg_content.append("</svg>")
     svg_string = "\n".join(svg_content)
 
-    with open(filename, "w") as f:
-        f.write(svg_string)
-
-    print(f"Comparison visualization saved to {filename}")
+    if filename:
+        with open(filename, "w") as f:
+            f.write(svg_string)
+        print(f"Comparison visualization saved to {filename}")
     return svg_string
 
 
@@ -519,7 +541,6 @@ def visualize_example_tree() -> Tuple[str, str, str]:
         DMEAlgorithm,
         ElmoreDelayCalculator,
         LinearDelayCalculator,
-        Sink,
     )
 
     # coords = generate_random_points_for_sinks()

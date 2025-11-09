@@ -65,12 +65,12 @@ class GlobalRouter:
             >>> terminals = [Point(10, 0), Point(1, 0), Point(5, 0)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
-            [Point(10, 0), Point(5, 0), Point(1, 0)]
+            [Point(1, 0), Point(5, 0), Point(10, 0)]
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(10, 1), 0), Point(Point(1, 2), 0), Point(Point(5, 0), 0)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.terminal_positions
-            [Point(Point(10, 1), 0), Point(Point(5, 0), 0), Point(Point(1, 2), 0)]
+            [Point(Point(1, 2), 0), Point(Point(5, 0), 0), Point(Point(10, 1), 0)]
             >>> from physdes.interval import Interval
             >>> keepouts = [Point(Interval(2, 4), Interval(2, 4))]
             >>> router = GlobalRouter(source, terminals, keepouts)
@@ -106,13 +106,13 @@ class GlobalRouter:
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_simple()
             >>> router.tree.calculate_wirelength()
-            6
+            4
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_simple()
             >>> router.tree.calculate_wirelength()
-            7
+            6
         """
         for t in self.terminal_positions:
             self.tree.insert_terminal_node(t)

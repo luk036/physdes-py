@@ -30,7 +30,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from physdes.manhattan_arc import ManhattanArc
 from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
-from icecream import ic
 
 
 @dataclass
@@ -415,6 +414,29 @@ class DMEAlgorithm:
     *   `_embed_tree`: This function performs the top-down embedding, selecting the final positions for the internal nodes.
 
     By adding this `svgbob` diagram, the documentation provides a quick visual reference that helps users understand the fundamental concept of how merging segments are constructed in the DME algorithm, making the code easier to grasp.
+
+    Examples:
+        >>> from physdes.point import Point
+        >>> from physdes.cts.dme_algorithm import Sink, DMEAlgorithm, LinearDelayCalculator
+        >>> sinks = [Sink("s1", Point(0, 0), 1.0), Sink("s2", Point(10, 0), 1.0)]
+        >>> calc = LinearDelayCalculator()
+        >>> dme = DMEAlgorithm(sinks, delay_calculator=calc, source=Point(5,0))
+        >>> tree = dme.build_clock_tree()
+        >>> analysis = dme.analyze_skew(tree)
+        >>> analysis['skew']
+        0.0
+        >>> analysis['total_wirelength']
+        10
+        >>> tree.position
+        Point(5, 0)
+        >>> tree.left.position
+        Point(0, 0)
+        >>> tree.right.position
+        Point(10, 0)
+        >>> round(tree.left.delay, 2)
+        5.0
+        >>> round(tree.right.delay, 2)
+        5.0
     """
 
     def __init__(
@@ -568,7 +590,6 @@ class DMEAlgorithm:
             # Calculate the Manhattan distance between the two child merging segments.
             # This distance represents the minimum possible wire length required to connect them.
             distance = left_ms.min_dist_with(right_ms)
-            # ic(distance)
 
             # Calculate the tapping point and delay for the merged segment using the configured
             # delay calculator strategy. This step is crucial for achieving zero-skew by
@@ -584,10 +605,6 @@ class DMEAlgorithm:
             # The 'extend_left' parameter dictates how much the left segment needs to be
             # extended to meet the zero-skew requirement.
             merged_segment = left_ms.merge_with(right_ms, extend_left)
-            ic(node.name)
-            ic(left_ms)
-            ic(right_ms)
-            ic(merged_segment)
             merging_segments[node.name] = merged_segment
 
             # Update the capacitance of the current node. This includes the capacitances
@@ -630,9 +647,7 @@ class DMEAlgorithm:
                 if self.source is None:
                     node.position = node_segment.get_upper_corner()
                 else:
-                    ic(node_segment)
                     node.position = node_segment.nearest_point_to(self.source)
-                    assert node.position.xcoord.ycoord == 0
             else:
                 # For internal nodes, the actual position is determined by finding the point
                 # within its merging segment that is closest to its parent's position.
@@ -640,8 +655,6 @@ class DMEAlgorithm:
                 node_segment = merging_segments[node.name]
                 # Compute wire length to parent
                 if node.parent:
-                    ic(node.name)
-                    ic(node.parent.name)
                     node.position = node_segment.nearest_point_to(node.parent.position)
                     node.wire_length = node.position.min_dist_with(node.parent.position)
 
@@ -710,8 +723,8 @@ class DMEAlgorithm:
 
         collect_sink_delays(root)
 
-        max_delay = max(sink_delays)
-        min_delay = min(sink_delays)
+        max_delay = max(sink_delays) if sink_delays else 0
+        min_delay = min(sink_delays) if sink_delays else 0
         skew = max_delay - min_delay
 
         return {

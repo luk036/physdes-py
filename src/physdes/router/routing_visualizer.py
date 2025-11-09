@@ -1,3 +1,4 @@
+import doctest
 from typing import TYPE_CHECKING, List, Optional
 
 from physdes.interval import Interval
@@ -26,6 +27,20 @@ def visualize_routing_tree_svg(
 
     Returns:
         SVG string representation
+
+    Examples:
+        >>> from physdes.point import Point
+        >>> from physdes.router.routing_tree import GlobalRoutingTree
+        >>> tree = GlobalRoutingTree(Point(0, 0))
+        >>> s1 = tree.insert_steiner_node(Point(1, 1))
+        >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
+        >>> svg = visualize_routing_tree_svg(tree, width=200, height=200)
+        >>> '<circle cx="50.0" cy="50.0"' in svg
+        True
+        >>> '<circle cx="100.0" cy="100.0"' in svg
+        True
+        >>> '<circle cx="150.0" cy="150.0"' in svg
+        True
     """
     # Calculate bounds to scale the coordinates
     all_nodes = list(tree.nodes.values())
@@ -242,6 +257,20 @@ def visualize_routing_tree3d_svg(
 
     Returns:
         SVG string representation
+
+    Examples:
+        >>> from physdes.point import Point
+        >>> from physdes.router.routing_tree import GlobalRoutingTree
+        >>> tree = GlobalRoutingTree(Point(Point(0, 0), 0))
+        >>> s1 = tree.insert_steiner_node(Point(Point(1, 0), 1))
+        >>> t1 = tree.insert_terminal_node(Point(Point(2, 0), 2), s1)
+        >>> svg = visualize_routing_tree3d_svg(tree, width=200, height=200)
+        >>> '<circle cx="50.0" cy="50.0"' in svg
+        True
+        >>> '<circle cx="100.0" cy="100.0"' in svg
+        True
+        >>> '<circle cx="150.0" cy="150.0"' in svg
+        True
     """
     # Calculate bounds to scale the coordinates
     all_nodes = list(tree3d.nodes.values())
@@ -432,3 +461,7 @@ def save_routing_tree3d_svg(
     with open(filename, "w") as f:
         f.write(svg_content)
     print(f"Routing tree3d saved to {filename}")
+
+
+if __name__ == "__main__":
+    doctest.testmod()
