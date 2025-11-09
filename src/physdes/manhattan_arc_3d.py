@@ -58,6 +58,17 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
     Merging point, segment, or region ⛝
 
     A 45 degree rotated point, vertical or horizontal segment, or rectangle
+
+    .. code-block:: text
+
+                              +
+                             /|           b
+                            * +----<------o
+                           /|
+                          + +---------->--------o c
+              a           |
+              o-----<-----+
+
     """
 
     def __init__(self, ma1: ManhattanArc, ma2: ManhattanArc, ma3: ManhattanArc) -> None:

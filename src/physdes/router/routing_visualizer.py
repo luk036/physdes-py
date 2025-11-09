@@ -223,6 +223,17 @@ def visualize_routing_tree3d_svg(
     """
     Visualize a GlobalRoutingTree in SVG format.
 
+    .. code-block:: text
+
+            +z
+              ^
+              |
+              |
+              +-----> +x
+             /
+            v
+          +y
+
     Args:
         tree3d: GlobalRoutingTree instance to visualize
         width: SVG canvas width

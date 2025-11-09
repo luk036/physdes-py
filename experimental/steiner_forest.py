@@ -9,6 +9,21 @@ class SteinerForest:
     Solves the Steiner Forest Problem on a grid graph using the Primal-Dual algorithm.
     The Steiner Forest Problem: Given a graph and pairs of terminal nodes,
     find a minimum-cost subgraph that connects each terminal pair.
+
+    .. code-block:: text
+
+                +--<---o
+                |
+                *-------->---o
+                |
+         o--->--+
+
+                     +-o
+                     |
+                     v       o
+                     |       |
+         o---<-------*--->---+
+
     """
 
     def __init__(

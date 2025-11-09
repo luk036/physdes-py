@@ -28,6 +28,21 @@ from physdes.router.routing_tree import GlobalRoutingTree
 class GlobalRouter:
     """
     A global router for routing between a source and multiple terminals.
+
+    .. code-block:: text
+
+                +--<---o
+                |
+                *-------->---o
+                |
+         o--->--+
+
+                     +-o
+                     |
+                     v       o
+                     |       |
+         o---<-------*--->---+
+
     """
 
     def __init__(

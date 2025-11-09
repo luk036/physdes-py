@@ -27,6 +27,18 @@ class UnionFind:
 
 
 def steiner_forest_grid(h, w, pairs):
+    """
+    Solves the Steiner Forest Problem on a grid graph with diagonal edges.
+
+    .. code-block:: text
+
+             +--.----------o
+             |   `.        |
+             |     `.      |
+             |       `.    |
+             o---------`---+
+
+    """
     n = h * w
     uf = UnionFind(n)
     sources = set()

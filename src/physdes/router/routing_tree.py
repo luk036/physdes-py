@@ -118,7 +118,23 @@ class RoutingNode:
 
 
 class GlobalRoutingTree:
-    """Global routing tree that supports Steiner node and terminal node insertion."""
+    """Global routing tree that supports Steiner node and terminal node insertion.
+
+    .. code-block:: text
+
+             +--.----------o
+             |   `.        |
+             |     `.      |
+             |       `.    |
+             o---------`---+
+
+                +--<---o
+                |
+                *-------->---o
+                |
+         o--->--+
+
+    """
 
     def __init__(self, source_position: Point[Any, Any]):
         """
