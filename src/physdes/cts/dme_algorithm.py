@@ -24,7 +24,7 @@ Key components of the module include:
 import doctest
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 
 from physdes.manhattan_arc import ManhattanArc
@@ -438,6 +438,7 @@ class DMEAlgorithm:
         >>> round(tree.right.delay, 2)
         5.0
     """
+    MA_TYPE: Union[Type[ManhattanArc], Type[ManhattanArc3D]]
 
     def __init__(
         self,

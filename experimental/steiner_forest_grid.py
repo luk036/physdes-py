@@ -1,4 +1,5 @@
 import collections
+from typing import List, Tuple, Dict, Set, Any
 
 
 class UnionFind:
@@ -14,16 +15,16 @@ class UnionFind:
     False
     """
 
-    def __init__(self, size):
-        self.parent = list(range(size))
-        self.rank = [0] * size
+    def __init__(self, size: int):
+        self.parent: List[int] = list(range(size))
+        self.rank: List[int] = [0] * size
 
-    def find(self, p):
+    def find(self, p: int) -> int:
         if self.parent[p] != p:
             self.parent[p] = self.find(self.parent[p])
         return self.parent[p]
 
-    def union(self, p, q):
+    def union(self, p: int, q: int) -> bool:
         pp = self.find(p)
         pq = self.find(q)
         if pp == pq:
@@ -38,7 +39,11 @@ class UnionFind:
         return True
 
 
-def steiner_forest_grid(h, w, pairs):
+def steiner_forest_grid(
+    h: int, w: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]
+) -> Tuple[
+    List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]
+]:
     """
     Computes an approximate Steiner forest on a grid graph.
 
@@ -73,7 +78,7 @@ def steiner_forest_grid(h, w, pairs):
 
     The algorithm works by "growing" paths from terminals. Each active
     component (a connected component containing at least one terminal
-    that needs to be connected to a terminal in another component)
+    that needs to be connected to a terminal in another component) 
     contributes to the cost of edges.
 
     .. svgbob::
@@ -136,11 +141,11 @@ def steiner_forest_grid(h, w, pairs):
     >>> steiner_nodes
     {1}
     """
-    n = h * w
-    uf = UnionFind(n)
-    sources = set()
-    terminals = set()
-    pair_dict = collections.defaultdict(list)
+    n: int = h * w
+    uf: UnionFind = UnionFind(n)
+    sources: Set[int] = set()
+    terminals: Set[int] = set()
+    pair_dict: Dict[int, List[int]] = collections.defaultdict(list)
     for (sx, sy), (tx, ty) in pairs:
         s = sx * w + sy
         t = tx * w + ty
@@ -149,10 +154,10 @@ def steiner_forest_grid(h, w, pairs):
         pair_dict[s].append(t)
         pair_dict[t].append(s)
 
-    all_term = sources | terminals
+    all_term: Set[int] = sources | terminals
 
     # Generate all possible grid edges: horizontal, vertical, diagonal
-    edges = []
+    edges: List[Tuple[int, int, float]] = []
     # diag_cost = 1.0  # Unit cost for demonstration; alternatively use math.sqrt(2) for Euclidean distance
     # diag_cost = 1.4142
     for i in range(h):
@@ -171,12 +176,12 @@ def steiner_forest_grid(h, w, pairs):
             # if i + 1 < h and j - 1 >= 0:
             #     edges.append((node, node + w - 1, diag_cost))
 
-    paid = collections.defaultdict(float)
-    F = []  # list of (u, v, c) added in order
+    paid: Dict[Tuple[int, int], float] = collections.defaultdict(float)
+    F: List[Tuple[int, int, float]] = []  # list of (u, v, c) added in order
 
     while True:
         # Compute term_root
-        term_root = {t: uf.find(t) for t in all_term}
+        term_root: Dict[int, int] = {t: uf.find(t) for t in all_term}
         # Check if feasible
         feasible = True
         for s in pair_dict:
@@ -191,12 +196,12 @@ def steiner_forest_grid(h, w, pairs):
             break
 
         # Compute comp_terms
-        comp_terms = collections.defaultdict(set)
+        comp_terms: Dict[int, Set[int]] = collections.defaultdict(set)
         for t in all_term:
             comp_terms[term_root[t]].add(t)
 
         # Compute active_comps
-        active_comps = set()
+        active_comps: Set[int] = set()
         for root, terms in comp_terms.items():
             is_active = False
             for t in terms:
@@ -211,7 +216,7 @@ def steiner_forest_grid(h, w, pairs):
 
         # Find min_delta and chosen edge(s)
         min_delta = float("inf")
-        candidate_es = []
+        candidate_es: List[Tuple[int, int, float, Tuple[int, int]]] = []
         for u, v, c in edges:
             if uf.find(u) == uf.find(v):
                 continue
@@ -265,7 +270,7 @@ def steiner_forest_grid(h, w, pairs):
             uf.union(chosen_u, chosen_v)
 
     # Reverse delete
-    F_pruned = F[:]
+    F_pruned: List[Tuple[int, int, float]] = F[:]
     for i in range(len(F) - 1, -1, -1):
         temp_uf = UnionFind(n)
         for j in range(len(F)):
@@ -284,19 +289,29 @@ def steiner_forest_grid(h, w, pairs):
             del F_pruned[i]
 
     # Compute cost
-    total_cost = sum(c for _, _, c in F_pruned)
+    total_cost: float = sum(c for _, _, c in F_pruned)
 
     # Identify Steiner nodes
-    used_nodes = set()
+    used_nodes: Set[int] = set()
     for u, v, _ in F_pruned:
         used_nodes.add(u)
         used_nodes.add(v)
-    steiner_nodes = used_nodes - all_term
+    steiner_nodes: Set[int] = used_nodes - all_term
 
     return F_pruned, total_cost, sources, terminals, steiner_nodes
 
 
-def generate_svg(h, w, F_pruned, sources, terminals, steiner_nodes, cell_size, margin, filename):
+def generate_svg(
+    h: int,
+    w: int,
+    F_pruned: List[Tuple[int, int, float]],
+    sources: Set[int],
+    terminals: Set[int],
+    steiner_nodes: Set[int],
+    cell_size: int,
+    margin: int,
+    filename: str,
+) -> None:
     """Generates an SVG visualization of the Steiner forest."""
     width = w * cell_size + 2 * margin
     height = h * cell_size + 2 * margin
@@ -313,7 +328,7 @@ def generate_svg(h, w, F_pruned, sources, terminals, steiner_nodes, cell_size, m
         svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
 
     # Nodes
-    all_term = sources | terminals
+    all_term: Set[int] = sources | terminals
     for i in range(h):
         for j in range(w):
             cx = margin + j * cell_size + cell_size / 2
@@ -352,12 +367,12 @@ def generate_svg(h, w, F_pruned, sources, terminals, steiner_nodes, cell_size, m
     print(f"SVG file '{filename}' generated successfully.")
 
 
-def main():
+def main() -> None:
     """Main function to run the example."""
     # Example parameters (modify as needed)
-    h = 8  # Height
-    w = 8  # Width
-    pairs = [
+    h: int = 8  # Height
+    w: int = 8  # Width
+    pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [
         ((0, 0), (3, 2)),
         ((0, 0), (0, 5)),
         ((4, 4), (7, 5)),
@@ -373,8 +388,15 @@ def main():
     print(f"Edges: {F_pruned}")
 
     generate_svg(
-        h, w, F_pruned, sources, terminals, steiner_nodes,
-        cell_size=50, margin=20, filename="steiner_forest.svg"
+        h,
+        w,
+        F_pruned,
+        sources,
+        terminals,
+        steiner_nodes,
+        cell_size=50,
+        margin=20,
+        filename="steiner_forest.svg",
     )
 
 
