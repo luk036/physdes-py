@@ -30,13 +30,47 @@ def steiner_forest_grid(h, w, pairs):
     """
     Solves the Steiner Forest Problem on a grid graph with diagonal edges.
 
-    .. code-block:: text
+    The algorithm is based on the primal-dual approach for the Steiner
+    network problem. It iteratively pays for edges until all terminal
+    pairs are connected.
 
-             +--.----------o
-             |   `.        |
-             |     `.      |
-             |       `.    |
-             o---------`---+
+    The following diagram illustrates the concept of a Steiner tree,
+    where 'o' represents terminals and '*' represents Steiner points.
+    Diagonal connections are also considered.
+
+    .. svgbob::
+
+         +--.----------o
+         |   `.        |
+         |     `.      |
+         |       `.    |
+         o---------`---+
+
+    In our case, we are looking for a Steiner forest, which is a collection
+    of Steiner trees connecting specified pairs of terminals on a grid,
+    allowing for horizontal, vertical, and diagonal connections.
+
+    .. svgbob::
+
+          Grid (with diagonals)    Steiner Forest (with diagonals)
+        .---.---.---.              .---.---.---.
+        | S | \ | T |              | S o \ * o T |
+        '---'---'---'              '---'---'---'---'
+        | / | * | \ |              | / | * | \ |  
+        '---'---'---'              '---'---'---'---'
+        | S | / | T |              | S o / * o T |
+        '---'---'---'              '---'---'---'---'
+
+    The algorithm works by "growing" paths from terminals. Each active
+    component (a connected component containing at least one terminal
+    that needs to be connected to a terminal in another component)
+    contributes to the cost of edges.
+
+    When the cost paid for an edge equals its weight, the edge is
+    added to the forest.
+
+    After the growing phase, a reverse-delete step is performed to
+    remove redundant edges from the forest.
 
     """
     n = h * w

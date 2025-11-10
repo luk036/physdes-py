@@ -49,6 +49,8 @@ def steiner_forest_grid(h, w, pairs):
     The following diagram illustrates the concept of a Steiner tree,
     where 'o' represents terminals and '*' represents Steiner points.
 
+    .. svgbob::
+
          +--.----------o
          |   `.        |
          |     `.      |
@@ -58,10 +60,23 @@ def steiner_forest_grid(h, w, pairs):
     In our case, we are looking for a Steiner forest, which is a collection
     of Steiner trees connecting specified pairs of terminals.
 
+    .. svgbob::
+
+          Grid               Steiner Forest
+        .---.---.---.        .---.---.---.
+        | S |   | T |        | S o---*---o T |
+        '---'---'---'        '---'---|---'---'
+        |   |   |   |        |   |   |   |
+        '---'---'---'        '---'---'---'---'
+        | S |   | T |        | S o---*---o T |
+        '---'---'---'        '---'---'---'---'
+
     The algorithm works by "growing" paths from terminals. Each active
     component (a connected component containing at least one terminal
     that needs to be connected to a terminal in another component)
     contributes to the cost of edges.
+
+    .. svgbob::
 
                 +--<---o
                 |
@@ -72,6 +87,8 @@ def steiner_forest_grid(h, w, pairs):
     When the cost paid for an edge equals its weight, the edge is
     added to the forest.
 
+    .. svgbob::
+
                      +-o
                      |
                      v       o
@@ -79,6 +96,8 @@ def steiner_forest_grid(h, w, pairs):
          o---<-------*--->---+
 
     The following diagrams illustrate the concept in 3D as well.
+
+    .. svgbob::
 
         +z
           ^
@@ -88,6 +107,8 @@ def steiner_forest_grid(h, w, pairs):
          /
         v
       +y
+
+    .. svgbob::
 
                               +
                              /|           b

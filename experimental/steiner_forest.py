@@ -10,7 +10,21 @@ class SteinerForest:
     The Steiner Forest Problem: Given a graph and pairs of terminal nodes,
     find a minimum-cost subgraph that connects each terminal pair.
 
-    .. code-block:: text
+    .. svgbob::
+
+          Grid               Steiner Forest
+        .---.---.---.        .---.---.---.
+        | S |   | T |        | S o---*---o T |
+        '---'---'---'        '---'---|---'---'
+        |   |   |   |        |   |   |   |
+        '---'---'---'        '---'---'---'---'
+        | S |   | T |        | S o---*---o T |
+        '---'---'---'        '---'---'---'---'
+
+    The algorithm works by iteratively finding shortest paths between active
+    terminal components and adding edges to the forest until all pairs are connected.
+
+    .. svgbob::
 
                 +--<---o
                 |
