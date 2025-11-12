@@ -18,7 +18,7 @@ The class produces Vector2 objects as outputs, which can be printed, compared, o
 further calculations. It also provides methods for common vector operations like addition,
 subtraction, multiplication by a scalar, and division by a scalar.
 
-To achieve its purpose, the Vector2 class uses Python\'s object-oriented programming
+To achieve its purpose, the Vector2 class uses Python's object-oriented programming
 features. It defines several methods that overload standard operators (like +, -, *, and
 /), allowing vector objects to be manipulated intuitively. For example, you can add two
 vectors simply by using the + operator between them.
@@ -26,7 +26,7 @@ vectors simply by using the + operator between them.
 The class includes important logic flows for vector operations. Addition and subtraction
 are performed component-wise, meaning the x and y values are added or subtracted
 separately. Multiplication and division by a scalar apply the operation to both x and y
-components. There\'s also a cross product method, which calculates a special type of
+components. There's also a cross product method, which calculates a special type of
 multiplication between two vectors.
 
 The Vector2 class also implements comparison operations, allowing vectors to be checked

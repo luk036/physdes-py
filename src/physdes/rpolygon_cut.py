@@ -14,7 +14,6 @@ The main functions provided are:
   convex pieces.
 - `rpolygon_cut_explicit()`: An alternative cutting algorithm that also produces convex
   partitions.
-
 These functions are essential for simplifying complex polygon geometries, making them
 easier to process in downstream applications. The algorithms are designed to be robust
 and efficient, handling various polygon shapes and complexities.

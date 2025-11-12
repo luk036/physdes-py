@@ -623,7 +623,7 @@ class Point(Generic[T1, T2]):
         :type other: Point
         :return: A new `Point` object representing the nearest point on `self`.
 
-           .. svgbob::
+        .. svgbob::
            :align: center
 
             .-----------.
