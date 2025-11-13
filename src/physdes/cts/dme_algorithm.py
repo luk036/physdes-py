@@ -438,6 +438,7 @@ class DMEAlgorithm:
         >>> round(tree.right.delay, 2)
         5.0
     """
+
     MA_TYPE: Union[Type[ManhattanArc], Type[ManhattanArc3D]]
 
     def __init__(

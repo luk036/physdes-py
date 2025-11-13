@@ -294,7 +294,7 @@ class SteinerForest:
             terminal_nodes.add(t)
 
         # Mark edges in solution
-        edge_set = set(selected_edges)
+        set(selected_edges)
         for u, v in selected_edges:
             ui, uj = u // self.cols, u % self.cols
             vi, vj = v // self.cols, v % self.cols

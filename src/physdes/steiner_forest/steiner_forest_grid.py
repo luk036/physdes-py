@@ -1,5 +1,5 @@
 import collections
-from typing import List, Tuple, Dict, Set, Any
+from typing import List, Tuple, Dict, Set
 
 
 class UnionFind:
@@ -41,9 +41,7 @@ class UnionFind:
 
 def steiner_forest_grid(
     h: int, w: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]
-) -> Tuple[
-    List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]
-]:
+) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
     """
     Computes an approximate Steiner forest on a grid graph.
 
@@ -78,7 +76,7 @@ def steiner_forest_grid(
 
     The algorithm works by "growing" paths from terminals. Each active
     component (a connected component containing at least one terminal
-    that needs to be connected to a terminal in another component) 
+    that needs to be connected to a terminal in another component)
     contributes to the cost of edges.
 
     .. svgbob::
@@ -328,7 +326,7 @@ def generate_svg(
         svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
 
     # Nodes
-    all_term: Set[int] = sources | terminals
+    sources | terminals
     for i in range(h):
         for j in range(w):
             cx = margin + j * cell_size + cell_size / 2

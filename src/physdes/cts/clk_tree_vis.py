@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from lds_gen.ilds import Halton
 from physdes.point import Point
-from physdes.cts.dme_algorithm import TreeNode, Sink
+from physdes.cts.dme_algorithm import Sink
 
 
 class ClockTreeVisualizer:
@@ -159,9 +159,7 @@ class ClockTreeVisualizer:
         return nodes
 
     def _calculate_bounds(
-        self,
-        nodes: List,
-        sinks: List
+        self, nodes: List, sinks: List
     ) -> Tuple[float, float, float, float]:
         """Calculate the bounding box of all nodes and sinks"""
         all_points = []
@@ -188,9 +186,7 @@ class ClockTreeVisualizer:
         return (min_x - padding, min_y - padding, max_x + padding, max_y + padding)
 
     def _draw_wires(
-        self,
-        root: Any,
-        scale_coord: Callable[[Any, Any], Tuple[float, float]]
+        self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]
     ) -> List[str]:
         """Draw all wires in the clock tree"""
         svg_elements = []
@@ -295,9 +291,7 @@ class ClockTreeVisualizer:
         return svg_elements
 
     def _create_analysis_box(
-        self,
-        analysis: Dict[str, Any],
-        svg_width: int
+        self, analysis: Dict[str, Any], svg_width: int
     ) -> List[str]:
         """Create analysis information box"""
         delay_model = analysis.get("delay_model", "Unknown")
