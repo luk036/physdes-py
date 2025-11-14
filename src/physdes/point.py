@@ -126,6 +126,38 @@ class Point(Generic[T1, T2]):
         """
         return "({self.xcoord}, {self.ycoord})".format(self=self)
 
+    def width(self) -> Any:
+        """
+        Calculates the width of the point.
+
+        :return: The width of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.width()
+            1
+            >>> b = Point(3, 8)
+            >>> b.width()
+            1
+        """
+        return measure_of(self.xcoord)
+
+    def height(self) -> Any:
+        """
+        Calculates the height of the point.
+
+        :return: The height of the point.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> a.height()
+            1
+            >>> b = Point(3, 8)
+            >>> b.height()
+            1
+        """
+        return measure_of(self.ycoord)
+
     def measure(self) -> Any:
         """
         Calculates the measure (area, volume etc.) of the point.
