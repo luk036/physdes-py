@@ -238,7 +238,8 @@ def visualize_routing_tree3d_svg(
     """
     Visualize a GlobalRoutingTree in SVG format.
 
-    .. code-block:: text
+    .. svgbob::
+       :align: center
 
             +z
               ^

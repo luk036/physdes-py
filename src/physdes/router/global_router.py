@@ -29,7 +29,8 @@ class GlobalRouter:
     """
     A global router for routing between a source and multiple terminals.
 
-    .. code-block:: text
+    .. svgbob::
+       :align: center
 
                 +--<---o
                 |
