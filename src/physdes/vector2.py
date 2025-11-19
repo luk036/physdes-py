@@ -19,7 +19,7 @@ further calculations. It also provides methods for common vector operations like
 subtraction, multiplication by a scalar, and division by a scalar.
 
 To achieve its purpose, the Vector2 class uses Python's object-oriented programming
-features. It defines several methods that overload standard operators (like +, -, *, and
+features. It defines several methods that overload standard operators (like +, -, \*, and
 /), allowing vector objects to be manipulated intuitively. For example, you can add two
 vectors simply by using the + operator between them.
 

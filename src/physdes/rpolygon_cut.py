@@ -10,10 +10,12 @@ concave, and decompose it into a set of smaller, convex rectilinear polygons. Th
 achieved by identifying concave vertices and introducing cuts to resolve the concavities.
 
 The main functions provided are:
+
 - `rpolygon_cut_convex()`: A recursive algorithm that cuts a rectilinear polygon into
   convex pieces.
 - `rpolygon_cut_explicit()`: An alternative cutting algorithm that also produces convex
   partitions.
+
 These functions are essential for simplifying complex polygon geometries, making them
 easier to process in downstream applications. The algorithms are designed to be robust
 and efficient, handling various polygon shapes and complexities.

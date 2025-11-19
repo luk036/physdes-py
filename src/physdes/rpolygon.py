@@ -72,10 +72,10 @@ class RPolygon:
     such as translation and calculating geometric properties.
 
     Key features of the `RPolygon` class include:
-    - **Creation**: Polygons can be created from a set of points or an origin and a list of vectors.
-    - **Manipulation**: Polygons can be translated by adding or subtracting vectors.
-    - **Analysis**: Methods are provided to calculate the signed area, check for clockwise or
-      anticlockwise orientation, and convert to a standard `Polygon` object.
+- **Creation**: Polygons can be created from a set of points or an origin and a list of vectors.
+- **Manipulation**: Polygons can be translated by adding or subtracting vectors.
+- **Analysis**: Methods are provided to calculate the signed area, check for clockwise or
+  anticlockwise orientation, and convert to a standard `Polygon` object.
 
     This class is designed to be a foundational component for geometric algorithms that
     operate on rectilinear shapes, which are common in applications like VLSI physical design

@@ -8,6 +8,7 @@ constraints such as wirelength and timing.
 
 The `GlobalRouter` class implements several routing algorithms, each tailored for different
 optimization goals:
+
 - `route_simple()`: A basic approach that connects terminals directly to the nearest
   point in the routing tree.
 - `route_with_steiners()`: A more advanced technique that inserts Steiner points to
