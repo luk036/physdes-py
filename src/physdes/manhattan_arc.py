@@ -36,7 +36,7 @@ class provides a high-level interface for working with these rotated geometric o
 abstracting away some of the more complex mathematical calculations.
 """
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, Union, overload
 
 from icecream import ic  # type: ignore
 
@@ -99,7 +99,7 @@ class ManhattanArc(Generic[T1, T2]):
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
     @classmethod
-    def from_point(cls, pt: Point) -> "ManhattanArc[int, int]":
+    def from_point(cls, pt: Point[T1, T2]) -> "ManhattanArc[T1, T2]":
         """
         Create a ManhattanArc object from a 2D point.
 
@@ -111,8 +111,18 @@ class ManhattanArc(Generic[T1, T2]):
         pt_xformed = pt.rotates()
         return cls(pt_xformed.xcoord, pt_xformed.ycoord)
 
+    @overload
     @staticmethod
     def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
+        ...
+
+    @overload
+    @staticmethod
+    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]":
+        ...
+
+    @staticmethod
+    def construct(xcoord, ycoord):
         """
         Constructs a ManhattanArc object from standard x and y coordinates.
 
@@ -196,7 +206,7 @@ class ManhattanArc(Generic[T1, T2]):
         y_dist = min_dist(self.impl.ycoord, other.impl.ycoord)
         return int(max(x_dist, y_dist))
 
-    def enlarge_with(self, alpha: int) -> "ManhattanArc[Any, Any]":
+    def enlarge_with(self, alpha: int):
         """
         The `enlarge_with` function takes an integer `alpha` and returns a new `ManhattanArc` object with
         enlarged coordinates.
@@ -214,9 +224,9 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(r)
             /[-2, 0], [8, 10]/
         """
-        xcoord = enlarge(self.impl.xcoord, alpha)  # TODO: check
-        ycoord = enlarge(self.impl.ycoord, alpha)  # TODO: check
-        return ManhattanArc(xcoord, ycoord)  # TODO
+        xcoord = enlarge(self.impl.xcoord, alpha)
+        ycoord = enlarge(self.impl.ycoord, alpha)
+        return ManhattanArc(xcoord, ycoord)
 
     def intersect_with(self, other: "ManhattanArc[T1, T2]") -> "ManhattanArc[T1, T2]":
         """
@@ -235,7 +245,7 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(r)
             /-1, 9/
         """
-        point = self.impl.intersect_with(other.impl)  # TODO
+        point = self.impl.intersect_with(other.impl)
         return ManhattanArc(point.xcoord, point.ycoord)
 
     def get_center(self) -> Point[Any, Any]:

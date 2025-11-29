@@ -90,7 +90,7 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         self.ma3 = ma3
 
     @classmethod
-    def from_point(cls, pt: Point) -> "ManhattanArc3D[ManhattanArc[int, int], ManhattanArc[int, int], ManhattanArc[int, int]]":
+    def from_point(cls, pt: Point) -> "ManhattanArc3D[T1, T2, T3]":
         ma1 = ManhattanArc.from_point(Point(pt.xcoord.xcoord, pt.ycoord))  # x-y
         ma2 = ManhattanArc.from_point(Point(pt.ycoord, pt.xcoord.ycoord))  # y-z
         ma3 = ManhattanArc.from_point(pt.xcoord)  # x-z
@@ -156,10 +156,10 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
         :return: The `enlarge_with` method is returning a new `ManhattanArc3D` object with the enlarged coordinates.
         """
-        ma1 = self.ma1.enlarge_with(alpha)  # TODO: check
-        ma2 = self.ma2.enlarge_with(alpha)  # TODO: check
-        ma3 = self.ma3.enlarge_with(alpha)  # TODO: check
-        return ManhattanArc3D(ma1, ma2, ma3)  # TODO
+        ma1 = self.ma1.enlarge_with(alpha)
+        ma2 = self.ma2.enlarge_with(alpha)
+        ma3 = self.ma3.enlarge_with(alpha)
+        return ManhattanArc3D(ma1, ma2, ma3)
 
     def intersect_with(
         self, other: "ManhattanArc3D[T1, T2, T3]"
@@ -174,10 +174,10 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: a ManhattanArc3D object with the x-coordinate and y-coordinate of the intersection point
             between the self object and the other object.
         """
-        ma1 = self.ma1.intersect_with(other.ma1)  # TODO: check
-        ma2 = self.ma2.intersect_with(other.ma2)  # TODO: check
-        ma3 = self.ma3.intersect_with(other.ma3)  # TODO: check
-        return ManhattanArc3D(ma1, ma2, ma3)  # TODO
+        ma1 = self.ma1.intersect_with(other.ma1)
+        ma2 = self.ma2.intersect_with(other.ma2)
+        ma3 = self.ma3.intersect_with(other.ma3)
+        return ManhattanArc3D(ma1, ma2, ma3)
 
     def get_center(self) -> Point[Any, Any]:
         """
@@ -275,14 +275,6 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: The `merge_with` method returns a new `ManhattanArc3D` object with the x-coordinate and
             y-coordinate of the intersection of the two objects being merged.
         """
-        distance = self.min_dist_with(other)
-        trr1 = self.enlarge_with(alpha)
-        trr2 = other.enlarge_with(distance - alpha)
-        return trr1.intersect_with(trr2)
-        distance = self.min_dist_with(other)
-        trr1 = self.enlarge_with(alpha)
-        trr2 = other.enlarge_with(distance - alpha)
-        return trr1.intersect_with(trr2)
         distance = self.min_dist_with(other)
         trr1 = self.enlarge_with(alpha)
         trr2 = other.enlarge_with(distance - alpha)
