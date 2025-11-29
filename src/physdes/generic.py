@@ -85,11 +85,12 @@ def overlap(lhs: Any, rhs: Any) -> bool:
         True
     """
     if hasattr(lhs, "overlaps"):
-        return lhs.overlaps(rhs)
+        result = lhs.overlaps(rhs)
     elif hasattr(rhs, "overlaps"):
-        return rhs.overlaps(lhs)
+        result = rhs.overlaps(lhs)
     else:  # assume scalar
-        return lhs == rhs
+        result = lhs == rhs
+    return bool(result)
 
 
 def contain(lhs: Any, rhs: Any) -> bool:
@@ -130,11 +131,12 @@ def contain(lhs: Any, rhs: Any) -> bool:
         False
     """
     if hasattr(lhs, "contains"):
-        return lhs.contains(rhs)
+        result = lhs.contains(rhs)
     elif hasattr(rhs, "contains"):
-        return False
+        result = False
     else:  # assume scalar
-        return lhs == rhs
+        result = lhs == rhs
+    return bool(result)
 
 
 def intersection(lhs: Any, rhs: Any) -> Any:
@@ -155,7 +157,7 @@ def intersection(lhs: Any, rhs: Any) -> Any:
 
           <-- lhs -->
                 <-- rhs -->
-                <--->
+                --->
            intersection
 
     Examples:

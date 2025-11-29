@@ -1,17 +1,18 @@
 import collections
+from typing import Any, Dict, List, Set, Tuple, Union, DefaultDict, Optional, cast
 
 
 class UnionFind:
-    def __init__(self, size):
-        self.parent = list(range(size))
-        self.rank = [0] * size
+    def __init__(self, size: int) -> None:
+        self.parent: List[int] = list(range(size))
+        self.rank: List[int] = [0] * size
 
-    def find(self, p):
+    def find(self, p: int) -> int:
         if self.parent[p] != p:
             self.parent[p] = self.find(self.parent[p])
         return self.parent[p]
 
-    def union(self, p, q):
+    def union(self, p: int, q: int) -> bool:
         pp = self.find(p)
         pq = self.find(q)
         if pp == pq:
@@ -26,8 +27,8 @@ class UnionFind:
         return True
 
 
-def steiner_forest_grid(h, w, pairs):
-    """
+def steiner_forest_grid(h: int, w: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
+    r"""
     Solves the Steiner Forest Problem on a grid graph with diagonal edges.
 
     The algorithm is based on the primal-dual approach for the Steiner
@@ -232,10 +233,13 @@ def steiner_forest_grid(h, w, pairs):
     return F_pruned, total_cost, sources, terminals, steiner_nodes
 
 
+    return F_pruned, total_cost, sources, terminals, steiner_nodes
+
+
 # Example parameters (modify as needed)
-h = 8  # Height
-w = 8  # Width
-pairs = [
+h: int = 8  # Height
+w: int = 8  # Width
+pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [
     ((0, 0), (3, 2)),
     ((0, 0), (0, 5)),
     ((5, 5), (7, 6)),
@@ -296,12 +300,80 @@ for u, v, c in F_pruned:
     vy = margin + vi * cell_size + cell_size / 2
     svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="blue" stroke-width="5"/>'
 
-svg += "</svg>"
+    svg += "</svg>"
 
-# Write to SVG file
-with open("steiner_forest_diagonal.svg", "w") as f:
-    f.write(svg)
+    # Write to SVG file
+    with open("steiner_forest_diagonal.svg", "w") as f:
+        f.write(svg)
 
-print("SVG file 'steiner_forest.svg' generated successfully.")
-print(f"Total cost: {total_cost}")
-print(f"Edges: {F_pruned}")
+    print("SVG file 'steiner_forest.svg' generated successfully.")
+    print(f"Total cost: {total_cost}")
+    print(f"Edges: {F_pruned}")
+
+
+if __name__ == "__main__":
+    # Example parameters (modify as needed)
+    h: int = 8  # Height
+    w: int = 8  # Width
+    pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [
+        ((0, 0), (3, 2)),
+        ((0, 0), (0, 5)),
+        ((5, 5), (7, 6)),
+        ((5, 5), (6, 7)),
+    ]  # Terminal pairs
+
+
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        h, w, pairs
+    )
+
+    # Generate SVG and write to file
+    cell_size = 50
+    margin = 20
+    width = w * cell_size + 2 * margin
+    height = h * cell_size + 2 * margin
+    svg = f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
+
+    # Grid lines horizontal
+    for i in range(h + 1):
+        y = margin + i * cell_size
+        svg += f'<line x1="{margin}" y1="{y}" x2="{width - margin}" y2="{y}" stroke="gray" stroke-width="1"/>'
+
+    # Vertical
+    for j in range(w + 1):
+        x = margin + j * cell_size
+        svg += f'<line x1="{x}" y1="{margin}" x2="{x}" y2="{height - margin}" stroke="gray" stroke-width="1"/>'
+
+    # Nodes
+    all_term = sources | terminals
+    for i in range(h):
+        for j in range(w):
+            cx = margin + j * cell_size + cell_size / 2
+            cy = margin + i * cell_size + cell_size / 2
+            node = i * w + j
+            if node in sources:
+                r = 10
+                fill = "blue"
+            elif node in terminals:
+                r = 10
+                fill = "red"
+            elif node in steiner_nodes:
+                r = 7
+                fill = "green"
+            else:
+                r = 5
+                fill = "black"
+            svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
+            svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
+
+    # Selected edges
+    for u, v, c in F_pruned:
+        ui, uj = divmod(u, w)
+        vi, vj = divmod(v, w)
+        ux = margin + uj * cell_size + cell_size / 2
+        uy = margin + ui * cell_size + cell_size / 2
+        vx = margin + vj * cell_size + cell_size / 2
+        vy = margin + vi * cell_size + cell_size / 2
+        svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="blue" stroke-width="5"/>'
+
+    svg += "</svg>"

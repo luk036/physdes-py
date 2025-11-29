@@ -26,7 +26,7 @@ class RoutingNode:
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing
 
-    def add_child(self, child_node: "RoutingNode"):
+    def add_child(self, child_node: "RoutingNode") -> None:
         """Add a child node to this node.
 
         Examples:
@@ -48,7 +48,7 @@ class RoutingNode:
         child_node.parent = self
         self.children.append(child_node)
 
-    def remove_child(self, child_node: "RoutingNode"):
+    def remove_child(self, child_node: "RoutingNode") -> None:
         """Remove a child node.
 
         Examples:
@@ -110,7 +110,8 @@ class RoutingNode:
             >>> node1.manhattan_distance(node2)
             11
         """
-        return self.pt.min_dist_with(other_node.pt)
+        dist = self.pt.min_dist_with(other_node.pt)
+        return int(dist) if dist is not None else 0
 
     def __str__(self) -> str:
         type_name = self.type.name.capitalize()
@@ -410,7 +411,7 @@ class GlobalRoutingTree:
         parent_node = None
         min_distance = self.source.pt.min_dist_with(pt)
 
-        def traverse(node: "RoutingNode"):
+        def traverse(node: "RoutingNode") -> None:
             nonlocal nearest_node
             nonlocal parent_node
             nonlocal min_distance
@@ -461,7 +462,7 @@ class GlobalRoutingTree:
         self,
         pt: Point[Any, Any],
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-    ):
+    ) -> None:
         """
         Inserts a terminal node, adding a Steiner point if it reduces wire length.
 
@@ -530,7 +531,7 @@ class GlobalRoutingTree:
         pt: Point[Any, Any],
         allowed_wirelength: int,
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-    ):
+    ) -> None:
         """
         Inserts a terminal node with wirelength constraints, adding a Steiner point if it reduces wire length.
 
@@ -619,7 +620,7 @@ class GlobalRoutingTree:
         """
         total_length = 0
 
-        def traverse(node: "RoutingNode"):
+        def traverse(node: "RoutingNode") -> None:
             nonlocal total_length
             for child in node.children:
                 total_length += node.manhattan_distance(child)
@@ -769,7 +770,7 @@ class GlobalRoutingTree:
                 # Remove from nodes dictionary
                 del self.nodes[steiner.id]
 
-    def visualize_tree(self):
+    def visualize_tree(self) -> None:
         """Simple ASCII visualization of the routing tree."""
         print("Global Routing Tree Structure:")
         print("=" * 40)
@@ -779,7 +780,7 @@ class GlobalRoutingTree:
         print(f"Terminals: {len(self.get_all_terminals())}")
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
 
-    def visualize_tree3d(self):
+    def visualize_tree3d(self) -> None:
         """Simple ASCII visualization of the routing tree3d."""
         print("Global Routing Tree3d Structure:")
         print("=" * 40)

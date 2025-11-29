@@ -474,10 +474,10 @@ def create_mono_rpolygon(
     rightmost = max(lst, key=dir)
     is_anticlockwise = cmp(dir(leftmost)[1], dir(rightmost)[1])
 
-    def r2l(pt) -> bool:
+    def r2l(pt: Point[int, int]) -> bool:
         return dir(pt)[1] <= dir(leftmost)[1]
 
-    def l2r(pt) -> bool:
+    def l2r(pt: Point[int, int]) -> bool:
         return dir(pt)[1] >= dir(leftmost)[1]
 
     [lst1, lst2] = partition(r2l if is_anticlockwise else l2r, lst)
@@ -574,10 +574,10 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     :return: The function `create_test_rpolygon` returns a `PointSet`, which is a list of `Point` objects.
     """
 
-    def dir_x(pt):
+    def dir_x(pt: Point[int, int]):
         return (pt.xcoord, pt.ycoord)
 
-    def dir_y(pt):
+    def dir_y(pt: Point[int, int]):
         return (pt.ycoord, pt.xcoord)
 
     max_pt = max(lst, key=dir_y)

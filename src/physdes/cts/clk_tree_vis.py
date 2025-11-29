@@ -80,6 +80,8 @@ class ClockTreeVisualizer:
             SVG string content
 
         Examples:
+            >>> from physdes.cts.dme_algorithm import TreeNode, Sink
+            >>> from physdes.point import Point
             >>> s1 = TreeNode(name="s1", position=Point(10, 20))
             >>> s2 = TreeNode(name="s2", position=Point(30, 40))
             >>> root = TreeNode(name="n1", position=Point(20, 30), left=s1, right=s2)
@@ -386,6 +388,8 @@ def create_comparison_visualization(
         SVG string content
 
     Examples:
+        >>> from physdes.cts.dme_algorithm import TreeNode, Sink
+        >>> from physdes.point import Point
         >>> tree1 = TreeNode("root1", Point(50, 50))
         >>> tree2 = TreeNode("root2", Point(150, 50))
         >>> sinks = [Sink("s1", Point(10, 20)), Sink("s2", Point(30, 40))]

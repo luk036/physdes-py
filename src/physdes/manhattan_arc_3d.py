@@ -90,7 +90,7 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         self.ma3 = ma3
 
     @classmethod
-    def from_point(cls, pt: Point):
+    def from_point(cls, pt: Point) -> "ManhattanArc3D[ManhattanArc[int, int], ManhattanArc[int, int], ManhattanArc[int, int]]":
         ma1 = ManhattanArc.from_point(Point(pt.xcoord.xcoord, pt.ycoord))  # x-y
         ma2 = ManhattanArc.from_point(Point(pt.ycoord, pt.xcoord.ycoord))  # y-z
         ma3 = ManhattanArc.from_point(pt.xcoord)  # x-z

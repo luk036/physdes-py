@@ -54,7 +54,7 @@ class RDllIterator:
         else:
             raise StopIteration()
 
-    def __next__(self):
+    def __next__(self) -> Dllink[int]:
         """
         The __next__ function returns the next item in the iterator.
 

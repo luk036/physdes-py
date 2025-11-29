@@ -600,7 +600,7 @@ class Point(Generic[T1, T2]):
             intersection(self.ycoord, other.ycoord),
         )
 
-    def min_dist_with(self, other: "Point[T1, T2]") -> Union[T1, T2]:
+    def min_dist_with(self, other: "Point[T1, T2]") -> Any:
         """
         The function calculates the minimum Manhattan distance between two points using their x and y coordinates.
 
@@ -734,6 +734,7 @@ class Point(Generic[T1, T2]):
             >>> a = Point(3, 4)
             >>> a.get_center()
             Point(3, 4)
+            >>> from physdes.interval import Interval
             >>> a = Point(Interval(3, 7), 4)
             >>> a.get_center()
             Point(5, 4)
@@ -750,6 +751,7 @@ class Point(Generic[T1, T2]):
             >>> a = Point(3, 4)
             >>> a.lower_corner()
             Point(3, 4)
+            >>> from physdes.interval import Interval
             >>> a = Point(Interval(3, 7), 4)
             >>> a.lower_corner()
             Point(3, 4)
@@ -766,6 +768,7 @@ class Point(Generic[T1, T2]):
             >>> a = Point(3, 4)
             >>> a.upper_corner()
             Point(3, 4)
+            >>> from physdes.interval import Interval
             >>> a = Point(Interval(3, 7), 4)
             >>> a.upper_corner()
             Point(7, 4)

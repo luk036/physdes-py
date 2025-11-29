@@ -99,7 +99,7 @@ class ManhattanArc(Generic[T1, T2]):
         self.impl: Point[T1, T2] = Point(xcoord, ycoord)
 
     @classmethod
-    def from_point(cls, pt: Point):
+    def from_point(cls, pt: Point) -> "ManhattanArc[int, int]":
         """
         Create a ManhattanArc object from a 2D point.
 
@@ -192,10 +192,9 @@ class ManhattanArc(Generic[T1, T2]):
             7
         """
         # Note: take max of xcoord and ycoord
-        return max(
-            min_dist(self.impl.xcoord, other.impl.xcoord),
-            min_dist(self.impl.ycoord, other.impl.ycoord),
-        )
+        x_dist = min_dist(self.impl.xcoord, other.impl.xcoord)
+        y_dist = min_dist(self.impl.ycoord, other.impl.ycoord)
+        return int(max(x_dist, y_dist))
 
     def enlarge_with(self, alpha: int) -> "ManhattanArc[Any, Any]":
         """
@@ -281,7 +280,7 @@ class ManhattanArc(Generic[T1, T2]):
         m = self.impl.upper_corner()
         return m.inv_rotates()
 
-    def _nearest_point_to(self, ms) -> Point[Any, Any]:
+    def _nearest_point_to(self, ms: "ManhattanArc[Any, Any]") -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
 

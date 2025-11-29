@@ -797,6 +797,11 @@ class Interval(Generic[T]):
         return S(self._lb - alpha, self._ub + alpha)
 
 
+from typing import Any, Generic, TypeVar, Union, cast
+
+from .generic import displacement, min_dist
+
+
 def hull(lhs: Any, rhs: Any) -> "Interval[T]":
     """
     Calculates the convex hull of two objects, returning the smallest interval

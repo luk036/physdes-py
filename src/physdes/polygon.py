@@ -261,7 +261,7 @@ class Polygon(Generic[T]):
         return self
 
     @cached_property
-    def signed_area_x2(self) -> T:
+    def signed_area_x2(self) -> Any:
         """
         The `signed_area_x2` function calculates the signed area of a polygon multiplied by 2.
 
@@ -362,7 +362,8 @@ class Polygon(Generic[T]):
         next_point = pointset[(min_index + 1) % n]
 
         # Calculate vectors and cross product
-        return (current_point - prev_point).cross(next_point - current_point) > 0
+        cross_product = (current_point - prev_point).cross(next_point - current_point)
+        return bool(cross_product > 0)
 
     def is_convex(self, is_anticlockwise: bool | None = None) -> bool:
         """
@@ -605,7 +606,7 @@ def create_test_polygon(lst: PointSet) -> PointSet:
         (-3, -4),
     """
 
-    def dir1(pt):
+    def dir1(pt: Point[T, T]) -> tuple:
         return (pt.ycoord, pt.xcoord)
 
     upmost = max(lst, key=dir1)
