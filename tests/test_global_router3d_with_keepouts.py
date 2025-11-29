@@ -10,7 +10,7 @@ from icecream import ic
 from physdes.router.routing_tree import NodeType
 
 
-def test_route3d_with_steiner_and_keepouts():
+def test_route3d_with_steiner_and_keepouts() -> None:
     """Test 3D routing with Steiner points and keepouts."""
     source, terminals, scale_z = generate_3d_random_points_with_index()
     keepouts = [
@@ -33,7 +33,7 @@ def test_route3d_with_steiner_and_keepouts():
     )
 
 
-def test_route3d_with_constraints_and_keepouts():
+def test_route3d_with_constraints_and_keepouts() -> None:
     """Test 3D routing with constraints and keepouts."""
     source, terminals, scale_z = generate_3d_random_points_with_index()
     keepouts = [

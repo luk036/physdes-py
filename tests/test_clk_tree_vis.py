@@ -4,6 +4,7 @@ Unit tests for Clock Tree Visualization module
 
 import sys
 from pathlib import Path
+from typing import List
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -28,7 +29,7 @@ from physdes.point import Point
 
 
 @pytest.fixture
-def sample_tree():
+def sample_tree() -> TreeNode:
     """Create a sample clock tree for testing"""
     s1 = TreeNode("s1", Point(10, 20), capacitance=1.0, delay=1.0)
     s2 = TreeNode("s2", Point(30, 40), capacitance=1.5, delay=1.2)
@@ -45,7 +46,7 @@ def sample_tree():
 
 
 @pytest.fixture
-def sample_sinks():
+def sample_sinks() -> List[Sink]:
     """Create sample sinks for testing"""
     return [
         Sink("s1", Point(10, 20), 1.0),
@@ -55,7 +56,7 @@ def sample_sinks():
 
 
 @pytest.fixture
-def sample_analysis():
+def sample_analysis() -> dict:
     """Create sample analysis results"""
     return {
         "max_delay": 1.5,
@@ -68,7 +69,7 @@ def sample_analysis():
 
 
 @pytest.fixture
-def sample_tree_data(sample_tree, sample_sinks, sample_analysis):
+def sample_tree_data(sample_tree: TreeNode, sample_sinks: List[Sink], sample_analysis: dict) -> dict:
     """Create sample tree data for testing"""
     return {
         "tree": sample_tree,
@@ -81,7 +82,7 @@ def sample_tree_data(sample_tree, sample_sinks, sample_analysis):
 class TestClockTreeVisualizer:
     """Test cases for ClockTreeVisualizer class"""
 
-    def test_visualizer_initialization(self):
+    def test_visualizer_initialization(self) -> None:
         """Test ClockTreeVisualizer initialization"""
         visualizer = ClockTreeVisualizer(
             margin=30,
@@ -97,7 +98,9 @@ class TestClockTreeVisualizer:
         assert visualizer.sink_color == "#00FF00"
         assert visualizer.internal_color == "#0000FF"
 
-    def test_visualize_tree_creation(self, sample_tree, sample_sinks, tmp_path):
+    def test_visualize_tree_creation(
+        self, sample_tree: TreeNode, sample_sinks: List[Sink], tmp_path: Path
+    ) -> None:
         """Test basic tree visualization creation"""
         visualizer = ClockTreeVisualizer()
         output_file = tmp_path / "test_tree.svg"
@@ -118,8 +121,12 @@ class TestClockTreeVisualizer:
         self._validate_svg_structure(svg_content)
 
     def test_visualize_tree_with_analysis(
-        self, sample_tree, sample_sinks, sample_analysis, tmp_path
-    ):
+        self,
+        sample_tree: TreeNode,
+        sample_sinks: List[Sink],
+        sample_analysis: dict,
+        tmp_path: Path,
+    ) -> None:
         """Test tree visualization with analysis information"""
         visualizer = ClockTreeVisualizer()
         output_file = tmp_path / "test_tree_with_analysis.svg"
@@ -134,7 +141,7 @@ class TestClockTreeVisualizer:
         assert "Max Delay: 1.500" in svg_content
         assert "Skew: 0.700" in svg_content
 
-    def test_collect_all_nodes(self, sample_tree):
+    def test_collect_all_nodes(self, sample_tree: TreeNode) -> None:
         """Test node collection from tree"""
         visualizer = ClockTreeVisualizer()
         nodes = visualizer._collect_all_nodes(sample_tree)
@@ -145,7 +152,9 @@ class TestClockTreeVisualizer:
         assert "s1" in node_names
         assert "s2" in node_names
 
-    def test_calculate_bounds(self, sample_tree, sample_sinks):
+    def test_calculate_bounds(
+        self, sample_tree: TreeNode, sample_sinks: List[Sink]
+    ) -> None:
         """Test bounding box calculation"""
         visualizer = ClockTreeVisualizer()
         nodes = visualizer._collect_all_nodes(sample_tree)
@@ -157,7 +166,7 @@ class TestClockTreeVisualizer:
         assert max_x >= 50  # s3 x
         assert max_y >= 40  # s2 y
 
-    def test_draw_wires(self, sample_tree):
+    def test_draw_wires(self, sample_tree: TreeNode) -> None:
         """Test wire drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
@@ -171,7 +180,7 @@ class TestClockTreeVisualizer:
         wire_elements = [elem for elem in svg_elements if "line" in elem]
         assert len(wire_elements) == 2
 
-    def test_draw_nodes(self, sample_tree, sample_sinks):
+    def test_draw_nodes(self, sample_tree: TreeNode, sample_sinks: List[Sink]) -> None:
         """Test node drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
@@ -197,7 +206,7 @@ class TestClockTreeVisualizer:
         assert "s1" in svg_text
         assert "s2" in svg_text
 
-    def test_create_analysis_box(self):
+    def test_create_analysis_box(self) -> None:
         """Test analysis box creation"""
         visualizer = ClockTreeVisualizer()
         analysis = {
@@ -217,7 +226,7 @@ class TestClockTreeVisualizer:
         assert "TestModel" in analysis_text
         assert "Max Delay: 2.000" in analysis_text
 
-    def _validate_svg_structure(self, svg_content: str):
+    def _validate_svg_structure(self, svg_content: str) -> None:
         """Helper method to validate SVG structure"""
         try:
             # Basic XML validation
@@ -235,8 +244,12 @@ class TestInteractiveVisualization:
     """Test cases for interactive visualization functions"""
 
     def test_create_interactive_svg(
-        self, sample_tree, sample_sinks, sample_analysis, tmp_path
-    ):
+        self,
+        sample_tree: TreeNode,
+        sample_sinks: List[Sink],
+        sample_analysis: dict,
+        tmp_path: Path,
+    ) -> None:
         """Test interactive SVG creation"""
         output_file = tmp_path / "interactive_tree.svg"
 
@@ -248,7 +261,9 @@ class TestInteractiveVisualization:
         assert "<svg" in svg_content
         assert "Clock Tree Analysis" in svg_content
 
-    def test_create_comparison_visualization(self, sample_tree_data, tmp_path):
+    def test_create_comparison_visualization(
+        self, sample_tree_data: dict, tmp_path: Path
+    ) -> None:
         """Test comparison visualization with multiple trees"""
         output_file = tmp_path / "comparison.svg"
 
@@ -267,8 +282,8 @@ class TestInteractiveVisualization:
         assert "Test Tree" in svg_content  # Should appear twice
 
     def test_create_comparison_visualization_single_tree(
-        self, sample_tree_data, tmp_path
-    ):
+        self, sample_tree_data: dict, tmp_path: Path
+    ) -> None:
         """Test comparison visualization with single tree"""
         output_file = tmp_path / "single_comparison.svg"
 
@@ -279,12 +294,14 @@ class TestInteractiveVisualization:
         assert output_file.exists()
         assert "Test Tree" in svg_content
 
-    def test_create_comparison_visualization_empty_data(self):
+    def test_create_comparison_visualization_empty_data(self) -> None:
         """Test comparison visualization with empty data"""
         with pytest.raises(ValueError, match="No tree data provided"):
             create_comparison_visualization([])
 
-    def test_create_delay_model_comparison(self, sample_tree_data, tmp_path):
+    def test_create_delay_model_comparison(
+        self, sample_tree_data: dict, tmp_path: Path
+    ) -> None:
         """Test delay model comparison visualization"""
         output_file = tmp_path / "delay_model_comparison.svg"
 
@@ -307,7 +324,7 @@ class TestInteractiveVisualization:
 class TestIntegration:
     """Integration tests with actual DME algorithm"""
 
-    def test_end_to_end_visualization(self, tmp_path):
+    def test_end_to_end_visualization(self, tmp_path: Path) -> None:
         """Test complete workflow from DME algorithm to visualization"""
         # Create sinks
         sinks = [
@@ -341,7 +358,7 @@ class TestIntegration:
         assert "s2" in svg_content
         assert "s3" in svg_content
 
-    def test_multiple_delay_models_comparison(self, tmp_path):
+    def test_multiple_delay_models_comparison(self, tmp_path: Path) -> None:
         """Test comparison visualization with trees from different delay models"""
         sinks = [
             Sink("s1", Point(0, 0), 1.0),
@@ -388,7 +405,9 @@ class TestIntegration:
 class TestEdgeCases:
     """Test edge cases and error conditions"""
 
-    def test_visualize_empty_tree(self, sample_sinks, tmp_path):
+    def test_visualize_empty_tree(
+        self, sample_sinks: List[Sink], tmp_path: Path
+    ) -> None:
         """Test visualization with minimal tree"""
         # Single node tree
         single_node = TreeNode("s1", Point(10, 20))
@@ -403,7 +422,9 @@ class TestEdgeCases:
         assert output_file.exists()
         assert "s1" in svg_content
 
-    def test_visualize_tree_no_sinks(self, sample_tree, tmp_path):
+    def test_visualize_tree_no_sinks(
+        self, sample_tree: TreeNode, tmp_path: Path
+    ) -> None:
         """Test visualization with empty sinks list"""
         visualizer = ClockTreeVisualizer()
         output_file = tmp_path / "no_sinks.svg"
@@ -413,7 +434,9 @@ class TestEdgeCases:
         assert output_file.exists()
         # Should still create valid SVG even with no original sinks
 
-    def test_visualize_tree_none_analysis(self, sample_tree, sample_sinks, tmp_path):
+    def test_visualize_tree_none_analysis(
+        self, sample_tree: TreeNode, sample_sinks: List[Sink], tmp_path: Path
+    ) -> None:
         """Test visualization with None analysis"""
         visualizer = ClockTreeVisualizer()
         output_file = tmp_path / "none_analysis.svg"

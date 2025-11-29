@@ -9,7 +9,10 @@ from physdes.generic import (
 from physdes.interval import Interval
 from physdes.point import Point
 from physdes.vector2 import Vector2
+from typing import Union
 
+
+from typing import Union
 
 import pytest
 
@@ -28,7 +31,7 @@ import pytest
         (1, Interval(1, 2), True),
     ],
 )
-def test_overlap(a, b, expected):
+def test_overlap(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
     assert overlap(a, b) is expected
 
 
@@ -45,7 +48,7 @@ def test_overlap(a, b, expected):
         (1, Interval(3, 4), False),
     ],
 )
-def test_contain(a, b, expected):
+def test_contain(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
     assert contain(a, b) is expected
 
 
@@ -60,7 +63,7 @@ def test_contain(a, b, expected):
         (Interval(1, 2), Interval(1, 2), Interval(1, 2)),
     ],
 )
-def test_intersection(a, b, expected):
+def test_intersection(a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]) -> None:
     assert intersection(a, b) == expected
 
 
@@ -79,7 +82,7 @@ def test_intersection(a, b, expected):
         (Interval(1, 2), Interval(1, 2), 0),
     ],
 )
-def test_min_dist(a, b, expected):
+def test_min_dist(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
     assert min_dist(a, b) == expected
 
 
@@ -93,11 +96,11 @@ def test_min_dist(a, b, expected):
         (Interval(1, 5), 4, 4),
     ],
 )
-def test_nearest(a, b, expected):
+def test_nearest(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
     assert nearest(a, b) == expected
 
 
-def test_nearest_point():
+def test_nearest_point() -> None:
     p_of_i = Point(Interval(2, 5), Interval(3, 8))
     a = Point(1, 1)
     b = Point(6, 10)
@@ -116,9 +119,11 @@ def test_nearest_point():
         (Interval(1, 2), Interval(3, 4), Interval(-2, -2)),
     ],
 )
-def test_displacement(a, b, expected):
+def test_displacement(
+    a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]
+) -> None:
     assert displacement(a, b) == expected
 
 
-def test_displacement_point():
+def test_displacement_point() -> None:
     assert displacement(Point(1, 2), Point(3, 4)) == Vector2(-2, -2)

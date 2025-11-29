@@ -1,8 +1,13 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from physdes.point import Point
 from physdes.router.global_router3d import GlobalRouter3d
 
 
-def test_global_router3d_init():
+def test_global_router3d_init() -> None:
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(10, 0), 0), Point(Point(1, 0), 0), Point(Point(5, 0), 0)]
     router = GlobalRouter3d(source, terminals)
@@ -13,7 +18,7 @@ def test_global_router3d_init():
     ]
 
 
-def test_route_simple():
+def test_route_simple() -> None:
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(1, 1), 1), Point(Point(2, 2), 2)]
     router = GlobalRouter3d(source, terminals)
@@ -22,7 +27,7 @@ def test_route_simple():
     assert wirelength == 9
 
 
-def test_route_with_steiners():
+def test_route_with_steiners() -> None:
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(1, 1), 1), Point(Point(2, 2), 2)]
     router = GlobalRouter3d(source, terminals)

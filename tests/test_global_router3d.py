@@ -6,7 +6,7 @@ from physdes.router.routing_visualizer import (
 from tests.conftest import generate_3d_random_points
 
 
-def test_route3d_with_steiner():
+def test_route3d_with_steiner() -> None:
     """Test 3D routing with Steiner points."""
     source, terminals, scale_z = generate_3d_random_points()
     router = GlobalRouter(source, terminals)
@@ -24,7 +24,7 @@ def test_route3d_with_steiner():
     # )
 
 
-def test_route3d_with_constraints():
+def test_route3d_with_constraints() -> None:
     """Test 3D routing with constraints."""
     source, terminals, scale_z = generate_3d_random_points()
     router = GlobalRouter(source, terminals)

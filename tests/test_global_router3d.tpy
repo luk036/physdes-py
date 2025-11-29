@@ -1,3 +1,13 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from lds_gen.ilds import Halton
 
 from physdes.router.routing_tree3d import (
@@ -23,7 +33,7 @@ from random import randint
 #     save_routing_tree_svg(router.tree, "example_route_simple.svg")
 
 
-def test_route_with_steiner():
+def test_route_with_steiner() -> None:
     scale_z = 100
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
@@ -50,7 +60,7 @@ def test_route_with_steiner():
     save_routing_tree3d_svg(router.tree, scale_z, "example_route3d_with_steiner.svg")
 
 
-def test_route_with_constraints():
+def test_route_with_constraints() -> None:
     scale_z = 100
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])

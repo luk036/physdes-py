@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from physdes.steiner_forest.steiner_forest_grid2 import steiner_forest_grid
+from physdes.steiner_forest.steiner_forest_grid import steiner_forest_grid
 
 if __name__ == "__main__":
     # Example parameters (modify as needed)

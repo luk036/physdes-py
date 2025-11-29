@@ -8,7 +8,7 @@ from tests.conftest import (
 )
 
 
-def test_global_router_init():
+def test_global_router_init() -> None:
     source, terminals = generate_2d_init_points()
     router = GlobalRouter(source, terminals)
     assert sorted(router.terminal_positions) == sorted(
@@ -16,7 +16,7 @@ def test_global_router_init():
     )
 
 
-def test_route_simple():
+def test_route_simple() -> None:
     source, terminals = generate_2d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_simple()
@@ -24,7 +24,7 @@ def test_route_simple():
     assert wirelength == 4.0
 
 
-def test_route_with_steiners():
+def test_route_with_steiners() -> None:
     source, terminals = generate_2d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
@@ -32,7 +32,7 @@ def test_route_with_steiners():
     assert wirelength == 4.0
 
 
-def test_global_router3d_init():
+def test_global_router3d_init() -> None:
     source, terminals = generate_3d_init_points()
     router = GlobalRouter(source, terminals)
     assert sorted(router.terminal_positions) == sorted(
@@ -44,7 +44,7 @@ def test_global_router3d_init():
     )
 
 
-def test_route3d_simple():
+def test_route3d_simple() -> None:
     source, terminals = generate_3d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_simple()
@@ -52,7 +52,7 @@ def test_route3d_simple():
     assert wirelength == 6
 
 
-def test_route3d_with_steiners():
+def test_route3d_with_steiners() -> None:
     source, terminals = generate_3d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()

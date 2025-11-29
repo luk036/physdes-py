@@ -7,7 +7,7 @@ from physdes.router.routing_visualizer import (
 from tests.conftest import generate_3d_random_points_with_index
 
 
-def test_route3d_with_steiner_and_keepouts():
+def test_route3d_with_steiner_and_keepouts() -> None:
     """Test 3D routing with Steiner points and keepouts."""
     source, terminals, scale_z = generate_3d_random_points_with_index()
     keepouts = [
@@ -25,7 +25,7 @@ def test_route3d_with_steiner_and_keepouts():
     print(svg_output)
 
 
-def test_route3d_with_keepouts_increases_wirelength():
+def test_route3d_with_keepouts_increases_wirelength() -> None:
     """Test that adding keepouts increases the wirelength of the 3D routing tree."""
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(10, 0), 10), Point(Point(20, 0), 20)]
