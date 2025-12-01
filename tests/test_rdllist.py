@@ -3,7 +3,7 @@ import pytest
 from physdes.rdllist import RDllist, RDllIterator
 
 
-def test_rdllist_init():
+def test_rdllist_init() -> None:
     """
     Test initialization of RDllist.
     """

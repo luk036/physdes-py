@@ -19,7 +19,7 @@ def test_fib() -> None:
         fib(-10)
 
 
-def test_main(capsys) -> None:
+def test_main(capsys: pytest.CaptureFixture) -> None:
     """CLI Tests"""
     # capsys is a pytest fixture that allows asserts against stdout/stderr
     # https://docs.pytest.org/en/stable/capture.html
