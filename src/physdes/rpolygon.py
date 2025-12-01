@@ -62,25 +62,25 @@ PointSet = List[Point[int, int]]
 
 class RPolygon:
     """
-    The `RPolygon` class represents a rectilinear polygon, which is a polygon whose edges are
-    all either horizontal or vertical. This class provides a set of methods for creating,
-    manipulating, and analyzing these polygons.
+        The `RPolygon` class represents a rectilinear polygon, which is a polygon whose edges are
+        all either horizontal or vertical. This class provides a set of methods for creating,
+        manipulating, and analyzing these polygons.
 
-    The internal representation of an `RPolygon` consists of an origin point and a list of
-    vectors. The origin serves as a reference point, and the vectors define the vertices of
-    the polygon relative to this origin. This representation is efficient for operations
-    such as translation and calculating geometric properties.
+        The internal representation of an `RPolygon` consists of an origin point and a list of
+        vectors. The origin serves as a reference point, and the vectors define the vertices of
+        the polygon relative to this origin. This representation is efficient for operations
+        such as translation and calculating geometric properties.
 
-    Key features of the `RPolygon` class include:
+        Key features of the `RPolygon` class include:
 
-- **Creation**: Polygons can be created from a set of points or an origin and a list of vectors.
-- **Manipulation**: Polygons can be translated by adding or subtracting vectors.
-- **Analysis**: Methods are provided to calculate the signed area, check for clockwise or
-  anticlockwise orientation, and convert to a standard `Polygon` object.
+    - **Creation**: Polygons can be created from a set of points or an origin and a list of vectors.
+    - **Manipulation**: Polygons can be translated by adding or subtracting vectors.
+    - **Analysis**: Methods are provided to calculate the signed area, check for clockwise or
+      anticlockwise orientation, and convert to a standard `Polygon` object.
 
-    This class is designed to be a foundational component for geometric algorithms that
-    operate on rectilinear shapes, which are common in applications like VLSI physical design
-    and computer graphics.
+        This class is designed to be a foundational component for geometric algorithms that
+        operate on rectilinear shapes, which are common in applications like VLSI physical design
+        and computer graphics.
     """
 
     _origin: Point[int, int]

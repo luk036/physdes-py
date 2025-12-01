@@ -69,7 +69,9 @@ def sample_analysis() -> dict:
 
 
 @pytest.fixture
-def sample_tree_data(sample_tree: TreeNode, sample_sinks: List[Sink], sample_analysis: dict) -> dict:
+def sample_tree_data(
+    sample_tree: TreeNode, sample_sinks: List[Sink], sample_analysis: dict
+) -> dict:
     """Create sample tree data for testing"""
     return {
         "tree": sample_tree,

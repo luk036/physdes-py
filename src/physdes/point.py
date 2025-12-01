@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import Any, Generic, TypeVar, Union
+from typing import Any, Generic, TypeVar
 
 from .generic import (
     center,

@@ -39,7 +39,6 @@ intervals without having to manually handle the lower and upper bounds separatel
 """
 
 from typing import Any, Generic, TypeVar, Union
-
 from .generic import displacement, min_dist
 
 T = TypeVar("T", int, float)
@@ -795,11 +794,6 @@ class Interval(Generic[T]):
         """
         S = type(self)
         return S(self._lb - alpha, self._ub + alpha)
-
-
-from typing import Any, Generic, TypeVar, Union, cast
-
-from .generic import displacement, min_dist
 
 
 def hull(lhs: Any, rhs: Any) -> "Interval[T]":

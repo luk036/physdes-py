@@ -12,8 +12,6 @@ from physdes.vector2 import Vector2
 from typing import Union
 
 
-from typing import Union
-
 import pytest
 
 
@@ -31,7 +29,9 @@ import pytest
         (1, Interval(1, 2), True),
     ],
 )
-def test_overlap(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
+def test_overlap(
+    a: Union[int, Interval], b: Union[int, Interval], expected: bool
+) -> None:
     assert overlap(a, b) is expected
 
 
@@ -48,7 +48,9 @@ def test_overlap(a: Union[int, Interval], b: Union[int, Interval], expected: boo
         (1, Interval(3, 4), False),
     ],
 )
-def test_contain(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
+def test_contain(
+    a: Union[int, Interval], b: Union[int, Interval], expected: bool
+) -> None:
     assert contain(a, b) is expected
 
 
@@ -63,7 +65,9 @@ def test_contain(a: Union[int, Interval], b: Union[int, Interval], expected: boo
         (Interval(1, 2), Interval(1, 2), Interval(1, 2)),
     ],
 )
-def test_intersection(a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]) -> None:
+def test_intersection(
+    a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]
+) -> None:
     assert intersection(a, b) == expected
 
 
@@ -82,7 +86,9 @@ def test_intersection(a: Union[int, Interval], b: Union[int, Interval], expected
         (Interval(1, 2), Interval(1, 2), 0),
     ],
 )
-def test_min_dist(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
+def test_min_dist(
+    a: Union[int, Interval], b: Union[int, Interval], expected: int
+) -> None:
     assert min_dist(a, b) == expected
 
 
@@ -96,7 +102,9 @@ def test_min_dist(a: Union[int, Interval], b: Union[int, Interval], expected: in
         (Interval(1, 5), 4, 4),
     ],
 )
-def test_nearest(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
+def test_nearest(
+    a: Union[int, Interval], b: Union[int, Interval], expected: int
+) -> None:
     assert nearest(a, b) == expected
 
 
