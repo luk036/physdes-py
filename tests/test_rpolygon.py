@@ -20,7 +20,7 @@ from physdes.vector2 import Vector2
 from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
-def test_RPolygon():
+def test_RPolygon() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -53,7 +53,7 @@ def test_RPolygon():
     assert Q == P
 
 
-def test_RPolygon2():
+def test_RPolygon2() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(40)]
     S, is_cw = create_ymono_rpolygon(
@@ -74,7 +74,7 @@ def test_RPolygon2():
     assert not P.is_anticlockwise()
 
 
-def test_RPolygon3():
+def test_RPolygon3() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -103,7 +103,7 @@ def test_RPolygon3():
     assert P.is_anticlockwise()
 
 
-def test_RPolygon4():
+def test_RPolygon4() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(20)]
     S, is_anticw = create_xmono_rpolygon(
@@ -118,7 +118,7 @@ def test_RPolygon4():
     assert not P.is_anticlockwise()
 
 
-def test_RPolygon5():
+def test_RPolygon5() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
@@ -144,7 +144,7 @@ def test_RPolygon5():
     assert point_in_rpolygon(S, Point(qx, qy))
 
 
-def test_to_polygon():
+def test_to_polygon() -> None:
     coords = [(0, 0), (10, 10), (5, 5)]
     point_set = [Point(x, y) for x, y in coords]
     r_poly = RPolygon.from_pointset(point_set)
@@ -157,14 +157,14 @@ def test_to_polygon():
     assert poly == expected_poly
 
 
-def test_rpolygon_eq_different_type():
+def test_rpolygon_eq_different_type() -> None:
     coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     points = [Point(x, y) for x, y in coords]
     rpolygon = RPolygon.from_pointset(points)
     assert (rpolygon == 1) is False
 
 
-def test_is_anticlockwise_less_than_2_points():
+def test_is_anticlockwise_less_than_2_points() -> None:
     with pytest.raises(ValueError):
         coords = [(0, 0)]
         points = [Point(x, y) for x, y in coords]
@@ -172,7 +172,7 @@ def test_is_anticlockwise_less_than_2_points():
         rpolygon.is_anticlockwise()
 
 
-def test_to_polygon_non_rectilinear():
+def test_to_polygon_non_rectilinear() -> None:
     coords = [(0, 0), (1, 1), (2, 0)]
     points = [Point(x, y) for x, y in coords]
     rpolygon = RPolygon.from_pointset(points)
@@ -184,25 +184,25 @@ def test_to_polygon_non_rectilinear():
     assert polygon._vecs == expected_polygon._vecs
 
 
-def test_create_test_rpolygon_vec_lt_0():
+def test_create_test_rpolygon_vec_lt_0() -> None:
     coords = [(0, 10), (10, 0), (5, 6)]
     points = [Point(x, y) for x, y in coords]
     create_test_rpolygon(points)
 
 
-def test_rpolygon_is_monotone_small_list():
+def test_rpolygon_is_monotone_small_list() -> None:
     coords = [(0, 0), (1, 1)]
     points = [Point(x, y) for x, y in coords]
     assert rpolygon_is_monotone(points, lambda p: (p.xcoord, p.ycoord)) is True
 
 
-def test_rpolygon_is_monotone_break():
+def test_rpolygon_is_monotone_break() -> None:
     coords = [(0, 0), (3, 1), (1, 2), (2, 3)]
     points = [Point(x, y) for x, y in coords]
     assert rpolygon_is_monotone(points, lambda p: (p.xcoord, p.ycoord)) is False
 
 
-def test_rpolygon_make_xmonotone_hull():
+def test_rpolygon_make_xmonotone_hull() -> None:
     coords = [
         (-10, 50),
         (-40, 40),
@@ -240,7 +240,7 @@ def test_rpolygon_make_xmonotone_hull():
     assert rpolygon_is_xmonotone(C)
 
 
-def test_rpolygon_make_ymonotone_hull():
+def test_rpolygon_make_ymonotone_hull() -> None:
     coords = [
         (90, -10),
         (40, -40),
@@ -278,7 +278,7 @@ def test_rpolygon_make_ymonotone_hull():
     assert rpolygon_is_ymonotone(C)
 
 
-def test_rpolygon_make_convex_hull():
+def test_rpolygon_make_convex_hull() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(100)]
     S, is_anticlockwise = create_xmono_rpolygon(

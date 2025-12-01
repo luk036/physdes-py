@@ -8,7 +8,7 @@ from physdes.router.routing_visualizer import (
 from tests.conftest import generate_random_points
 
 
-def test_route_with_steiner_and_keepouts():
+def test_route_with_steiner_and_keepouts() -> None:
     """Test routing with Steiner points and keepouts."""
     source, terminals = generate_random_points()
     keepouts = [
@@ -30,7 +30,7 @@ def test_route_with_steiner_and_keepouts():
     )
 
 
-def test_route_with_keepouts():
+def test_route_with_keepouts() -> None:
     """Test routing with keepouts."""
     source, terminals = generate_random_points()
     keepouts = [

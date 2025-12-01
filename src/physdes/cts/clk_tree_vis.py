@@ -106,7 +106,7 @@ class ClockTreeVisualizer:
         scale_y = (height - 2 * self.margin) / (max_y - min_y) if max_y > min_y else 1
         scale = min(scale_x, scale_y)  # Maintain aspect ratio
 
-        def scale_coord(x, y):
+        def scale_coord(x: float, y: float) -> tuple[float, float]:
             scaled_x = (x - min_x) * scale + self.margin
             scaled_y = (y - min_y) * scale + self.margin
             return scaled_x, scaled_y
@@ -151,7 +151,7 @@ class ClockTreeVisualizer:
         """Collect all nodes in the tree"""
         nodes = []
 
-        def collect(node):
+        def collect(node: Any) -> None:
             if node:
                 nodes.append(node)
                 collect(node.left)
@@ -193,7 +193,7 @@ class ClockTreeVisualizer:
         """Draw all wires in the clock tree"""
         svg_elements = []
 
-        def draw_wires_recursive(node):
+        def draw_wires_recursive(node: Any) -> None:
             if not node:
                 return
 
@@ -237,7 +237,7 @@ class ClockTreeVisualizer:
             (sink.position.xcoord, sink.position.ycoord) for sink in sinks
         }
 
-        def draw_nodes_recursive(node, depth=0):
+        def draw_nodes_recursive(node: Any, depth: int = 0) -> None:
             if not node:
                 return
 
@@ -524,7 +524,7 @@ def create_delay_model_comparison(
     )
 
 
-def generate_random_points_for_sinks():
+def generate_random_points_for_sinks() -> List[List[float]]:
     """Generate a set of random source and terminal points."""
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)

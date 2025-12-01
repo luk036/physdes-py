@@ -105,7 +105,7 @@ class ClockTree3dVisualizer:
         scale_y = (height - 2 * self.margin) / (max_y - min_y) if max_y > min_y else 1
         scale = min(scale_x, scale_y)  # Maintain aspect ratio
 
-        def scale_coord(x, y):
+        def scale_coord(x: float, y: float) -> tuple[float, float]:
             scaled_x = (x - min_x) * scale + self.margin
             scaled_y = (y - min_y) * scale + self.margin
             return scaled_x, scaled_y
@@ -150,7 +150,7 @@ class ClockTree3dVisualizer:
         """Collect all nodes in the tree3d"""
         nodes = []
 
-        def collect(node):
+        def collect(node: Any) -> None:
             if node:
                 nodes.append(node)
                 collect(node.left)
@@ -192,7 +192,7 @@ class ClockTree3dVisualizer:
         """Draw all wires in the clock tree3d"""
         svg_elements = []
 
-        def draw_wires_recursive(node):
+        def draw_wires_recursive(node: Any) -> None:
             if not node:
                 return
 
@@ -236,7 +236,7 @@ class ClockTree3dVisualizer:
             (sink.position.xcoord.xcoord, sink.position.ycoord) for sink in sinks
         }
 
-        def draw_nodes_recursive(node, depth=0):
+        def draw_nodes_recursive(node: Any, depth: int = 0) -> None:
             if not node:
                 return
 

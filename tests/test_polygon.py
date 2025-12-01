@@ -16,7 +16,7 @@ from physdes.polygon import (
 from physdes.vector2 import Vector2
 
 
-def test_polygon():
+def test_polygon() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -45,7 +45,7 @@ def test_polygon():
     assert Q == P
 
 
-def test_ymono_polygon():
+def test_ymono_polygon() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -71,7 +71,7 @@ def test_ymono_polygon():
     assert P.is_anticlockwise()
 
 
-def test_xmono_polygon():
+def test_xmono_polygon() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -98,7 +98,7 @@ def test_xmono_polygon():
     assert P.is_anticlockwise()
 
 
-def test_polygon2():
+def test_polygon2() -> None:
     hgen = Halton([2, 3], [11, 7])
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
@@ -111,7 +111,7 @@ def test_polygon2():
     assert P.is_anticlockwise()
 
 
-def test_polygon3():
+def test_polygon3() -> None:
     hgen = Halton([2, 3], [11, 7])
     coords = [hgen.pop() for _ in range(20)]
     S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
@@ -124,7 +124,7 @@ def test_polygon3():
     assert P.is_anticlockwise()
 
 
-def test_polygon4():
+def test_polygon4() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_polygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
@@ -134,7 +134,7 @@ def test_polygon4():
     assert point_in_polygon(S, Point(qx, qy))
 
 
-def test_is_rectilinear():
+def test_is_rectilinear() -> None:
     # Create a rectilinear polygon
     rectilinear_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     rectilinear_points = [Point(x, y) for x, y in rectilinear_coords]
@@ -148,7 +148,7 @@ def test_is_rectilinear():
     assert non_rectilinear_polygon.is_rectilinear() is False
 
 
-def test_is_convex():
+def test_is_convex() -> None:
     # Test case 1: Convex polygon
     convex_coords = [(0, 0), (2, 0), (2, 2), (0, 2)]
     convex_points = [Point(x, y) for x, y in convex_coords]
@@ -168,7 +168,7 @@ def test_is_convex():
     assert triangle.is_convex() is True
 
 
-def test_is_anticlockwise():
+def test_is_anticlockwise() -> None:
     # Clockwise polygon
     clockwise_coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     clockwise_points = [Point(x, y) for x, y in clockwise_coords]
@@ -182,14 +182,14 @@ def test_is_anticlockwise():
     assert counter_clockwise_polygon.is_anticlockwise() is True
 
 
-def test_polygon_eq_different_type():
+def test_polygon_eq_different_type() -> None:
     coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     points = [Point(x, y) for x, y in coords]
     polygon = Polygon.from_pointset(points)
     assert (polygon == 1) is False
 
 
-def test_is_convex_clockwise():
+def test_is_convex_clockwise() -> None:
     # Convex clockwise polygon
     convex_coords = [(0, 0), (0, 2), (2, 2), (2, 0)]
     convex_points = [Point(x, y) for x, y in convex_coords]
@@ -203,7 +203,7 @@ def test_is_convex_clockwise():
     assert non_convex_polygon.is_convex(False) is False
 
 
-def test_point_in_polygon_missed_branches():
+def test_point_in_polygon_missed_branches() -> None:
     coords = [(0, 0), (10, 0), (10, 10), (0, 10)]
     pointset = [Point(x, y) for x, y in coords]
     # Test case where ptq.ycoord == pt0.ycoord
@@ -216,14 +216,14 @@ def test_point_in_polygon_missed_branches():
     assert point_in_polygon(pointset, Point(5, 0)) is True
 
 
-def test_polygon_is_anticlockwise_less_than_3_points():
+def test_polygon_is_anticlockwise_less_than_3_points() -> None:
     with pytest.raises(ValueError):
         coords = [(0, 0), (0, 1)]
         points = [Point(x, y) for x, y in coords]
         polygon_is_anticlockwise(points)
 
 
-def test_is_anticlockwise_less_than_3_points():
+def test_is_anticlockwise_less_than_3_points() -> None:
     with pytest.raises(ValueError):
         coords = [(0, 0), (0, 1)]
         points = [Point(x, y) for x, y in coords]
@@ -231,7 +231,7 @@ def test_is_anticlockwise_less_than_3_points():
         polygon.is_anticlockwise()
 
 
-def test_is_convex_more():
+def test_is_convex_more() -> None:
     # Non-convex anti-clockwise polygon
     non_convex_coords = [(0, 0), (2, 0), (1, 1), (2, 2), (0, 2)]
     non_convex_points = [Point(x, y) for x, y in non_convex_coords]
@@ -245,7 +245,7 @@ def test_is_convex_more():
     assert convex_polygon.is_convex(True) is True
 
 
-def test_point_in_polygon_more():
+def test_point_in_polygon_more() -> None:
     # Create a polygon that will trigger the missed branches
     coords = [(0, 0), (10, 5), (0, 10)]
     pointset = [Point(x, y) for x, y in coords]
@@ -259,7 +259,7 @@ def test_point_in_polygon_more():
     assert point_in_polygon(pointset_cw, Point(1, 5)) is True
 
 
-def test_make_convex_hull():
+def test_make_convex_hull() -> None:
     coords = [
         (-2, 5),
         (-4, 2),
@@ -278,7 +278,7 @@ def test_make_convex_hull():
     assert polygon_is_anticlockwise(C)
 
 
-def test_convex_hull():
+def test_convex_hull() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_polygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])

@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers(), integers(), integers())
-def test_Point_hypo(a1, a2, b1, b2, v1, v2):
+def test_Point_hypo(a1, a2, b1, b2, v1, v2) -> None:
     a = Point(a1, a2)
     b = Point(b1, b2)
     v = Vector2(v1, v2)
@@ -16,7 +16,7 @@ def test_Point_hypo(a1, a2, b1, b2, v1, v2):
     assert (b - v) + v == b
 
 
-def test_Point_3D():
+def test_Point_3D() -> None:
     a = Point(Point(40000, 8), 20000)
     b = Point(Point(50000, 6), 10000)
     # v = b.displace(a) * 0.5  # integer division
@@ -34,7 +34,7 @@ def test_Point_3D():
     # assert a.flip_y().flip_y() == a
 
 
-def test_Interval_3D():
+def test_Interval_3D() -> None:
     a = Point(Interval(4, 8), 1)
     b = Point(Interval(5, 6), 1)
     v = Vector2(3, 0)
@@ -62,7 +62,7 @@ def test_Interval_3D():
     assert min_dist(a, b) == 0
 
 
-def test_Rectangle_3D():
+def test_Rectangle_3D() -> None:
     xrng1 = Interval(40000, 80000)
     yrng1 = Interval(50000, 70000)
     r1 = Point(Rectangle(xrng1, yrng1), 1000)
@@ -90,7 +90,7 @@ def test_Rectangle_3D():
     # assert min_dist(r1, p2) == min_dist(p2, r1)
 
 
-# def test_Segment():
+# def test_Segment() -> None:
 #     xrng1 = Interval(4, 8)
 #     yrng1 = Interval(5, 7)
 #     s1 = HSegment(xrng1, 6)

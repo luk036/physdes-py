@@ -15,7 +15,7 @@ def test_rdllist_init():
         assert dll[i].prev.data == (i - 1 + 5) % 5
 
 
-def test_rdllist_init_reverse():
+def test_rdllist_init_reverse() -> None:
     """
     Test initialization of RDllist with reverse=True.
     """
@@ -27,7 +27,7 @@ def test_rdllist_init_reverse():
         assert dll[i].prev.data == (i + 1) % 5
 
 
-def test_rdllist_getitem():
+def test_rdllist_getitem() -> None:
     """
     Test __getitem__ of RDllist.
     """
@@ -38,7 +38,7 @@ def test_rdllist_getitem():
         _ = dll[5]
 
 
-def test_rdllist_iter():
+def test_rdllist_iter() -> None:
     """
     Test __iter__ of RDllist.
     """
@@ -49,7 +49,7 @@ def test_rdllist_iter():
     assert data == [1, 2, 3, 4]
 
 
-def test_rdllist_from_node():
+def test_rdllist_from_node() -> None:
     """
     Test from_node of RDllist.
     """

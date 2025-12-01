@@ -13,7 +13,7 @@ from physdes.rpolygon_cut import rpolygon_cut_explicit
 from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
-def test_rpolygon_cut_explicit():
+def test_rpolygon_cut_explicit() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(10)]
     S0 = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])

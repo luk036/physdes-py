@@ -10,7 +10,7 @@ __copyright__ = "Wai-Shing Luk"
 __license__ = "MIT"
 
 
-def test_fib():
+def test_fib() -> None:
     """API Tests"""
     assert fib(1) == 1
     assert fib(2) == 1
@@ -19,7 +19,7 @@ def test_fib():
         fib(-10)
 
 
-def test_main(capsys):
+def test_main(capsys) -> None:
     """CLI Tests"""
     # capsys is a pytest fixture that allows asserts against stdout/stderr
     # https://docs.pytest.org/en/stable/capture.html
@@ -28,7 +28,7 @@ def test_main(capsys):
     assert "The 7-th Fibonacci number is 13" in captured.out
 
 
-def test_main_run_as_script():
+def test_main_run_as_script() -> None:
     """CLI Tests"""
     result = subprocess.run(
         [sys.executable, "-m", "physdes.skeleton", "7"], capture_output=True, text=True

@@ -4,7 +4,7 @@ from physdes.point import Point
 from physdes.manhattan_arc import ManhattanArc
 
 
-def test_from_point():
+def test_from_point() -> None:
     p = Point(Point(1, 2), 3)
     ma = ManhattanArc3D.from_point(p)
     assert ma.ma1 == ManhattanArc.from_point(Point(1, 3))
@@ -12,7 +12,7 @@ def test_from_point():
     assert ma.ma3 == ManhattanArc.from_point(Point(1, 2))
 
 
-def test_eq():
+def test_eq() -> None:
     p1 = Point(Point(1, 2), 3)
     ma1 = ManhattanArc3D.from_point(p1)
     p2 = Point(Point(1, 2), 3)
@@ -23,7 +23,7 @@ def test_eq():
     assert ma1 != ma3
 
 
-def test_min_dist_with():
+def test_min_dist_with() -> None:
     p1 = Point(Point(1, 2), 3)
     ma1 = ManhattanArc3D.from_point(p1)
     p2 = Point(Point(4, 5), 6)
@@ -31,7 +31,7 @@ def test_min_dist_with():
     assert ma1.min_dist_with(ma2) == 9
 
 
-def test_enlarge_with():
+def test_enlarge_with() -> None:
     p = Point(Point(1, 2), 3)
     ma = ManhattanArc3D.from_point(p)
     enlarged_ma = ma.enlarge_with(2)
@@ -40,14 +40,14 @@ def test_enlarge_with():
     assert enlarged_ma.ma3 == ma.ma3.enlarge_with(2)
 
 
-def test_intersect_with():
+def test_intersect_with() -> None:
     p1 = Point(Point(1, 2), 3)
     ma1 = ManhattanArc3D.from_point(p1)
     intersection = ma1.intersect_with(ma1)
     assert intersection == ma1
 
 
-def test_intersect_with_different_points():
+def test_intersect_with_different_points() -> None:
     p1 = Point(Point(1, 2), 3)
     ma1 = ManhattanArc3D.from_point(p1)
     p2 = Point(Point(4, 5), 6)
@@ -56,7 +56,7 @@ def test_intersect_with_different_points():
         ma1.intersect_with(ma2)
 
 
-def test_get_center():
+def test_get_center() -> None:
     p = Point(Point(1, 2), 3)
     ma = ManhattanArc3D.from_point(p)
     center = ma.get_center()
@@ -65,7 +65,7 @@ def test_get_center():
     assert center.ycoord == 3
 
 
-def test_get_lower_corner():
+def test_get_lower_corner() -> None:
     p = Point(Point(1, 2), 3)
     ma = ManhattanArc3D.from_point(p)
     lower_corner = ma.get_lower_corner()
@@ -74,7 +74,7 @@ def test_get_lower_corner():
     assert lower_corner.ycoord == 3
 
 
-def test_get_upper_corner():
+def test_get_upper_corner() -> None:
     p = Point(Point(1, 2), 3)
     ma = ManhattanArc3D.from_point(p)
     upper_corner = ma.get_upper_corner()

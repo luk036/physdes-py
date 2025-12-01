@@ -18,7 +18,7 @@ from physdes.point import Point
 from physdes.router.global_router3d import GlobalRouter3d
 from random import randint
 
-# def test_route_simple():
+# def test_route_simple() -> None:
 #     # Create a sample routing tree (using the provided class)
 #     source = Point(Point(3, 1), 1)
 #     terminals = [Point(Point(2, 8), 8), Point(Point(3, 6), 6), Point(Point(5, 2), 2)]

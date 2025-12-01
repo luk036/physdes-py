@@ -573,7 +573,7 @@ class DMEAlgorithm:
         """
         merging_segments = {}
 
-        def compute_segment(node: "TreeNode"):
+        def compute_segment(node: "TreeNode") -> "ManhattanArc":
             if node.left is None and node.right is None:
                 # If it's a leaf node (a sink), its merging segment is simply its position.
                 # The delay for a leaf node is considered 0.0 at this stage.
@@ -637,7 +637,7 @@ class DMEAlgorithm:
         def embed_node(
             node: Optional["TreeNode"],
             parent_segment: Optional[Any] = None,
-        ):
+        ) -> None:
             if node is None:
                 return
 
@@ -669,7 +669,7 @@ class DMEAlgorithm:
         embed_node(merging_tree)
         return merging_tree
 
-    def _compute_tree_parameters(self, root: "TreeNode"):
+    def _compute_tree_parameters(self, root: "TreeNode") -> None:
         """
         Compute delays and other parameters for the entire tree
 
@@ -677,7 +677,9 @@ class DMEAlgorithm:
             root: Root node of the clock tree
         """
 
-        def compute_delays(node: Optional["TreeNode"], parent_delay: float = 0.0):
+        def compute_delays(
+            node: Optional["TreeNode"], parent_delay: float = 0.0
+        ) -> None:
             if node is None:
                 return
 
@@ -713,7 +715,7 @@ class DMEAlgorithm:
         """
         sink_delays = []
 
-        def collect_sink_delays(node: Optional["TreeNode"]):
+        def collect_sink_delays(node: Optional["TreeNode"]) -> None:
             if node is None:
                 return
             if node.left is None and node.right is None:
@@ -750,7 +752,7 @@ class DMEAlgorithm:
         """
         total = 0
 
-        def sum_wirelength(node: Optional["TreeNode"]):
+        def sum_wirelength(node: Optional["TreeNode"]) -> None:
             nonlocal total
             if node is None:
                 return
@@ -790,7 +792,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
     wires = []
     sinks = []
 
-    def traverse(node: Optional["TreeNode"], parent: Optional["TreeNode"] = None):
+    def traverse(
+        node: Optional["TreeNode"], parent: Optional["TreeNode"] = None
+    ) -> None:
         if not node:
             return
 
@@ -836,9 +840,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple[
-    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
-]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

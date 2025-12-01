@@ -11,7 +11,7 @@ from physdes.rpolygon import (
 from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
-def test_rpolygon_make_convex_hull():
+def test_rpolygon_make_convex_hull() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(100)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])

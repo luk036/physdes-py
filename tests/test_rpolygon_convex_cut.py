@@ -12,7 +12,7 @@ from physdes.rpolygon_cut import rpolygon_cut_convex
 from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
 
 
-def test_rpolygon_convex_cut():
+def test_rpolygon_convex_cut() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(5)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])

@@ -116,7 +116,7 @@ class TestDMEAlgorithm:
         assert root.left is not None
         assert root.right is not None
 
-    # def test_build_clock_tree_with_elmore_model(self, sample_sinks, elmore_calculator):
+    # def test_build_clock_tree_with_elmore_model(self, sample_sinks, elmore_calculator) -> None:
     #     """Test clock tree construction with Elmore delay model"""
     #     dme = DMEAlgorithm(sample_sinks, delay_calculator=elmore_calculator)
     #     root = dme.build_clock_tree()
@@ -162,7 +162,7 @@ class TestDMEAlgorithm:
         assert analysis["delay_model"] == "LinearDelayCalculator"
         assert analysis["skew"] >= 0  # Skew should be non-negative
 
-    # def test_analyze_skew_elmore_model(self, sample_sinks, elmore_calculator):
+    # def test_analyze_skew_elmore_model(self, sample_sinks, elmore_calculator) -> None:
     #     """Test skew analysis with Elmore delay model"""
     #     dme = DMEAlgorithm(sample_sinks, delay_calculator=elmore_calculator)
     #     root = dme.build_clock_tree()

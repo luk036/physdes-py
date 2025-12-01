@@ -15,7 +15,7 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 
 
-def generate_random_points():
+def generate_random_points() -> tuple[Point, list[Point]]:
     """Generate a set of random source and terminal points."""
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
@@ -26,7 +26,7 @@ def generate_random_points():
     return source, terminals
 
 
-def generate_special_points():
+def generate_special_points() -> tuple[Point, list[Point]]:
     """Generate a special set of source and terminal points."""
     coords = [
         (-10, 0),
@@ -46,7 +46,7 @@ def generate_special_points():
     return source, terminals
 
 
-def generate_3d_random_points():
+def generate_3d_random_points() -> tuple[Point, list[Point], int]:
     """Generate a set of random 3D source and terminal points."""
     scale_z = 100
     hgen = Halton([3, 2], [7, 11])
@@ -61,7 +61,7 @@ def generate_3d_random_points():
     return source, terminals, scale_z
 
 
-def generate_3d_random_points_with_index():
+def generate_3d_random_points_with_index() -> tuple[Point, list[Point], int]:
     """Generate a set of random 3D source and terminal points with index-based z-coordinate."""
     scale_z = 100
     hgen = Halton([3, 2], [7, 11])
@@ -76,35 +76,37 @@ def generate_3d_random_points_with_index():
     return source, terminals, scale_z
 
 
-def generate_2d_init_points():
+def generate_2d_init_points() -> tuple[Point, list[Point]]:
     """Generate 2D points for global router initialization test."""
     source = Point(0, 0)
     terminals = [Point(10, 0), Point(1, 0), Point(5, 0)]
     return source, terminals
 
 
-def generate_3d_init_points():
+def generate_3d_init_points() -> tuple[Point, list[Point]]:
     """Generate 3D points for global router 3D initialization test."""
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(10, 0), 0), Point(Point(1, 0), 0), Point(Point(5, 0), 0)]
     return source, terminals
 
 
-def generate_2d_simple_points():
+def generate_2d_simple_points() -> tuple[Point, list[Point]]:
     """Generate 2D points for simple routing test."""
     source = Point(0, 0)
     terminals = [Point(1, 1), Point(2, 2)]
     return source, terminals
 
 
-def generate_3d_simple_points():
+def generate_3d_simple_points() -> tuple[Point, list[Point]]:
     """Generate 3D points for simple 3D routing test."""
     source = Point(Point(0, 0), 0)
     terminals = [Point(Point(1, 1), 1), Point(Point(2, 2), 2)]
     return source, terminals
 
 
-def get_polygon_svg_elements(points, fill_color, stroke_color, opacity):
+def get_polygon_svg_elements(
+    points: list[Point], fill_color: str, stroke_color: str, opacity: float
+) -> str:
     polygon_points_str = []
     p0 = points[-1]
     for p1 in points:
@@ -117,7 +119,9 @@ def get_polygon_svg_elements(points, fill_color, stroke_color, opacity):
     return polygon_svg
 
 
-def get_circle_svg_elements(points, circle_radius=10, fill_color="black"):
+def get_circle_svg_elements(
+    points: list[Point], circle_radius: int = 10, fill_color: str = "black"
+) -> str:
     circle_svgs = []
     for p in points:
         circle_svgs.append(

@@ -5,7 +5,7 @@ from hypothesis import given
 from hypothesis.strategies import integers
 
 
-def test_ManhattanArc():
+def test_ManhattanArc() -> None:
     r1 = ManhattanArc.construct(4, 5)
     r2 = ManhattanArc.construct(7, 9)
     # v = Vector2(5, 6)
@@ -18,7 +18,7 @@ def test_ManhattanArc():
     assert repr(r1) == "ManhattanArc(-1, 9)"
 
 
-def test_merge_2():
+def test_merge_2() -> None:
     a = ManhattanArc(4 - 5, 4 + 5)
     b = ManhattanArc(7 - 9, 7 + 9)
     assert a == ManhattanArc(4 - 5, 4 + 5)
@@ -30,14 +30,14 @@ def test_merge_2():
     assert r3 == ManhattanArc(Interval(-4, 2), Interval(12, 12))
 
 
-def test_merge_3():
+def test_merge_3() -> None:
     s1 = ManhattanArc(1, 1)
     s2 = ManhattanArc(3, 3)
     m1 = s1.merge_with(s2, 2)
     assert m1 == ManhattanArc(Interval(3, 3), Interval(3, 3))
 
 
-def test_min_dist():
+def test_min_dist() -> None:
     pa = Point(-8, 2)
     pb = Point(3, 4)
     dab = pa.min_dist_with(pb)
@@ -47,7 +47,7 @@ def test_min_dist():
     assert dab == dmab
 
 
-def test_min_dist3D():
+def test_min_dist3D() -> None:
     pa = Point(Point(8, 3), -2)
     pb = Point(Point(-3, 7), 4)
     dab = pa.min_dist_with(pb)
@@ -74,7 +74,7 @@ def test_min_dist3D():
     integers(min_value=-100000000000, max_value=1000000000),
     integers(min_value=-100000000000, max_value=1000000000),
 )
-def test_min_dist3D_h(a1, b1, c1, a2, b2, c2):
+def test_min_dist3D_h(a1, b1, c1, a2, b2, c2) -> None:
     pa = Point(Point(a1, b1), c1)
     pb = Point(Point(a2, b2), c2)
     dab = pa.min_dist_with(pb)
@@ -93,6 +93,6 @@ def test_min_dist3D_h(a1, b1, c1, a2, b2, c2):
     assert dab == (dmab1 + dmab2 + dmab3) // 2
 
 
-def test_repr():
+def test_repr() -> None:
     a = ManhattanArc(-1, 9)
     assert repr(a) == "ManhattanArc(-1, 9)"

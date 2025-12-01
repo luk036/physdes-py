@@ -67,7 +67,7 @@ def visualize_routing_tree_svg(
     scale_y = (height - 2 * margin) / range_y
     scale = min(scale_x, scale_y)
 
-    def scale_coords(x, y):
+    def scale_coords(x: float, y: float) -> tuple[float, float]:
         """Scale coordinates to fit SVG canvas"""
         scaled_x = margin + (x - min_x) * scale
         scaled_y = margin + (y - min_y) * scale
@@ -82,7 +82,7 @@ def visualize_routing_tree_svg(
     svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
 
     # Draw connections first (so nodes appear on top)
-    def draw_connections(node: "RoutingNode"):
+    def draw_connections(node: "RoutingNode") -> None:
         for child in node.children:
             # Get scaled coordinates
             x1, y1 = scale_coords(node.pt.xcoord, node.pt.ycoord)
@@ -301,7 +301,7 @@ def visualize_routing_tree3d_svg(
     scale_y = (height - 2 * margin) / range_y
     scale = min(scale_x, scale_y)
 
-    def scale_coords(x, y):
+    def scale_coords(x: float, y: float) -> tuple[float, float]:
         """Scale coordinates to fit SVG canvas"""
         scaled_x = margin + (x - min_x) * scale
         scaled_y = margin + (y - min_y) * scale
@@ -316,7 +316,7 @@ def visualize_routing_tree3d_svg(
     svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
 
     # Draw connections first (so nodes appear on top)
-    def draw_connections(node: "RoutingNode"):
+    def draw_connections(node: "RoutingNode") -> None:
         for child in node.children:
             # Get scaled coordinates
             x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)

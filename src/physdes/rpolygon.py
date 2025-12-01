@@ -574,10 +574,10 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     :return: The function `create_test_rpolygon` returns a `PointSet`, which is a list of `Point` objects.
     """
 
-    def dir_x(pt: Point[int, int]):
+    def dir_x(pt: Point[int, int]) -> tuple[int, int]:
         return (pt.xcoord, pt.ycoord)
 
-    def dir_y(pt: Point[int, int]):
+    def dir_y(pt: Point[int, int]) -> tuple[int, int]:
         return (pt.ycoord, pt.xcoord)
 
     max_pt = max(lst, key=dir_y)

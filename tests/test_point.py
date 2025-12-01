@@ -3,7 +3,7 @@ from physdes.point import Point
 from physdes.vector2 import Vector2
 
 
-def test_point():
+def test_point() -> None:
     a = Point(4, 8)
     b = Point(5, 6)
     assert a < b
@@ -12,7 +12,7 @@ def test_point():
     assert b != a
 
 
-def test_point2():
+def test_point2() -> None:
     a = Point(3, 4)
     r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
     assert not r.contains(a)
@@ -23,7 +23,7 @@ def test_point2():
     assert r.intersect_with(Point(4, 5)) == Point(Interval(4, 4), Interval(5, 5))
 
 
-def test_transform():
+def test_transform() -> None:
     a = Point(3, 5)
     b = Vector2(5, 7)
     assert a + b == Point(8, 12)
@@ -36,7 +36,7 @@ def test_transform():
     assert a == Point(3, 5)
 
 
-def test_displacement():
+def test_displacement() -> None:
     a = Point(3, 5)
     b = Point(5, 7)
     c = Point(7, 8)
@@ -45,29 +45,29 @@ def test_displacement():
     assert b.displace(c) == Vector2(-2, -1)
 
 
-def test_enlarge():
+def test_enlarge() -> None:
     a = Point(3, 5)
     assert a.enlarge_with(2) == Point(Interval(1, 5), Interval(3, 7))
 
 
-def test_hull():
+def test_hull() -> None:
     a = Point(3, 5)
     b = Point(5, 7)
     assert a.hull_with(b) == Point(Interval(3, 5), Interval(5, 7))
 
 
-def test_min_dist():
+def test_min_dist() -> None:
     a = Point(3, 5)
     b = Point(5, 7)
     assert a.min_dist_with(b) == 4
 
 
-def test_repr():
+def test_repr() -> None:
     a = Point(3, 5)
     assert repr(a) == "Point(3, 5)"
 
 
-def test_lt():
+def test_lt() -> None:
     a = Point(3, 5)
     b = Point(5, 7)
     c = Point(3, 7)
@@ -77,6 +77,6 @@ def test_lt():
     assert (c < a) is False
 
 
-def test_rotate():
+def test_rotate() -> None:
     a = Point(3, 5)
     assert a.rotates().inv_rotates() == a

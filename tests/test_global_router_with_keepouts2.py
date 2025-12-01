@@ -8,7 +8,7 @@ from physdes.router.routing_visualizer import (
 )
 
 
-def test_route_with_steiner_and_keepouts():
+def test_route_with_steiner_and_keepouts() -> None:
     # Create a sample routing tree (using the provided class)
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
@@ -32,7 +32,7 @@ def test_route_with_steiner_and_keepouts():
     print(svg_output)
 
 
-def test_route_with_keepouts_increases_wirelength():
+def test_route_with_keepouts_increases_wirelength() -> None:
     """Test that adding keepouts increases the wirelength of the routing tree."""
     source = Point(0, 0)
     terminals = [Point(10, 10), Point(20, 20)]

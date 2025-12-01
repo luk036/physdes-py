@@ -6,7 +6,7 @@ from hypothesis import given
 from hypothesis.strategies import integers
 
 
-def test_ManhattanArc3D():
+def test_ManhattanArc3D() -> None:
     r1 = ManhattanArc3D.from_point(Point(Point(4, -5), 5))
     r2 = ManhattanArc3D.from_point(Point(Point(7, -9), 9))
     # v = Vector2(5, 6)
@@ -19,7 +19,7 @@ def test_ManhattanArc3D():
     assert repr(r1) == "ManhattanArc3D(/-1, 9/, /10, 0/, /9, -1/)"
 
 
-def test_min_dist3D():
+def test_min_dist3D() -> None:
     pa = Point(Point(8, 3), -2)
     pb = Point(Point(-3, 7), 4)
     dab = pa.min_dist_with(pb)
@@ -46,7 +46,7 @@ def test_min_dist3D():
     integers(min_value=-100000000000, max_value=1000000000),
     integers(min_value=-100000000000, max_value=1000000000),
 )
-def test_min_dist3D_h(a1, b1, c1, a2, b2, c2):
+def test_min_dist3D_h(a1, b1, c1, a2, b2, c2) -> None:
     pa = Point(Point(a1, b1), c1)
     pb = Point(Point(a2, b2), c2)
     dab = pa.min_dist_with(pb)

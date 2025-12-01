@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers())
-def test_Vector2_hypo(a, b, c, d):
+def test_Vector2_hypo(a, b, c, d) -> None:
     p = Vector2(a, b)
     q = Vector2(c, d)
     r = Vector2(-b, c)
@@ -17,7 +17,7 @@ def test_Vector2_hypo(a, b, c, d):
     assert (p + q) + r == p + (q + r)
 
 
-def test_Vector2():
+def test_Vector2() -> None:
     # using boost::multiprecision::cpp_int
     # static_assert(Integral<cpp_int>
     a = 3
@@ -44,7 +44,7 @@ def test_Vector2():
     assert (p + q) + r == p + (q + r)
 
 
-def test_arithmetic():
+def test_arithmetic() -> None:
     """
     The function `test_arithmetic` tests various arithmetic operations on instances of the `Vector2`
     class.
@@ -68,12 +68,12 @@ def test_arithmetic():
     assert a == Vector2(3, 5)
 
 
-def test_repr():
+def test_repr() -> None:
     v = Vector2(3, 5)
     assert repr(v) == "Vector2(3, 5)"
 
 
-def test_main_run_as_script():
+def test_main_run_as_script() -> None:
     """CLI Tests"""
     result = subprocess.run(
         [sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True
