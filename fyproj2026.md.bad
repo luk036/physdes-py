@@ -1,0 +1,41 @@
+# VLSI Physical Design Optimization Suite
+
+## Project Overview
+The physdes-py project is a Python library focused on computational geometry tasks for VLSI (Very Large Scale Integration) physical design. It provides implementations of key algorithms for routing, clock tree synthesis, and geometric operations used in chip design.
+
+## Suggested Final Year Project: "Enhanced Global Routing with Congestion Management"
+
+### Project Description
+Extend the current global routing capabilities in physdes-py with advanced congestion management features. The current implementation includes basic routing algorithms but lacks sophisticated congestion-aware routing, which is critical in real-world VLSI design.
+
+### Key Objectives
+1. **Implement congestion-aware routing algorithms** - Extend the GlobalRouter class to consider routing density and avoid congested regions
+2. **Add 3D routing capabilities** - Enhance the existing 3D routing functionality with congestion management
+3. **Develop visualization tools** - Create enhanced visualization for routing results, including congestion heatmaps
+4. **Performance optimization** - Improve the efficiency of existing routing algorithms
+5. **Comprehensive testing** - Develop unit tests and performance benchmarks
+
+### Technical Components
+1. **Congestion Detection**: Implement algorithms to identify high-density routing areas
+2. **Weighted Graph Routing**: Modify routing algorithms to use congestion-based edge weights
+3. **Multi-layer routing**: Extend 3D routing with layer assignment considering congestion
+4. **Visualization**: Enhance the routing_visualizer.py module to display congestion maps
+5. **Timing constraints**: Extend the constraint-based routing with more sophisticated timing models
+
+### Why This Project is Suitable
+- **Appropriate complexity**: Challenging enough for a final year project but with existing codebase to build upon
+- **Real-world relevance**: Congestion management is a critical aspect of modern VLSI design
+- **Well-defined scope**: Clear objectives with measurable outcomes
+- **Existing foundation**: The project has a solid codebase with routing algorithms already implemented
+- **Good documentation**: The project follows good documentation practices with examples
+- **Testing framework**: Existing pytest setup provides a safety net for development
+
+### Expected Outcomes
+- Enhanced GlobalRouter class with congestion management
+- New 3D routing algorithms with layer optimization
+- Visualization tools showing routing results and congestion maps
+- Comprehensive test suite ensuring code quality
+- Performance benchmarks demonstrating improvements
+- Detailed documentation and examples
+
+This project would allow the student to work with advanced computational geometry algorithms, understand VLSI design constraints, and contribute meaningful improvements to an open-source project in the hardware design domain.
