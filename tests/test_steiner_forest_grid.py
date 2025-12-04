@@ -1,10 +1,10 @@
 import sys
 import os
 
+from physdes.steiner_forest.steiner_forest_grid import steiner_forest_grid
+
 # Add experimental to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from physdes.steiner_forest.steiner_forest_grid import steiner_forest_grid
 
 
 def test_steiner_forest_grid() -> None:

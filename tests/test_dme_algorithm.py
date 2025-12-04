@@ -6,8 +6,6 @@ import sys
 from pathlib import Path
 from typing import List
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 import pytest
 
 from physdes.cts.dme_algorithm import (
@@ -19,6 +17,8 @@ from physdes.cts.dme_algorithm import (
     get_tree_statistics,
 )
 from physdes.point import Point
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 class TestDelayCalculators:

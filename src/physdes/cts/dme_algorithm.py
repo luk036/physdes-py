@@ -384,13 +384,22 @@ class DMEAlgorithm:
 
     This diagram represents a single step in the **bottom-up merging phase** of the DME algorithm. Here's what each part signifies:
 
-    *   **L and R**: These represent two **subtrees** that have already been constructed. They could be individual sinks (leaf nodes) or more complex subtrees that have been built in previous steps. In the context of the diagram, they are the "children" being merged.
+    *   **L and R**: These represent two **subtrees** that have already been constructed.
+        They could be individual sinks (leaf nodes) or more complex subtrees that have
+        been built in previous steps. In the context of the diagram, they are the
+        "children" being merged.
 
-    *   **The Boxes Around L and R**: These boxes represent the **merging segments** (MS) of the left and right subtrees, respectively. A merging segment is a set of all possible locations where a new parent node can be placed to connect the children while satisfying the zero-skew constraint.
+    *   **The Boxes Around L and R**: These boxes represent the **merging segments** (MS)
+        of the left and right subtrees, respectively. A merging segment is a set of
+        all possible locations where a new parent node can be placed to connect the
+        children while satisfying the zero-skew constraint.
 
     *   **v**: This is the **new parent node** being created to merge the left and right subtrees. Its exact position is not yet determined; it will be chosen from the new merging segment.
 
-    *   **The Dashed Lines**: These lines show the **projection** of the child merging segments to form the new merging segment for the parent node `v`. The new merging segment is the set of all points that are equidistant (in terms of delay) from the child merging segments.
+    *   **The Dashed Lines**: These lines show the **projection** of the child merging segments
+        to form the new merging segment for the parent node `v`. The new merging segment
+        is the set of all points that are equidistant (in terms of delay) from the
+        child merging segments.
 
     **How it Relates to the DME Algorithm**
 
@@ -399,7 +408,9 @@ class DMEAlgorithm:
     1.  **Bottom-Up Merging (Construction of Merging Segments)**:
         *   The algorithm starts with the individual sinks (leaf nodes) of the clock tree.
         *   It iteratively merges the two closest subtrees (initially, these are just sinks).
-        *   For each merge, it computes a **new merging segment** for the parent node. This is where the `svgbob` diagram comes in. The new merging segment is calculated based on the merging segments of the two children being merged.
+        *   For each merge, it computes a **new merging segment** for the parent node. This is
+        where the `svgbob` diagram comes in. The new merging segment is calculated based
+        on the merging segments of the two children being merged.
         *   This process continues until all subtrees have been merged into a single root node.
 
     2.  **Top-Down Embedding (Placement of Internal Nodes)**:
@@ -410,10 +421,15 @@ class DMEAlgorithm:
     **In the Context of the Code**
 
     *   `_build_merging_tree`: This function builds the initial tree structure by recursively partitioning the sinks.
-    *   `_compute_merging_segments`: This is the core of the bottom-up phase. It traverses the tree from the leaves to the root, and for each internal node, it computes its merging segment based on its children's segments. This is where the logic represented by the `svgbob` diagram is implemented.
+    *   `_compute_merging_segments`: This is the core of the bottom-up phase. It traverses the
+        tree from the leaves to the root, and for each internal node, it computes its
+        merging segment based on its children's segments. This is where the logic represented
+        by the `svgbob` diagram is implemented.
     *   `_embed_tree`: This function performs the top-down embedding, selecting the final positions for the internal nodes.
 
-    By adding this `svgbob` diagram, the documentation provides a quick visual reference that helps users understand the fundamental concept of how merging segments are constructed in the DME algorithm, making the code easier to grasp.
+    By adding this `svgbob` diagram, the documentation provides a quick visual reference that helps
+        users understand the fundamental concept of how merging segments are constructed in the
+        DME algorithm, making the code easier to grasp.
 
     Examples:
         >>> from physdes.point import Point
@@ -840,9 +856,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> (
-    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
-):
+def example_dme_usage() -> Tuple[
+    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
+]:
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

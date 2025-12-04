@@ -5,9 +5,6 @@ Unit tests for Clock Tree Visualization module
 import sys
 from pathlib import Path
 from typing import List
-
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
 import xml.etree.ElementTree as ET
 
 import pytest
@@ -26,6 +23,8 @@ from physdes.cts.dme_algorithm import (
     TreeNode,
 )
 from physdes.point import Point
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 @pytest.fixture
