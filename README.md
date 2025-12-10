@@ -41,55 +41,71 @@ information on PyScaffold see <https://pyscaffold.org/>.
 ### Clock Tree Synthesis Examples
 
 **Elmore Delay Model Clock Tree**
+
 ![Elmore Delay Model Clock Tree](./outputs/elmore_model_clock_tree.svg)
 
 **Linear Delay Model Clock Tree**
+
 ![Linear Delay Model Clock Tree](./outputs/linear_model_clock_tree.svg)
 
 **Delay Model Comparison**
+
 ![Delay Model Comparison](./outputs/delay_model_comparison.svg)
 
 **3D Elmore Model Clock Tree**
+
 ![3D Elmore Model Clock Tree](./outputs/elmore_model_clock_tree3d.svg)
 
 **3D Linear Model Clock Tree**
+
 ![3D Linear Model Clock Tree](./outputs/linear_model_clock_tree3d.svg)
 
 ### Global Routing Examples
 
 **Routing with Steiner Points**
+
 ![Routing with Steiner Points](./outputs/example_route_with_steiner.svg)
 
 **Routing with Constraints**
+
 ![Routing with Constraints](./outputs/example_route_with_constraint.svg)
 
 **Routing with Keepouts**
+
 ![Routing with Keepouts](./outputs/example_route_with_keepouts.svg)
 
 **Routing with Steiner Points and Keepouts**
+
 ![Routing with Steiner Points and Keepouts](./outputs/example_route_with_steiner_and_keepouts.svg)
 
 **3D Routing with Steiner Points**
+
 ![3D Routing with Steiner Points](./outputs/example_route3d_with_steiner.svg)
 
 **3D Routing with Constraints and Keepouts**
+
 ![3D Routing with Constraints and Keepouts](./outputs/example_route3d_with_constraint_and_keepouts.svg)
 
 ### Rectilinear Polygon Examples
 
 **Rectilinear Polygon Convex Hull**
+
 ![Rectilinear Polygon Convex Hull](./outputs/rpolyon_convex_hull.svg)
 
 **Rectilinear Polygon Convex Cut**
+
 ![Rectilinear Polygon Convex Cut](./outputs/rpolygon_convex_cut.svg)
 
 **X-Monotone Hull**
+
 ![X-Monotone Hull](./outputs/rpolyon_xmono_hull.svg)
 
 **Y-Monotone Hull**
+
 ![Y-Monotone Hull](./outputs/rpolyon_ymono_hull.svg)
 
 ### Steiner Forest
 
 **Steiner Forest**
+
 ![Steiner Forest](./outputs/steiner_forest.svg)

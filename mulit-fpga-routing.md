@@ -148,32 +148,32 @@ def multi_fpga_multi_net_routing(
 ) -> Dict:
     """
     多FPGA系统多网络路由主函数
-    
+
     Args:
         fpga_grid_height: FPGA网格高度
         fpga_grid_width: FPGA网格宽度
         fpga_count: FPGA数量
         net_pairs: 每个网络的终端对列表
         fpga_mapping: 位置到FPGA的映射
-    
+
     Returns:
         包含路由结果、成本和拥塞信息的字典
     """
     congestion_map = [[0 for _ in range(fpga_grid_width)] for _ in range(fpga_grid_height)]
-    
+
     all_routes = []
     total_cost = 0.0
-    
+
     # 为每个网络计算Steiner Forest
     for i, pairs in enumerate(net_pairs):
         # 计算带拥塞惩罚的Steiner Forest
         routes, cost, sources, terminals, steiner_nodes = steiner_forest_with_congestion(
             fpga_grid_height, fpga_grid_width, pairs, congestion_map
         )
-        
+
         # 更新拥塞图
         update_congestion_map(congestion_map, routes)
-        
+
         all_routes.append({
             'net_id': i,
             'routes': routes,
@@ -182,9 +182,9 @@ def multi_fpga_multi_net_routing(
             'terminals': terminals,
             'steiner_nodes': steiner_nodes
         })
-        
+
         total_cost += cost
-    
+
     return {
         'all_routes': all_routes,
         'total_cost': total_cost,
@@ -199,7 +199,7 @@ def multi_fpga_multi_net_routing(
 
 ```python
 def steiner_forest_with_congestion(
-    h: int, w: int, 
+    h: int, w: int,
     pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]],
     congestion_map: List[List[int]]
 ) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
@@ -221,7 +221,7 @@ def steiner_forest_with_congestion(
                 base_cost = 1.0
                 congestion_penalty = congestion_map[i][j] * 0.1
                 edges.append((node, node + w, base_cost + congestion_penalty))
-    
+
     # 调用原始steiner_forest_grid算法
     return steiner_forest_grid_modified(h, w, pairs, edges)
 ```

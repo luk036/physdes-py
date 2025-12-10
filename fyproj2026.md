@@ -71,19 +71,19 @@ def multi_fpga_multi_net_routing(
     多FPGA系统多网络路由实现
     """
     congestion_map = [[0 for _ in range(fpga_grid_width)] for _ in range(fpga_grid_height)]
-    
+
     all_routes = []
     total_cost = 0.0
-    
+
     # 为每个网络计算带拥塞惩罚的Steiner Forest
     for i, pairs in enumerate(net_pairs):
         routes, cost, sources, terminals, steiner_nodes = steiner_forest_with_congestion(
             fpga_grid_height, fpga_grid_width, pairs, congestion_map
         )
-        
+
         # 更新拥塞图
         update_congestion_map(congestion_map, routes)
-        
+
         all_routes.append({
             'net_id': i,
             'routes': routes,
@@ -92,9 +92,9 @@ def multi_fpga_multi_net_routing(
             'terminals': terminals,
             'steiner_nodes': steiner_nodes
         })
-        
+
         total_cost += cost
-    
+
     return {
         'all_routes': all_routes,
         'total_cost': total_cost,
@@ -189,6 +189,6 @@ def multi_fpga_multi_net_routing(
 - **资源利用率**：FPGA资源使用效率
 
 ---
-**提案人**：[学生姓名]  
-**指导教师**：[教师姓名]  
+**提案人**：[学生姓名]
+**指导教师**：[教师姓名]
 **提交日期**：2025年
