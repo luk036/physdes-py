@@ -1,0 +1,15 @@
+[package]
+name = "physdes-rs"
+version = "0.1.0"
+edition = "2024"
+description = "Rust implementation of physical design algorithms for VLSI"
+authors = ["Your Name <your.email@example.com>"]
+license = "MIT"
+repository = "https://github.com/luk036/physdes-py"
+
+[dependencies]
+num-traits = "0.2"
+approx = "0.5"
+
+[dev-dependencies]
+assert_approx_eq = "1.1"
