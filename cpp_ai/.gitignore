@@ -1,0 +1,83 @@
+# Build directories
+build/
+xmake-build/
+out/
+bin/
+lib/
+*.so
+*.a
+*.dylib
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+Testing/
+
+# xmake
+.xmake/
+.vscode/
+.idea/
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependencies
+deps/
+third_party/
+
+# Documentation
+docs/_build/
+docs/html/
+docs/doctrees/
+
+# Test coverage
+coverage/
+*.gcda
+*.gcno
+*.gcov
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+
+# Log files
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Package files
+*.tar.gz
+*.zip
+
+# Doxygen
+docs/html/
+docs/latex/
+
+# Benchmark results
+benchmark_results/
+
+# Profiling data
+perf.data
+callgrind.out.*
