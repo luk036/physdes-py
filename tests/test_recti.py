@@ -71,12 +71,12 @@ def test_Rectilinear() -> None:
     N = 20
     lst = []
 
-    for i in range(N):
-        ii = i * 100
-        for j in range(N):
-            jj = j * 100
-            xrng = Interval(ii, ii + randint(0, 99))
-            yrng = Interval(jj, jj + randint(0, 99))
+    for idx in range(N):
+        ii_val = idx * 100
+        for jdx in range(N):
+            jj_val = jdx * 100
+            xrng = Interval(ii_val, ii_val + randint(0, 99))
+            yrng = Interval(jj_val, jj_val + randint(0, 99))
             r = Rectangle(xrng, yrng)
             lst += [r]
 

@@ -594,9 +594,9 @@ class DMEAlgorithm:
                 # If it's a leaf node (a sink), its merging segment is simply its position.
                 # The delay for a leaf node is considered 0.0 at this stage.
 
-                ms = self.MA_TYPE.from_point(node.position)
-                merging_segments[node.name] = ms
-                return ms
+                manhattan_segment = self.MA_TYPE.from_point(node.position)
+                merging_segments[node.name] = manhattan_segment
+                return manhattan_segment
 
             # If it's an internal node, recursively compute the merging segments for its children.
             # This bottom-up approach ensures that child segments are computed before parent segments.
@@ -856,9 +856,9 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> Tuple[
-    "TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]
-]:
+def example_dme_usage() -> (
+    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
+):
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

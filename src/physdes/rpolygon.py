@@ -344,8 +344,8 @@ class RPolygon:
         )
 
         # Get the previous and next points in the polygon (with wrap-around)
-        n = len(pointset)
-        prev_point = pointset[(min_index - 1) % n]
+        num_points = len(pointset)
+        prev_point = pointset[(min_index - 1) % num_points]
         current_point = min_point
 
         # Calculate vectors and cross product
@@ -401,8 +401,8 @@ def partition(
         ([1, 3, 5, 7, 9], [0, 2, 4, 6, 8])
     """
     # partition(is_odd, range(10)) --> 1 9 3 7 5 and 4 0 8 2 6
-    t1, t2 = tee(iterable)
-    return list(filter(pred, t1)), list(filterfalse(pred, t2))
+    iter1, iter2 = tee(iterable)
+    return list(filter(pred, iter1)), list(filterfalse(pred, iter2))
 
 
 def create_mono_rpolygon(
@@ -644,11 +644,11 @@ def rpolygon_is_monotone(
         return False
 
     # Chain from min to max
-    if voilate(v_min, v_max, lambda a, b: a > b):
+    if voilate(v_min, v_max, lambda val1, val2: val1 > val2):
         return False
 
     # Chain from max to min
-    return not voilate(v_max, v_min, lambda a, b: a < b)
+    return not voilate(v_max, v_min, lambda val1, val2: val1 < val2)
 
 
 def rpolygon_is_xmonotone(lst: PointSet) -> bool:
@@ -831,11 +831,15 @@ def rpolygon_make_monotone_hull(
         while id(vcurr) != id(vstop):
             vnext = vcurr.next
             vprev = vcurr.prev
-            p0 = lst[vprev.data]
-            p1 = lst[vcurr.data]
-            p2 = lst[vnext.data]
-            if cmp(dir(p1)[0], dir(p2)[0]) or cmp(dir(p0)[0], dir(p1)[0]):
-                area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+            prev_point = lst[vprev.data]
+            curr_point = lst[vcurr.data]
+            next_point = lst[vnext.data]
+            if cmp(dir(curr_point)[0], dir(next_point)[0]) or cmp(
+                dir(prev_point)[0], dir(curr_point)[0]
+            ):
+                area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+                    next_point.xcoord - curr_point.xcoord
+                )
                 if cmp2(area_diff):
                     vcurr.detach()
                     vcurr = vprev
@@ -846,14 +850,22 @@ def rpolygon_make_monotone_hull(
 
     if is_anticlockwise:
         # Chain from min to max
-        process(v_min, v_max, lambda x, y: x >= y, lambda a: a >= 0, dir)
+        process(
+            v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area >= 0, dir
+        )
         # Chain from max to min
-        process(v_max, v_min, lambda x, y: x <= y, lambda a: a >= 0, dir)
+        process(
+            v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area >= 0, dir
+        )
     else:
         # Chain from min to max
-        process(v_min, v_max, lambda x, y: x >= y, lambda a: a <= 0, dir)
+        process(
+            v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area <= 0, dir
+        )
         # Chain from max to min
-        process(v_max, v_min, lambda x, y: x <= y, lambda a: a <= 0, dir)
+        process(
+            v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area <= 0, dir
+        )
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 

@@ -181,14 +181,14 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
     def get_center(self) -> Point[Any, Any]:
         """
-        Calculates the center of the merging segment
+        Calculates the center of the merging segment.
 
         :return: The center of the merging segment.
         """
-        p1 = self.ma1.get_center()  # x-y
-        p3 = self.ma3.get_center()  # x-z
-        # assert p3.ycoord == 0
-        return Point(p3, p1.ycoord)
+        xy_point = self.ma1.get_center()  # x-y
+        xz_point = self.ma3.get_center()  # x-z
+        # assert xz_point.ycoord == 0
+        return Point(xz_point, xy_point.ycoord)
 
     def get_lower_corner(self) -> Point[Any, Any]:
         """
@@ -196,10 +196,10 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
         :return: The lower corner of the merging segment.
         """
-        p1 = self.ma1.get_lower_corner()  # x-y
-        p3 = self.ma3.get_lower_corner()  # TODO: check
-        # assert p3.ycoord == 0
-        return Point(p3, p1.ycoord)
+        xy_point = self.ma1.get_lower_corner()  # x-y
+        xz_point = self.ma3.get_lower_corner()  # TODO: check
+        # assert xz_point.ycoord == 0
+        return Point(xz_point, xy_point.ycoord)
 
     def get_upper_corner(self) -> Point[Any, Any]:
         """
@@ -207,10 +207,10 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
         :return: The upper corner of the merging segment.
         """
-        p1 = self.ma1.get_upper_corner()  # TODO: check
-        p3 = self.ma3.get_upper_corner()  # TODO: check
-        # assert p3.ycoord == 0
-        return Point(p3, p1.ycoord)
+        xy_point = self.ma1.get_upper_corner()  # TODO: check
+        xz_point = self.ma3.get_upper_corner()  # TODO: check
+        # assert xz_point.ycoord == 0
+        return Point(xz_point, xy_point.ycoord)
 
     def nearest_point_to(self, other: Point) -> Point[Any, Any]:
         """
@@ -218,20 +218,20 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
         :return: The center of the merging segment.
         """
-        ms = ManhattanArc3D.from_point(other)
-        p1 = self.ma1._nearest_point_to(ms.ma1)
-        p2 = self.ma2._nearest_point_to(ms.ma2)
-        p3 = self.ma3._nearest_point_to(ms.ma3)
+        ms_arc = ManhattanArc3D.from_point(other)
+        xy_point = self.ma1._nearest_point_to(ms_arc.ma1)
+        yz_point = self.ma2._nearest_point_to(ms_arc.ma2)
+        xz_point = self.ma3._nearest_point_to(ms_arc.ma3)
         ic(self)
         ic(other)
-        ic(ms)
-        ic(p1)
-        ic(p2)
-        ic(p3)
-        assert p1.ycoord == p2.xcoord
-        assert p2.ycoord == p3.ycoord
-        assert p1.xcoord == p3.xcoord
-        return Point(p3, p1.ycoord)
+        ic(ms_arc)
+        ic(xy_point)
+        ic(yz_point)
+        ic(xz_point)
+        assert xy_point.ycoord == yz_point.xcoord
+        assert yz_point.ycoord == xz_point.ycoord
+        assert xy_point.xcoord == xz_point.xcoord
+        return Point(xz_point, xy_point.ycoord)
 
         # distance = self.min_dist_with(ms)
         # trr1 = ms.ma1.enlarge_with(distance)  # TODO: check

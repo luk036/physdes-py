@@ -62,19 +62,19 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
     v_min = vcurr
     pcurr = lst[vcurr.data]
     while id(vi) != id(vprev):
-        p0 = lst[vi.prev.data]
-        p1 = lst[vi.data]
-        p2 = lst[vi.next.data]
-        vec_i = p1.displace(pcurr)
-        if (p0.ycoord <= pcurr.ycoord <= p1.ycoord) or (
-            p1.ycoord <= pcurr.ycoord <= p0.ycoord
+        prev_point = lst[vi.prev.data]
+        curr_point = lst[vi.data]
+        next_point = lst[vi.next.data]
+        vec_i = curr_point.displace(pcurr)
+        if (prev_point.ycoord <= pcurr.ycoord <= curr_point.ycoord) or (
+            curr_point.ycoord <= pcurr.ycoord <= prev_point.ycoord
         ):
             if abs(vec_i.x_) < min_value:
                 min_value = abs(vec_i.x_)
                 v_min = vi
                 vertical = True
-        if (p2.xcoord <= pcurr.xcoord <= p1.xcoord) or (
-            p1.xcoord <= pcurr.xcoord <= p2.xcoord
+        if (next_point.xcoord <= pcurr.xcoord <= curr_point.xcoord) or (
+            curr_point.xcoord <= pcurr.xcoord <= next_point.xcoord
         ):
             if abs(vec_i.y_) < min_value:
                 min_value = abs(vec_i.y_)
@@ -111,11 +111,11 @@ def rpolygon_cut_convex_recur(
     v2 = v1.next
     v3 = v2.next
     if id(v3) == id(v1):  # rectangle
-        L = [v1.data, v2.data]
-        return [L]
+        vertices = [v1.data, v2.data]
+        return [vertices]
     if id(v3.next) == id(v1):  # monotone
-        L = [v1.data, v2.data, v3.data]
-        return [L]
+        vertices = [v1.data, v2.data, v3.data]
+        return [vertices]
 
     def _find_concave_point(
         vcurr: Dllink[int], cmp2: Callable[[int], bool]
@@ -124,13 +124,15 @@ def rpolygon_cut_convex_recur(
         while True:
             vnext = vcurr.next
             vprev = vcurr.prev
-            p0 = lst[vprev.data]
-            p1 = lst[vcurr.data]
-            p2 = lst[vnext.data]
-            v1 = p1.displace(p0)
-            v2 = p2.displace(p1)
-            if v1.x_ * v2.x_ < 0 or v1.y_ * v2.y_ < 0:
-                area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+            prev_point = lst[vprev.data]
+            curr_point = lst[vcurr.data]
+            next_point = lst[vnext.data]
+            vec1 = curr_point.displace(prev_point)
+            vec2 = next_point.displace(curr_point)
+            if vec1.x_ * vec2.x_ < 0 or vec1.y_ * vec2.y_ < 0:
+                area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+                    next_point.xcoord - curr_point.xcoord
+                )
                 if cmp2(area_diff):
                     return vcurr
             vcurr = vnext
@@ -145,15 +147,15 @@ def rpolygon_cut_convex_recur(
     )
 
     if vcurr is None:  # convex
-        L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
-        return [L]
+        vertices = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
+        return [vertices]
 
     v_min, vertical = find_min_dist_point(lst, vcurr)
-    n = len(lst)
+    num_points = len(lst)
     p_min = lst[v_min.data]
-    p1 = lst[vcurr.data]
-    rdll.cycle.append(Dllink(n))
-    new_node = rdll[n]
+    curr_point = lst[vcurr.data]
+    rdll.cycle.append(Dllink(num_points))
+    new_node = rdll[num_points]
     if vertical:
         new_node.next = vcurr.next
         new_node.prev = v_min.prev
@@ -161,7 +163,7 @@ def rpolygon_cut_convex_recur(
         vcurr.next.prev = new_node
         vcurr.next = v_min
         v_min.prev = vcurr
-        p_new = Point(p_min.xcoord, p1.ycoord)
+        p_new = Point(p_min.xcoord, curr_point.ycoord)
     else:
         new_node.prev = vcurr.prev
         new_node.next = v_min.next
@@ -169,12 +171,12 @@ def rpolygon_cut_convex_recur(
         vcurr.prev.next = new_node
         vcurr.prev = v_min
         v_min.next = vcurr
-        p_new = Point(p1.xcoord, p_min.ycoord)
+        p_new = Point(curr_point.xcoord, p_min.ycoord)
     lst.append(p_new)
 
-    L1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
-    L2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
-    return L1 + L2
+    list1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
+    list2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
+    return list1 + list2
 
 
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
@@ -208,11 +210,11 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
         1
     """
     rdll = RDllist(len(lst))
-    L = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
+    vertices_list = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
     res = list()
-    for item in L:
-        P = [lst[i] for i in item]
-        res.append(P)
+    for item in vertices_list:
+        points = [lst[i] for i in item]
+        res.append(points)
     return res
 
 
@@ -240,8 +242,8 @@ def rpolygon_cut_explicit_recur(
     """
     v2 = v1.next
     if id(v2.next) == id(v1):  # rectangle
-        L = [v1.data, v2.data]
-        return [L]
+        vertices = [v1.data, v2.data]
+        return [vertices]
 
     def find_explicit_concave_point(
         vstart: Dllink[int], cmp2: Callable[[int], bool]
@@ -250,10 +252,12 @@ def rpolygon_cut_explicit_recur(
         while True:
             vnext = vcurr.next
             vprev = vcurr.prev
-            p0 = lst[vprev.data]
-            p1 = lst[vcurr.data]
-            p2 = lst[vnext.data]
-            area_diff = (p1.ycoord - p0.ycoord) * (p2.xcoord - p1.xcoord)
+            prev_point = lst[vprev.data]
+            curr_point = lst[vcurr.data]
+            next_point = lst[vnext.data]
+            area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+                next_point.xcoord - curr_point.xcoord
+            )
             if cmp2(area_diff):
                 return vcurr
             vcurr = vnext
@@ -268,15 +272,15 @@ def rpolygon_cut_explicit_recur(
     )
 
     if vcurr is None:  # convex
-        L = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
-        return [L]
+        vertices = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
+        return [vertices]
 
     v_min, vertical = find_min_dist_point(lst, vcurr)
-    n = len(lst)
+    num_points = len(lst)
     p_min = lst[v_min.data]
-    p1 = lst[vcurr.data]
-    rdll.cycle.append(Dllink(n))
-    new_node = rdll[n]
+    curr_point = lst[vcurr.data]
+    rdll.cycle.append(Dllink(num_points))
+    new_node = rdll[num_points]
     if vertical:
         new_node.next = vcurr.next
         new_node.prev = v_min.prev
@@ -284,7 +288,7 @@ def rpolygon_cut_explicit_recur(
         vcurr.next.prev = new_node
         vcurr.next = v_min
         v_min.prev = vcurr
-        p_new = Point(p_min.xcoord, p1.ycoord)
+        p_new = Point(p_min.xcoord, curr_point.ycoord)
     else:
         new_node.prev = vcurr.prev
         new_node.next = v_min.next
@@ -292,12 +296,12 @@ def rpolygon_cut_explicit_recur(
         vcurr.prev.next = new_node
         vcurr.prev = v_min
         v_min.next = vcurr
-        p_new = Point(p1.xcoord, p_min.ycoord)
+        p_new = Point(curr_point.xcoord, p_min.ycoord)
     lst.append(p_new)
 
-    L1 = rpolygon_cut_explicit_recur(vcurr, lst, is_anticlockwise, rdll)
-    L2 = rpolygon_cut_explicit_recur(new_node, lst, is_anticlockwise, rdll)
-    return L1 + L2
+    list1 = rpolygon_cut_explicit_recur(vcurr, lst, is_anticlockwise, rdll)
+    list2 = rpolygon_cut_explicit_recur(new_node, lst, is_anticlockwise, rdll)
+    return list1 + list2
 
 
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
@@ -323,9 +327,9 @@ def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSe
         A list of point sets, where each point set represents a convex rectilinear polygon.
     """
     rdll = RDllist(len(lst))
-    L = rpolygon_cut_explicit_recur(rdll[0], lst, is_anticlockwise, rdll)
+    vertices_list = rpolygon_cut_explicit_recur(rdll[0], lst, is_anticlockwise, rdll)
     res = list()
-    for item in L:
-        P = [lst[i] for i in item]
-        res.append(P)
+    for item in vertices_list:
+        points = [lst[i] for i in item]
+        res.append(points)
     return res

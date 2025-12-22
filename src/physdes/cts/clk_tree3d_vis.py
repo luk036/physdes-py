@@ -105,9 +105,9 @@ class ClockTree3dVisualizer:
         scale_y = (height - 2 * self.margin) / (max_y - min_y) if max_y > min_y else 1
         scale = min(scale_x, scale_y)  # Maintain aspect ratio
 
-        def scale_coord(x: float, y: float) -> tuple[float, float]:
-            scaled_x = (x - min_x) * scale + self.margin
-            scaled_y = (y - min_y) * scale + self.margin
+        def scale_coord(x_coord: float, y_coord: float) -> tuple[float, float]:
+            scaled_x = (x_coord - min_x) * scale + self.margin
+            scaled_y = (y_coord - min_y) * scale + self.margin
             return scaled_x, scaled_y
 
         # Create SVG content
@@ -176,10 +176,10 @@ class ClockTree3dVisualizer:
         if not all_points:
             return 0, 0, 100, 100
 
-        min_x = min(x for x, y in all_points)
-        max_x = max(x for x, y in all_points)
-        min_y = min(y for x, y in all_points)
-        max_y = max(y for x, y in all_points)
+        min_x = min(x_coord for x_coord, y_coord in all_points)
+        max_x = max(x_coord for x_coord, y_coord in all_points)
+        min_y = min(y_coord for x_coord, y_coord in all_points)
+        max_y = max(y_coord for x_coord, y_coord in all_points)
 
         # Add some padding
         padding = max((max_x - min_x) * 0.1, (max_y - min_y) * 0.1, 10)
@@ -198,20 +198,22 @@ class ClockTree3dVisualizer:
 
             if node.parent:
                 # Draw wire from parent to current node
-                x1, y1 = scale_coord(
+                x_start, y_start = scale_coord(
                     node.parent.position.xcoord.xcoord, node.parent.position.ycoord
                 )
-                x2, y2 = scale_coord(node.position.xcoord.xcoord, node.position.ycoord)
+                x_end, y_end = scale_coord(
+                    node.position.xcoord.xcoord, node.position.ycoord
+                )
 
                 svg_elements.append(
-                    f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                    f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
                     f'stroke="{self.wire_color}" stroke-width="{self.wire_width}" '
                     f'stroke-linecap="round"/>'
                 )
 
                 # Add wire length label
-                mid_x = (x1 + x2) / 2
-                mid_y = (y1 + y2) / 2
+                mid_x = (x_start + x_end) / 2
+                mid_y = (y_start + y_end) / 2
                 if hasattr(node, "wire_length") and node.wire_length > 0:
                     svg_elements.append(
                         f'<text x="{mid_x}" y="{mid_y - 5}" class="wire-label" '
@@ -240,7 +242,9 @@ class ClockTree3dVisualizer:
             if not node:
                 return
 
-            x, y = scale_coord(node.position.xcoord.xcoord, node.position.ycoord)
+            x_pos, y_pos = scale_coord(
+                node.position.xcoord.xcoord, node.position.ycoord
+            )
 
             # Determine node type and color
             is_sink = (
@@ -261,14 +265,14 @@ class ClockTree3dVisualizer:
 
             # Draw node circle
             svg_elements.append(
-                f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" '
+                f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" '
                 f'stroke="#333" stroke-width="1"/>'
             )
 
             # Draw node label
             label_y_offset = -radius - 5
             svg_elements.append(
-                f'<text x="{x}" y="{y + label_y_offset}" class="node-label" '
+                f'<text x="{x_pos}" y="{y_pos + label_y_offset}" class="node-label" '
                 f'text-anchor="middle">{node.name}</text>'
             )
 
@@ -276,7 +280,7 @@ class ClockTree3dVisualizer:
             if hasattr(node, "delay"):
                 delay_y_offset = radius + 12
                 svg_elements.append(
-                    f'<text x="{x}" y="{y + delay_y_offset}" class="delay-label" '
+                    f'<text x="{x_pos}" y="{y_pos + delay_y_offset}" class="delay-label" '
                     f'text-anchor="middle">d:{node.delay:.1f}</text>'
                 )
 
@@ -284,7 +288,7 @@ class ClockTree3dVisualizer:
             if is_sink and hasattr(node, "capacitance"):
                 cap_y_offset = radius + 22
                 svg_elements.append(
-                    f'<text x="{x}" y="{y + cap_y_offset}" class="delay-label" '
+                    f'<text x="{x_pos}" y="{y_pos + cap_y_offset}" class="delay-label" '
                     f'text-anchor="middle">c:{node.capacitance:.1f}</text>'
                 )
 
@@ -318,8 +322,10 @@ class ClockTree3dVisualizer:
             '<text x="20" y="45" font-family="monospace" font-size="11" fill="#333">',
         ]
 
-        for i, text in enumerate(analysis_text[1:]):  # Skip title line
-            analysis_box.append(f'<tspan x="20" y="{45 + (i + 1) * 16}">{text}</tspan>')
+        for idx, text in enumerate(analysis_text[1:]):  # Skip title line
+            analysis_box.append(
+                f'<tspan x="20" y="{45 + (idx + 1) * 16}">{text}</tspan>'
+            )
 
         analysis_box.append("</text>")
         analysis_box.append("</g>")
@@ -461,15 +467,15 @@ def create_comparison_visualization(
         start_idx = -1
         end_idx = -1
 
-        for j, line in enumerate(lines):
+        for line_idx, line in enumerate(lines):
             if '<g class="clock-tree3d">' in line:
-                start_idx = j
+                start_idx = line_idx
             elif (
                 start_idx != -1
                 and "</g>" in line
-                and "clock-tree3d" not in lines[j - 1]
+                and "clock-tree3d" not in lines[line_idx - 1]
             ):
-                end_idx = j
+                end_idx = line_idx
                 break
 
         if start_idx == -1 or end_idx == -1:

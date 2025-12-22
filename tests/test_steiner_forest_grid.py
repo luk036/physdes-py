@@ -8,8 +8,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 
 def test_steiner_forest_grid() -> None:
-    h = 8
-    w = 8
+    height = 8
+    width = 8
     pairs = [
         ((0, 0), (3, 2)),
         ((0, 0), (0, 5)),
@@ -19,7 +19,7 @@ def test_steiner_forest_grid() -> None:
     ]
 
     F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
-        h, w, pairs
+        height, width, pairs
     )
 
     expected_cost = 17.0

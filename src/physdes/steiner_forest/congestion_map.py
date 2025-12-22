@@ -18,15 +18,15 @@ def draw_congestion_map(
         """Interpolate from green (0) -> yellow (50) -> red (100)"""
         if value <= 50:
             # Green to Yellow
-            r = int(255 * (value / 50))
-            g = 255
-            b = 0
+            red_val = int(255 * (value / 50))
+            green_val = 255
+            blue_val = 0
         else:
             # Yellow to Red
-            r = 255
-            g = int(255 * ((50 - (value - 50)) / 50))
-            b = 0
-        return f"#{r:02x}{g:02x}{b:02x}"
+            red_val = 255
+            green_val = int(255 * ((50 - (value - 50)) / 50))
+            blue_val = 0
+        return f"#{red_val:02x}{green_val:02x}{blue_val:02x}"
 
     svg = [
         f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
@@ -48,22 +48,22 @@ def draw_congestion_map(
     )
 
     # Draw grid cells
-    for i in range(rows):
-        for j in range(cols):
-            value = grid[i][j]
+    for row_idx in range(rows):
+        for col_idx in range(cols):
+            value = grid[row_idx][col_idx]
             if not (0 <= value <= 100):
                 raise ValueError(f"Congestion value {value} out of range [0,100]")
 
-            x = padding + j * cell_size
-            y = title_height + padding + i * cell_size
+            x_pos = padding + col_idx * cell_size
+            y_pos = title_height + padding + row_idx * cell_size
             color = interpolate_color(value)
 
             svg.append(
-                f'<rect x="{x}" y="{y}" width="{cell_size}" height="{cell_size}" fill="{color}" stroke="#cccccc" stroke-width="1"/>'
+                f'<rect x="{x_pos}" y="{y_pos}" width="{cell_size}" height="{cell_size}" fill="{color}" stroke="#cccccc" stroke-width="1"/>'
             )
             # Optional: show value in center
             svg.append(
-                f'<text x="{x + cell_size // 2}" y="{y + cell_size // 2 + 5}" font-size="14" text-anchor="middle" fill="black" font-family="Arial">{value}</text>'
+                f'<text x="{x_pos + cell_size // 2}" y="{y_pos + cell_size // 2 + 5}" font-size="14" text-anchor="middle" fill="black" font-family="Arial">{value}</text>'
             )
 
     # Legend
@@ -78,10 +78,10 @@ def draw_congestion_map(
     )
 
     # Legend labels
-    for i in range(0, 101, 25):
-        y_pos = legend_y + (100 - i) / 100 * (rows * cell_size)
+    for label_val in range(0, 101, 25):
+        y_pos = legend_y + (100 - label_val) / 100 * (rows * cell_size)
         svg.append(
-            f'<text x="{legend_x + 40}" y="{y_pos + 5}" font-size="12" font-family="Arial">{i}</text>'
+            f'<text x="{legend_x + 40}" y="{y_pos + 5}" font-size="12" font-family="Arial">{label_val}</text>'
         )
         svg.append(
             f'<line x1="{legend_x - 5}" y1="{y_pos}" x2="{legend_x}" y2="{y_pos}" stroke="black" stroke-width="1"/>'

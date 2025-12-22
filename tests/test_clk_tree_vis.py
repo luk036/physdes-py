@@ -171,8 +171,8 @@ class TestClockTreeVisualizer:
         """Test wire drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
-        def scale_coord(x, y):
-            return x, y  # Identity scaling for testing
+        def scale_coord(x_coord, y_coord):
+            return x_coord, y_coord  # Identity scaling for testing
 
         svg_elements = visualizer._draw_wires(sample_tree, scale_coord)
 
@@ -185,8 +185,8 @@ class TestClockTreeVisualizer:
         """Test node drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
-        def scale_coord(x, y):
-            return x, y  # Identity scaling for testing
+        def scale_coord(x_coord, y_coord):
+            return x_coord, y_coord  # Identity scaling for testing
 
         svg_elements = visualizer._draw_nodes(sample_tree, sample_sinks, scale_coord)
 
@@ -269,13 +269,13 @@ class TestInteractiveVisualization:
         output_file = tmp_path / "comparison.svg"
 
         # Create multiple tree data sets
-        tree_data_sets = [
+        trees_data = [
             sample_tree_data,
             sample_tree_data,
         ]  # Using same data twice for testing
 
         svg_content = create_comparison_visualization(
-            tree_data_sets, str(output_file), 800, 600
+            trees_data, str(output_file), 800, 600
         )
 
         assert output_file.exists()

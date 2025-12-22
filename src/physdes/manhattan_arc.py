@@ -257,8 +257,8 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(a.get_center())
             (4, 5)
         """
-        m = self.impl.get_center()
-        return m.inv_rotates()
+        center_point = self.impl.get_center()
+        return center_point.inv_rotates()
 
     def get_lower_corner(self) -> Point[Any, Any]:
         """
@@ -271,8 +271,8 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(a.get_lower_corner())
             (4, 5)
         """
-        m = self.impl.lower_corner()
-        return m.inv_rotates()
+        lower_point = self.impl.lower_corner()
+        return lower_point.inv_rotates()
 
     def get_upper_corner(self) -> Point[Any, Any]:
         """
@@ -285,10 +285,12 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(a.get_upper_corner())
             (4, 5)
         """
-        m = self.impl.upper_corner()
-        return m.inv_rotates()
+        upper_point = self.impl.upper_corner()
+        return upper_point.inv_rotates()
 
-    def _nearest_point_to(self, ms: "ManhattanArc[Any, Any]") -> Point[Any, Any]:
+    def _nearest_point_to(
+        self, manhattan_arc: "ManhattanArc[Any, Any]"
+    ) -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
 
@@ -299,7 +301,7 @@ class ManhattanArc(Generic[T1, T2]):
             >>> print(a.nearest_point_to(Point(0, 0)))
             (4, 5)
         """
-        nearest_pt = self.impl.nearest_to(ms.impl)
+        nearest_pt = self.impl.nearest_to(manhattan_arc.impl)
         ic(nearest_pt)
         return nearest_pt.inv_rotates()
 

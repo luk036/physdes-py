@@ -710,9 +710,9 @@ class Interval(Generic[T]):
             >>> print(a.displace(Interval(6, 9)))
             [-3, -4]
         """
-        lb = displacement(self.lb, obj.lb)
-        ub = displacement(self.ub, obj.ub)
-        return Interval(lb, ub)
+        lower_bound = displacement(self.lb, obj.lb)
+        upper_bound = displacement(self.ub, obj.ub)
+        return Interval(lower_bound, upper_bound)
 
     def get_center(self) -> T:
         """

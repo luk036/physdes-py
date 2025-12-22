@@ -67,10 +67,10 @@ def visualize_routing_tree_svg(
     scale_y = (height - 2 * margin) / range_y
     scale = min(scale_x, scale_y)
 
-    def scale_coords(x: float, y: float) -> tuple[float, float]:
+    def scale_coords(x_coord: float, y_coord: float) -> tuple[float, float]:
         """Scale coordinates to fit SVG canvas"""
-        scaled_x = margin + (x - min_x) * scale
-        scaled_y = margin + (y - min_y) * scale
+        scaled_x = margin + (x_coord - min_x) * scale
+        scaled_y = margin + (y_coord - min_y) * scale
         return scaled_x, scaled_y
 
     svg_parts = []
@@ -85,12 +85,12 @@ def visualize_routing_tree_svg(
     def draw_connections(node: "RoutingNode") -> None:
         for child in node.children:
             # Get scaled coordinates
-            x1, y1 = scale_coords(node.pt.xcoord, node.pt.ycoord)
-            x2, y2 = scale_coords(child.pt.xcoord, child.pt.ycoord)
+            x_start, y_start = scale_coords(node.pt.xcoord, node.pt.ycoord)
+            x_end, y_end = scale_coords(child.pt.xcoord, child.pt.ycoord)
 
             # Draw line
             svg_parts.append(
-                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
                 f'stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>'
             )
 
@@ -112,7 +112,7 @@ def visualize_routing_tree_svg(
 
     # Draw nodes
     for node in all_nodes:
-        x, y = scale_coords(node.pt.xcoord, node.pt.ycoord)
+        x_pos, y_pos = scale_coords(node.pt.xcoord, node.pt.ycoord)
 
         # Different colors and sizes for different node types
         if node.type == NodeType.SOURCE:
@@ -134,17 +134,17 @@ def visualize_routing_tree_svg(
 
         # Draw node circle
         svg_parts.append(
-            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
+            f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
         )
 
         # Draw node label
         svg_parts.append(
-            f'<text x="{x + radius + 2}" y="{y + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
+            f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
         )
 
         # Draw coordinates
         svg_parts.append(
-            f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
+            f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" '
             f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>'
         )
 
@@ -153,11 +153,11 @@ def visualize_routing_tree_svg(
         for keepout in keepouts:
             x1, y1 = scale_coords(keepout.xcoord.lb, keepout.ycoord.lb)
             x2, y2 = scale_coords(keepout.xcoord.ub, keepout.ycoord.ub)
-            rwidth = x2 - x1
-            rheight = y2 - y1
+            rect_width = x2 - x1
+            rect_height = y2 - y1
             color = "orange"
             svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
+                f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>'
             )
 
     # Add legend
@@ -301,10 +301,10 @@ def visualize_routing_tree3d_svg(
     scale_y = (height - 2 * margin) / range_y
     scale = min(scale_x, scale_y)
 
-    def scale_coords(x: float, y: float) -> tuple[float, float]:
+    def scale_coords(x_coord: float, y_coord: float) -> tuple[float, float]:
         """Scale coordinates to fit SVG canvas"""
-        scaled_x = margin + (x - min_x) * scale
-        scaled_y = margin + (y - min_y) * scale
+        scaled_x = margin + (x_coord - min_x) * scale
+        scaled_y = margin + (y_coord - min_y) * scale
         return scaled_x, scaled_y
 
     svg_parts = []
@@ -319,14 +319,14 @@ def visualize_routing_tree3d_svg(
     def draw_connections(node: "RoutingNode") -> None:
         for child in node.children:
             # Get scaled coordinates
-            x1, y1 = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
-            x2, y2 = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
+            x_start, y_start = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
+            x_end, y_end = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
             color = layer_colors[
                 (child.pt.xcoord.ycoord // scale_z) % len(layer_colors)
             ]
             # Draw line
             svg_parts.append(
-                f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" '
+                f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
                 f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>'
             )
 
@@ -348,7 +348,7 @@ def visualize_routing_tree3d_svg(
 
     # Draw nodes
     for node in all_nodes:
-        x, y = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
+        x_pos, y_pos = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
 
         # Different colors and sizes for different node types
         if node.type == NodeType.SOURCE:
@@ -370,17 +370,17 @@ def visualize_routing_tree3d_svg(
 
         # Draw node circle
         svg_parts.append(
-            f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
+            f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
         )
 
         # Draw node label
         svg_parts.append(
-            f'<text x="{x + radius + 2}" y="{y + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
+            f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
         )
 
         # Draw coordinates
         svg_parts.append(
-            f'<text x="{x}" y="{y - radius - 5}" font-family="Arial" font-size="8" '
+            f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" '
             f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
         )
 
@@ -389,11 +389,11 @@ def visualize_routing_tree3d_svg(
         for keepout in keepouts:
             x1, y1 = scale_coords(keepout.xcoord.xcoord.lb, keepout.ycoord.lb)
             x2, y2 = scale_coords(keepout.xcoord.xcoord.ub, keepout.ycoord.ub)
-            rwidth = x2 - x1
-            rheight = y2 - y1
+            rect_width = x2 - x1
+            rect_height = y2 - y1
             color = "pink"
             svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rwidth}" height = "{rheight}" fill="{color}" stroke="black" stroke-width="1"/>'
+                f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>'
             )
 
     # Add legend
@@ -414,6 +414,20 @@ def visualize_routing_tree3d_svg(
         )
         svg_parts.append(
             f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
+        )
+
+    legend_items = [
+        ("Source", "red", 20, legend_y + 20),
+        ("Steiner", "blue", 20, legend_y + 40),
+        ("Terminal", "green", 20, legend_y + 60),
+    ]
+
+    for text, color, x_coord, y_pos in legend_items:
+        svg_parts.append(
+            f'<circle cx="{x_coord}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
+        )
+        svg_parts.append(
+            f'<text x="{x_coord + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
         )
 
     # Display statistics

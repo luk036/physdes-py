@@ -2,9 +2,9 @@
 
 
 def overlap1(lst: list) -> tuple[int, int] | None:
-    n = len(lst)
-    for i in range(n - 1):
-        for j in range(i + 1, n):
-            if lst[i].overlaps(lst[j]):
-                return i, j
+    num = len(lst)
+    for idx in range(num - 1):
+        for jdx in range(idx + 1, num):
+            if lst[idx].overlaps(lst[jdx]):
+                return idx, jdx
     return None
