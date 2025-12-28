@@ -45,7 +45,22 @@ class TestVector2Properties:
     @given(vector2_strategy, vector2_strategy, vector2_strategy)
     def test_addition_associativity(self, v1: Vector2, v2: Vector2, v3: Vector2) -> None:
         """Test that vector addition is associative: (v1 + v2) + v3 == v1 + (v2 + v3)."""
-        assert (v1 + v2) + v3 == v1 + (v2 + v3)
+        result1 = (v1 + v2) + v3
+        result2 = v1 + (v2 + v3)
+        
+        # Check for floating-point precision issues
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        # If any of the vectors have float components, use approximate equality
+        if (isinstance(v1.x, float) or isinstance(v1.y, float) or
+            isinstance(v2.x, float) or isinstance(v2.y, float) or
+            isinstance(v3.x, float) or isinstance(v3.y, float)):
+            assert approx_equal(result1.x, result2.x)
+            assert approx_equal(result1.y, result2.y)
+        else:
+            assert result1 == result2
     
     @given(vector2_strategy)
     def test_addition_identity(self, v: Vector2) -> None:
@@ -57,7 +72,20 @@ class TestVector2Properties:
     @given(vector2_strategy, vector2_strategy)
     def test_subtraction_addition_inverse(self, v1: Vector2, v2: Vector2) -> None:
         """Test that subtraction is the inverse of addition: v1 - v2 + v2 == v1."""
-        assert (v1 - v2) + v2 == v1
+        result = (v1 - v2) + v2
+        
+        # Check for floating-point precision issues
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        # If any of the vectors have float components, use approximate equality
+        if (isinstance(v1.x, float) or isinstance(v1.y, float) or
+            isinstance(v2.x, float) or isinstance(v2.y, float)):
+            assert approx_equal(result.x, v1.x)
+            assert approx_equal(result.y, v1.y)
+        else:
+            assert result == v1
     
     @given(vector2_strategy, vector2_strategy)
     def test_subtraction_antisymmetric(self, v1: Vector2, v2: Vector2) -> None:
@@ -68,17 +96,48 @@ class TestVector2Properties:
     def test_scalar_multiplication_distributivity(self, v: Vector2, scalar: float) -> None:
         """Test distributivity: scalar * (v1 + v2) == scalar * v1 + scalar * v2."""
         v2 = Vector2(5, 7)  # Use a fixed second vector for this test
-        assert scalar * (v + v2) == scalar * v + scalar * v2
+        
+        # Use approximate equality for floating-point operations
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        result1 = scalar * (v + v2)
+        result2 = scalar * v + scalar * v2
+        
+        # Check components with appropriate tolerance
+        assert approx_equal(result1.x, result2.x)
+        assert approx_equal(result1.y, result2.y)
     
     @given(vector2_strategy, numeric_values, numeric_values)
     def test_scalar_multiplication_additivity(self, v: Vector2, s1: float, s2: float) -> None:
         """Test that (s1 + s2) * v == s1 * v + s2 * v."""
-        assert (s1 + s2) * v == s1 * v + s2 * v
+        # Use approximate equality for floating-point operations
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        result1 = (s1 + s2) * v
+        result2 = s1 * v + s2 * v
+        
+        # Check components with appropriate tolerance
+        assert approx_equal(result1.x, result2.x)
+        assert approx_equal(result1.y, result2.y)
     
     @given(vector2_strategy, numeric_values, numeric_values)
     def test_scalar_multiplication_associativity(self, v: Vector2, s1: float, s2: float) -> None:
         """Test that s1 * (s2 * v) == (s1 * s2) * v."""
-        assert s1 * (s2 * v) == (s1 * s2) * v
+        # Use approximate equality for floating-point operations
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        result1 = s1 * (s2 * v)
+        result2 = (s1 * s2) * v
+        
+        # Check components with appropriate tolerance
+        assert approx_equal(result1.x, result2.x)
+        assert approx_equal(result1.y, result2.y)
     
     @given(vector2_strategy)
     def test_multiplication_by_one(self, v: Vector2) -> None:
@@ -95,7 +154,14 @@ class TestVector2Properties:
     def test_division_multiplication_inverse(self, v: Vector2, divisor: float) -> None:
         """Test that division is the inverse of multiplication."""
         result = v / divisor
-        assert (result * divisor) == v
+        # Use approximate equality for all cases since division always produces floats
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        # Division always produces floating-point results, so use approximate equality
+        assert approx_equal((result * divisor).x, v.x, rel_tol=1e-9, abs_tol=1e-12)
+        assert approx_equal((result * divisor).y, v.y, rel_tol=1e-9, abs_tol=1e-12)
     
     @given(vector2_strategy)
     def test_negation_double_negation(self, v: Vector2) -> None:
@@ -122,14 +188,34 @@ class TestVector2Properties:
     def test_cross_product_linearity(self, v1: Vector2, v2: Vector2, v3: Vector2) -> None:
         """Test cross product linearity in the first argument."""
         # (v1 + v2) × v3 == v1 × v3 + v2 × v3
-        assert (v1 + v2).cross(v3) == v1.cross(v3) + v2.cross(v3)
+        
+        # Use approximate equality for floating-point operations
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        result1 = (v1 + v2).cross(v3)
+        result2 = v1.cross(v3) + v2.cross(v3)
+        
+        # Use more lenient tolerance for cross products which can accumulate errors
+        assert approx_equal(result1, result2, rel_tol=1e-9, abs_tol=1e-9)
     
     @given(vector2_strategy, numeric_values)
     def test_cross_product_scalar_multiplication(self, v: Vector2, scalar: float) -> None:
         """Test cross product with scalar multiplication."""
         v2 = Vector2(3, 7)  # Use a fixed second vector
         # (scalar * v1) × v2 == scalar * (v1 × v2)
-        assert (scalar * v).cross(v2) == scalar * v.cross(v2)
+        
+        # Use approximate equality for floating-point operations
+        import math
+        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+            return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+        
+        result1 = (scalar * v).cross(v2)
+        result2 = scalar * v.cross(v2)
+        
+        # Use more lenient tolerance for cross products which can accumulate errors
+        assert approx_equal(result1, result2, rel_tol=1e-9, abs_tol=1e-9)
     
     @given(vector2_strategy)
     def test_inplace_addition_equivalence(self, v: Vector2) -> None:

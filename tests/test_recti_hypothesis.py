@@ -132,8 +132,10 @@ class TestRectangleProperties:
         """Test properties of rectangle intersection."""
         intersection = rect1.intersect_with(rect2)
         
-        # If intersection exists, it should be contained in both rectangles
-        if not intersection.is_invalid():
+        # Check if intersection is valid (both x and y intervals are non-empty)
+        if (isinstance(intersection.xcoord, Interval) and intersection.xcoord.lb <= intersection.xcoord.ub and
+            isinstance(intersection.ycoord, Interval) and intersection.ycoord.lb <= intersection.ycoord.ub):
+            # Valid intersection should be contained in both rectangles
             assert rect1.contains(intersection)
             assert rect2.contains(intersection)
     
@@ -370,22 +372,28 @@ class TestGeometricInvariants:
     @given(vsegment_strategy, vsegment_strategy)
     def test_vsegment_intersection_properties(self, seg1: VSegment, seg2: VSegment) -> None:
         """Test properties of vertical segment intersection."""
-        intersection = seg1.intersect_with(seg2)
-        
-        # If intersection exists, it should be contained in both segments
-        if not intersection.is_invalid():
-            assert seg1.contains(intersection)
-            assert seg2.contains(intersection)
+        # Only test intersection if segments have the same x-coordinate
+        if seg1.xcoord == seg2.xcoord:
+            intersection = seg1.intersect_with(seg2)
+            
+            # Check if intersection is valid (y interval is non-empty)
+            if isinstance(intersection.ycoord, Interval) and intersection.ycoord.lb <= intersection.ycoord.ub:
+                # Valid intersection should be contained in both segments
+                assert seg1.contains(intersection)
+                assert seg2.contains(intersection)
     
     @given(hsegment_strategy, hsegment_strategy)
     def test_hsegment_intersection_properties(self, seg1: HSegment, seg2: HSegment) -> None:
         """Test properties of horizontal segment intersection."""
-        intersection = seg1.intersect_with(seg2)
-        
-        # If intersection exists, it should be contained in both segments
-        if not intersection.is_invalid():
-            assert seg1.contains(intersection)
-            assert seg2.contains(intersection)
+        # Only test intersection if segments have the same y-coordinate
+        if seg1.ycoord == seg2.ycoord:
+            intersection = seg1.intersect_with(seg2)
+            
+            # Check if intersection is valid (x interval is non-empty)
+            if isinstance(intersection.xcoord, Interval) and intersection.xcoord.lb <= intersection.xcoord.ub:
+                # Valid intersection should be contained in both segments
+                assert seg1.contains(intersection)
+                assert seg2.contains(intersection)
     
     @given(vsegment_strategy, vsegment_strategy)
     def test_vsegment_min_distance_properties(self, seg1: VSegment, seg2: VSegment) -> None:

@@ -408,6 +408,30 @@ class Vector2(Generic[T1, T2]):
         """
         T = type(self)
         return T(self.x * alpha, self.y * alpha)
+    
+    def __rmul__(self, alpha: float) -> "Vector2[T1, T2]":
+        """
+        Multiplies a scalar by this vector, returning a new vector.
+
+        This method enables scalar * vector multiplication by delegating
+        to the __mul__ method.
+
+        :param alpha: The scalar value to multiply the vector by.
+        :type alpha: float
+        :return: A new `Vector2` object representing the product.
+
+        Examples:
+            >>> v = Vector2(3, 4)
+            >>> print(2 * v)
+            <6, 8>
+            >>> v3d = Vector2(v, 5)  # vector in 3d
+            >>> print(2 * v3d)
+            <<6, 8>, 10>
+            >>> v_nested = Vector2(Vector2(1, 2), 3)
+            >>> print(2 * v_nested)
+            <<2, 4>, 6>
+        """
+        return self.__mul__(alpha)
 
     def __itruediv__(self, alpha: float) -> "Vector2[T1, T2]":
         """
