@@ -48,10 +48,277 @@ def test_interval() -> None:
     assert a.intersect_with(8) == Interval(8, 8)
     assert a.contains(b)
     assert a.intersect_with(b) == b
-    assert not b.contains(a)
-    assert a.overlaps(b)
-    assert b.overlaps(a)
-    assert min_dist(a, b) == 0
+
+
+class TestIntervalEdgeCases:
+    """Test edge cases for Interval class"""
+
+    def test_interval_zero_length(self) -> None:
+        """Test interval with zero length"""
+        a = Interval(5, 5)
+        assert a.lb == 5
+        assert a.ub == 5
+        assert a.contains(5)
+        assert not a.contains(4)
+        assert not a.contains(6)
+
+    def test_interval_negative_bounds(self) -> None:
+        """Test interval with negative bounds"""
+        a = Interval(-10, -5)
+        assert a.contains(-10)
+        assert a.contains(-5)
+        assert a.contains(-7)
+        assert not a.contains(-11)
+        assert not a.contains(-4)
+
+    def test_interval_cross_zero(self) -> None:
+        """Test interval that crosses zero"""
+        a = Interval(-5, 5)
+        assert a.contains(0)
+        assert a.contains(-5)
+        assert a.contains(5)
+        assert not a.contains(-6)
+        assert not a.contains(6)
+
+    def test_interval_comparison_strict(self) -> None:
+        """Test strict comparison operators"""
+        a = Interval(1, 3)
+        b = Interval(4, 6)
+
+        assert a < b
+        assert b > a
+        assert not (b < a)
+        assert not (a > b)
+
+    def test_interval_comparison_equal(self) -> None:
+        """Test comparison with equal intervals"""
+        a = Interval(1, 3)
+        b = Interval(1, 3)
+
+        assert not (a < b)
+        assert not (b < a)
+        assert a <= b
+        assert b <= a
+        assert a >= b
+        assert b >= a
+        assert a == b
+        assert not (a != b)
+
+    def test_interval_intersect_with_disjoint(self) -> None:
+        """Test intersection with disjoint intervals"""
+        a = Interval(1, 3)
+        b = Interval(5, 7)
+
+        result = a.intersect_with(b)
+        # Returns an invalid interval (lb > ub) for disjoint intervals
+        assert result.lb > result.ub
+
+    def test_interval_intersect_with_adjacent(self) -> None:
+        """Test intersection with adjacent intervals"""
+        a = Interval(1, 3)
+        b = Interval(3, 5)
+
+        result = a.intersect_with(b)
+        # Adjacent intervals intersect at the boundary point
+        assert result == Interval(3, 3)
+
+    def test_interval_intersect_with_point(self) -> None:
+        """Test intersection with a point"""
+        a = Interval(1, 5)
+        point = 3
+
+        result = a.intersect_with(point)
+        assert result == Interval(3, 3)
+
+    def test_interval_intersect_with_point_outside(self) -> None:
+        """Test intersection with point outside interval"""
+        a = Interval(1, 5)
+        point = 10
+
+        result = a.intersect_with(point)
+        # Returns an invalid interval for points outside
+        assert result.lb > result.ub
+
+    def test_interval_contains_interval_partial(self) -> None:
+        """Test contains with partially overlapping interval"""
+        a = Interval(1, 10)
+        b = Interval(5, 15)
+
+        assert not a.contains(b)
+        assert not b.contains(a)
+
+    def test_interval_contains_interval_complete(self) -> None:
+        """Test contains when one interval completely contains another"""
+        a = Interval(1, 10)
+        b = Interval(3, 7)
+
+        assert a.contains(b)
+        assert not b.contains(a)
+
+    def test_interval_addition(self) -> None:
+        """Test interval addition"""
+        a = Interval(1, 3)
+        b = Interval(2, 4)
+
+        result = a + b
+        assert result == Interval(3, 7)
+
+    def test_interval_subtraction(self) -> None:
+        """Test interval subtraction"""
+        a = Interval(5, 10)
+        b = Interval(2, 3)
+
+        result = a - b
+        assert result == Interval(3, 7)
+
+    def test_interval_addition_with_scalar(self) -> None:
+        """Test interval addition with scalar"""
+        a = Interval(1, 3)
+        scalar = 5
+
+        result = a + scalar
+        assert result == Interval(6, 8)
+
+    def test_interval_subtraction_with_scalar(self) -> None:
+        """Test interval subtraction with scalar"""
+        a = Interval(5, 10)
+        scalar = 2
+
+        result = a - scalar
+        assert result == Interval(3, 8)
+
+    def test_interval_str_representation(self) -> None:
+        """Test string representation"""
+        a = Interval(1, 5)
+        str_repr = str(a)
+        assert "1" in str_repr
+        assert "5" in str_repr
+
+    def test_interval_repr(self) -> None:
+        """Test repr representation"""
+        a = Interval(1, 5)
+        repr_str = repr(a)
+        assert "Interval" in repr_str
+
+
+class TestIntervalFunctions:
+    """Test interval utility functions"""
+
+    def test_enlarge(self) -> None:
+        """Test enlarge function"""
+        a = Interval(1, 5)
+        enlarged = enlarge(a, 2)
+
+        assert enlarged.lb == -1
+        assert enlarged.ub == 7
+
+    def test_enlarge_zero(self) -> None:
+        """Test enlarge with zero amount"""
+        a = Interval(1, 5)
+        enlarged = enlarge(a, 0)
+
+        assert enlarged == a
+
+    def test_enlarge_negative(self) -> None:
+        """Test enlarge with negative amount"""
+        a = Interval(1, 5)
+        enlarged = enlarge(a, -1)
+
+        assert enlarged.lb == 2
+        assert enlarged.ub == 4
+
+    def test_hull(self) -> None:
+        """Test hull function"""
+        a = Interval(1, 5)
+        b = Interval(3, 8)
+
+        result = hull(a, b)
+        assert result == Interval(1, 8)
+
+    def test_hull_disjoint(self) -> None:
+        """Test hull with disjoint intervals"""
+        a = Interval(1, 3)
+        b = Interval(6, 8)
+
+        result = hull(a, b)
+        assert result == Interval(1, 8)
+
+    def test_hull_identical(self) -> None:
+        """Test hull with identical intervals"""
+        a = Interval(1, 5)
+        b = Interval(1, 5)
+
+        result = hull(a, b)
+        assert result == Interval(1, 5)
+
+    def test_contain_function(self) -> None:
+        """Test contain function from generic module"""
+        a = Interval(1, 5)
+        b = Interval(2, 4)
+
+        assert contain(a, b)
+        assert not contain(b, a)
+
+    def test_intersection_function(self) -> None:
+        """Test intersection function"""
+        a = Interval(1, 5)
+        b = Interval(3, 8)
+
+        result = intersection(a, b)
+        assert result == Interval(3, 5)
+
+    def test_intersection_function_disjoint(self) -> None:
+        """Test intersection function with disjoint intervals"""
+        a = Interval(1, 3)
+        b = Interval(5, 8)
+
+        result = intersection(a, b)
+        # Returns invalid interval for disjoint intervals
+        assert result.lb > result.ub
+
+    def test_min_dist_function(self) -> None:
+        """Test min_dist function"""
+        a = Interval(1, 3)
+        b = Interval(6, 8)
+
+        result = min_dist(a, b)
+        assert result == 3  # Distance between 3 and 6
+
+    def test_min_dist_overlapping(self) -> None:
+        """Test min_dist with overlapping intervals"""
+        a = Interval(1, 5)
+        b = Interval(3, 8)
+
+        result = min_dist(a, b)
+        assert result == 0
+
+    def test_overlap_function(self) -> None:
+        """Test overlap function"""
+        a = Interval(1, 5)
+        b = Interval(3, 8)
+
+        assert overlap(a, b)
+        assert overlap(b, a)
+
+    def test_overlap_function_disjoint(self) -> None:
+        """Test overlap with disjoint intervals"""
+        a = Interval(1, 3)
+        b = Interval(5, 8)
+
+        assert not overlap(a, b)
+        assert not overlap(b, a)
+
+    def test_overlap_function_adjacent(self) -> None:
+        """Test overlap with adjacent intervals"""
+        a = Interval(1, 3)
+        b = Interval(3, 5)
+
+        assert overlap(a, b)
+        assert overlap(b, a)
+        assert not b.contains(a)
+        assert a.overlaps(b)
+        assert b.overlaps(a)
+        assert min_dist(a, b) == 0
 
 
 @pytest.mark.parametrize(

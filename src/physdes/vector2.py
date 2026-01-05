@@ -408,7 +408,7 @@ class Vector2(Generic[T1, T2]):
         """
         T = type(self)
         return T(self.x * alpha, self.y * alpha)
-    
+
     def __rmul__(self, alpha: float) -> "Vector2[T1, T2]":
         """
         Multiplies a scalar by this vector, returning a new vector.

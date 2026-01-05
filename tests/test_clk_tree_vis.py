@@ -449,6 +449,249 @@ class TestEdgeCases:
         assert output_file.exists()
         # Should create SVG without analysis box
 
+    def test_calculate_bounds_empty_points(self) -> None:
+        """Test bounds calculation with empty points"""
+        visualizer = ClockTreeVisualizer()
+        min_x, min_y, max_x, max_y = visualizer._calculate_bounds([], [])
+
+        # Should return default bounds
+        assert min_x == 0
+        assert min_y == 0
+        assert max_x == 100
+        assert max_y == 100
+
+    def test_calculate_bounds_single_point(self) -> None:
+        """Test bounds calculation with single point"""
+        visualizer = ClockTreeVisualizer()
+        nodes = [TreeNode("n1", Point(50, 50))]
+        sinks = [Sink("s1", Point(50, 50), 1.0)]
+
+        min_x, min_y, max_x, max_y = visualizer._calculate_bounds(nodes, sinks)
+
+        # Bounds should include point with padding
+        assert min_x < 50
+        assert max_x > 50
+        assert min_y < 50
+        assert max_y > 50
+
+    def test_calculate_bounds_identical_points(self) -> None:
+        """Test bounds calculation when all points are identical"""
+        visualizer = ClockTreeVisualizer()
+        nodes = [
+            TreeNode("n1", Point(10, 10)),
+            TreeNode("n2", Point(10, 10)),
+        ]
+        sinks = [Sink("s1", Point(10, 10), 1.0)]
+
+        min_x, min_y, max_x, max_y = visualizer._calculate_bounds(nodes, sinks)
+
+        # Should add padding around the single point
+        assert min_x < 10
+        assert max_x > 10
+        assert min_y < 10
+        assert max_y > 10
+
+
+class TestVisualizationEdgeCases:
+    """Test edge cases in visualization"""
+
+    def test_visualize_tree_with_zero_wire_length(self, tmp_path: Path) -> None:
+        """Test visualization with zero wire length nodes"""
+        s1 = TreeNode("s1", Point(10, 20))
+        s2 = TreeNode("s2", Point(30, 40))
+        root = TreeNode("root", Point(20, 30), left=s1, right=s2)
+        s2.parent = root
+        s1.parent = root
+
+        # Set wire lengths to zero
+        s1.wire_length = 0
+        s2.wire_length = 0
+
+        visualizer = ClockTreeVisualizer()
+        output_file = tmp_path / "zero_wire_length.svg"
+
+        visualizer.visualize_tree(root, [], str(output_file), 300, 300)
+
+        assert output_file.exists()
+        # Should still create valid SVG
+
+    def test_visualize_tree_large_coordinates(self, tmp_path: Path) -> None:
+        """Test visualization with very large coordinates"""
+        s1 = TreeNode("s1", Point(10000, 10000))
+        s2 = TreeNode("s2", Point(20000, 20000))
+        root = TreeNode("root", Point(15000, 15000), left=s1, right=s2)
+        s2.parent = root
+        s1.parent = root
+
+        visualizer = ClockTreeVisualizer()
+        output_file = tmp_path / "large_coords.svg"
+
+        visualizer.visualize_tree(root, [], str(output_file), 500, 500)
+
+        assert output_file.exists()
+        # Should scale coordinates to fit SVG
+
+    def test_visualize_tree_negative_coordinates(self, tmp_path: Path) -> None:
+        """Test visualization with negative coordinates"""
+        s1 = TreeNode("s1", Point(-100, -100))
+        s2 = TreeNode("s2", Point(100, 100))
+        root = TreeNode("root", Point(0, 0), left=s1, right=s2)
+        s2.parent = root
+        s1.parent = root
+
+        visualizer = ClockTreeVisualizer()
+        output_file = tmp_path / "negative_coords.svg"
+
+        visualizer.visualize_tree(root, [], str(output_file), 400, 400)
+
+        assert output_file.exists()
+        # Should handle negative coordinates
+
+    def test_visualize_tree_with_delays(self, tmp_path: Path) -> None:
+        """Test visualization with delay information"""
+        s1 = TreeNode("s1", Point(10, 20), delay=1.5, capacitance=1.0)
+        s2 = TreeNode("s2", Point(30, 40), delay=2.0, capacitance=1.5)
+        root = TreeNode("root", Point(20, 30), left=s1, right=s2)
+        s2.parent = root
+        s1.parent = root
+
+        sinks = [Sink("s1", Point(10, 20), 1.0), Sink("s2", Point(30, 40), 1.5)]
+
+        visualizer = ClockTreeVisualizer()
+        output_file = tmp_path / "with_delays.svg"
+
+        svg_content = visualizer.visualize_tree(root, sinks, str(output_file), 400, 400)
+
+        assert output_file.exists()
+        # Check that delay information is included
+        assert "d:" in svg_content
+
+    def test_visualize_tree_without_delays(self, tmp_path: Path) -> None:
+        """Test visualization without delay information"""
+        s1 = TreeNode("s1", Point(10, 20))
+        s2 = TreeNode("s2", Point(30, 40))
+        root = TreeNode("root", Point(20, 30), left=s1, right=s2)
+        s2.parent = root
+        s1.parent = root
+
+        visualizer = ClockTreeVisualizer()
+        output_file = tmp_path / "without_delays.svg"
+
+        visualizer.visualize_tree(root, [], str(output_file), 400, 400)
+
+        assert output_file.exists()
+        # Should create SVG even without delay info
+
+    def test_create_comparison_visualization_invalid_svg(self) -> None:
+        """Test comparison visualization with invalid temporary SVG"""
+        tree1 = TreeNode("root1", Point(50, 50))
+        tree2 = TreeNode("root2", Point(150, 50))
+        sinks = [Sink("s1", Point(10, 20), 1.0)]
+        analysis = {"skew": 0.1, "max_delay": 5.0, "total_wirelength": 100}
+
+        data = [
+            {"tree": tree1, "sinks": sinks, "analysis": analysis, "title": "Tree 1"},
+            {"tree": tree2, "sinks": sinks, "analysis": analysis, "title": "Tree 2"},
+        ]
+
+        # This should work fine with valid data
+        svg_content = create_comparison_visualization(data, "", 800, 400)
+        assert "Tree 1" in svg_content
+        assert "Tree 2" in svg_content
+
+
+class TestRandomPointsGeneration:
+    """Test random points generation for sinks"""
+
+    def test_generate_random_points_for_sinks(self) -> None:
+        """Test random points generation"""
+        from physdes.cts.clk_tree_vis import generate_random_points_for_sinks
+
+        coords = generate_random_points_for_sinks()
+
+        # Should generate 16 points
+        assert len(coords) == 16
+
+        # Each point should have 2 coordinates
+        for coord in coords:
+            assert len(coord) == 2
+            assert isinstance(coord[0], (int, float))
+            assert isinstance(coord[1], (int, float))
+
+        # Coordinates should be in reasonable range (0-1 for Halton, but may be scaled)
+        for coord in coords:
+            assert coord[0] >= 0
+            assert coord[1] >= 0
+
+    def test_generate_random_points_consistency(self) -> None:
+        """Test that random points are consistent with same seed"""
+        from physdes.cts.clk_tree_vis import generate_random_points_for_sinks
+
+        coords1 = generate_random_points_for_sinks()
+        coords2 = generate_random_points_for_sinks()
+
+        # Should be identical due to fixed seed
+        assert coords1 == coords2
+
+
+class TestExampleVisualization:
+    """Test example visualization function"""
+
+    def test_visualize_example_tree(self, tmp_path: Path) -> None:
+        """Test example tree visualization"""
+        from physdes.cts.clk_tree_vis import visualize_example_tree
+
+        # Change to temp directory to avoid creating files in project root
+        import os
+
+        original_dir = os.getcwd()
+        os.chdir(tmp_path)
+
+        try:
+            linear_svg, elmore_svg, comparison_svg = visualize_example_tree()
+
+            # Check that SVGs are generated
+            assert "<svg" in linear_svg
+            assert "<svg" in elmore_svg
+            assert "<svg" in comparison_svg
+
+            # Check that files were created
+            assert (tmp_path / "linear_model_clock_tree.svg").exists()
+            assert (tmp_path / "elmore_model_clock_tree.svg").exists()
+            assert (tmp_path / "delay_model_comparison.svg").exists()
+        finally:
+            os.chdir(original_dir)
+
+
+class TestVisualizationStyling:
+    """Test visualization styling options"""
+
+    def test_visualizer_custom_colors(self) -> None:
+        """Test visualizer with custom colors"""
+        viz = ClockTreeVisualizer(
+            sink_color="#FF0000",
+            internal_color="#00FF00",
+            root_color="#0000FF",
+            wire_color="#FFFF00",
+        )
+
+        assert viz.sink_color == "#FF0000"
+        assert viz.internal_color == "#00FF00"
+        assert viz.root_color == "#0000FF"
+        assert viz.wire_color == "#FFFF00"
+
+    def test_visualizer_custom_sizes(self) -> None:
+        """Test visualizer with custom sizes"""
+        viz = ClockTreeVisualizer(
+            margin=100,
+            node_radius=15,
+            wire_width=5,
+        )
+
+        assert viz.margin == 100
+        assert viz.node_radius == 15
+        assert viz.wire_width == 5
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
