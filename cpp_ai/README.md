@@ -116,16 +116,16 @@ auto p3 = p1 + v;  // (5, 6)
 auto v2 = p2 - p1; // (2, 2)
 
 // Nearest point search
-std::vector<Point<int>> candidates = {{1, 1}, {5, 5}, {3, 3}};
+std::vector<Point<int>> candidates = { {1, 1}, {5, 5}, {3, 3} };
 auto nearest = nearest_point_to(p1, candidates);  // &Point{3, 3}
 ```
 
 ### Rectangle and Segment Operations
 
 ```cpp
-Rectangle<int> rect{{1, 5}, {2, 6}};
-VSegment<int> vseg{5, {1, 10}};
-HSegment<int> hseg{{1, 10}, 5};
+Rectangle<int> rect{ {1, 5}, {2, 6} };
+VSegment<int> vseg{5, {1, 10} };
+HSegment<int> hseg{ {1, 10}, 5};
 
 // Rectangle properties
 auto ll = rect.ll();      // (1, 2)
@@ -134,7 +134,7 @@ auto area = rect.area();  // 16
 
 // Segment operations
 bool on_segment = vseg.contains(Point{5, 3});  // true
-auto flipped = vseg.flip();  // HSegment{{1, 10}, 5}
+auto flipped = vseg.flip();  // HSegment{ {1, 10}, 5}
 ```
 
 ## Project Structure
