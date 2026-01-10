@@ -39,6 +39,7 @@ intervals without having to manually handle the lower and upper bounds separatel
 """
 
 from typing import Any, Generic, TypeVar, Union
+
 from .generic import displacement, min_dist
 
 T = TypeVar("T", int, float)

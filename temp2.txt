@@ -1,6 +1,0 @@
-﻿tests/test_polygon_hypothesis.py::TestPolygonPointInclusion::test_polygon_inclusion_translation_invariance FAILED [ 71%] 
-___ TestPolygonPointInclusion.test_polygon_inclusion_translation_invariance ___ 
->   def test_polygon_inclusion_translation_invariance(self, poly: Polygon) -> None: 
-    def test_polygon_inclusion_translation_invariance(self, poly: Polygon) -> None: 
-E       Falsifying example: test_polygon_inclusion_translation_invariance( 
-FAILED tests/test_polygon_hypothesis.py::TestPolygonPointInclusion::test_polygon_inclusion_translation_invariance

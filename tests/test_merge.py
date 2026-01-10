@@ -1,8 +1,9 @@
+from hypothesis import given
+from hypothesis.strategies import integers
+
 from physdes.interval import Interval, min_dist
 from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
-from hypothesis import given
-from hypothesis.strategies import integers
 
 
 def test_ManhattanArc() -> None:

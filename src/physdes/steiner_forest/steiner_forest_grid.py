@@ -1,5 +1,5 @@
 import collections
-from typing import List, Tuple, Dict, Set
+from typing import Dict, List, Set, Tuple
 
 
 class UnionFind:

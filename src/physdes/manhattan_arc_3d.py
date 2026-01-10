@@ -40,10 +40,11 @@ from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from icecream import ic  # type: ignore
 
+from .manhattan_arc import ManhattanArc
+
 # from .generic import min_dist
 # from .interval import enlarge
 from .point import Point
-from .manhattan_arc import ManhattanArc
 
 if TYPE_CHECKING:
     from .interval import Interval

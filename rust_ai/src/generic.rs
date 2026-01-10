@@ -21,7 +21,7 @@ pub trait Contains<Rhs = Self> {
 pub trait IntersectWith<Rhs = Self> {
     /// Type of the intersection result
     type Output;
-    
+
     /// Compute the intersection with another object
     fn intersect_with(&self, other: &Rhs) -> Option<Self::Output>;
 }
@@ -30,7 +30,7 @@ pub trait IntersectWith<Rhs = Self> {
 pub trait MinDistWith<Rhs = Self> {
     /// Type of the distance result
     type Output;
-    
+
     /// Compute the minimum Manhattan distance to another object
     fn min_dist_with(&self, other: &Rhs) -> Self::Output;
 }
@@ -111,7 +111,7 @@ where
 pub trait Measure {
     /// Type of the measurement result
     type Output;
-    
+
     /// Compute the measure (size) of the object
     fn measure(&self) -> Self::Output;
 }
@@ -120,7 +120,7 @@ pub trait Measure {
 pub trait Center {
     /// Type of the center result
     type Output;
-    
+
     /// Compute the center of the object
     fn center(&self) -> Self::Output;
 }
@@ -152,7 +152,7 @@ impl Contains for f64 {
 
 impl MinDistWith for i32 {
     type Output = i32;
-    
+
     fn min_dist_with(&self, other: &i32) -> i32 {
         (self - other).abs()
     }
@@ -160,7 +160,7 @@ impl MinDistWith for i32 {
 
 impl MinDistWith for f64 {
     type Output = f64;
-    
+
     fn min_dist_with(&self, other: &f64) -> f64 {
         (self - other).abs()
     }

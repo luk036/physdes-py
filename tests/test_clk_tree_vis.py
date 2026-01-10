@@ -3,9 +3,9 @@ Unit tests for Clock Tree Visualization module
 """
 
 import sys
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import List
-import xml.etree.ElementTree as ET
 
 import pytest
 
@@ -639,10 +639,10 @@ class TestExampleVisualization:
 
     def test_visualize_example_tree(self, tmp_path: Path) -> None:
         """Test example tree visualization"""
-        from physdes.cts.clk_tree_vis import visualize_example_tree
-
         # Change to temp directory to avoid creating files in project root
         import os
+
+        from physdes.cts.clk_tree_vis import visualize_example_tree
 
         original_dir = os.getcwd()
         os.chdir(tmp_path)

@@ -2,8 +2,8 @@ from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
 from tests.conftest import (
     generate_2d_init_points,
-    generate_3d_init_points,
     generate_2d_simple_points,
+    generate_3d_init_points,
     generate_3d_simple_points,
 )
 

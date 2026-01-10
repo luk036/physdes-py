@@ -1,8 +1,9 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
-import matplotlib.cm as cm
 import random
+
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Polygon
 
 
 class RectilinearVoronoi:

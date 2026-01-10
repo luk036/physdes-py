@@ -22,17 +22,17 @@ impl<T> Interval<T> {
     pub fn new(lb: T, ub: T) -> Self {
         Self { lb, ub }
     }
-    
+
     /// Get the lower bound
     pub fn lb(&self) -> &T {
         &self.lb
     }
-    
+
     /// Get the upper bound
     pub fn ub(&self) -> &T {
         &self.ub
     }
-    
+
     /// Check if the interval is invalid (lower bound > upper bound)
     pub fn is_invalid(&self) -> bool
     where
@@ -40,7 +40,7 @@ impl<T> Interval<T> {
     {
         self.lb > self.ub
     }
-    
+
     /// Check if the interval is valid (lower bound <= upper bound)
     pub fn is_valid(&self) -> bool
     where
@@ -48,7 +48,7 @@ impl<T> Interval<T> {
     {
         self.lb <= self.ub
     }
-    
+
     /// Get the width of the interval
     pub fn width(&self) -> T
     where
@@ -56,7 +56,7 @@ impl<T> Interval<T> {
     {
         self.ub - self.lb
     }
-    
+
     /// Check if the interval is empty (zero width)
     pub fn is_empty(&self) -> bool
     where
@@ -114,7 +114,7 @@ where
     T: PartialOrd + Copy,
 {
     type Output = Self;
-    
+
     fn intersect_with(&self, other: &Self) -> Option<Self> {
         if self.overlaps(other) {
             let lb = if self.lb > other.lb { self.lb } else { other.lb };
@@ -131,7 +131,7 @@ where
     T: Copy + PartialOrd + Sub<Output = T> + Signed,
 {
     type Output = T;
-    
+
     fn min_dist_with(&self, other: &Self) -> T {
         if self.overlaps(other) {
             T::zero()
@@ -148,7 +148,7 @@ where
     T: Copy + PartialOrd + Sub<Output = T> + Signed,
 {
     type Output = T;
-    
+
     fn min_dist_with(&self, other: &T) -> T {
         if self.contains(other) {
             T::zero()
@@ -165,7 +165,7 @@ where
     T: Copy + Sub<Output = T>,
 {
     type Output = T;
-    
+
     fn measure(&self) -> T {
         self.width()
     }
@@ -176,7 +176,7 @@ where
     T: Copy + Add<Output = T> + Sub<Output = T> + Num + From<i32>,
 {
     type Output = T;
-    
+
     fn center(&self) -> T {
         (self.lb + self.ub) / T::from(2)
     }
@@ -188,7 +188,7 @@ where
     T: Add<Output = T> + Copy,
 {
     type Output = Self;
-    
+
     fn add(self, rhs: T) -> Self::Output {
         Self::new(self.lb + rhs, self.ub + rhs)
     }
@@ -199,7 +199,7 @@ where
     T: Sub<Output = T> + Copy,
 {
     type Output = Self;
-    
+
     fn sub(self, rhs: T) -> Self::Output {
         Self::new(self.lb - rhs, self.ub - rhs)
     }
@@ -210,7 +210,7 @@ where
     T: Mul<Output = T> + Copy,
 {
     type Output = Self;
-    
+
     fn mul(self, rhs: T) -> Self::Output {
         Self::new(self.lb * rhs, self.ub * rhs)
     }
@@ -242,11 +242,11 @@ where
     T::Epsilon: Copy,
 {
     type Epsilon = T::Epsilon;
-    
+
     fn default_epsilon() -> Self::Epsilon {
         T::default_epsilon()
     }
-    
+
     fn abs_diff_eq(&self, other: &Self, epsilon: Self::Epsilon) -> bool {
         self.lb.abs_diff_eq(&other.lb, epsilon) && self.ub.abs_diff_eq(&other.ub, epsilon)
     }
@@ -260,7 +260,7 @@ where
     fn default_max_relative() -> Self::Epsilon {
         T::default_max_relative()
     }
-    
+
     fn relative_eq(&self, other: &Self, epsilon: Self::Epsilon, max_relative: Self::Epsilon) -> bool {
         self.lb.relative_eq(&other.lb, epsilon, max_relative) &&
         self.ub.relative_eq(&other.ub, epsilon, max_relative)

@@ -8,8 +8,8 @@ using SVG format for clear, scalable graphics.
 import doctest
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from physdes.point import Point
 from physdes.cts.dme_algorithm import Sink
+from physdes.point import Point
 
 
 class ClockTree3dVisualizer:

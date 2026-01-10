@@ -15,7 +15,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Library target (header-only)
 add_library(physdes INTERFACE)
-target_include_directories(physdes INTERFACE 
+target_include_directories(physdes INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
@@ -23,7 +23,7 @@ target_include_directories(physdes INTERFACE
 # Tests
 if(BUILD_TESTS)
     enable_testing()
-    
+
     # Find doctest
     find_package(doctest QUIET)
     if(NOT doctest_FOUND)
@@ -36,11 +36,11 @@ if(BUILD_TESTS)
         )
         FetchContent_MakeAvailable(doctest)
     endif()
-    
+
     # Add test executable
     add_executable(physdes_tests tests/main.cpp)
     target_link_libraries(physdes_tests PRIVATE physdes doctest::doctest)
-    
+
     add_test(NAME physdes_tests COMMAND physdes_tests)
 endif()
 

@@ -1,7 +1,6 @@
 from physdes.router.global_router import GlobalRouter
-from physdes.router.routing_visualizer import (
+from physdes.router.routing_visualizer import (  # save_routing_tree3d_svg,
     visualize_routing_tree3d_svg,
-    # save_routing_tree3d_svg,
 )
 from tests.conftest import generate_3d_random_points
 

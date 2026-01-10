@@ -1,7 +1,8 @@
 import pytest
+
+from physdes.manhattan_arc import ManhattanArc
 from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
-from physdes.manhattan_arc import ManhattanArc
 
 
 def test_from_point() -> None:

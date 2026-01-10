@@ -1,8 +1,8 @@
 from enum import Enum, auto
 from typing import Any, List, Optional, Tuple
 
-from physdes.point import Point
 from physdes.interval import Interval
+from physdes.point import Point
 
 
 class NodeType(Enum):

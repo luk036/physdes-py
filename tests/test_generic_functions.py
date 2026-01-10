@@ -1,3 +1,7 @@
+from typing import Union
+
+import pytest
+
 from physdes.generic import (
     contain,
     displacement,
@@ -9,10 +13,6 @@ from physdes.generic import (
 from physdes.interval import Interval
 from physdes.point import Point
 from physdes.vector2 import Vector2
-from typing import Union
-
-
-import pytest
 
 
 @pytest.mark.parametrize(

@@ -33,14 +33,14 @@ Simply include the main header:
 
 int main() {
     using namespace recti;
-    
+
     Interval<int> interval{1, 5};
     Point<int> point{3, 4};
-    
+
     // Use geometric operations
     bool contains = interval.contains(3);  // true
     auto dist = point.min_dist_with(Point{5, 6});  // 4
-    
+
     return 0;
 }
 ```

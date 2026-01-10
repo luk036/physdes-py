@@ -1,6 +1,8 @@
-from hypothesis import given, strategies as st, assume
-from physdes.polygon import Polygon, point_in_polygon
+from hypothesis import assume, given
+from hypothesis import strategies as st
+
 from physdes.point import Point
+from physdes.polygon import Polygon, point_in_polygon
 from physdes.vector2 import Vector2
 
 # Strategy for generating numeric values (integers and floats)

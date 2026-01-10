@@ -5,16 +5,16 @@ This module contains property-based tests that verify fundamental geometric
 properties and invariants across multiple geometric classes.
 """
 
-from hypothesis import given, strategies as st
 import math
 
-from physdes.point import Point
-from physdes.vector2 import Vector2
-from physdes.interval import Interval
-from physdes.polygon import Polygon, point_in_polygon
-from physdes.generic import contain, intersection
-from physdes.interval import hull, enlarge
+from hypothesis import given
+from hypothesis import strategies as st
 
+from physdes.generic import contain, intersection
+from physdes.interval import Interval, enlarge, hull
+from physdes.point import Point
+from physdes.polygon import Polygon, point_in_polygon
+from physdes.vector2 import Vector2
 
 # Strategy for generating numeric values (integers and floats)
 numeric_values = st.one_of(

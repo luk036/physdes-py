@@ -6,12 +6,12 @@ hypothesis library. These tests verify mathematical properties and invariants
 that should hold for all valid inputs.
 """
 
-from hypothesis import given, strategies as st, assume
+from hypothesis import assume, given
+from hypothesis import strategies as st
 
-from physdes.polygon import Polygon, point_in_polygon
 from physdes.point import Point
+from physdes.polygon import Polygon, point_in_polygon
 from physdes.vector2 import Vector2
-
 
 # Strategy for generating numeric values (integers and floats)
 numeric_values = st.one_of(

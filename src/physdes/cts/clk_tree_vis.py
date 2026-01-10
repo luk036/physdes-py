@@ -9,8 +9,9 @@ import doctest
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from lds_gen.ilds import Halton
-from physdes.point import Point
+
 from physdes.cts.dme_algorithm import Sink
+from physdes.point import Point
 
 
 class ClockTreeVisualizer:
@@ -547,7 +548,6 @@ def visualize_example_tree() -> Tuple[str, str, str]:
 
     # coords = generate_random_points_for_sinks()
     # example_sinks = [Sink(f"s{i}", Point(x * 100, y * 100), 1.0) for i, (x, y) in enumerate(coords)]
-
     # Generate example clock tree with both delay models
     example_sinks = [
         Sink("s1", Point(-100, 40), 1.0),

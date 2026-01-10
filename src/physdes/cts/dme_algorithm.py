@@ -26,7 +26,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
-
 from physdes.manhattan_arc import ManhattanArc
 from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point

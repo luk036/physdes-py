@@ -113,11 +113,13 @@ class ManhattanArc(Generic[T1, T2]):
 
     @overload
     @staticmethod
-    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]": ...
+    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
+        ...
 
     @overload
     @staticmethod
-    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
+    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]":
+        ...
 
     @staticmethod
     def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":

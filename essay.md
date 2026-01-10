@@ -136,16 +136,16 @@ Geometric operations often have special behaviors for edge cases (points on boun
 
 ```python
 @given(numeric_values, numeric_values, numeric_values)
-def test_degenerate_triangle_handling(self, x1: float, y1: float, x2: float, y2: float, 
+def test_degenerate_triangle_handling(self, x1: float, y1: float, x2: float, y2: float,
                                      x3: float, y3: float) -> None:
     """Test handling of degenerate triangles (collinear points)."""
     p1 = Point(x1, y1)
     p2 = Point(x2, y2)
     p3 = Point(x3, y3)
-    
+
     # Create triangle
     tri = Polygon.from_pointset([p1, p2, p3])
-    
+
     # Should still compute area (might be zero for collinear points)
     area_x2 = tri.signed_area_x2
     assert isinstance(area_x2, (int, float))

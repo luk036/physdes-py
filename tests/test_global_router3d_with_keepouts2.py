@@ -1,9 +1,7 @@
-from physdes.point import Point
 from physdes.interval import Interval
+from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
-from physdes.router.routing_visualizer import (
-    visualize_routing_tree3d_svg,
-)
+from physdes.router.routing_visualizer import visualize_routing_tree3d_svg
 from tests.conftest import generate_3d_random_points_with_index
 
 

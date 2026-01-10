@@ -1,13 +1,14 @@
-from physdes.point import Point
+from icecream import ic
+
 from physdes.interval import Interval
+from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
+from physdes.router.routing_tree import NodeType
 from physdes.router.routing_visualizer import (
-    visualize_routing_tree3d_svg,
     save_routing_tree3d_svg,
+    visualize_routing_tree3d_svg,
 )
 from tests.conftest import generate_3d_random_points_with_index
-from icecream import ic
-from physdes.router.routing_tree import NodeType
 
 
 def test_route3d_with_steiner_and_keepouts() -> None:

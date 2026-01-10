@@ -17,7 +17,7 @@ from physdes.rpolygon import (
     rpolygon_make_ymonotone_hull,
 )
 from physdes.vector2 import Vector2
-from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
+from tests.conftest import get_circle_svg_elements, get_polygon_svg_elements
 
 
 def test_RPolygon() -> None:

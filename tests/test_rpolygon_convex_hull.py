@@ -8,7 +8,7 @@ from physdes.rpolygon import (
     rpolygon_is_ymonotone,
     rpolygon_make_convex_hull,
 )
-from tests.conftest import get_polygon_svg_elements, get_circle_svg_elements
+from tests.conftest import get_circle_svg_elements, get_polygon_svg_elements
 
 
 def test_rpolygon_make_convex_hull() -> None:

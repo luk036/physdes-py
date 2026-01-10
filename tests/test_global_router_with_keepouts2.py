@@ -1,11 +1,9 @@
 from lds_gen.ilds import Halton
 
-from physdes.point import Point
 from physdes.interval import Interval
+from physdes.point import Point
 from physdes.router.global_router import GlobalRouter
-from physdes.router.routing_visualizer import (
-    visualize_routing_tree_svg,
-)
+from physdes.router.routing_visualizer import visualize_routing_tree_svg
 
 
 def test_route_with_steiner_and_keepouts() -> None:

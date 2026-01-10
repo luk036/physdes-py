@@ -6,12 +6,12 @@ classes using the hypothesis library. These tests verify mathematical properties
 invariants that should hold for all valid inputs.
 """
 
-from hypothesis import given, strategies as st
+from hypothesis import given
+from hypothesis import strategies as st
 
-from physdes.recti import Rectangle, VSegment, HSegment
-from physdes.point import Point
 from physdes.interval import Interval
-
+from physdes.point import Point
+from physdes.recti import HSegment, Rectangle, VSegment
 
 # Strategy for generating integer values
 int_values = st.integers(min_value=-100, max_value=100)

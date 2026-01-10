@@ -1,7 +1,6 @@
-import sys
 import os
+import sys
 from pathlib import Path
-
 
 from physdes.steiner_forest.steiner_forest_grid import (
     UnionFind,
