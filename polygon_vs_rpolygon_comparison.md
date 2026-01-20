@@ -67,7 +67,7 @@ classDiagram
         +is_anticlockwise(): bool
         +is_convex(): bool
     }
-    
+
     class RPolygon {
         -_origin: Point[int, int]
         -_vecs: List[Vector2[int, int]]
@@ -76,19 +76,19 @@ classDiagram
         +is_anticlockwise(): bool
         +to_polygon(): Polygon[int]
     }
-    
+
     class Point {
         +xcoord: T1
         +ycoord: T2
         +displace(other: Point): Vector2
     }
-    
+
     class Vector2 {
         +x: T1
         +y: T2
         +cross(other: Vector2): T
     }
-    
+
     Polygon --> Point
     Polygon --> Vector2
     RPolygon --> Point
@@ -426,7 +426,7 @@ $$\text{concave}(v_i) = \begin{cases}
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
-    
+
     This function implements a recursive algorithm to partition a given rectilinear
     polygon into a set of convex components. The process begins by identifying a
     concave vertex in the polygon. Once a concave vertex is found, a cut is made to
@@ -451,7 +451,7 @@ The algorithm uses a sophisticated distance-based approach to select optimal cut
 def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int], bool]:
     """
     Finds the point in a polygon that is closest to a given vertex.
-    
+
     This function is a key helper for the polygon cutting algorithms. When a concave
     vertex is identified, this function is used to find the best vertex to connect it
     to, in order to create a cut that resolves the concavity. The "best" vertex is
@@ -540,7 +540,7 @@ The library also provides `rpolygon_cut_explicit()`, an alternative implementati
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
-    
+
     This function provides an alternative algorithm for partitioning a rectilinear polygon
     into convex components. Like `rpolygon_cut_convex`, it works by identifying concave
     vertices and introducing cuts to resolve them. The underlying logic for selecting
@@ -716,7 +716,7 @@ class SpatialIndex:
         self.rtree = RTree()
         for i, poly in enumerate(polygons):
             self.rtree.insert(i, poly.bounding_box())
-    
+
     def query_point(self, point: Point) -> List[int]:
         candidates = self.rtree.query(point.bounding_box())
         return [i for i in candidates if point_in_polygon(polygons[i].vertices, point)]

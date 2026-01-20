@@ -135,11 +135,11 @@ class RectilinearVoronoi:
                     if len(region_points) > 0:
                         # Simple alpha shape (concave hull) approximation
                         # Create a polygon from the outer points
-                        _min_x, _max_x = (
+                        _ = (
                             np.min(region_points[:, 0]),
                             np.max(region_points[:, 0]),
                         )
-                        _min_y, _max_y = (
+                        _ = (
                             np.min(region_points[:, 1]),
                             np.max(region_points[:, 1]),
                         )

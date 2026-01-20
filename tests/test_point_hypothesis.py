@@ -404,4 +404,4 @@ class TestPointGeometricProperties:
                     assert False, f"First intersection raised {e1} but second didn't"
                 except Exception as e2:
                     # Both should raise the same type of exception
-                    assert type(e1) == type(e2)
+                    assert isinstance(e1, type(e2))

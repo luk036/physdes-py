@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Polygon vs Rectilinear Polygon (RPolygon): A Comprehensive Comparison 🔍</title>
-    
+
     <!-- KaTeX CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
-    
+
     <!-- Mermaid JS -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
-    
+
     <!-- Prism.js for code highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-    
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -255,10 +255,10 @@
             <p>In computational geometry and VLSI physical design, polygons represent fundamental geometric primitives. This essay provides an in-depth comparison between the <code>Polygon</code> and <code>RPolygon</code> (Rectilinear Polygon) classes from the physdes-py library, examining their implementation details, mathematical foundations, practical applications, and performance characteristics. Through source code analysis, algorithmic comparisons, and visual examples, we'll explore both the shared foundations and key distinctions that make these polygon types suited for different computational tasks.</p>
 
             <h2><span class="emoji">🧮</span>Mathematical Foundations</h2>
-            
+
             <h3><span class="emoji">📐</span>General Polygons: The Arbitrary Angle Domain</h3>
             <p>A general polygon is defined as a closed planar shape formed by a finite sequence of line segments. Mathematically, we can represent a polygon $P$ as an ordered sequence of vertices $v_0, v_1, \ldots, v_{n-1}$ where each vertex $v_i = (x_i, y_i)$ in $\mathbb{R}^2$ and edges connect consecutive vertices $(v_i, v_{i+1})$ with $v_n = v_0$.</p>
-            
+
             <div class="math-block">
                 <p>The signed area of a polygon using the Shoelace formula is:</p>
                 $$A = \frac{1}{2} \sum_{i=0}^{n-1} (x_i y_{i+1} - x_{i+1} y_i)$$
@@ -267,7 +267,7 @@
 
             <h3><span class="emoji">📏</span>Rectilinear Polygons: The Orthogonal Constraint</h3>
             <p>A rectilinear polygon is a special case where all edges are either horizontal or vertical. This constraint means that for any edge $(v_i, v_{i+1})$, either $x_i = x_{i+1}$ (vertical edge) or $y_i = y_{i+1}$ (horizontal edge).</p>
-            
+
             <p>This orthogonal constraint provides significant computational advantages:</p>
             <div class="benefits-list">
                 <ul>
@@ -280,7 +280,7 @@
             <div class="highlight-box">
                 <h4><span class="emoji">🔥</span>Critical Optimization: Even-Index Vertex Storage</h4>
                 <p>One of the most innovative aspects of the <code>RPolygon</code> implementation is its clever vertex storage strategy. <strong>The RPolygon class only stores vertices at even indices: $\{v_0, v_2, v_4, \ldots\}$</strong>. This optimization leverages a fundamental property of rectilinear polygons:</p>
-                
+
                 <p>In a rectilinear polygon, consecutive vertices alternate between horizontal and vertical edges. This means that given any two consecutive stored vertices $v_{2i}$ and $v_{2i+2}$, the intermediate vertex $v_{2i+1}$ can be <strong>uniquely determined</strong> as either:</p>
                 <ul>
                     <li>$(x_{2i}, y_{2i+2})$ if the edge from $v_{2i}$ to $v_{2i+1}$ is vertical</li>
@@ -310,7 +310,7 @@
             </div>
 
             <h2><span class="emoji">🏗️</span>Implementation Architecture</h2>
-            
+
             <h3>Class Hierarchies and Design Patterns</h3>
             <div class="mermaid-container">
                 <div class="mermaid">
@@ -324,7 +324,7 @@
                             +is_anticlockwise(): bool
                             +is_convex(): bool
                         }
-                        
+
                         class RPolygon {
                             -_origin: Point[int, int]
                             -_vecs: List[Vector2[int, int]]
@@ -333,19 +333,19 @@
                             +is_anticlockwise(): bool
                             +to_polygon(): Polygon[int]
                         }
-                        
+
                         class Point {
                             +xcoord: T1
                             +ycoord: T2
                             +displace(other: Point): Vector2
                         }
-                        
+
                         class Vector2 {
                             +x: T1
                             +y: T2
                             +cross(other: Vector2): T
                         }
-                        
+
                         Polygon --> Point
                         Polygon --> Vector2
                         RPolygon --> Point
@@ -355,7 +355,7 @@
             </div>
 
             <h3>Key Architectural Differences</h3>
-            
+
             <h4><span class="emoji">🎯</span>1. Type System and Generics</h4>
             <p>The <code>Polygon</code> class uses generic typing with <code>T = TypeVar("T", int, float)</code>, allowing for both integer and floating-point coordinates:</p>
             <pre><code class="language-python">class Polygon(Generic[T]):
@@ -394,9 +394,9 @@ rpolygon_vertices = [v0, v2, v4, v6]  # 4 vertices, v1, v3, v5, v7 are implicit<
             <p>This fundamental difference impacts all algorithms that operate on these structures, with RPolygon algorithms designed to work with the compressed representation while Polygon algorithms handle the complete vertex set.</p>
 
             <h2><span class="emoji">⚙️</span>Algorithmic Comparisons</h2>
-            
+
             <h3>Area Calculation Algorithms</h3>
-            
+
             <h4>Polygon: Shoelace Formula Implementation</h4>
             <pre><code class="language-python">@cached_property
 def signed_area_x2(self) -> Any:
@@ -441,7 +441,7 @@ def signed_area(self) -> int:
             <p>This optimization reduces both computational complexity and memory access patterns, making the area calculation approximately twice as efficient as the general polygon case.</p>
 
             <h3>Point-in-Polygon Testing</h3>
-            
+
             <h4>Polygon: Ray Casting Algorithm</h4>
             <pre><code class="language-python">def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     res = False
@@ -479,7 +479,7 @@ def signed_area(self) -> int:
             <p>The rectilinear version eliminates the cross product calculation since the intersection test reduces to simple coordinate comparisons.</p>
 
             <h2><span class="emoji">📈</span>Monotonicity Properties</h2>
-            
+
             <h3>X-Monotone and Y-Monotone Polygons</h3>
             <p>A polygon is x-monotone if every vertical line intersects the polygon in at most one connected segment. Similarly, a polygon is y-monotone if every horizontal line has this property.</p>
 
@@ -540,7 +540,7 @@ def signed_area(self) -> int:
     return not voilate(v_max, v_min, lambda val1, val2: val1 < val2)</code></pre>
 
             <h2><span class="emoji">🔍</span>Convexity Analysis</h2>
-            
+
             <h4>Polygon Convexity Testing</h4>
             <pre><code class="language-python">def is_convex(self, is_anticlockwise: bool | None = None) -> bool:
     if len(self._vecs) < 3:
@@ -572,7 +572,7 @@ def signed_area(self) -> int:
             <p>This elegant property holds because a rectilinear polygon is convex if and only if it is monotone in both coordinate directions.</p>
 
             <h2><span class="emoji">🔄</span>Conversion Between Types</h2>
-            
+
             <h3>RPolygon to Polygon Conversion: Vertex Expansion</h3>
             <p>The <code>RPolygon</code> class provides a method to convert to a general polygon by <strong>expanding the compressed even-index representation</strong> back to the full vertex sequence:</p>
             <pre><code class="language-python">def to_polygon(self) -> Polygon[int]:
@@ -619,7 +619,7 @@ def signed_area(self) -> int:
             </div>
 
             <h2><span class="emoji">✂️</span>Convex Decomposition Algorithms</h2>
-            
+
             <h3>RPolygon Convex Cutting: Recursive Partitioning Strategy</h3>
             <p>One of the most powerful operations available for rectilinear polygons is convex decomposition - the process of breaking down a concave polygon into a set of convex components. The <code>rpolygon_cut_convex()</code> function implements an elegant recursive algorithm that leverages the orthogonal constraints to achieve efficient decomposition.</p>
 
@@ -646,7 +646,7 @@ def signed_area(self) -> int:
             <pre><code class="language-python">def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
-    
+
     This function implements a recursive algorithm to partition a given rectilinear
     polygon into a set of convex components. The process begins by identifying a
     concave vertex in the polygon. Once a concave vertex is found, a cut is made to
@@ -667,7 +667,7 @@ def signed_area(self) -> int:
             <pre><code class="language-python">def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int], bool]:
     """
     Finds the point in a polygon that is closest to a given vertex.
-    
+
     This function is a key helper for the polygon cutting algorithms. When a concave
     vertex is identified, this function is used to find the best vertex to connect it
     to, in order to create a cut that resolves the concavity. The "best" vertex is
@@ -729,7 +729,7 @@ def signed_area(self) -> int:
                     <li>In the worst case, we may have $O(n)$ recursive levels</li>
                     <li>However, practical performance is typically much better due to efficient cut selection</li>
                 </ul>
-                
+
                 <p><strong>Space Complexity</strong>: $O(n)$ for the recursive call stack and data structures</p>
             </div>
 
@@ -759,7 +759,7 @@ def signed_area(self) -> int:
             <pre><code class="language-python">def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
     """
     Cuts a rectilinear polygon into a set of convex rectilinear polygons.
-    
+
     This function provides an alternative algorithm for partitioning a rectilinear polygon
     into convex components. Like `rpolygon_cut_convex`, it works by identifying concave
     vertices and introducing cuts to resolve them. The underlying logic for selecting
@@ -770,7 +770,7 @@ def signed_area(self) -> int:
             <p>This alternative can be useful when dealing with specific polygon geometries where one approach may produce better results than the other.</p>
 
             <h2><span class="emoji">⚡</span>Performance Characteristics</h2>
-            
+
             <h3>Time Complexity Analysis</h3>
             <table>
                 <thead>
@@ -869,7 +869,7 @@ def signed_area(self) -> int:
             </div>
 
             <h2><span class="emoji">🎨</span>Visual Examples and Use Cases</h2>
-            
+
             <h3>Example 1: Convex Hull Visualization</h3>
             <p>The following SVG shows a convex hull computed from a set of points using the general polygon algorithm:</p>
             <div class="image-container">
@@ -889,7 +889,7 @@ def signed_area(self) -> int:
             </div>
 
             <h2><span class="emoji">🏭</span>Practical Applications</h2>
-            
+
             <div class="two-column">
                 <div>
                     <h3><span class="emoji">🔬</span>VLSI Physical Design</h3>
@@ -926,9 +926,9 @@ def signed_area(self) -> int:
             </div>
 
             <h2><span class="emoji">🚀</span>Algorithmic Optimizations</h2>
-            
+
             <h3>RPolygon-Specific Optimizations</h3>
-            
+
             <h4><span class="emoji">🚀</span>1. Even-Index Storage Optimization</h4>
             <p>The most significant optimization in the RPolygon implementation is the <strong>50% storage reduction</strong> through even-index vertex storage. This optimization cascades through all algorithms:</p>
 
@@ -983,7 +983,7 @@ for i in range(k):  # k = ceil(n/2)
             <p>Rectilinear polygons can be efficiently decomposed into rectangles using algorithms like the "trapezoidal decomposition" with $O(n \log n)$ complexity.</p>
 
             <h3>General Polygon Optimizations</h3>
-            
+
             <h4>1. Spatial Indexing</h4>
             <p>For large polygon sets, spatial indexing structures like R-trees or quadtrees can significantly improve query performance:</p>
             <pre><code class="language-python">class SpatialIndex:
@@ -991,7 +991,7 @@ for i in range(k):  # k = ceil(n/2)
         self.rtree = RTree()
         for i, poly in enumerate(polygons):
             self.rtree.insert(i, poly.bounding_box())
-    
+
     def query_point(self, point: Point) -> List[int]:
         candidates = self.rtree.query(point.bounding_box())
         return [i for i in candidates if point_in_polygon(polygons[i].vertices, point)]</code></pre>
@@ -1004,7 +1004,7 @@ for i in range(k):  # k = ceil(n/2)
         return [future.result() for future in futures]</code></pre>
 
             <h2><span class="emoji">✅</span>Testing and Validation</h2>
-            
+
             <h3>Unit Testing Strategies</h3>
             <p>Both polygon classes include comprehensive test suites:</p>
 
@@ -1049,7 +1049,7 @@ def test_polygon_area_property(coords):
     assert polygon.signed_area_x2 == translated.signed_area_x2</code></pre>
 
             <h2><span class="emoji">🔮</span>Future Directions and Extensions</h2>
-            
+
             <h3>Potential Enhancements</h3>
             <ol>
                 <li><strong>GPU Acceleration</strong>: Leverage CUDA/OpenCL for massive parallel polygon operations</li>
@@ -1133,10 +1133,10 @@ def test_polygon_area_property(coords):
         headings.forEach((heading, index) => {
             const id = `heading-${index}`;
             heading.id = id;
-            
+
             const li = document.createElement('li');
             li.style.marginBottom = '0.5rem';
-            
+
             const a = document.createElement('a');
             a.href = `#${id}`;
             a.textContent = heading.textContent;
@@ -1144,10 +1144,10 @@ def test_polygon_area_property(coords):
             a.style.textDecoration = 'none';
             a.style.fontSize = heading.tagName === 'H2' ? '1rem' : heading.tagName === 'H3' ? '0.9rem' : '0.8rem';
             a.style.paddingLeft = heading.tagName === 'H3' ? '1rem' : heading.tagName === 'H4' ? '2rem' : '0';
-            
+
             a.addEventListener('mouseover', () => a.style.color = '#3498db');
             a.addEventListener('mouseout', () => a.style.color = '#2c3e50');
-            
+
             li.appendChild(a);
             tocList.appendChild(li);
         });
