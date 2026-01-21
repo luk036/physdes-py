@@ -76,9 +76,7 @@ def visualize_routing_tree_svg(
     svg_parts = []
 
     # SVG header
-    svg_parts.append(
-        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
-    )
+    svg_parts.append(f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">')
     svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
 
     # Draw connections first (so nodes appear on top)
@@ -89,20 +87,14 @@ def visualize_routing_tree_svg(
             x_end, y_end = scale_coords(child.pt.xcoord, child.pt.ycoord)
 
             # Draw line
-            svg_parts.append(
-                f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
-                f'stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>'
-            )
+            svg_parts.append(f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" ' f'stroke="black" stroke-width="2" marker-end="url(#arrowhead)"/>')
 
         for child in node.children:
             draw_connections(child)
 
     # Add arrowhead marker definition
     svg_parts.append("<defs>")
-    svg_parts.append(
-        '<marker id="arrowhead" markerWidth="10" markerHeight="7" '
-        'refX="9" refY="3.5" orient="auto">'
-    )
+    svg_parts.append('<marker id="arrowhead" markerWidth="10" markerHeight="7" ' 'refX="9" refY="3.5" orient="auto">')
     svg_parts.append('<polygon points="0 0, 10 3.5, 0 7" fill="black"/>')
     svg_parts.append("</marker>")
     svg_parts.append("</defs>")
@@ -133,20 +125,13 @@ def visualize_routing_tree_svg(
             label = node.id
 
         # Draw node circle
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
-        )
+        svg_parts.append(f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>')
 
         # Draw node label
-        svg_parts.append(
-            f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
-        )
+        svg_parts.append(f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>')
 
         # Draw coordinates
-        svg_parts.append(
-            f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" '
-            f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>'
-        )
+        svg_parts.append(f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" ' f'fill="gray" text-anchor="middle">({node.pt.xcoord},{node.pt.ycoord})</text>')
 
     # Draw keepouts
     if keepouts is not None:
@@ -156,15 +141,11 @@ def visualize_routing_tree_svg(
             rect_width = x2 - x1
             rect_height = y2 - y1
             color = "orange"
-            svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>'
-            )
+            svg_parts.append(f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>')
 
     # Add legend
     legend_y = 20
-    svg_parts.append(
-        f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>'
-    )
+    svg_parts.append(f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>')
 
     legend_items = [
         ("Source", "red", 20, legend_y + 20),
@@ -173,30 +154,16 @@ def visualize_routing_tree_svg(
     ]
 
     for text, color, x_pos, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
+        svg_parts.append(f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>')
+        svg_parts.append(f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>')
 
     # Display statistics
     stats_y = legend_y + 90
-    svg_parts.append(
-        f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree.nodes)}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree.get_all_terminals())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree.get_all_steiner_nodes())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree.calculate_wirelength():.2f}</text>'
-    )
+    svg_parts.append(f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree.nodes)}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree.get_all_terminals())}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree.get_all_steiner_nodes())}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree.calculate_wirelength():.2f}</text>')
 
     svg_parts.append("</svg>")
 
@@ -227,9 +194,7 @@ def save_routing_tree_svg(
 
 def visualize_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    keepouts: Optional[
-        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
-    ] = None,
+    keepouts: Optional[List[Point[Point[Interval[int], Interval[int]], Interval[int]]]] = None,
     scale_z: int = 100,
     width: int = 800,
     height: int = 600,
@@ -310,9 +275,7 @@ def visualize_routing_tree3d_svg(
     svg_parts = []
 
     # SVG header
-    svg_parts.append(
-        f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
-    )
+    svg_parts.append(f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">')
     svg_parts.append('<rect width="100%" height="100%" fill="white"/>')
 
     # Draw connections first (so nodes appear on top)
@@ -321,24 +284,16 @@ def visualize_routing_tree3d_svg(
             # Get scaled coordinates
             x_start, y_start = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
             x_end, y_end = scale_coords(child.pt.xcoord.xcoord, child.pt.ycoord)
-            color = layer_colors[
-                (child.pt.xcoord.ycoord // scale_z) % len(layer_colors)
-            ]
+            color = layer_colors[(child.pt.xcoord.ycoord // scale_z) % len(layer_colors)]
             # Draw line
-            svg_parts.append(
-                f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
-                f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>'
-            )
+            svg_parts.append(f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" ' f'stroke="{color}" stroke-width="2" marker-end="url(#arrowhead)"/>')
 
         for child in node.children:
             draw_connections(child)
 
     # Add arrowhead marker definition
     svg_parts.append("<defs>")
-    svg_parts.append(
-        '<marker id="arrowhead" markerWidth="10" markerHeight="7" '
-        'refX="9" refY="3.5" orient="auto">'
-    )
+    svg_parts.append('<marker id="arrowhead" markerWidth="10" markerHeight="7" ' 'refX="9" refY="3.5" orient="auto">')
     svg_parts.append('<polygon points="0 0, 10 3.5, 0 7" fill="black"/>')
     svg_parts.append("</marker>")
     svg_parts.append("</defs>")
@@ -369,19 +324,14 @@ def visualize_routing_tree3d_svg(
             label = node.id
 
         # Draw node circle
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>'
-        )
+        svg_parts.append(f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" stroke="black" stroke-width="1"/>')
 
         # Draw node label
-        svg_parts.append(
-            f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>'
-        )
+        svg_parts.append(f'<text x="{x_pos + radius + 2}" y="{y_pos + 4}" font-family="Arial" font-size="10" fill="black">{label}</text>')
 
         # Draw coordinates
         svg_parts.append(
-            f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" '
-            f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
+            f'<text x="{x_pos}" y="{y_pos - radius - 5}" font-family="Arial" font-size="8" ' f'fill="gray" text-anchor="middle">({node.pt.xcoord.xcoord},{node.pt.ycoord})</text>'
         )
 
     # Draw keepouts
@@ -392,15 +342,11 @@ def visualize_routing_tree3d_svg(
             rect_width = x2 - x1
             rect_height = y2 - y1
             color = "pink"
-            svg_parts.append(
-                f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>'
-            )
+            svg_parts.append(f'<rect x="{x1}" y="{y1}" width="{rect_width}" height = "{rect_height}" fill="{color}" stroke="black" stroke-width="1"/>')
 
     # Add legend
     legend_y = 20
-    svg_parts.append(
-        f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>'
-    )
+    svg_parts.append(f'<text x="20" y="{legend_y}" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>')
 
     legend_items = [
         ("Source", "red", 20, legend_y + 20),
@@ -409,12 +355,8 @@ def visualize_routing_tree3d_svg(
     ]
 
     for text, color, x_pos, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
+        svg_parts.append(f'<circle cx="{x_pos}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>')
+        svg_parts.append(f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>')
 
     legend_items = [
         ("Source", "red", 20, legend_y + 20),
@@ -423,30 +365,16 @@ def visualize_routing_tree3d_svg(
     ]
 
     for text, color, x_coord, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_coord}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_coord + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
+        svg_parts.append(f'<circle cx="{x_coord}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>')
+        svg_parts.append(f'<text x="{x_coord + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>')
 
     # Display statistics
     stats_y = legend_y + 90
-    svg_parts.append(
-        f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree3d.nodes)}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree3d.get_all_terminals())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>'
-    )
-    svg_parts.append(
-        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>'
-    )
+    svg_parts.append(f'<text x="20" y="{stats_y}" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree3d.nodes)}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree3d.get_all_terminals())}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>')
 
     svg_parts.append("</svg>")
 
@@ -455,9 +383,7 @@ def visualize_routing_tree3d_svg(
 
 def save_routing_tree3d_svg(
     tree3d: "GlobalRoutingTree",
-    keepouts: Optional[
-        List[Point[Point[Interval[int], Interval[int]], Interval[int]]]
-    ] = None,
+    keepouts: Optional[List[Point[Point[Interval[int], Interval[int]], Interval[int]]]] = None,
     scale_z: int = 100,
     filename: str = "routing_tree3d.svg",
     width: int = 800,

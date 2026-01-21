@@ -20,19 +20,11 @@ def test_rpolygon_make_convex_hull() -> None:
 
     svg_parts = []
     svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=10))
 
     C = rpolygon_make_convex_hull(S, False)
-    svg_parts.append(
-        get_polygon_svg_elements(
-            C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(C, fill_color="#D088C0", stroke_color="black", opacity="0.3"))
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
     assert rpolygon_is_convex(C)

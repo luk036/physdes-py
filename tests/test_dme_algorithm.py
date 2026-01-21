@@ -95,18 +95,12 @@ class TestDMEAlgorithm:
     def elmore_calculator(self) -> ElmoreDelayCalculator:
         return ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.1)
 
-    def test_dme_algorithm_initialization(
-        self, linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_dme_algorithm_initialization(self, linear_calculator: LinearDelayCalculator) -> None:
         """Test DMEAlgorithm initialization with delay calculator"""
-        dme = DMEAlgorithm(
-            [Sink("s1", Point(0, 0), 1.0)], delay_calculator=linear_calculator
-        )
+        dme = DMEAlgorithm([Sink("s1", Point(0, 0), 1.0)], delay_calculator=linear_calculator)
         assert dme.delay_calculator == linear_calculator
 
-    def test_build_clock_tree_with_linear_model(
-        self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_build_clock_tree_with_linear_model(self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator) -> None:
         """Test clock tree construction with linear delay model"""
         dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
         root = dme.build_clock_tree()
@@ -126,9 +120,7 @@ class TestDMEAlgorithm:
     #     assert root.left is not None
     #     assert root.right is not None
 
-    def test_build_clock_tree_single_sink(
-        self, linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_build_clock_tree_single_sink(self, linear_calculator: LinearDelayCalculator) -> None:
         """Test clock tree construction with single sink"""
         single_sink = [Sink("s1", Point(0, 0), 1.0)]
         dme = DMEAlgorithm(single_sink, delay_calculator=linear_calculator)
@@ -138,16 +130,12 @@ class TestDMEAlgorithm:
         assert root.left is None
         assert root.right is None
 
-    def test_build_clock_tree_empty_sinks(
-        self, linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_build_clock_tree_empty_sinks(self, linear_calculator: LinearDelayCalculator) -> None:
         """Test clock tree construction with empty sinks list"""
         with pytest.raises(ValueError, match="No sinks provided"):
             _ = DMEAlgorithm([], delay_calculator=linear_calculator)
 
-    def test_analyze_skew_linear_model(
-        self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_analyze_skew_linear_model(self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator) -> None:
         """Test skew analysis with linear delay model"""
         dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
         root = dme.build_clock_tree()
@@ -172,9 +160,7 @@ class TestDMEAlgorithm:
     #     assert analysis["delay_model"] == "ElmoreDelayCalculator"
     #     assert analysis["skew"] >= 0
 
-    def test_total_wirelength(
-        self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator
-    ) -> None:
+    def test_total_wirelength(self, sample_sinks: List[Sink], linear_calculator: LinearDelayCalculator) -> None:
         """Test total wirelength calculation"""
         dme = DMEAlgorithm(sample_sinks, delay_calculator=linear_calculator)
         root = dme.build_clock_tree()
@@ -312,9 +298,7 @@ class TestLinearDelayCalculatorBoundaryConditions:
         node_left = TreeNode("n1", Point(0, 0), delay=5.0, capacitance=1.0)
         node_right = TreeNode("n2", Point(10, 0), delay=1.0, capacitance=1.0)
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
+        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 10)
 
         # With large negative skew: skew = 1.0 - 5.0 = -4.0
         # extend_left = round((-4.0 / 0.5 + 10) / 2) = round((-8 + 10) / 2) = round(1) = 1
@@ -329,9 +313,7 @@ class TestLinearDelayCalculatorBoundaryConditions:
         node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
         node_right = TreeNode("n2", Point(10, 0), delay=5.0, capacitance=1.0)
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
+        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 10)
 
         # With large positive skew: skew = 5.0 - 1.0 = 4.0
         # extend_left = round((4.0 / 0.5 + 10) / 2) = round((8 + 10) / 2) = round(9) = 9
@@ -346,9 +328,7 @@ class TestLinearDelayCalculatorBoundaryConditions:
         node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
         node_right = TreeNode("n2", Point(10, 0), delay=1.0, capacitance=1.0)
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
+        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 10)
 
         # Should split evenly
         assert node_left.need_elongation is False
@@ -415,9 +395,7 @@ class TestElmoreDelayCalculatorBoundaryConditions:
         node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
         node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.5)
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
+        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 10)
 
         # Should calculate appropriate tapping point
         assert 0 <= extend_left <= 10
@@ -517,9 +495,7 @@ class TestDMEAlgorithmErrorHandling:
         root.left = left
         # Intentionally don't set right child
 
-        with pytest.raises(
-            ValueError, match="Internal node must have both left and right children"
-        ):
+        with pytest.raises(ValueError, match="Internal node must have both left and right children"):
             dme._compute_merging_segments(root)
 
 
@@ -602,10 +578,7 @@ class TestDMEAlgorithmAdvanced:
         calc = LinearDelayCalculator(delay_per_unit=0.5)
         dme = DMEAlgorithm(sinks, delay_calculator=calc)
 
-        nodes = [
-            TreeNode(name=s.name, position=s.position, capacitance=s.capacitance)
-            for s in sinks
-        ]
+        nodes = [TreeNode(name=s.name, position=s.position, capacitance=s.capacitance) for s in sinks]
         root = dme._build_merging_tree(nodes, False)
 
         # Check that tree is reasonably balanced

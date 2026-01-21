@@ -30,7 +30,5 @@ def test_main(capsys: pytest.CaptureFixture) -> None:
 
 def test_main_run_as_script() -> None:
     """CLI Tests"""
-    result = subprocess.run(
-        [sys.executable, "-m", "physdes.skeleton", "7"], capture_output=True, text=True
-    )
+    result = subprocess.run([sys.executable, "-m", "physdes.skeleton", "7"], capture_output=True, text=True)
     assert "The 7-th Fibonacci number is 13" in result.stdout

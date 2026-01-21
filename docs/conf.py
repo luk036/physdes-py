@@ -70,7 +70,34 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
     "sphinxcontrib.svgbob",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.intersphinx",
 ]
+
+# Napoleon settings for better docstring support
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
+
+# Autodoc settings for better API documentation
+autodoc_default_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "inherited-members",
+    "special-members=__init__",
+]
+
+# Type hints rendering
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented_params"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -151,12 +178,28 @@ todo_emit_warnings = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "alabaster"
+# Using furo theme for modern, clean, mobile-friendly documentation
+html_theme = "furo"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
+html_theme_options = {
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
+    "light_css_variables": {
+        "color-brand-primary": "#00796B",
+        "color-brand-content": "#00695C",
+        "font-stack": "Inter, system-ui, sans-serif",
+    },
+    "dark_css_variables": {
+        "color-brand-primary": "#4DB6AC",
+        "color-brand-content": "#26A69A",
+    },
+    "source_repository": "https://github.com/luk036/physdes-py",
+    "source_branch": "main",
+    "source_directory": "docs/",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -240,9 +283,7 @@ latex_elements: dict[str, str] = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-    ("index", "user_guide.tex", "physdes-py Documentation", "Wai-Shing Luk", "manual")
-]
+latex_documents = [("index", "user_guide.tex", "physdes-py Documentation", "Wai-Shing Luk", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

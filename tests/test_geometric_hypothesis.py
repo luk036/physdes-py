@@ -19,17 +19,13 @@ from physdes.vector2 import Vector2
 # Strategy for generating numeric values (integers and floats)
 numeric_values = st.one_of(
     st.integers(min_value=-1000, max_value=1000),
-    st.floats(
-        min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False
-    ),
+    st.floats(min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
 )
 
 # Strategy for generating non-zero values
 non_zero_values = st.one_of(
-    st.integers(min_value=-1000, max_value=-1)
-    | st.integers(min_value=1, max_value=1000),
-    st.floats(min_value=-1000.0, max_value=-0.1)
-    | st.floats(min_value=0.1, max_value=1000.0),
+    st.integers(min_value=-1000, max_value=-1) | st.integers(min_value=1, max_value=1000),
+    st.floats(min_value=-1000.0, max_value=-0.1) | st.floats(min_value=0.1, max_value=1000.0),
 )
 
 # Strategy for generating Point objects
@@ -39,14 +35,10 @@ point_strategy = st.builds(Point, xcoord=numeric_values, ycoord=numeric_values)
 vector2_strategy = st.builds(Vector2, x=numeric_values, y=numeric_values)
 
 # Strategy for generating Interval objects
-interval_strategy = st.builds(Interval, lb=numeric_values, ub=numeric_values).filter(
-    lambda interval: interval.lb <= interval.ub
-)
+interval_strategy = st.builds(Interval, lb=numeric_values, ub=numeric_values).filter(lambda interval: interval.lb <= interval.ub)
 
 # Strategy for generating Point objects with interval coordinates
-point_interval_strategy = st.builds(
-    Point, xcoord=interval_strategy, ycoord=interval_strategy
-)
+point_interval_strategy = st.builds(Point, xcoord=interval_strategy, ycoord=interval_strategy)
 
 
 class TestGeometricInvariants:
@@ -79,17 +71,10 @@ class TestGeometricInvariants:
 
         # Triangle inequality: d(p1, p3) ≤ d(p1, p2) + d(p2, p3)
         # Use floating-point tolerance for comparison
-        if (
-            isinstance(dist12, float)
-            or isinstance(dist23, float)
-            or isinstance(dist13, float)
-        ):
+        if isinstance(dist12, float) or isinstance(dist23, float) or isinstance(dist13, float):
             import math
 
-            assert (
-                math.isclose(dist13, dist12 + dist23, rel_tol=1e-9, abs_tol=1e-12)
-                or dist13 < dist12 + dist23
-            )
+            assert math.isclose(dist13, dist12 + dist23, rel_tol=1e-9, abs_tol=1e-12) or dist13 < dist12 + dist23
         else:
             assert dist13 <= dist12 + dist23
 
@@ -104,12 +89,7 @@ class TestGeometricInvariants:
         # p1.displace(p2) returns p1 - p2 (displacement from p2 to p1)
         # So p2 + disp should give p1
         result = p2 + disp
-        if (
-            isinstance(result.xcoord, float)
-            or isinstance(result.ycoord, float)
-            or isinstance(p1.xcoord, float)
-            or isinstance(p1.ycoord, float)
-        ):
+        if isinstance(result.xcoord, float) or isinstance(result.ycoord, float) or isinstance(p1.xcoord, float) or isinstance(p1.ycoord, float):
             import math
 
             assert math.isclose(result.xcoord, p1.xcoord, rel_tol=1e-9, abs_tol=1e-12)
@@ -246,9 +226,7 @@ class TestVector2GeometricProperties:
         assert isinstance(cross_val, (int, float))
 
     @given(vector2_strategy, vector2_strategy, vector2_strategy)
-    def test_cross_product_linearity(
-        self, v1: Vector2, v2: Vector2, v3: Vector2
-    ) -> None:
+    def test_cross_product_linearity(self, v1: Vector2, v2: Vector2, v3: Vector2) -> None:
         """Test linearity of cross product."""
         # (v1 + v2) × v3 = v1 × v3 + v2 × v3
         left_side = (v1 + v2).cross(v3)
@@ -327,9 +305,7 @@ class TestPolygonGeometricInvariants:
             point_in_polygon(vertices, vertex)
 
     @given(point_strategy, point_strategy, point_strategy, point_strategy)
-    def test_quadrilateral_properties(
-        self, p1: Point, p2: Point, p3: Point, p4: Point
-    ) -> None:
+    def test_quadrilateral_properties(self, p1: Point, p2: Point, p3: Point, p4: Point) -> None:
         """Test properties of quadrilaterals."""
         # Create quadrilateral
         quad = Polygon.from_pointset([p1, p2, p3, p4])
@@ -384,9 +360,7 @@ class TestTransformationInvariants:
     """Test invariants under geometric transformations."""
 
     @given(point_strategy, point_strategy, vector2_strategy)
-    def test_translation_distance_invariance(
-        self, p1: Point, p2: Point, translation: Vector2
-    ) -> None:
+    def test_translation_distance_invariance(self, p1: Point, p2: Point, translation: Vector2) -> None:
         """Test that distance is invariant under translation."""
         original_dist = p1.min_dist_with(p2)
 
@@ -399,9 +373,7 @@ class TestTransformationInvariants:
         if isinstance(original_dist, float) or isinstance(translated_dist, float):
             import math
 
-            assert math.isclose(
-                original_dist, translated_dist, rel_tol=1e-9, abs_tol=1e-12
-            )
+            assert math.isclose(original_dist, translated_dist, rel_tol=1e-9, abs_tol=1e-12)
         else:
             assert original_dist == translated_dist
 
@@ -418,13 +390,9 @@ class TestTransformationInvariants:
         assert original_dist == rotated_dist
 
     @given(interval_strategy, numeric_values)
-    def test_interval_translation_invariance(
-        self, interval: Interval, translation: float
-    ) -> None:
+    def test_interval_translation_invariance(self, interval: Interval, translation: float) -> None:
         """Test that interval properties are invariant under translation."""
-        translated_interval = Interval(
-            interval.lb + translation, interval.ub + translation
-        )
+        translated_interval = Interval(interval.lb + translation, interval.ub + translation)
 
         # Length should be preserved
         original_length = interval.ub - interval.lb
@@ -434,9 +402,7 @@ class TestTransformationInvariants:
         if isinstance(original_length, float) or isinstance(translated_length, float):
             import math
 
-            assert math.isclose(
-                original_length, translated_length, rel_tol=1e-9, abs_tol=1e-12
-            )
+            assert math.isclose(original_length, translated_length, rel_tol=1e-9, abs_tol=1e-12)
         else:
             assert original_length == translated_length
 
@@ -456,18 +422,14 @@ class TestNumericStability:
         assert abs(result.ycoord - y1) < 1e-10
 
     @given(numeric_values, numeric_values, numeric_values)
-    def test_interval_arithmetic_stability(
-        self, lb1: float, ub1: float, scalar: float
-    ) -> None:
+    def test_interval_arithmetic_stability(self, lb1: float, ub1: float, scalar: float) -> None:
         """Test stability of interval arithmetic operations."""
         if lb1 > ub1:
             lb1, ub1 = ub1, lb1
 
         interval = Interval(lb1, ub1)
 
-        if (
-            scalar != 0 and abs(scalar) > 1e-10
-        ):  # Avoid very small scalars that cause precision issues
+        if scalar != 0 and abs(scalar) > 1e-10:  # Avoid very small scalars that cause precision issues
             # Multiplication and division should be inverses
             multiplied = interval * scalar
             divided = multiplied / scalar
@@ -480,17 +442,11 @@ class TestNumericStability:
                 assert math.isclose(divided.lb, interval.lb, rel_tol=1e-6, abs_tol=1e-9)
                 assert math.isclose(divided.ub, interval.ub, rel_tol=1e-6, abs_tol=1e-9)
             else:
-                assert math.isclose(
-                    divided.lb, interval.lb, rel_tol=1e-9, abs_tol=1e-12
-                )
-                assert math.isclose(
-                    divided.ub, interval.ub, rel_tol=1e-9, abs_tol=1e-12
-                )
+                assert math.isclose(divided.lb, interval.lb, rel_tol=1e-9, abs_tol=1e-12)
+                assert math.isclose(divided.ub, interval.ub, rel_tol=1e-9, abs_tol=1e-12)
 
     @given(numeric_values, numeric_values, numeric_values, numeric_values)
-    def test_cross_product_numeric_stability(
-        self, x1: float, y1: float, x2: float, y2: float
-    ) -> None:
+    def test_cross_product_numeric_stability(self, x1: float, y1: float, x2: float, y2: float) -> None:
         """Test numeric stability of cross product calculation."""
         v1 = Vector2(x1, y1)
         v2 = Vector2(x2, y2)

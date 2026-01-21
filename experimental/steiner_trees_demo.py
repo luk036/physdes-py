@@ -40,8 +40,8 @@ def prune_tree(edges, terminals):
 
 def plot_tree(edges, terminals, title, ax):
     # Draw Hanan grid background
-    xs = sorted(list(set(p[0] for p in terminals)))
-    ys = sorted(list(set(p[1] for p in terminals)))
+    xs = sorted(set(p[0] for p in terminals))
+    ys = sorted(set(p[1] for p in terminals))
     for x in xs:
         ax.axvline(x, color="lightgray", linestyle="--", linewidth=0.5)
     for y in ys:
@@ -65,8 +65,8 @@ def run_visual_demo():
     terminals = set([source] + sinks)
 
     xs, ys = (
-        sorted(list(set(p[0] for p in terminals))),
-        sorted(list(set(p[1] for p in terminals))),
+        sorted(set(p[0] for p in terminals)),
+        sorted(set(p[1] for p in terminals)),
     )
     nodes = [(x, y) for x in xs for y in ys]
 
@@ -86,8 +86,8 @@ def run_visual_demo():
         root = dsu.find(source)
         if all(dsu.find(s) == root for s in sinks):
             clean = prune_tree(current_edges, terminals)
-            # Create a simple hash for this specific geometry
-            h = hashlib.md5(str(sorted(clean)).encode()).hexdigest()
+            # Create a simple hash for this specific geometry using sha256
+            h = hashlib.sha256(str(sorted(clean)).encode()).hexdigest()
             if h not in seen_hashes:
                 seen_hashes.add(h)
                 found_trees.append(clean)

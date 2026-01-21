@@ -124,7 +124,7 @@ class Point(Generic[T1, T2]):
             >>> print(a3d)
             ((3, 4), 5)
         """
-        return "({self.xcoord}, {self.ycoord})".format(self=self)
+        return f"({self.xcoord}, {self.ycoord})"
 
     def width(self) -> Any:
         """
@@ -392,9 +392,7 @@ class Point(Generic[T1, T2]):
             >>> print(b.displace(c))
             <-4, -5>
         """
-        return Vector2(
-            displacement(self.xcoord, rhs.xcoord), displacement(self.ycoord, rhs.ycoord)
-        )
+        return Vector2(displacement(self.xcoord, rhs.xcoord), displacement(self.ycoord, rhs.ycoord))
 
     def flip(self) -> "Point[T2, T1]":
         """
@@ -514,12 +512,7 @@ class Point(Generic[T1, T2]):
                     '------'
 
         """
-        return (
-            contain(self.xcoord, other.xcoord)
-            and contain(other.ycoord, self.ycoord)
-            or contain(self.ycoord, other.ycoord)
-            and contain(other.xcoord, self.xcoord)
-        )
+        return contain(self.xcoord, other.xcoord) and contain(other.ycoord, self.ycoord) or contain(self.ycoord, other.ycoord) and contain(other.xcoord, self.xcoord)
 
     def hull_with(self, other: "Point[T1, T2]") -> "Point[Any, Any]":
         """
@@ -678,9 +671,7 @@ class Point(Generic[T1, T2]):
             >>> print(r.nearest_to(b))
             (4, 6)
         """
-        return Point(
-            nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
-        )
+        return Point(nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord))
 
     def enlarge_with(self, alpha: int | float) -> "Point[Any, Any]":
         """

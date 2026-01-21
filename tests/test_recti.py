@@ -10,7 +10,7 @@ from physdes.recti import HSegment, Rectangle, VSegment
 #         self._data = data
 
 
-def test_Point() -> None:
+def test_point() -> None:
     a = Point(4, 8)
     b = Point(5, 6)
     assert a < b
@@ -21,7 +21,7 @@ def test_Point() -> None:
     assert b >= a
 
 
-def test_Interval() -> None:
+def test_interval() -> None:
     a = Interval(4, 8)
     b = Interval(5, 6)
     assert 3 < a
@@ -42,7 +42,7 @@ def test_Interval() -> None:
     assert not b.contains(a)
 
 
-def test_Rectangle() -> None:
+def test_rectangle() -> None:
     xrng1 = Interval(4, 8)
     yrng1 = Interval(5, 7)
     r1 = Rectangle(xrng1, yrng1)
@@ -67,7 +67,7 @@ def test_segment() -> None:
     assert hseg.flip() == vseg
 
 
-def test_Rectilinear() -> None:
+def test_rectilinear() -> None:
     N = 20
     lst = []
 

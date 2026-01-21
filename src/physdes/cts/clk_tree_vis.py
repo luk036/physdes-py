@@ -161,9 +161,7 @@ class ClockTreeVisualizer:
         collect(root)
         return nodes
 
-    def _calculate_bounds(
-        self, nodes: List, sinks: List
-    ) -> Tuple[float, float, float, float]:
+    def _calculate_bounds(self, nodes: List, sinks: List) -> Tuple[float, float, float, float]:
         """Calculate the bounding box of all nodes and sinks"""
         all_points = []
 
@@ -188,9 +186,7 @@ class ClockTreeVisualizer:
 
         return (min_x - padding, min_y - padding, max_x + padding, max_y + padding)
 
-    def _draw_wires(
-        self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]
-    ) -> List[str]:
+    def _draw_wires(self, root: Any, scale_coord: Callable[[Any, Any], Tuple[float, float]]) -> List[str]:
         """Draw all wires in the clock tree"""
         svg_elements = []
 
@@ -200,25 +196,18 @@ class ClockTreeVisualizer:
 
             if node.parent:
                 # Draw wire from parent to current node
-                x_start, y_start = scale_coord(
-                    node.parent.position.xcoord, node.parent.position.ycoord
-                )
+                x_start, y_start = scale_coord(node.parent.position.xcoord, node.parent.position.ycoord)
                 x_end, y_end = scale_coord(node.position.xcoord, node.position.ycoord)
 
                 svg_elements.append(
-                    f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" '
-                    f'stroke="{self.wire_color}" stroke-width="{self.wire_width}" '
-                    f'stroke-linecap="round"/>'
+                    f'<line x1="{x_start}" y1="{y_start}" x2="{x_end}" y2="{y_end}" ' f'stroke="{self.wire_color}" stroke-width="{self.wire_width}" ' f'stroke-linecap="round"/>'
                 )
 
                 # Add wire length label
                 mid_x = (x_start + x_end) / 2
                 mid_y = (y_start + y_end) / 2
                 if hasattr(node, "wire_length") and node.wire_length > 0:
-                    svg_elements.append(
-                        f'<text x="{mid_x}" y="{mid_y - 5}" class="wire-label" '
-                        f'text-anchor="middle">{node.wire_length:.1f}</text>'
-                    )
+                    svg_elements.append(f'<text x="{mid_x}" y="{mid_y - 5}" class="wire-label" ' f'text-anchor="middle">{node.wire_length:.1f}</text>')
 
             draw_wires_recursive(node.left)
             draw_wires_recursive(node.right)
@@ -234,9 +223,7 @@ class ClockTreeVisualizer:
     ) -> List[str]:
         """Draw all nodes in the clock tree"""
         svg_elements = []
-        sink_positions = {
-            (sink.position.xcoord, sink.position.ycoord) for sink in sinks
-        }
+        sink_positions = {(sink.position.xcoord, sink.position.ycoord) for sink in sinks}
 
         def draw_nodes_recursive(node: Any, depth: int = 0) -> None:
             if not node:
@@ -259,33 +246,21 @@ class ClockTreeVisualizer:
                 radius = self.node_radius - 2
 
             # Draw node circle
-            svg_elements.append(
-                f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" '
-                f'stroke="#333" stroke-width="1"/>'
-            )
+            svg_elements.append(f'<circle cx="{x_pos}" cy="{y_pos}" r="{radius}" fill="{color}" ' f'stroke="#333" stroke-width="1"/>')
 
             # Draw node label
             label_y_offset = -radius - 5
-            svg_elements.append(
-                f'<text x="{x_pos}" y="{y_pos + label_y_offset}" class="node-label" '
-                f'text-anchor="middle">{node.name}</text>'
-            )
+            svg_elements.append(f'<text x="{x_pos}" y="{y_pos + label_y_offset}" class="node-label" ' f'text-anchor="middle">{node.name}</text>')
 
             # Draw delay information if available
             if hasattr(node, "delay"):
                 delay_y_offset = radius + 12
-                svg_elements.append(
-                    f'<text x="{x_pos}" y="{y_pos + delay_y_offset}" class="delay-label" '
-                    f'text-anchor="middle">d:{node.delay:.1f}</text>'
-                )
+                svg_elements.append(f'<text x="{x_pos}" y="{y_pos + delay_y_offset}" class="delay-label" ' f'text-anchor="middle">d:{node.delay:.1f}</text>')
 
             # Draw capacitance information for sinks
             if is_sink and hasattr(node, "capacitance"):
                 cap_y_offset = radius + 22
-                svg_elements.append(
-                    f'<text x="{x_pos}" y="{y_pos + cap_y_offset}" class="delay-label" '
-                    f'text-anchor="middle">c:{node.capacitance:.1f}</text>'
-                )
+                svg_elements.append(f'<text x="{x_pos}" y="{y_pos + cap_y_offset}" class="delay-label" ' f'text-anchor="middle">c:{node.capacitance:.1f}</text>')
 
             draw_nodes_recursive(node.left, depth + 1)
             draw_nodes_recursive(node.right, depth + 1)
@@ -293,9 +268,7 @@ class ClockTreeVisualizer:
         draw_nodes_recursive(root)
         return svg_elements
 
-    def _create_analysis_box(
-        self, analysis: Dict[str, Any], svg_width: int
-    ) -> List[str]:
+    def _create_analysis_box(self, analysis: Dict[str, Any], svg_width: int) -> List[str]:
         """Create analysis information box"""
         delay_model = analysis.get("delay_model", "Unknown")
 
@@ -318,9 +291,7 @@ class ClockTreeVisualizer:
         ]
 
         for idx, text in enumerate(analysis_text[1:]):  # Skip title line
-            analysis_box.append(
-                f'<tspan x="20" y="{45 + (idx + 1) * 16}">{text}</tspan>'
-            )
+            analysis_box.append(f'<tspan x="20" y="{45 + (idx + 1) * 16}">{text}</tspan>')
 
         analysis_box.append("</text>")
         analysis_box.append("</g>")
@@ -362,9 +333,7 @@ def create_interactive_svg(
         text_color="#263238",
     )
 
-    svg_content = visualizer.visualize_tree(
-        root, sinks, filename, width, height, analysis
-    )
+    svg_content = visualizer.visualize_tree(root, sinks, filename, width, height, analysis)
     return svg_content
 
 
@@ -445,9 +414,7 @@ def create_comparison_visualization(
         offset_y = row * sub_height
 
         # Add title for this subplot
-        svg_content.append(
-            f'<text x="{offset_x + sub_width // 2}" y="{offset_y + 20}" class="title" text-anchor="middle">{tree_data.get("title", f"Tree {i + 1}")}</text>'
-        )
+        svg_content.append(f'<text x="{offset_x + sub_width // 2}" y="{offset_y + 20}" class="title" text-anchor="middle">{tree_data.get("title", f"Tree {i + 1}")}</text>')
 
         # Create a temporary SVG for this tree
         temp_svg = visualizer.visualize_tree(
@@ -467,11 +434,7 @@ def create_comparison_visualization(
         for line_idx, line in enumerate(lines):
             if '<g class="clock-tree">' in line:
                 start_idx = line_idx
-            elif (
-                start_idx != -1
-                and "</g>" in line
-                and "clock-tree" not in lines[line_idx - 1]
-            ):
+            elif start_idx != -1 and "</g>" in line and "clock-tree" not in lines[line_idx - 1]:
                 end_idx = line_idx
                 break
 
@@ -481,16 +444,11 @@ def create_comparison_visualization(
         tree_content = lines[start_idx + 1 : end_idx]  # Skip <g> and </g>
 
         # Remove the background rect if present
-        if (
-            tree_content
-            and '<rect width="100%" height="100%" fill="white"/>' in tree_content[0]
-        ):
+        if tree_content and '<rect width="100%" height="100%" fill="white"/>' in tree_content[0]:
             tree_content = tree_content[1:]
 
         # Add transformed group
-        svg_content.append(
-            f'<g transform="translate({offset_x + 10}, {offset_y + 40})">'
-        )
+        svg_content.append(f'<g transform="translate({offset_x + 10}, {offset_y + 40})">')
         svg_content.extend(tree_content)
         svg_content.append("</g>")
         svg_content.append("</g>")  # why?
@@ -524,9 +482,7 @@ def create_delay_model_comparison(
     linear_tree_data["title"] = "Linear Delay Model"
     elmore_tree_data["title"] = "Elmore Delay Model"
 
-    return create_comparison_visualization(
-        [linear_tree_data, elmore_tree_data], filename, width=1200, height=600
-    )
+    return create_comparison_visualization([linear_tree_data, elmore_tree_data], filename, width=1200, height=600)
 
 
 def generate_random_points_for_sinks() -> List[List[float]]:

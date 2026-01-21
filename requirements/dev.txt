@@ -1,0 +1,17 @@
+# Add to setup.cfg [options.extras_require] for development tools
+#
+# Run: pip install physdes-py[dev]
+#
+# These are optional development dependencies that can be installed
+# alongside the main package for improved development experience
+
+dev =
+    # Faster linter (replaces flake8/isort)
+    ruff
+    # Type checker
+    mypy
+    # Pre-commit hooks
+    pre-commit
+    # Security scanning
+    bandit
+    safety

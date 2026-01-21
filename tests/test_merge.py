@@ -6,7 +6,7 @@ from physdes.manhattan_arc import ManhattanArc
 from physdes.point import Point
 
 
-def test_ManhattanArc() -> None:
+def test_manhattan_arc() -> None:
     r1 = ManhattanArc.construct(4, 5)
     r2 = ManhattanArc.construct(7, 9)
     # v = Vector2(5, 6)
@@ -48,7 +48,7 @@ def test_min_dist() -> None:
     assert dab == dmab
 
 
-def test_min_dist3D() -> None:
+def test_min_dist_3d() -> None:
     pa = Point(Point(8, 3), -2)
     pb = Point(Point(-3, 7), 4)
     dab = pa.min_dist_with(pb)
@@ -75,7 +75,7 @@ def test_min_dist3D() -> None:
     integers(min_value=-100000000000, max_value=1000000000),
     integers(min_value=-100000000000, max_value=1000000000),
 )
-def test_min_dist3D_h(a1, b1, c1, a2, b2, c2) -> None:
+def test_min_dist_3d_h(a1, b1, c1, a2, b2, c2) -> None:
     pa = Point(Point(a1, b1), c1)
     pb = Point(Point(a2, b2), c2)
     dab = pa.min_dist_with(pb)

@@ -53,10 +53,7 @@ def generate_3d_random_points() -> tuple[Point, list[Point], int]:
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
     coords = [hgen.pop() for _ in range(7)]
-    terminals = [
-        Point(Point(xcoord, randint(0, 3) * scale_z), ycoord)
-        for xcoord, ycoord in coords
-    ]
+    terminals = [Point(Point(xcoord, randint(0, 3) * scale_z), ycoord) for xcoord, ycoord in coords]
     src_coord = hgen.pop()
     source = Point(Point(src_coord[0], randint(0, 3) * scale_z), src_coord[1])
     return source, terminals, scale_z
@@ -68,10 +65,7 @@ def generate_3d_random_points_with_index() -> tuple[Point, list[Point], int]:
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
     coords = [(hgen.pop(), i) for i in range(7)]
-    terminals = [
-        Point(Point(xcoord - 1000, (i % 4) * scale_z), ycoord - 1000)
-        for ([xcoord, ycoord], i) in coords
-    ]
+    terminals = [Point(Point(xcoord - 1000, (i % 4) * scale_z), ycoord - 1000) for ([xcoord, ycoord], i) in coords]
     src_coord = hgen.pop()
     source = Point(Point(src_coord[0] - 1000, 0), src_coord[1] - 1000)
     return source, terminals, scale_z
@@ -105,27 +99,18 @@ def generate_3d_simple_points() -> tuple[Point, list[Point]]:
     return source, terminals
 
 
-def get_polygon_svg_elements(
-    points: list[Point], fill_color: str, stroke_color: str, opacity: float
-) -> str:
+def get_polygon_svg_elements(points: list[Point], fill_color: str, stroke_color: str, opacity: float) -> str:
     polygon_points_str = []
     p0 = points[-1]
     for p1 in points:
         polygon_points_str.append(f"{p0.xcoord},{p0.ycoord}")
         p0 = p1
-    polygon_svg = (
-        f'  <polygon points="{" ".join(polygon_points_str)}"\n'
-        f'  fill="{fill_color}" stroke="{stroke_color}" opacity="{opacity}"/>'
-    )
+    polygon_svg = f'  <polygon points="{" ".join(polygon_points_str)}"\n' f'  fill="{fill_color}" stroke="{stroke_color}" opacity="{opacity}"/>'
     return polygon_svg
 
 
-def get_circle_svg_elements(
-    points: list[Point], circle_radius: int = 10, fill_color: str = "black"
-) -> str:
+def get_circle_svg_elements(points: list[Point], circle_radius: int = 10, fill_color: str = "black") -> str:
     circle_svgs = []
     for p in points:
-        circle_svgs.append(
-            f'  <circle cx="{p.xcoord}" cy="{p.ycoord}" r="{circle_radius}" fill="{fill_color}" />'
-        )
+        circle_svgs.append(f'  <circle cx="{p.xcoord}" cy="{p.ycoord}" r="{circle_radius}" fill="{fill_color}" />')
     return "\n".join(circle_svgs)

@@ -1,0 +1,14 @@
+Setup CI/CD improvements and add AGENTS.md (#1)
+
+- Updated GitHub Actions workflow to use latest versions (actions/checkout@v4, actions/setup-python@v5)
+- Added Python version matrix (3.8-3.12) for comprehensive testing
+- Integrated mypy type checking into CI pipeline
+- Added pre-commit checks to CI workflow
+- Implemented 80% test coverage threshold
+- Added security scanning with bandit and safety
+- Integrated benchmarking with pytest-benchmark
+- Added Ruff linter as fast alternative to flake8/isort
+- Created AGENTS.md with comprehensive development guidelines
+- Added automated changelog management with towncrier
+- Updated README.md and CONTRIBUTING.rst to reference AGENTS.md
+- Cleaned up requirements.txt deprecation warnings

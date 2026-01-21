@@ -83,7 +83,7 @@ def parse_args(args: List[str]) -> argparse.Namespace:
     parser.add_argument(
         "--version",
         action="version",
-        version="physdes-py {ver}".format(ver=__version__),
+        version=f"physdes-py {__version__}",
     )
     parser.add_argument(dest="n", help="n-th Fibonacci number", type=int, metavar="INT")
     parser.add_argument(
@@ -115,9 +115,7 @@ def setup_logging(loglevel: int) -> None:
         >>> setup_logging(logging.INFO)
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(
-        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
-    )
+    logging.basicConfig(level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
 
 
 def main(args: List[str]) -> None:
@@ -137,7 +135,7 @@ def main(args: List[str]) -> None:
     parsed_args = parse_args(args)
     setup_logging(parsed_args.loglevel)
     _logger.debug("Starting crazy calculations...")
-    print("The {}-th Fibonacci number is {}".format(parsed_args.n, fib(parsed_args.n)))
+    print(f"The {parsed_args.n}-th Fibonacci number is {fib(parsed_args.n)}")
     _logger.info("Script ends here")
 
 

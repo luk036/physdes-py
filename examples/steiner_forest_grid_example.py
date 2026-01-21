@@ -13,9 +13,7 @@ if __name__ == "__main__":
         ((5, 5), (6, 7)),
     ]  # Terminal pairs
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
-        h, w, pairs
-    )
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
 
     # Generate SVG and write to file
     cell_size = 50
@@ -57,7 +55,7 @@ if __name__ == "__main__":
             svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
 
     # Selected edges
-    for u, v, c in F_pruned:
+    for u, v, _c in F_pruned:
         ui, uj = divmod(u, w)
         vi, vj = divmod(v, w)
         ux = margin + uj * cell_size + cell_size / 2

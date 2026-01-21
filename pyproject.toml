@@ -7,3 +7,90 @@ build-backend = "setuptools.build_meta"
 # For smarter version schemes and other configuration options,
 # check out https://github.com/pypa/setuptools_scm
 version_scheme = "no-guess-dev"
+
+[tool.ruff]
+# Ruff configuration - fast Python linter
+line-length = 188
+target-version = "py38"
+
+[tool.ruff.lint]
+# Enable additional checks
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "S",      # flake8-bandit (security)
+]
+# Black compatibility and intentional patterns
+ignore = [
+    "E203",   # whitespace before ':' (handled by ruff format)
+    "UP036",  # Use `of` for imports (keep existing pattern)
+    "S101",   # Assert used for validation (keep defensive programming)
+    "N806",   # Single-letter type variable (intentional pattern)
+    "C400",   # List() on generator (intentional pattern)
+    "C408",   # Unnecessary list() call (false positive pattern)
+    # Test-specific patterns (keep existing test conventions)
+    "N803",   # Function names with underscore in tests
+    "B011",   # assert False in hypothesis tests
+    "C401",   # set() comprehension in hypothesis
+    # SVG and subprocess patterns (intentional usage)
+    "S311",   # XML for SVG parsing (not untrusted data)
+    "S603",   # subprocess for own modules (not untrusted)
+    # Python syntax variations
+    "B002",   # Unary decrement operator (valid Python syntax)
+]
+# Exclude same directories as flake8
+exclude = [
+    ".git",
+    ".tox",
+    "build",
+    "dist",
+    ".eggs",
+    "docs/conf.py",
+]
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+# Indent with spaces (same as Black)
+indent-style = "space"
+
+[tool.towncrier]
+# Automated changelog management
+# See: https://towncrier.readthedocs.io/
+filename = "CHANGELOG.rst"
+directory = "changelog/"
+title_format = "{version} ({project_date})"
+issue_format = "{issue}"
+start_string = "Changelog\n========="
+underlines = "="
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bugfixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Deprecations and Removals"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Misc"
+showcontent = true

@@ -20,7 +20,7 @@ from physdes.vector2 import Vector2
 from tests.conftest import get_circle_svg_elements, get_polygon_svg_elements
 
 
-def test_RPolygon() -> None:
+def test_rpolygon() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -35,9 +35,7 @@ def test_RPolygon() -> None:
         (-3, -4),
         (1, 4),
     ]
-    S, is_cw = create_ymono_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S, is_cw = create_ymono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon.from_pointset(S)
@@ -53,18 +51,16 @@ def test_RPolygon() -> None:
     assert Q == P
 
 
-def test_RPolygon2() -> None:
+def test_rpolygon2() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(40)]
-    S, is_cw = create_ymono_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S, is_cw = create_ymono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     assert rpolygon_is_ymonotone(S)
     assert not rpolygon_is_xmonotone(S)
     assert not rpolygon_is_convex(S)
 
     for p1, p2 in zip(S, S[1:] + [S[0]]):
-        print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
+        print(f"{p1.xcoord},{p1.ycoord} {p2.xcoord},{p1.ycoord}", end=" ")
     P = RPolygon.from_pointset(S)
     G = P.to_polygon()
     assert P.signed_area * 2 == G.signed_area_x2
@@ -74,7 +70,7 @@ def test_RPolygon2() -> None:
     assert not P.is_anticlockwise()
 
 
-def test_RPolygon3() -> None:
+def test_rpolygon3() -> None:
     coords = [
         (-2, 2),
         (0, -1),
@@ -89,36 +85,32 @@ def test_RPolygon3() -> None:
         (-3, -4),
         (1, 4),
     ]
-    S, is_anticw = create_xmono_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S, is_anticw = create_xmono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     assert rpolygon_is_xmonotone(S)
     assert not rpolygon_is_ymonotone(S)
     assert not rpolygon_is_convex(S)
 
     for p1, p2 in zip(S, S[1:] + [S[0]]):
-        print("{},{} {},{}".format(p1.xcoord, p1.ycoord, p2.xcoord, p1.ycoord), end=" ")
+        print(f"{p1.xcoord},{p1.ycoord} {p2.xcoord},{p1.ycoord}", end=" ")
     P = RPolygon.from_pointset(S)
     assert is_anticw
     assert P.is_anticlockwise()
 
 
-def test_RPolygon4() -> None:
+def test_rpolygon4() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(20)]
-    S, is_anticw = create_xmono_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S, is_anticw = create_xmono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     p0 = S[-1]
     for p1 in S:
-        print("{},{} {},{}".format(p0.xcoord, p0.ycoord, p1.xcoord, p0.ycoord), end=" ")
+        print(f"{p0.xcoord},{p0.ycoord} {p1.xcoord},{p0.ycoord}", end=" ")
         p0 = p1
     P = RPolygon.from_pointset(S)
     assert not is_anticw
     assert not P.is_anticlockwise()
 
 
-def test_RPolygon5() -> None:
+def test_rpolygon5() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
@@ -127,11 +119,7 @@ def test_RPolygon5() -> None:
 
     svg_parts = []
     svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="1.0"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="1.0"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=10))
     svg_parts.append(f'  <circle cx="{qx}" cy="{qy}" r="10" fill="#BF616A" />')
     svg_parts.append("</svg>")
@@ -218,22 +206,12 @@ def test_rpolygon_make_xmonotone_hull() -> None:
     assert not rpolygon_is_xmonotone(S)
 
     svg_parts = []
-    svg_parts.append(
-        '<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
-    )
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
-        )
-    )
+    svg_parts.append('<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">')
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=1, fill_color="black"))
 
     C = rpolygon_make_xmonotone_hull(S, True)
-    svg_parts.append(
-        get_polygon_svg_elements(
-            C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(C, fill_color="#D088C0", stroke_color="black", opacity="0.3"))
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
 
@@ -256,22 +234,12 @@ def test_rpolygon_make_ymonotone_hull() -> None:
     assert not rpolygon_is_ymonotone(S)
 
     svg_parts = []
-    svg_parts.append(
-        '<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">'
-    )
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
-        )
-    )
+    svg_parts.append('<svg viewBox="-100 -100 200 200" xmlns="http://www.w3.org/2000/svg">')
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=1, fill_color="black"))
 
     C = rpolygon_make_ymonotone_hull(S, False)
-    svg_parts.append(
-        get_polygon_svg_elements(
-            C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(C, fill_color="#D088C0", stroke_color="black", opacity="0.3"))
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
 
@@ -281,27 +249,17 @@ def test_rpolygon_make_ymonotone_hull() -> None:
 def test_rpolygon_make_convex_hull() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(100)]
-    S, is_anticlockwise = create_xmono_rpolygon(
-        [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-    )
+    S, is_anticlockwise = create_xmono_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
     assert rpolygon_is_xmonotone(S)
     assert not is_anticlockwise
 
     svg_parts = []
     svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=10, fill_color="black"))
 
     C = rpolygon_make_ymonotone_hull(S, is_anticlockwise)
-    svg_parts.append(
-        get_polygon_svg_elements(
-            C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(C, fill_color="#D088C0", stroke_color="black", opacity="0.3"))
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
     assert rpolygon_is_convex(C)

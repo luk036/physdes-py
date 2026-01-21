@@ -10,12 +10,24 @@ appreciated.
 
 If you are new to using git_ or have never collaborated in a project previously,
 please have a look at `contribution-guide.org`_. Other resources are also
-listed in the excellent `guide created by FreeCodeCamp`_.
+listed in excellent `guide created by FreeCodeCamp`_.
 
 Please notice, all users and contributors are expected to be **open,
 considerate, reasonable, and respectful**. When in doubt, `Python Software
 Foundation's Code of Conduct`_ is a good reference in terms of behavior
 guidelines.
+
+For AI Agents
+==============
+
+If you are an AI agent working on this repository, please refer to
+:doc:`AGENTS.md <AGENTS.md>` for comprehensive development guidelines
+including:
+
+* Build, lint, and test commands
+* Code style and conventions
+* Testing practices and patterns
+* Development workflow and best practices
 
 
 Issue Reports

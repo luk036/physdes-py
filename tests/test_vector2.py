@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers())
-def test_Vector2_hypo(a, b, c, d) -> None:
+def test_vector2_hypo(a, b, c, d) -> None:
     p = Vector2(a, b)
     q = Vector2(c, d)
     r = Vector2(-b, c)
@@ -17,7 +17,7 @@ def test_Vector2_hypo(a, b, c, d) -> None:
     assert (p + q) + r == p + (q + r)
 
 
-def test_Vector2() -> None:
+def test_vector2() -> None:
     # using boost::multiprecision::cpp_int
     # static_assert(Integral<cpp_int>
     a = 3
@@ -75,8 +75,6 @@ def test_repr() -> None:
 
 def test_main_run_as_script() -> None:
     """CLI Tests"""
-    result = subprocess.run(
-        [sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True
-    )
+    result = subprocess.run([sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True)
     assert "<3.0, 4.5>" in result.stdout
     assert "<<6.0, 9.0>, 10.0>" in result.stdout

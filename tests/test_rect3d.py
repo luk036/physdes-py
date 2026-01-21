@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers(), integers(), integers())
-def test_Point_hypo(a1, a2, b1, b2, v1, v2) -> None:
+def test_point_hypo(a1, a2, b1, b2, v1, v2) -> None:
     a = Point(a1, a2)
     b = Point(b1, b2)
     v = Vector2(v1, v2)
@@ -16,7 +16,7 @@ def test_Point_hypo(a1, a2, b1, b2, v1, v2) -> None:
     assert (b - v) + v == b
 
 
-def test_Point_3D() -> None:
+def test_point_3d() -> None:
     a = Point(Point(40000, 8), 20000)
     b = Point(Point(50000, 6), 10000)
     # v = b.displace(a) * 0.5  # integer division
@@ -34,7 +34,7 @@ def test_Point_3D() -> None:
     # assert a.flip_y().flip_y() == a
 
 
-def test_Interval_3D() -> None:
+def test_interval_3d() -> None:
     a = Point(Interval(4, 8), 1)
     b = Point(Interval(5, 6), 1)
     v = Vector2(3, 0)
@@ -62,7 +62,7 @@ def test_Interval_3D() -> None:
     assert min_dist(a, b) == 0
 
 
-def test_Rectangle_3D() -> None:
+def test_rectangle_3d() -> None:
     xrng1 = Interval(40000, 80000)
     yrng1 = Interval(50000, 70000)
     r1 = Point(Rectangle(xrng1, yrng1), 1000)

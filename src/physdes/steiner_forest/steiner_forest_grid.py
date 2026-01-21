@@ -39,9 +39,7 @@ class UnionFind:
         return True
 
 
-def steiner_forest_grid(
-    height: int, width: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]
-) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
+def steiner_forest_grid(height: int, width: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
     """
     Computes an approximate Steiner forest on a grid graph.
 
@@ -349,7 +347,7 @@ def generate_svg(
             svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
 
     # Selected edges
-    for node_u, node_v, cost in F_pruned:
+    for node_u, node_v, _cost in F_pruned:
         ui, uj = divmod(node_u, width)
         vi, vj = divmod(node_v, width)
         ux = margin + uj * cell_size + cell_size / 2
@@ -379,9 +377,7 @@ def main() -> None:
         ((0, 1), (4, 1)),
     ]  # Terminal pairs
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
-        height, width, pairs
-    )
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(height, width, pairs)
 
     print(f"Total cost: {total_cost}")
     print(f"Edges: {F_pruned}")

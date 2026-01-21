@@ -14,17 +14,13 @@ from physdes.vector2 import Vector2
 # Strategy for generating numeric values (integers and floats)
 numeric_values = st.one_of(
     st.integers(min_value=-1000, max_value=1000),
-    st.floats(
-        min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False
-    ),
+    st.floats(min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
 )
 
 # Strategy for generating non-zero values (to avoid division by zero)
 non_zero_values = st.one_of(
-    st.integers(min_value=-1000, max_value=-1).filter(lambda x: x != 0)
-    | st.integers(min_value=1, max_value=1000),
-    st.floats(min_value=-1000.0, max_value=-0.1).filter(lambda x: abs(x) > 1e-10)
-    | st.floats(min_value=0.1, max_value=1000.0),
+    st.integers(min_value=-1000, max_value=-1).filter(lambda x: x != 0) | st.integers(min_value=1, max_value=1000),
+    st.floats(min_value=-1000.0, max_value=-0.1).filter(lambda x: abs(x) > 1e-10) | st.floats(min_value=0.1, max_value=1000.0),
 )
 
 # Strategy for generating Vector2 objects
@@ -40,9 +36,7 @@ class TestVector2Properties:
         assert v1 + v2 == v2 + v1
 
     @given(vector2_strategy, vector2_strategy, vector2_strategy)
-    def test_addition_associativity(
-        self, v1: Vector2, v2: Vector2, v3: Vector2
-    ) -> None:
+    def test_addition_associativity(self, v1: Vector2, v2: Vector2, v3: Vector2) -> None:
         """Test that vector addition is associative: (v1 + v2) + v3 == v1 + (v2 + v3)."""
         result1 = (v1 + v2) + v3
         result2 = v1 + (v2 + v3)
@@ -54,14 +48,7 @@ class TestVector2Properties:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # If any of the vectors have float components, use approximate equality
-        if (
-            isinstance(v1.x, float)
-            or isinstance(v1.y, float)
-            or isinstance(v2.x, float)
-            or isinstance(v2.y, float)
-            or isinstance(v3.x, float)
-            or isinstance(v3.y, float)
-        ):
+        if isinstance(v1.x, float) or isinstance(v1.y, float) or isinstance(v2.x, float) or isinstance(v2.y, float) or isinstance(v3.x, float) or isinstance(v3.y, float):
             assert approx_equal(result1.x, result2.x)
             assert approx_equal(result1.y, result2.y)
         else:
@@ -86,12 +73,7 @@ class TestVector2Properties:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # If any of the vectors have float components, use approximate equality
-        if (
-            isinstance(v1.x, float)
-            or isinstance(v1.y, float)
-            or isinstance(v2.x, float)
-            or isinstance(v2.y, float)
-        ):
+        if isinstance(v1.x, float) or isinstance(v1.y, float) or isinstance(v2.x, float) or isinstance(v2.y, float):
             assert approx_equal(result.x, v1.x)
             assert approx_equal(result.y, v1.y)
         else:
@@ -103,9 +85,7 @@ class TestVector2Properties:
         assert v1 - v2 == -(v2 - v1)
 
     @given(vector2_strategy, numeric_values)
-    def test_scalar_multiplication_distributivity(
-        self, v: Vector2, scalar: float
-    ) -> None:
+    def test_scalar_multiplication_distributivity(self, v: Vector2, scalar: float) -> None:
         """Test distributivity: scalar * (v1 + v2) == scalar * v1 + scalar * v2."""
         v2 = Vector2(5, 7)  # Use a fixed second vector for this test
 
@@ -123,9 +103,7 @@ class TestVector2Properties:
         assert approx_equal(result1.y, result2.y)
 
     @given(vector2_strategy, numeric_values, numeric_values)
-    def test_scalar_multiplication_additivity(
-        self, v: Vector2, s1: float, s2: float
-    ) -> None:
+    def test_scalar_multiplication_additivity(self, v: Vector2, s1: float, s2: float) -> None:
         """Test that (s1 + s2) * v == s1 * v + s2 * v."""
         # Use approximate equality for floating-point operations
         import math
@@ -141,9 +119,7 @@ class TestVector2Properties:
         assert approx_equal(result1.y, result2.y)
 
     @given(vector2_strategy, numeric_values, numeric_values)
-    def test_scalar_multiplication_associativity(
-        self, v: Vector2, s1: float, s2: float
-    ) -> None:
+    def test_scalar_multiplication_associativity(self, v: Vector2, s1: float, s2: float) -> None:
         """Test that s1 * (s2 * v) == (s1 * s2) * v."""
         # Use approximate equality for floating-point operations
         import math
@@ -205,9 +181,7 @@ class TestVector2Properties:
         assert v2.cross(v2) == 0
 
     @given(vector2_strategy, vector2_strategy, vector2_strategy)
-    def test_cross_product_linearity(
-        self, v1: Vector2, v2: Vector2, v3: Vector2
-    ) -> None:
+    def test_cross_product_linearity(self, v1: Vector2, v2: Vector2, v3: Vector2) -> None:
         """Test cross product linearity in the first argument."""
         # (v1 + v2) × v3 == v1 × v3 + v2 × v3
 
@@ -224,9 +198,7 @@ class TestVector2Properties:
         assert approx_equal(result1, result2, rel_tol=1e-9, abs_tol=1e-9)
 
     @given(vector2_strategy, numeric_values)
-    def test_cross_product_scalar_multiplication(
-        self, v: Vector2, scalar: float
-    ) -> None:
+    def test_cross_product_scalar_multiplication(self, v: Vector2, scalar: float) -> None:
         """Test cross product with scalar multiplication."""
         v2 = Vector2(3, 7)  # Use a fixed second vector
         # (scalar * v1) × v2 == scalar * (v1 × v2)
@@ -260,9 +232,7 @@ class TestVector2Properties:
         assert v_copy == v - v2
 
     @given(vector2_strategy, numeric_values)
-    def test_inplace_multiplication_equivalence(
-        self, v: Vector2, scalar: float
-    ) -> None:
+    def test_inplace_multiplication_equivalence(self, v: Vector2, scalar: float) -> None:
         """Test that in-place multiplication is equivalent to regular multiplication."""
         v_copy = Vector2(v.x, v.y)
         v_copy *= scalar
@@ -357,9 +327,7 @@ class TestVector2NestedVectors:
         numeric_values,
         numeric_values,
     )
-    def test_nested_vector_addition(
-        self, x1: float, y1: float, z1: float, x2: float, y2: float, z2: float
-    ) -> None:
+    def test_nested_vector_addition(self, x1: float, y1: float, z1: float, x2: float, y2: float, z2: float) -> None:
         """Test addition of nested vectors."""
         v1_2d = Vector2(x1, y1)
         v1_3d = Vector2(v1_2d, z1)
@@ -373,9 +341,7 @@ class TestVector2NestedVectors:
         assert result.y == z1 + z2
 
     @given(numeric_values, numeric_values, numeric_values, numeric_values)
-    def test_nested_vector_scalar_multiplication(
-        self, x: float, y: float, z: float, scalar: float
-    ) -> None:
+    def test_nested_vector_scalar_multiplication(self, x: float, y: float, z: float, scalar: float) -> None:
         """Test scalar multiplication of nested vectors."""
         v2d = Vector2(x, y)
         v3d = Vector2(v2d, z)

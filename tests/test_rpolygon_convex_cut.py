@@ -23,20 +23,12 @@ def test_rpolygon_convex_cut() -> None:
 
     svg_parts = []
     svg_parts.append('<svg viewBox="0 0 2187 2048" xmlns="http://www.w3.org/2000/svg">')
-    svg_parts.append(
-        get_polygon_svg_elements(
-            S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"
-        )
-    )
+    svg_parts.append(get_polygon_svg_elements(S, fill_color="#88C0D0", stroke_color="black", opacity="0.5"))
     svg_parts.append(get_circle_svg_elements(S, circle_radius=10))
 
     L = rpolygon_cut_convex(S, is_anticlockwise)
     for C in L:
-        svg_parts.append(
-            get_polygon_svg_elements(
-                C, fill_color="#D088C0", stroke_color="black", opacity="0.3"
-            )
-        )
+        svg_parts.append(get_polygon_svg_elements(C, fill_color="#D088C0", stroke_color="black", opacity="0.3"))
         # for p in C:
         #     svg_parts.append(f'  <circle cx="{p.xcoord}" cy="{p.ycoord}" r="10" fill="red"/>')
 

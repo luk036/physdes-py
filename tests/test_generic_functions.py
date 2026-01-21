@@ -29,9 +29,7 @@ from physdes.vector2 import Vector2
         (1, Interval(1, 2), True),
     ],
 )
-def test_overlap(
-    a: Union[int, Interval], b: Union[int, Interval], expected: bool
-) -> None:
+def test_overlap(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
     assert overlap(a, b) is expected
 
 
@@ -48,9 +46,7 @@ def test_overlap(
         (1, Interval(3, 4), False),
     ],
 )
-def test_contain(
-    a: Union[int, Interval], b: Union[int, Interval], expected: bool
-) -> None:
+def test_contain(a: Union[int, Interval], b: Union[int, Interval], expected: bool) -> None:
     assert contain(a, b) is expected
 
 
@@ -65,9 +61,7 @@ def test_contain(
         (Interval(1, 2), Interval(1, 2), Interval(1, 2)),
     ],
 )
-def test_intersection(
-    a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]
-) -> None:
+def test_intersection(a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]) -> None:
     assert intersection(a, b) == expected
 
 
@@ -86,9 +80,7 @@ def test_intersection(
         (Interval(1, 2), Interval(1, 2), 0),
     ],
 )
-def test_min_dist(
-    a: Union[int, Interval], b: Union[int, Interval], expected: int
-) -> None:
+def test_min_dist(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
     assert min_dist(a, b) == expected
 
 
@@ -102,9 +94,7 @@ def test_min_dist(
         (Interval(1, 5), 4, 4),
     ],
 )
-def test_nearest(
-    a: Union[int, Interval], b: Union[int, Interval], expected: int
-) -> None:
+def test_nearest(a: Union[int, Interval], b: Union[int, Interval], expected: int) -> None:
     assert nearest(a, b) == expected
 
 
@@ -127,9 +117,7 @@ def test_nearest_point() -> None:
         (Interval(1, 2), Interval(3, 4), Interval(-2, -2)),
     ],
 )
-def test_displacement(
-    a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]
-) -> None:
+def test_displacement(a: Union[int, Interval], b: Union[int, Interval], expected: Union[int, Interval]) -> None:
     assert displacement(a, b) == expected
 
 

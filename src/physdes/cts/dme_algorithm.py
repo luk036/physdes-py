@@ -200,9 +200,7 @@ class LinearDelayCalculator(DelayCalculator):
         extend_left = round((skew / self.delay_per_unit + distance) / 2)
         delay_left = node_left.delay + extend_left * self.delay_per_unit
 
-        extend_left, delay_left = self._handle_boundary_conditions(
-            extend_left, distance, node_left, node_right, delay_left
-        )
+        extend_left, delay_left = self._handle_boundary_conditions(extend_left, distance, node_left, node_right, delay_left)
         return extend_left, delay_left
 
     def _handle_boundary_conditions(
@@ -320,21 +318,13 @@ class ElmoreDelayCalculator(DelayCalculator):
         skew = node_right.delay - node_left.delay
         resistance = distance * self.unit_resistance
         capacitance = distance * self.unit_capacitance
-        tapping_pt = (
-            skew + resistance * (node_right.capacitance + capacitance / 2.0)
-        ) / (
-            resistance * (capacitance + node_right.capacitance + node_left.capacitance)
-        )
+        tapping_pt = (skew + resistance * (node_right.capacitance + capacitance / 2.0)) / (resistance * (capacitance + node_right.capacitance + node_left.capacitance))
         extend_left = round(tapping_pt * distance)
         res_left = extend_left * self.unit_resistance
         cap_left = extend_left * self.unit_capacitance
-        delay_left = node_left.delay + res_left * (
-            cap_left / 2.0 + node_left.capacitance
-        )
+        delay_left = node_left.delay + res_left * (cap_left / 2.0 + node_left.capacitance)
 
-        extend_left, delay_left = self._handle_boundary_conditions(
-            extend_left, distance, node_left, node_right, delay_left
-        )
+        extend_left, delay_left = self._handle_boundary_conditions(extend_left, distance, node_left, node_right, delay_left)
         return extend_left, delay_left
 
     def _handle_boundary_conditions(
@@ -501,10 +491,7 @@ class DMEAlgorithm:
             Root node of the clock tree
         """
         # Step 1: Create initial leaf nodes
-        nodes = [
-            TreeNode(name=s.name, position=s.position, capacitance=s.capacitance)
-            for s in self.sinks
-        ]
+        nodes = [TreeNode(name=s.name, position=s.position, capacitance=s.capacitance) for s in self.sinks]
 
         # Step 2: Build merging tree using balanced bipartition
         merging_tree = self._build_merging_tree(nodes, False)
@@ -540,11 +527,7 @@ class DMEAlgorithm:
         # Sort nodes along the appropriate axis (x or y) to facilitate balanced partitioning.
         # This ensures that the division into left and right groups is as even as possible,
         # which is crucial for building a balanced merging tree.
-        sorted_nodes = (
-            sorted(nodes, key=lambda n: n.position.xcoord)
-            if vertical
-            else sorted(nodes, key=lambda n: n.position.ycoord)
-        )
+        sorted_nodes = sorted(nodes, key=lambda n: n.position.xcoord) if vertical else sorted(nodes, key=lambda n: n.position.ycoord)
 
         # Split the sorted nodes into two balanced groups: left and right.
         # The 'mid' index ensures an approximately equal distribution of nodes
@@ -614,9 +597,7 @@ class DMEAlgorithm:
             (
                 extend_left,
                 delay_left,
-            ) = self.delay_calculator.calculate_tapping_point(
-                node.left, node.right, distance
-            )
+            ) = self.delay_calculator.calculate_tapping_point(node.left, node.right, distance)
             node.delay = delay_left
             # Merge the left and right segments based on the calculated tapping point.
             # The 'extend_left' parameter dictates how much the left segment needs to be
@@ -692,9 +673,7 @@ class DMEAlgorithm:
             root: Root node of the clock tree
         """
 
-        def compute_delays(
-            node: Optional["TreeNode"], parent_delay: float = 0.0
-        ) -> None:
+        def compute_delays(node: Optional["TreeNode"], parent_delay: float = 0.0) -> None:
             if node is None:
                 return
 
@@ -702,9 +681,7 @@ class DMEAlgorithm:
             # This calculation uses the configured delay_calculator strategy, taking into
             # account the wire length and the node's capacitance.
             if node.parent:
-                wire_delay = self.delay_calculator.calculate_wire_delay(
-                    node.wire_length, node.capacitance
-                )
+                wire_delay = self.delay_calculator.calculate_wire_delay(node.wire_length, node.capacitance)
                 # The total delay to this node is the parent's delay plus the wire delay.
                 node.delay = parent_delay + wire_delay
             else:
@@ -807,9 +784,7 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
     wires = []
     sinks = []
 
-    def traverse(
-        node: Optional["TreeNode"], parent: Optional["TreeNode"] = None
-    ) -> None:
+    def traverse(node: Optional["TreeNode"], parent: Optional["TreeNode"] = None) -> None:
         if not node:
             return
 
@@ -817,9 +792,7 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
             {
                 "name": node.name,
                 "position": (node.position.xcoord, node.position.ycoord),
-                "type": (
-                    "sink" if node.left is None and node.right is None else "internal"
-                ),
+                "type": ("sink" if node.left is None and node.right is None else "internal"),
                 "delay": getattr(node, "delay", 0),
                 "capacitance": getattr(node, "capacitance", 0),
             }
@@ -855,9 +828,7 @@ def get_tree_statistics(root: "TreeNode") -> Dict[str, Any]:
 
 
 # Example usage and testing
-def example_dme_usage() -> (
-    Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]
-):
+def example_dme_usage() -> Tuple["TreeNode", "TreeNode", Dict[str, Any], Dict[str, Any]]:
     """Example demonstrating how to use the DME algorithm with different delay models"""
 
     # Create clock sinks

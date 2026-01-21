@@ -6,9 +6,7 @@ from physdes.generic import contain, displacement, intersection, min_dist, overl
 from physdes.interval import Interval, enlarge, hull
 
 
-@given(
-    integers(min_value=-1000, max_value=1000), integers(min_value=-1000, max_value=1000)
-)
+@given(integers(min_value=-1000, max_value=1000), integers(min_value=-1000, max_value=1000))
 def test_interval_hypo(a1: int, a2: int) -> None:
     a = Interval(min(a1, a2), max(a1, a2))
     assert a.lb <= a.ub
