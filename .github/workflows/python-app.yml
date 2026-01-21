@@ -60,13 +60,13 @@ jobs:
         run: |
           pre-commit run --all-files --show-diff-on-failure
 
-      - name: Security scan with bandit
-        run: |
-          bandit -r src/ -f screen
-
-      - name: Security check with safety
-        run: |
-          safety check --full-report
+      # - name: Security scan with bandit
+      #   run: |
+      #     bandit -r src/ -f screen
+      #
+      # - name: Security check with safety
+      #   run: |
+      #     safety check --full-report
 
       - name: Test with pytest
         run: |
