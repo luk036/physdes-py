@@ -139,7 +139,11 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         :return: the minimum rectilinear distance between the two objects.
         """
         # Note: take max of xcoord and ycoord
-        return (self.ma1.min_dist_with(other.ma1) + self.ma2.min_dist_with(other.ma2) + self.ma3.min_dist_with(other.ma3)) // 2
+        return (
+            self.ma1.min_dist_with(other.ma1)
+            + self.ma2.min_dist_with(other.ma2)
+            + self.ma3.min_dist_with(other.ma3)
+        ) // 2
 
     def enlarge_with(self, alpha: int) -> "ManhattanArc3D[Any, Any, Any]":
         """
@@ -158,7 +162,9 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
         ma3 = self.ma3.enlarge_with(alpha)
         return ManhattanArc3D(ma1, ma2, ma3)
 
-    def intersect_with(self, other: "ManhattanArc3D[T1, T2, T3]") -> "ManhattanArc3D[T1, T2, T3]":
+    def intersect_with(
+        self, other: "ManhattanArc3D[T1, T2, T3]"
+    ) -> "ManhattanArc3D[T1, T2, T3]":
         """
         The function calculates the intersection point between two ManhattanArc3D objects and returns a new
         ManhattanArc3D object with the coordinates of the intersection point.

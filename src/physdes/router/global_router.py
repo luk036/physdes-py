@@ -91,7 +91,9 @@ class GlobalRouter:
         """A list of terminal points to be routed to, sorted by distance from the source."""
         self.tree = GlobalRoutingTree(source_position)
         """The routing tree, which is built up as the routing progresses."""
-        self.worst_wirelength = source_position.min_dist_with(self.terminal_positions[-1])
+        self.worst_wirelength = source_position.min_dist_with(
+            self.terminal_positions[-1]
+        )
         """The wirelength of the longest connection from the source to a terminal."""
         self.keepouts = keepouts
 
@@ -160,4 +162,6 @@ class GlobalRouter:
         """
         allowed_wirelength = round(self.worst_wirelength * alpha)
         for t in self.terminal_positions:
-            self.tree.insert_terminal_with_constraints(t, allowed_wirelength, self.keepouts)
+            self.tree.insert_terminal_with_constraints(
+                t, allowed_wirelength, self.keepouts
+            )

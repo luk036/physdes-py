@@ -337,7 +337,9 @@ class GlobalRoutingTree:
 
         # Verify that end_node is a child of start_node
         if end_node not in start_node.children:
-            raise ValueError(f"{branch_end_id} is not a direct child of {branch_start_id}")
+            raise ValueError(
+                f"{branch_end_id} is not a direct child of {branch_start_id}"
+            )
 
         # Create new node
         if new_node_type == NodeType.STEINER:
@@ -419,7 +421,9 @@ class GlobalRoutingTree:
                 nearest_pt = possible_path.nearest_to(point)
 
                 if allowed_wirelength is not None:
-                    path_length = node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                    path_length = (
+                        node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                    )
                     if path_length > allowed_wirelength:
                         continue
 
@@ -430,7 +434,12 @@ class GlobalRoutingTree:
                         path2 = nearest_pt.hull_with(node.pt)
                         path3 = nearest_pt.hull_with(child.pt)
                         for keepout in keepouts:
-                            if keepout.contains(nearest_pt) or keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
+                            if (
+                                keepout.contains(nearest_pt)
+                                or keepout.blocks(path1)
+                                or keepout.blocks(path2)
+                                or keepout.blocks(path3)
+                            ):
                                 block = True
                                 break
                     if not block:
@@ -554,11 +563,15 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
 
-        parent_node, nearest_node = self._find_insertion_point(point, keepouts, allowed_wirelength)
+        parent_node, nearest_node = self._find_insertion_point(
+            point, keepouts, allowed_wirelength
+        )
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
-            terminal_node.path_length = nearest_node.path_length + nearest_node.pt.min_dist_with(point)
+            terminal_node.path_length = (
+                nearest_node.path_length + nearest_node.pt.min_dist_with(point)
+            )
         else:  # need to insert steiner point
             node_id = f"steiner_{self.next_steiner_id}"
             self.next_steiner_id += 1
@@ -573,10 +586,14 @@ class GlobalRoutingTree:
 
             # Insert new node in between
             parent_node.add_child(new_node)
-            new_node.path_length = parent_node.path_length + parent_node.pt.min_dist_with(nearest_pt)
+            new_node.path_length = (
+                parent_node.path_length + parent_node.pt.min_dist_with(nearest_pt)
+            )
             new_node.add_child(nearest_node)
             new_node.add_child(terminal_node)
-            terminal_node.path_length = new_node.path_length + nearest_pt.min_dist_with(point)
+            terminal_node.path_length = new_node.path_length + nearest_pt.min_dist_with(
+                point
+            )
 
         self.nodes[terminal_id] = terminal_node
 

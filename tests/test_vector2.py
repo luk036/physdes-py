@@ -75,6 +75,8 @@ def test_repr() -> None:
 
 def test_main_run_as_script() -> None:
     """CLI Tests"""
-    result = subprocess.run([sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True)
+    result = subprocess.run(
+        [sys.executable, "-m", "physdes.vector2"], capture_output=True, text=True
+    )
     assert "<3.0, 4.5>" in result.stdout
     assert "<<6.0, 9.0>, 10.0>" in result.stdout

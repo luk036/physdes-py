@@ -16,17 +16,23 @@ from physdes.vector2 import Vector2
 # Strategy for generating numeric values (integers and floats)
 numeric_values = st.one_of(
     st.integers(min_value=-1000, max_value=1000),
-    st.floats(min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
+    st.floats(
+        min_value=-1000.0, max_value=1000.0, allow_nan=False, allow_infinity=False
+    ),
 )
 
 # Strategy for generating Interval objects
-interval_strategy = st.builds(Interval, lb=numeric_values, ub=numeric_values).filter(lambda interval: interval.lb <= interval.ub)
+interval_strategy = st.builds(Interval, lb=numeric_values, ub=numeric_values).filter(
+    lambda interval: interval.lb <= interval.ub
+)
 
 # Strategy for generating Point objects with numeric coordinates
 point_numeric_strategy = st.builds(Point, xcoord=numeric_values, ycoord=numeric_values)
 
 # Strategy for generating Point objects with interval coordinates
-point_interval_strategy = st.builds(Point, xcoord=interval_strategy, ycoord=interval_strategy)
+point_interval_strategy = st.builds(
+    Point, xcoord=interval_strategy, ycoord=interval_strategy
+)
 
 # Strategy for generating any type of Point
 point_strategy = st.one_of(point_numeric_strategy, point_interval_strategy)
@@ -53,7 +59,9 @@ class TestPointNumericProperties:
         assert result.ycoord == p.ycoord - v.y
 
     @given(point_numeric_strategy, vector2_strategy)
-    def test_point_vector_addition_subtraction_inverse(self, p: Point, v: Vector2) -> None:
+    def test_point_vector_addition_subtraction_inverse(
+        self, p: Point, v: Vector2
+    ) -> None:
         """Test that addition and subtraction are inverse operations."""
         result = (p + v) - v
 
@@ -64,7 +72,12 @@ class TestPointNumericProperties:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # Check if either coordinate is a float to determine if we need approximate equality
-        if isinstance(p.xcoord, float) or isinstance(p.ycoord, float) or isinstance(v.x, float) or isinstance(v.y, float):
+        if (
+            isinstance(p.xcoord, float)
+            or isinstance(p.ycoord, float)
+            or isinstance(v.x, float)
+            or isinstance(v.y, float)
+        ):
             assert approx_equal(result.xcoord, p.xcoord)
             assert approx_equal(result.ycoord, p.ycoord)
         else:
@@ -167,7 +180,9 @@ class TestPointIntervalProperties:
         assert p.contains(p)
 
     @given(point_interval_strategy, point_interval_strategy, point_interval_strategy)
-    def test_interval_point_containment_transitivity(self, p1: Point, p2: Point, p3: Point) -> None:
+    def test_interval_point_containment_transitivity(
+        self, p1: Point, p2: Point, p3: Point
+    ) -> None:
         """Test transitivity of containment."""
         if p1.contains(p2) and p2.contains(p3):
             assert p1.contains(p3)
@@ -178,8 +193,13 @@ class TestPointIntervalProperties:
         intersection = p1.intersect_with(p2)
 
         # Check if intersection intervals are valid
-        if hasattr(intersection.xcoord, "is_invalid") and hasattr(intersection.ycoord, "is_invalid"):
-            if not intersection.xcoord.is_invalid() and not intersection.ycoord.is_invalid():
+        if hasattr(intersection.xcoord, "is_invalid") and hasattr(
+            intersection.ycoord, "is_invalid"
+        ):
+            if (
+                not intersection.xcoord.is_invalid()
+                and not intersection.ycoord.is_invalid()
+            ):
                 assert p1.contains(intersection)
                 assert p2.contains(intersection)
         else:
@@ -188,13 +208,17 @@ class TestPointIntervalProperties:
             assert p2.contains(intersection)
 
     @given(point_interval_strategy, point_interval_strategy)
-    def test_interval_point_min_distance_non_negative(self, p1: Point, p2: Point) -> None:
+    def test_interval_point_min_distance_non_negative(
+        self, p1: Point, p2: Point
+    ) -> None:
         """Test that minimum distance is always non-negative."""
         dist = p1.min_dist_with(p2)
         assert dist >= 0
 
     @given(point_interval_strategy, point_interval_strategy)
-    def test_interval_point_min_distance_zero_if_overlap(self, p1: Point, p2: Point) -> None:
+    def test_interval_point_min_distance_zero_if_overlap(
+        self, p1: Point, p2: Point
+    ) -> None:
         """Test that min distance is zero if points overlap."""
         if p1.overlaps(p2):
             assert p1.min_dist_with(p2) == 0
@@ -332,7 +356,12 @@ class TestPointGeometricProperties:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # Check if either coordinate is a float to determine if we need approximate equality
-        if isinstance(p1.xcoord, float) or isinstance(p1.ycoord, float) or isinstance(p2.xcoord, float) or isinstance(p2.ycoord, float):
+        if (
+            isinstance(p1.xcoord, float)
+            or isinstance(p1.ycoord, float)
+            or isinstance(p2.xcoord, float)
+            or isinstance(p2.ycoord, float)
+        ):
             assert approx_equal(dist, expected)
         else:
             assert dist == expected
@@ -342,7 +371,9 @@ class TestPointGeometricProperties:
         st.floats(min_value=0, max_value=1000),
         st.floats(min_value=0, max_value=1000),
     )
-    def test_point_enlarge_contains_original(self, p: Point, dx: float, dy: float) -> None:
+    def test_point_enlarge_contains_original(
+        self, p: Point, dx: float, dy: float
+    ) -> None:
         """Test that enlarged point contains original point."""
         enlarged = p.enlarge_with(dx)
         assert enlarged.contains(p)

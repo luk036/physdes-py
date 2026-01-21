@@ -113,14 +113,18 @@ class ManhattanArc(Generic[T1, T2]):
 
     @overload
     @staticmethod
-    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]": ...
+    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
+        ...
 
     @overload
     @staticmethod
-    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
+    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]":
+        ...
 
     @staticmethod
-    def construct(xcoord: int | float, ycoord: int | float) -> "ManhattanArc[int, int] | ManhattanArc[float, float]":
+    def construct(
+        xcoord: int | float, ycoord: int | float
+    ) -> "ManhattanArc[int, int] | ManhattanArc[float, float]":
         """
         Constructs a ManhattanArc object from standard x and y coordinates.
 
@@ -288,7 +292,9 @@ class ManhattanArc(Generic[T1, T2]):
         upper_point = self.impl.upper_corner()
         return upper_point.inv_rotates()
 
-    def _nearest_point_to(self, manhattan_arc: "ManhattanArc[Any, Any]") -> Point[Any, Any]:
+    def _nearest_point_to(
+        self, manhattan_arc: "ManhattanArc[Any, Any]"
+    ) -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
 
@@ -332,7 +338,9 @@ class ManhattanArc(Generic[T1, T2]):
         #     ic(self)
         # return m.inv_rotates()
 
-    def merge_with(self, other: "ManhattanArc[T1, T2]", alpha: int) -> "ManhattanArc[T1, T2]":
+    def merge_with(
+        self, other: "ManhattanArc[T1, T2]", alpha: int
+    ) -> "ManhattanArc[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
         the two objects, enlarges the objects based on the calculated distance, finds the intersection

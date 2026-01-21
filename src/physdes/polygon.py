@@ -320,7 +320,10 @@ class Polygon(Generic[T]):
             False
         """
         pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs
-        return all(p1.x == p2.x or p1.y == p2.y for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]]))
+        return all(
+            p1.x == p2.x or p1.y == p2.y
+            for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
+        )
 
     def is_anticlockwise(self) -> bool:
         """
@@ -348,7 +351,9 @@ class Polygon(Generic[T]):
             raise ValueError("Polygon must have at least 3 points")
 
         # Find the point with minimum coordinates (bottom-left point)
-        min_index, min_point = min(enumerate(pointset), key=lambda it: (it[1].x, it[1].y))
+        min_index, min_point = min(
+            enumerate(pointset), key=lambda it: (it[1].x, it[1].y)
+        )
 
         # Get the previous and next points in the polygon (with wrap-around)
         n = len(pointset)
@@ -393,12 +398,22 @@ class Polygon(Generic[T]):
         pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs
         # Check the cross product of all consecutive edges
         if is_anticlockwise:
-            return all((pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) >= 0 for i in range(len(pointset) - 1))
+            return all(
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i])
+                >= 0
+                for i in range(len(pointset) - 1)
+            )
         else:
-            return all((pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i]) <= 0 for i in range(len(pointset) - 1))
+            return all(
+                (pointset[i] - pointset[i - 1]).cross(pointset[i + 1] - pointset[i])
+                <= 0
+                for i in range(len(pointset) - 1)
+            )
 
 
-def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
+def partition(
+    pred: Callable[[Any], bool], iterable: Iterable[Any]
+) -> Tuple[List[Any], List[Any]]:
     """Use a predicate to partition entries into true entries and false entries
 
     Examples:
@@ -411,7 +426,9 @@ def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[Lis
     return list(filter(pred, t1)), list(filterfalse(pred, t2))
 
 
-def create_mono_polygon(lst: PointSet, dir: Callable[[Point[Any, Any]], Any]) -> PointSet:
+def create_mono_polygon(
+    lst: PointSet, dir: Callable[[Point[Any, Any]], Any]
+) -> PointSet:
     """
     The `create_mono_polygon` function creates a monotone polygon for a given point set by partitioning
     the points based on a direction and sorting them.
@@ -756,7 +773,9 @@ def point_in_polygon(pointset: PointSet, ptq: Point[T, T]) -> bool:
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (pt0.ycoord <= ptq.ycoord < pt1.ycoord):
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (
+            pt0.ycoord <= ptq.ycoord < pt1.ycoord
+        ):
             det = ptq.displace(pt0).cross(pt1.displace(pt0))
             if pt1.ycoord > pt0.ycoord:
                 if det < 0:
@@ -790,7 +809,9 @@ def polygon_is_anticlockwise_info(pointset: PointSet) -> Tuple[bool, int]:
         raise ValueError("Polygon must have at least 3 points")
 
     # Find the point with minimum coordinates (bottom-left point)
-    min_index, min_point = min(enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord))
+    min_index, min_point = min(
+        enumerate(pointset), key=lambda it: (it[1].xcoord, it[1].ycoord)
+    )
 
     # Get the previous and next points in the polygon (with wrap-around)
     n = len(pointset)
@@ -866,7 +887,9 @@ def polygon_make_convex_hull(pointset: PointSet) -> PointSet:
 
     rdll = RDllist(n)
 
-    def process(v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable[[Any], bool]) -> None:
+    def process(
+        v_start: Dllink[int], v_stop: Dllink[int], cmp: Callable[[Any], bool]
+    ) -> None:
         vlink = v_start.next
         while id(vlink) != id(v_stop):
             vnext = vlink.next

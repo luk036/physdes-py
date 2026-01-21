@@ -101,7 +101,9 @@ class TestSteinerForestGrid:
         h = 2
         w = 2
         pairs = [((0, 0), (1, 1))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
         assert sorted(F_pruned) == [(0, 1, 1.0), (1, 3, 1.0)]
         assert total_cost == 2.0
         assert sources == {0}
@@ -120,7 +122,9 @@ class TestSteinerForestGrid:
             ((0, 1), (4, 1)),
         ]
 
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(height, width, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            height, width, pairs
+        )
 
         expected_cost = 17.0
         expected_F_pruned = [
@@ -148,7 +152,9 @@ class TestSteinerForestGrid:
 
         # Sort the edges for consistent comparison
         F_pruned_sorted = sorted([(min(u, v), max(u, v)) for u, v, _ in F_pruned])
-        expected_F_pruned_sorted = sorted([(min(u, v), max(u, v)) for u, v, _ in expected_F_pruned])
+        expected_F_pruned_sorted = sorted(
+            [(min(u, v), max(u, v)) for u, v, _ in expected_F_pruned]
+        )
 
         assert total_cost == expected_cost
         assert F_pruned_sorted == expected_F_pruned_sorted
@@ -161,7 +167,9 @@ class TestSteinerForestGrid:
         h = 3
         w = 3
         pairs = [((0, 0), (2, 2))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost > 0
         assert len(sources) == 1
@@ -173,7 +181,9 @@ class TestSteinerForestGrid:
         h = 2
         w = 2
         pairs = [((0, 0), (0, 1))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost == 1.0
         assert len(F_pruned) == 1
@@ -184,7 +194,9 @@ class TestSteinerForestGrid:
         h = 4
         w = 4
         pairs = [((0, 0), (3, 3)), ((0, 3), (3, 0))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost > 0
         assert len(sources) == 2
@@ -197,7 +209,9 @@ class TestSteinerForestGrid:
         h = 3
         w = 3
         pairs = [((0, 0), (2, 2)), ((0, 0), (2, 0))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost > 0
         assert 0 in sources  # (0,0) is a source
@@ -208,7 +222,9 @@ class TestSteinerForestGrid:
         h = 3
         w = 3
         pairs = []
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost == 0.0
         assert len(F_pruned) == 0
@@ -221,7 +237,9 @@ class TestSteinerForestGrid:
         h = 10
         w = 10
         pairs = [((0, 0), (9, 9)), ((0, 9), (9, 0))]
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         assert total_cost > 0
         assert len(F_pruned) > 0
@@ -370,7 +388,9 @@ class TestIntegration:
         pairs = [((0, 0), (3, 3)), ((0, 3), (3, 0))]
 
         # Calculate forest
-        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+        F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+            h, w, pairs
+        )
 
         # Generate SVG
         output_file = tmp_path / "integration_test.svg"

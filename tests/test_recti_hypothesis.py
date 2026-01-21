@@ -17,10 +17,14 @@ from physdes.recti import HSegment, Rectangle, VSegment
 int_values = st.integers(min_value=-100, max_value=100)
 
 # Strategy for generating Interval objects with integer bounds
-interval_strategy = st.builds(Interval, lb=int_values, ub=int_values).filter(lambda interval: interval.lb <= interval.ub)
+interval_strategy = st.builds(Interval, lb=int_values, ub=int_values).filter(
+    lambda interval: interval.lb <= interval.ub
+)
 
 # Strategy for generating Rectangle objects
-rectangle_strategy = st.builds(Rectangle, xcoord=interval_strategy, ycoord=interval_strategy)
+rectangle_strategy = st.builds(
+    Rectangle, xcoord=interval_strategy, ycoord=interval_strategy
+)
 
 # Strategy for generating VSegment objects
 vsegment_strategy = st.builds(VSegment, xcoord=int_values, ycoord=interval_strategy)
@@ -88,7 +92,9 @@ class TestRectangleProperties:
             assert rect.ycoord.lb <= point.ycoord <= rect.ycoord.ub
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_containment_properties(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_containment_properties(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test rectangle containment properties."""
         # If rect1 contains rect2, then rect1 should contain rect2's corners
         if rect1.contains(rect2):
@@ -96,18 +102,24 @@ class TestRectangleProperties:
             assert rect1.contains(rect2.ur)
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_overlap_symmetry(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_overlap_symmetry(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test that overlap is symmetric."""
         assert rect1.overlaps(rect2) == rect2.overlaps(rect1)
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_containment_implication_overlap(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_containment_implication_overlap(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test that containment implies overlap."""
         if rect1.contains(rect2):
             assert rect1.overlaps(rect2)
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_intersection_properties(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_intersection_properties(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test properties of rectangle intersection."""
         intersection = rect1.intersect_with(rect2)
 
@@ -123,7 +135,9 @@ class TestRectangleProperties:
             assert rect2.contains(intersection)
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_hull_properties(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_hull_properties(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test properties of rectangle hull."""
         hull = rect1.hull_with(rect2)
 
@@ -138,14 +152,18 @@ class TestRectangleProperties:
         assert hull.ycoord.ub >= max(rect1.ycoord.ub, rect2.ycoord.ub)
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_hull_commutativity(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_hull_commutativity(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test that hull operation is commutative."""
         hull1 = rect1.hull_with(rect2)
         hull2 = rect2.hull_with(rect1)
         assert hull1 == hull2
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_min_distance_properties(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_min_distance_properties(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test properties of minimum distance between rectangles."""
         dist = rect1.min_dist_with(rect2)
 
@@ -157,7 +175,9 @@ class TestRectangleProperties:
             assert dist == 0
 
     @given(rectangle_strategy, rectangle_strategy)
-    def test_rectangle_min_distance_symmetry(self, rect1: Rectangle, rect2: Rectangle) -> None:
+    def test_rectangle_min_distance_symmetry(
+        self, rect1: Rectangle, rect2: Rectangle
+    ) -> None:
         """Test that minimum distance is symmetric."""
         dist1 = rect1.min_dist_with(rect2)
         dist2 = rect2.min_dist_with(rect1)
@@ -217,7 +237,9 @@ class TestVSegmentProperties:
         assert seg1.overlaps(seg2) == seg2.overlaps(seg1)
 
     @given(vsegment_strategy, vsegment_strategy)
-    def test_vsegment_containment_implication_overlap(self, seg1: VSegment, seg2: VSegment) -> None:
+    def test_vsegment_containment_implication_overlap(
+        self, seg1: VSegment, seg2: VSegment
+    ) -> None:
         """Test that containment implies overlap."""
         if seg1.contains(seg2):
             assert seg1.overlaps(seg2)
@@ -276,7 +298,9 @@ class TestHSegmentProperties:
         assert seg1.overlaps(seg2) == seg2.overlaps(seg1)
 
     @given(hsegment_strategy, hsegment_strategy)
-    def test_hsegment_containment_implication_overlap(self, seg1: HSegment, seg2: HSegment) -> None:
+    def test_hsegment_containment_implication_overlap(
+        self, seg1: HSegment, seg2: HSegment
+    ) -> None:
         """Test that containment implies overlap."""
         if seg1.contains(seg2):
             assert seg1.overlaps(seg2)
@@ -298,7 +322,9 @@ class TestSegmentRectangleInteractions:
         assert rect.overlaps(seg) == seg.overlaps(rect)
 
     @given(rectangle_strategy, vsegment_strategy)
-    def test_rectangle_vsegment_containment(self, rect: Rectangle, seg: VSegment) -> None:
+    def test_rectangle_vsegment_containment(
+        self, rect: Rectangle, seg: VSegment
+    ) -> None:
         """Test containment between rectangle and vertical segment."""
         # If rectangle contains segment, it should contain segment's endpoints
         if rect.contains(seg):
@@ -309,7 +335,9 @@ class TestSegmentRectangleInteractions:
             assert rect.contains(upper_point)
 
     @given(rectangle_strategy, hsegment_strategy)
-    def test_rectangle_hsegment_containment(self, rect: Rectangle, seg: HSegment) -> None:
+    def test_rectangle_hsegment_containment(
+        self, rect: Rectangle, seg: HSegment
+    ) -> None:
         """Test containment between rectangle and horizontal segment."""
         # If rectangle contains segment, it should contain segment's endpoints
         if rect.contains(seg):
@@ -324,7 +352,9 @@ class TestGeometricInvariants:
     """Test geometric invariants across all shape types."""
 
     @given(rectangle_strategy, rectangle_strategy, rectangle_strategy)
-    def test_rectangle_hull_associativity_weak(self, rect1: Rectangle, rect2: Rectangle, rect3: Rectangle) -> None:
+    def test_rectangle_hull_associativity_weak(
+        self, rect1: Rectangle, rect2: Rectangle, rect3: Rectangle
+    ) -> None:
         """Test weak associativity of rectangle hull operation."""
         hull12 = rect1.hull_with(rect2)
         hull23 = rect2.hull_with(rect3)
@@ -353,33 +383,45 @@ class TestGeometricInvariants:
         assert enlarged.ycoord.ub >= rect.ycoord.ub + delta
 
     @given(vsegment_strategy, vsegment_strategy)
-    def test_vsegment_intersection_properties(self, seg1: VSegment, seg2: VSegment) -> None:
+    def test_vsegment_intersection_properties(
+        self, seg1: VSegment, seg2: VSegment
+    ) -> None:
         """Test properties of vertical segment intersection."""
         # Only test intersection if segments have the same x-coordinate
         if seg1.xcoord == seg2.xcoord:
             intersection = seg1.intersect_with(seg2)
 
             # Check if intersection is valid (y interval is non-empty)
-            if isinstance(intersection.ycoord, Interval) and intersection.ycoord.lb <= intersection.ycoord.ub:
+            if (
+                isinstance(intersection.ycoord, Interval)
+                and intersection.ycoord.lb <= intersection.ycoord.ub
+            ):
                 # Valid intersection should be contained in both segments
                 assert seg1.contains(intersection)
                 assert seg2.contains(intersection)
 
     @given(hsegment_strategy, hsegment_strategy)
-    def test_hsegment_intersection_properties(self, seg1: HSegment, seg2: HSegment) -> None:
+    def test_hsegment_intersection_properties(
+        self, seg1: HSegment, seg2: HSegment
+    ) -> None:
         """Test properties of horizontal segment intersection."""
         # Only test intersection if segments have the same y-coordinate
         if seg1.ycoord == seg2.ycoord:
             intersection = seg1.intersect_with(seg2)
 
             # Check if intersection is valid (x interval is non-empty)
-            if isinstance(intersection.xcoord, Interval) and intersection.xcoord.lb <= intersection.xcoord.ub:
+            if (
+                isinstance(intersection.xcoord, Interval)
+                and intersection.xcoord.lb <= intersection.xcoord.ub
+            ):
                 # Valid intersection should be contained in both segments
                 assert seg1.contains(intersection)
                 assert seg2.contains(intersection)
 
     @given(vsegment_strategy, vsegment_strategy)
-    def test_vsegment_min_distance_properties(self, seg1: VSegment, seg2: VSegment) -> None:
+    def test_vsegment_min_distance_properties(
+        self, seg1: VSegment, seg2: VSegment
+    ) -> None:
         """Test properties of minimum distance between vertical segments."""
         dist = seg1.min_dist_with(seg2)
 
@@ -391,7 +433,9 @@ class TestGeometricInvariants:
             assert dist == 0
 
     @given(hsegment_strategy, hsegment_strategy)
-    def test_hsegment_min_distance_properties(self, seg1: HSegment, seg2: HSegment) -> None:
+    def test_hsegment_min_distance_properties(
+        self, seg1: HSegment, seg2: HSegment
+    ) -> None:
         """Test properties of minimum distance between horizontal segments."""
         dist = seg1.min_dist_with(seg2)
 

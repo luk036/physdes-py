@@ -50,12 +50,16 @@ class RectilinearVoronoi:
                 y = self.Y[i, j]
 
                 # Calculate distances to all points
-                distances = [self.manhattan_distance(x, y, px, py) for px, py in self.points]
+                distances = [
+                    self.manhattan_distance(x, y, px, py) for px, py in self.points
+                ]
 
                 # Find the closest point(s)
                 min_dist = min(distances)
                 # If there's a tie, we'll mark it as a boundary later
-                closest_indices = [idx for idx, d in enumerate(distances) if d == min_dist]
+                closest_indices = [
+                    idx for idx, d in enumerate(distances) if d == min_dist
+                ]
 
                 # If exactly one closest point, assign it
                 if len(closest_indices) == 1:
@@ -153,7 +157,9 @@ class RectilinearVoronoi:
                             [center[0] - diamond_size, center[1]],  # Left
                         ]
 
-                        polygon = Polygon(diamond, closed=True, alpha=0.3, color=colors(point_idx))
+                        polygon = Polygon(
+                            diamond, closed=True, alpha=0.3, color=colors(point_idx)
+                        )
                         ax.add_patch(polygon)
                         patches.append(polygon)
 
@@ -209,7 +215,9 @@ class RectilinearVoronoi:
         distance_field = self.manhattan_distance(self.X, self.Y, px, py)
 
         # Plot the distance field
-        contour = ax.contourf(self.X, self.Y, distance_field, levels=20, alpha=0.7, cmap="viridis")
+        contour = ax.contourf(
+            self.X, self.Y, distance_field, levels=20, alpha=0.7, cmap="viridis"
+        )
         plt.colorbar(contour, ax=ax, label=f"Manhattan distance to site {point_index}")
 
         # Plot all points
@@ -253,7 +261,9 @@ class RectilinearVoronoi:
 
 def generate_random_points(n, width=10, height=10):
     """Generate n random points within the given bounds."""
-    return [(random.uniform(1, width - 1), random.uniform(1, height - 1)) for _ in range(n)]
+    return [
+        (random.uniform(1, width - 1), random.uniform(1, height - 1)) for _ in range(n)
+    ]
 
 
 def demonstrate_voronoi():
@@ -314,7 +324,9 @@ def compare_euclidean_vs_manhattan():
     fig, axes = plt.subplots(1, 2, figsize=(15, 6))
 
     # Euclidean distance
-    contour1 = axes[0].contourf(X, Y, euclidean_dist, levels=20, alpha=0.7, cmap="viridis")
+    contour1 = axes[0].contourf(
+        X, Y, euclidean_dist, levels=20, alpha=0.7, cmap="viridis"
+    )
     axes[0].scatter(
         [center[0]],
         [center[1]],
@@ -332,7 +344,9 @@ def compare_euclidean_vs_manhattan():
     plt.colorbar(contour1, ax=axes[0], label="Distance")
 
     # Manhattan distance
-    contour2 = axes[1].contourf(X, Y, manhattan_dist, levels=20, alpha=0.7, cmap="viridis")
+    contour2 = axes[1].contourf(
+        X, Y, manhattan_dist, levels=20, alpha=0.7, cmap="viridis"
+    )
     axes[1].scatter(
         [center[0]],
         [center[1]],

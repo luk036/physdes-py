@@ -433,7 +433,9 @@ def plot_polygon_decomposition(polygon, convex_parts):
     concave_vertices = polygon.find_concave_vertices()
     concave_xs = [v[1].x for v in concave_vertices]
     concave_ys = [v[1].y for v in concave_vertices]
-    ax1.scatter(concave_xs, concave_ys, c="orange", s=100, marker="s", zorder=6, label="凹点")
+    ax1.scatter(
+        concave_xs, concave_ys, c="orange", s=100, marker="s", zorder=6, label="凹点"
+    )
 
     ax1.legend()
     ax1.grid(True, alpha=0.3)

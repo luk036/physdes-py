@@ -26,16 +26,22 @@ point_strategy = st.builds(Point, xcoord=numeric_values, ycoord=numeric_values)
 vector2_strategy = st.builds(Vector2, x=numeric_values, y=numeric_values)
 
 # Strategy for generating simple polygons (triangles)
-triangle_strategy = st.builds(Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=3))
+triangle_strategy = st.builds(
+    Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=3)
+)
 
 # Strategy for generating simple convex polygons (convex quadrilaterals)
 convex_quad_strategy = st.builds(
     Polygon.from_pointset,
-    pointset=st.lists(point_strategy, min_size=4, max_size=4).filter(lambda points: len(set((p.xcoord, p.ycoord) for p in points)) == 4),
+    pointset=st.lists(point_strategy, min_size=4, max_size=4).filter(
+        lambda points: len(set((p.xcoord, p.ycoord) for p in points)) == 4
+    ),
 )
 
 # Strategy for generating simple polygons
-simple_polygon_strategy = st.builds(Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=8)).filter(lambda poly: len(poly._vecs) >= 2)
+simple_polygon_strategy = st.builds(
+    Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=8)
+).filter(lambda poly: len(poly._vecs) >= 2)
 
 
 class TestPolygonBasicProperties:
@@ -53,7 +59,9 @@ class TestPolygonBasicProperties:
         assert result == (poly2 == poly1)
 
     @given(simple_polygon_strategy, simple_polygon_strategy, simple_polygon_strategy)
-    def test_polygon_equality_transitivity(self, poly1: Polygon, poly2: Polygon, poly3: Polygon) -> None:
+    def test_polygon_equality_transitivity(
+        self, poly1: Polygon, poly2: Polygon, poly3: Polygon
+    ) -> None:
         """Test that equality is transitive."""
         if poly1 == poly2 and poly2 == poly3:
             assert poly1 == poly3
@@ -101,7 +109,9 @@ class TestPolygonArithmetic:
         assert poly._vecs == poly._vecs
 
     @given(simple_polygon_strategy, vector2_strategy)
-    def test_polygon_addition_subtraction_inverse(self, poly: Polygon, vec: Vector2) -> None:
+    def test_polygon_addition_subtraction_inverse(
+        self, poly: Polygon, vec: Vector2
+    ) -> None:
         """Test that addition and subtraction are inverse operations."""
         original_origin = Point(poly._origin.xcoord, poly._origin.ycoord)
         original_vecs = poly._vecs
@@ -111,13 +121,21 @@ class TestPolygonArithmetic:
         # Should return to original position (with floating-point tolerance)
         import math
 
-        if isinstance(poly._origin.xcoord, float) or isinstance(original_origin.xcoord, float):
-            assert math.isclose(poly._origin.xcoord, original_origin.xcoord, rel_tol=1e-9, abs_tol=1e-12)
+        if isinstance(poly._origin.xcoord, float) or isinstance(
+            original_origin.xcoord, float
+        ):
+            assert math.isclose(
+                poly._origin.xcoord, original_origin.xcoord, rel_tol=1e-9, abs_tol=1e-12
+            )
         else:
             assert poly._origin.xcoord == original_origin.xcoord
 
-        if isinstance(poly._origin.ycoord, float) or isinstance(original_origin.ycoord, float):
-            assert math.isclose(poly._origin.ycoord, original_origin.ycoord, rel_tol=1e-9, abs_tol=1e-12)
+        if isinstance(poly._origin.ycoord, float) or isinstance(
+            original_origin.ycoord, float
+        ):
+            assert math.isclose(
+                poly._origin.ycoord, original_origin.ycoord, rel_tol=1e-9, abs_tol=1e-12
+            )
         else:
             assert poly._origin.ycoord == original_origin.ycoord
 
@@ -181,11 +199,16 @@ class TestPolygonPointInclusion:
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [tri._origin]
         for vec in tri._vecs:
-            vertices.append(Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y))
+            vertices.append(
+                Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y)
+            )
 
         # Check if triangle is non-degenerate (has non-zero area)
         # If all points are the same or there are duplicates, it's a degenerate case
-        all_same = all(v.xcoord == vertices[0].xcoord and v.ycoord == vertices[0].ycoord for v in vertices)
+        all_same = all(
+            v.xcoord == vertices[0].xcoord and v.ycoord == vertices[0].ycoord
+            for v in vertices
+        )
 
         # Check for duplicate vertices
         unique_vertices = []
@@ -213,7 +236,12 @@ class TestPolygonPointInclusion:
                 area_x2 -= unique_vertices[j].xcoord * unique_vertices[i].ycoord
             is_collinear = area_x2 == 0
 
-        if not all_same and not has_duplicates and len(unique_vertices) >= 3 and not is_collinear:
+        if (
+            not all_same
+            and not has_duplicates
+            and len(unique_vertices) >= 3
+            and not is_collinear
+        ):
             # For proper non-degenerate triangles:
             # point_in_polygon uses winding number algorithm which considers vertices as boundary points
             # According to the documentation, it returns False for points on the boundary
@@ -231,13 +259,17 @@ class TestPolygonPointInclusion:
             pass
 
     @given(triangle_strategy, point_strategy)
-    def test_point_in_triangle_properties(self, tri: Polygon, test_point: Point) -> None:
+    def test_point_in_triangle_properties(
+        self, tri: Polygon, test_point: Point
+    ) -> None:
         """Test properties of point-in-triangle function."""
         # Get all vertices including origin
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [tri._origin]
         for vec in tri._vecs:
-            vertices.append(Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y))
+            vertices.append(
+                Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y)
+            )
 
         # The function should return a boolean
         result = point_in_polygon(vertices, test_point)
@@ -250,12 +282,16 @@ class TestPolygonPointInclusion:
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [poly._origin]
         for vec in poly._vecs:
-            vertices.append(Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y))
+            vertices.append(
+                Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y)
+            )
 
         # Check if polygon is degenerate (all points are the same)
         # This can happen with the current strategy
         unique_vertices = {(v.xcoord, v.ycoord) for v in vertices}
-        assume(len(unique_vertices) >= 3)  # Need at least 3 unique points for a valid polygon
+        assume(
+            len(unique_vertices) >= 3
+        )  # Need at least 3 unique points for a valid polygon
 
         # Try multiple candidate points and select one that gives a consistent result
         # This handles both convex and non-convex polygons
@@ -292,7 +328,9 @@ class TestPolygonPointInclusion:
                     translated_verts = vertices
                     translated_pt = candidate
                 else:
-                    translated_verts = [Point(v.xcoord + tx, v.ycoord + ty) for v in vertices]
+                    translated_verts = [
+                        Point(v.xcoord + tx, v.ycoord + ty) for v in vertices
+                    ]
                     translated_pt = Point(candidate.xcoord + tx, candidate.ycoord + ty)
 
                 result = point_in_polygon(translated_verts, translated_pt)
@@ -315,8 +353,12 @@ class TestPolygonPointInclusion:
         # Translate polygon and test with translated test point
         translation_x = 10
         translation_y = 20
-        translated_vertices = [Point(v.xcoord + translation_x, v.ycoord + translation_y) for v in vertices]
-        translated_test_point = Point(test_point.xcoord + translation_x, test_point.ycoord + translation_y)
+        translated_vertices = [
+            Point(v.xcoord + translation_x, v.ycoord + translation_y) for v in vertices
+        ]
+        translated_test_point = Point(
+            test_point.xcoord + translation_x, test_point.ycoord + translation_y
+        )
         translated_result = point_in_polygon(translated_vertices, translated_test_point)
 
         # Both should give the same result (inside or outside)
@@ -379,7 +421,9 @@ class TestPolygonEdgeCases:
         numeric_values,
         numeric_values,
     )
-    def test_degenerate_triangle_handling(self, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float) -> None:
+    def test_degenerate_triangle_handling(
+        self, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float
+    ) -> None:
         """Test handling of degenerate triangles (collinear points)."""
         p1 = Point(x1, y1)
         p2 = Point(x2, y2)
@@ -403,7 +447,9 @@ class TestPolygonEdgeCases:
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [poly._origin]
         for vec in poly._vecs:
-            vertices.append(Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y))
+            vertices.append(
+                Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y)
+            )
 
         # Test with various points
         _ = point_in_polygon(vertices, poly._origin)

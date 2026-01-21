@@ -209,7 +209,9 @@ def test_point_in_polygon_missed_branches() -> None:
     # Test case where ptq.ycoord == pt0.ycoord
     assert point_in_polygon(pointset, Point(5, 10)) is False
     # Test case where ptq.ycoord == pt1.ycoord
-    assert point_in_polygon(pointset, Point(5, 0)) is True  # because of the strict inequality
+    assert (
+        point_in_polygon(pointset, Point(5, 0)) is True
+    )  # because of the strict inequality
     # Test case where det == 0 (point on edge)
     assert point_in_polygon(pointset, Point(5, 0)) is True
 
