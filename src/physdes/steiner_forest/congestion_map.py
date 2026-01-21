@@ -65,7 +65,7 @@ def draw_congestion_map(grid: list[list[int]], filename: str = "congestion_map.s
 
     # Legend labels
     for label_val in range(0, 101, 25):
-        y_pos = legend_y + (100 - label_val) / 100 * (rows * cell_size)
+        y_pos = legend_y + int((100 - label_val) / 100 * (rows * cell_size))
         svg.append(f'<text x="{legend_x + 40}" y="{y_pos + 5}" font-size="12" font-family="Arial">{label_val}</text>')
         svg.append(f'<line x1="{legend_x - 5}" y1="{y_pos}" x2="{legend_x}" y2="{y_pos}" stroke="black" stroke-width="1"/>')
 

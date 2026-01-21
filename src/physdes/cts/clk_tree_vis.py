@@ -485,7 +485,7 @@ def create_delay_model_comparison(
     return create_comparison_visualization([linear_tree_data, elmore_tree_data], filename, width=1200, height=600)
 
 
-def generate_random_points_for_sinks() -> List[List[float]]:
+def generate_random_points_for_sinks() -> List[List[int]]:
     """Generate a set of random source and terminal points."""
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)

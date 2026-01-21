@@ -571,7 +571,9 @@ class DMEAlgorithm:
         """
         merging_segments = {}
 
-        def compute_segment(node: "TreeNode") -> "ManhattanArc":
+        def compute_segment(
+            node: "TreeNode",
+        ) -> "ManhattanArc[Any, Any] | ManhattanArc3D[Any, Any, Any]":
             if node.left is None and node.right is None:
                 # If it's a leaf node (a sink), its merging segment is simply its position.
                 # The delay for a leaf node is considered 0.0 at this stage.
@@ -589,7 +591,7 @@ class DMEAlgorithm:
 
             # Calculate the Manhattan distance between the two child merging segments.
             # This distance represents the minimum possible wire length required to connect them.
-            distance = left_ms.min_dist_with(right_ms)
+            distance = left_ms.min_dist_with(right_ms)  # type: ignore[arg-type]
 
             # Calculate the tapping point and delay for the merged segment using the configured
             # delay calculator strategy. This step is crucial for achieving zero-skew by
@@ -602,7 +604,7 @@ class DMEAlgorithm:
             # Merge the left and right segments based on the calculated tapping point.
             # The 'extend_left' parameter dictates how much the left segment needs to be
             # extended to meet the zero-skew requirement.
-            merged_segment = left_ms.merge_with(right_ms, extend_left)
+            merged_segment = left_ms.merge_with(right_ms, extend_left)  # type: ignore[arg-type]
             merging_segments[node.name] = merged_segment
 
             # Update the capacitance of the current node. This includes the capacitances

@@ -120,16 +120,16 @@ class ManhattanArc(Generic[T1, T2]):
     def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
 
     @staticmethod
-    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]":
+    def construct(xcoord: int | float, ycoord: int | float) -> "ManhattanArc[int, int] | ManhattanArc[float, float]":
         """
         Constructs a ManhattanArc object from standard x and y coordinates.
 
         :param xcoord: The x-coordinate.
-        :type xcoord: int
+        :type xcoord: int | float
         :param ycoord: The y-coordinate.
-        :type ycoord: int
+        :type ycoord: int | float
         :return: A new ManhattanArc object.
-        :rtype: ManhattanArc[int, int]
+        :rtype: ManhattanArc[int, int] | ManhattanArc[float, float]
         """
         impl = Point(xcoord - ycoord, xcoord + ycoord)
         return ManhattanArc(impl.xcoord, impl.ycoord)
@@ -204,7 +204,7 @@ class ManhattanArc(Generic[T1, T2]):
         y_dist = min_dist(self.impl.ycoord, other.impl.ycoord)
         return int(max(x_dist, y_dist))
 
-    def enlarge_with(self, alpha: int) -> "ManhattanArc[T1, T2]":
+    def enlarge_with(self, alpha: int) -> "ManhattanArc[Any, Any]":
         """
         The `enlarge_with` function takes an integer `alpha` and returns a new `ManhattanArc` object with
         enlarged coordinates.
