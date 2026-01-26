@@ -176,3 +176,12 @@ MANIFEST
 
 # my stuffs
 .hypothesis
+
+# Temporary log files
+*.log
+coverage.json
+mypy_error.log
+
+# Build artifacts
+diagram.bob
+oryx-build-commands.txt
