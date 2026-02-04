@@ -141,10 +141,8 @@ class Polygon(Generic[T]):
         they are equal or not.
 
         :param rhs: The parameter `rhs` is of type `object`. It represents the right-hand side of the
-        equality comparison.
-
+            equality comparison.
         :type rhs: object
-
         :return: The method is returning a boolean value.
 
         Examples:

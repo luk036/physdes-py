@@ -1,2 +1,7 @@
 .. _readme:
-.. include:: ../README.rst
+
+README
+======
+
+.. literalinclude:: ../README.md
+   :language: markdown

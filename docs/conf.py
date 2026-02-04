@@ -87,13 +87,13 @@ napoleon_use_param = True
 napoleon_use_rtype = True
 
 # Autodoc settings for better API documentation
-autodoc_default_options = [
-    "members",
-    "undoc-members",
-    "show-inheritance",
-    "inherited-members",
-    "special-members=__init__",
-]
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+    "inherited-members": True,
+    "special-members": "__init__",
+}
 
 # Type hints rendering
 autodoc_typehints = "description"

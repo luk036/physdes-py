@@ -472,6 +472,7 @@ class Interval(Generic[T]):
         """
         The function overloads the "/" operator to divide a constant value to the lower and upper bounds of
         an Interval object.
+
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
             being divided to the current object
         :type rhs: T
@@ -485,6 +486,7 @@ class Interval(Generic[T]):
         """
         The function overloads the "//" operator to floor divide a constant value to the lower and upper bounds of
         an Interval object.
+
         :param rhs: The parameter `rhs` stands for "right-hand side" and represents the value that is
             being divided to the current object
         :type rhs: T
