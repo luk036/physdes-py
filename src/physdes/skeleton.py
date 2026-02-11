@@ -115,7 +115,9 @@ def setup_logging(loglevel: int) -> None:
         >>> setup_logging(logging.INFO)
     """
     logformat = "[%(asctime)s] %(levelname)s:%(name)s:%(message)s"
-    logging.basicConfig(level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S")
+    logging.basicConfig(
+        level=loglevel, stream=sys.stdout, format=logformat, datefmt="%Y-%m-%d %H:%M:%S"
+    )
 
 
 def main(args: List[str]) -> None:

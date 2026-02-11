@@ -23,11 +23,15 @@ def test_route3d_with_steiner_and_keepouts() -> None:
     router.route_with_steiners()
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(router.tree, keepouts, scale_z, width=1000, height=1000)
+    svg_output = visualize_routing_tree3d_svg(
+        router.tree, keepouts, scale_z, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file
-    save_routing_tree3d_svg(router.tree, keepouts, scale_z, "example_route3d_with_steiner_and_keepouts.svg")
+    save_routing_tree3d_svg(
+        router.tree, keepouts, scale_z, "example_route3d_with_steiner_and_keepouts.svg"
+    )
 
 
 def test_route3d_with_constraints_and_keepouts() -> None:
@@ -42,7 +46,9 @@ def test_route3d_with_constraints_and_keepouts() -> None:
     router.route_with_constraints(1.0)
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(router.tree, keepouts, scale_z, width=1000, height=1000)
+    svg_output = visualize_routing_tree3d_svg(
+        router.tree, keepouts, scale_z, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file
@@ -64,12 +70,16 @@ def test_route3d_with_constraints_and_keepouts() -> None:
         else:
             node_type = "NODE_TYPES.UNKNOWN"
 
-        print(f"{{ id: '{node.id}', type: {node_type}, position: {{x: {node.pt.xcoord.xcoord}, y: {node.pt.xcoord.ycoord}, z: {node.pt.ycoord}}} }},")
+        print(
+            f"{{ id: '{node.id}', type: {node_type}, position: {{x: {node.pt.xcoord.xcoord}, y: {node.pt.xcoord.ycoord}, z: {node.pt.ycoord}}} }},"
+        )
         # { id: 'S', type: NODE_TYPES.SOURCE, position: { x: 27, y: 0, z: 1728 } },
 
     def draw_connections(node):
         for child in node.children:
-            print(f"{{ from: '{node.id}', to: '{child.id}', type: CONNECTION_TYPES.ROUTED }},")
+            print(
+                f"{{ from: '{node.id}', to: '{child.id}', type: CONNECTION_TYPES.ROUTED }},"
+            )
 
         for child in node.children:
             draw_connections(child)

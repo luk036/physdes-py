@@ -13,7 +13,9 @@ if __name__ == "__main__":
         ((5, 5), (6, 7)),
     ]  # Terminal pairs
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        h, w, pairs
+    )
 
     # Generate SVG and write to file
     cell_size = 50
