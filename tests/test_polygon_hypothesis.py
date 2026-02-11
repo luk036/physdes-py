@@ -6,6 +6,8 @@ hypothesis library. These tests verify mathematical properties and invariants
 that should hold for all valid inputs.
 """
 
+from typing import Any
+
 from hypothesis import assume, given
 from hypothesis import strategies as st
 
@@ -26,28 +28,27 @@ point_strategy = st.builds(Point, xcoord=numeric_values, ycoord=numeric_values)
 vector2_strategy = st.builds(Vector2, x=numeric_values, y=numeric_values)
 
 # Strategy for generating simple polygons (triangles)
-triangle_strategy = st.builds(
+triangle_strategy: Any = st.builds(  # type: ignore[var-annotated]
     Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=3)
 )
 
 # Strategy for generating simple convex polygons (convex quadrilaterals)
-convex_quad_strategy = st.builds(
+convex_quad_strategy: Any = st.builds(  # type: ignore[var-annotated]
     Polygon.from_pointset,
-    pointset=st.lists(point_strategy, min_size=4, max_size=4).filter(
-        lambda points: len(set((p.xcoord, p.ycoord) for p in points)) == 4
-    ),
+    pointset=st.lists(point_strategy, min_size=4, max_size=4).filter(lambda points: len(set((p.xcoord, p.ycoord) for p in points)) == 4),
 )
 
 # Strategy for generating simple polygons
-simple_polygon_strategy = st.builds(
-    Polygon.from_pointset, pointset=st.lists(point_strategy, min_size=3, max_size=8)
+simple_polygon_strategy: Any = st.builds(  # type: ignore[var-annotated]
+    Polygon.from_pointset,  # type: ignore[arg-type]
+    pointset=st.lists(point_strategy, min_size=3, max_size=8),
 ).filter(lambda poly: len(poly._vecs) >= 2)
 
 
 class TestPolygonBasicProperties:
     """Test basic properties of polygons."""
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_equality_reflexivity(self, poly: Polygon) -> None:
         """Test that a polygon is equal to itself."""
         assert poly == poly
@@ -59,21 +60,19 @@ class TestPolygonBasicProperties:
         assert result == (poly2 == poly1)
 
     @given(simple_polygon_strategy, simple_polygon_strategy, simple_polygon_strategy)
-    def test_polygon_equality_transitivity(
-        self, poly1: Polygon, poly2: Polygon, poly3: Polygon
-    ) -> None:
+    def test_polygon_equality_transitivity(self, poly1: Polygon, poly2: Polygon, poly3: Polygon) -> None:
         """Test that equality is transitive."""
         if poly1 == poly2 and poly2 == poly3:
             assert poly1 == poly3
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_repr_contains_info(self, poly: Polygon) -> None:
         """Test that repr contains expected information."""
         repr_str = repr(poly)
         # The default repr just contains the class name and object id
         assert "Polygon" in repr_str or "object" in repr_str
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_has_minimum_vertices(self, poly: Polygon) -> None:
         """Test that polygon has at least 2 vectors (3 vertices including origin)."""
         assert len(poly._vecs) >= 2
@@ -109,9 +108,7 @@ class TestPolygonArithmetic:
         assert poly._vecs == poly._vecs
 
     @given(simple_polygon_strategy, vector2_strategy)
-    def test_polygon_addition_subtraction_inverse(
-        self, poly: Polygon, vec: Vector2
-    ) -> None:
+    def test_polygon_addition_subtraction_inverse(self, poly: Polygon, vec: Vector2) -> None:
         """Test that addition and subtraction are inverse operations."""
         original_origin = Point(poly._origin.xcoord, poly._origin.ycoord)
         original_vecs = poly._vecs
@@ -121,21 +118,13 @@ class TestPolygonArithmetic:
         # Should return to original position (with floating-point tolerance)
         import math
 
-        if isinstance(poly._origin.xcoord, float) or isinstance(
-            original_origin.xcoord, float
-        ):
-            assert math.isclose(
-                poly._origin.xcoord, original_origin.xcoord, rel_tol=1e-9, abs_tol=1e-12
-            )
+        if isinstance(poly._origin.xcoord, float) or isinstance(original_origin.xcoord, float):
+            assert math.isclose(poly._origin.xcoord, original_origin.xcoord, rel_tol=1e-9, abs_tol=1e-12)
         else:
             assert poly._origin.xcoord == original_origin.xcoord
 
-        if isinstance(poly._origin.ycoord, float) or isinstance(
-            original_origin.ycoord, float
-        ):
-            assert math.isclose(
-                poly._origin.ycoord, original_origin.ycoord, rel_tol=1e-9, abs_tol=1e-12
-            )
+        if isinstance(poly._origin.ycoord, float) or isinstance(original_origin.ycoord, float):
+            assert math.isclose(poly._origin.ycoord, original_origin.ycoord, rel_tol=1e-9, abs_tol=1e-12)
         else:
             assert poly._origin.ycoord == original_origin.ycoord
 
@@ -164,7 +153,7 @@ class TestPolygonArea:
         # Area should be a number
         assert isinstance(area_x2, (int, float))
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_area_translation_invariance(self, poly: Polygon) -> None:
         """Test that area is invariant under translation."""
         original_area = poly.signed_area_x2
@@ -173,7 +162,7 @@ class TestPolygonArea:
 
         assert original_area == translated_area
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_area_reflection_changes_sign(self, poly: Polygon) -> None:
         """Test that reflection changes the sign of the area."""
         original_area = poly.signed_area_x2
@@ -199,19 +188,14 @@ class TestPolygonPointInclusion:
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [tri._origin]
         for vec in tri._vecs:
-            vertices.append(
-                Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y)
-            )
+            vertices.append(Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y))
 
         # Check if triangle is non-degenerate (has non-zero area)
         # If all points are the same or there are duplicates, it's a degenerate case
-        all_same = all(
-            v.xcoord == vertices[0].xcoord and v.ycoord == vertices[0].ycoord
-            for v in vertices
-        )
+        all_same = all(v.xcoord == vertices[0].xcoord and v.ycoord == vertices[0].ycoord for v in vertices)
 
         # Check for duplicate vertices
-        unique_vertices = []
+        unique_vertices: list[Any] = []
         for v in vertices:
             is_duplicate = False
             for u in unique_vertices:
@@ -236,12 +220,7 @@ class TestPolygonPointInclusion:
                 area_x2 -= unique_vertices[j].xcoord * unique_vertices[i].ycoord
             is_collinear = area_x2 == 0
 
-        if (
-            not all_same
-            and not has_duplicates
-            and len(unique_vertices) >= 3
-            and not is_collinear
-        ):
+        if not all_same and not has_duplicates and len(unique_vertices) >= 3 and not is_collinear:
             # For proper non-degenerate triangles:
             # point_in_polygon uses winding number algorithm which considers vertices as boundary points
             # According to the documentation, it returns False for points on the boundary
@@ -259,39 +238,31 @@ class TestPolygonPointInclusion:
             pass
 
     @given(triangle_strategy, point_strategy)
-    def test_point_in_triangle_properties(
-        self, tri: Polygon, test_point: Point
-    ) -> None:
+    def test_point_in_triangle_properties(self, tri: Polygon, test_point: Point) -> None:
         """Test properties of point-in-triangle function."""
         # Get all vertices including origin
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [tri._origin]
         for vec in tri._vecs:
-            vertices.append(
-                Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y)
-            )
+            vertices.append(Point(tri._origin.xcoord + vec.x, tri._origin.ycoord + vec.y))
 
         # The function should return a boolean
         result = point_in_polygon(vertices, test_point)
         assert isinstance(result, bool)
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_inclusion_translation_invariance(self, poly: Polygon) -> None:
         """Test that point inclusion is invariant under translation."""
         # Get all vertices including origin
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [poly._origin]
         for vec in poly._vecs:
-            vertices.append(
-                Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y)
-            )
+            vertices.append(Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y))
 
         # Check if polygon is degenerate (all points are the same)
         # This can happen with the current strategy
         unique_vertices = {(v.xcoord, v.ycoord) for v in vertices}
-        assume(
-            len(unique_vertices) >= 3
-        )  # Need at least 3 unique points for a valid polygon
+        assume(len(unique_vertices) >= 3)  # Need at least 3 unique points for a valid polygon
 
         # Try multiple candidate points and select one that gives a consistent result
         # This handles both convex and non-convex polygons
@@ -328,9 +299,7 @@ class TestPolygonPointInclusion:
                     translated_verts = vertices
                     translated_pt = candidate
                 else:
-                    translated_verts = [
-                        Point(v.xcoord + tx, v.ycoord + ty) for v in vertices
-                    ]
+                    translated_verts = [Point(v.xcoord + tx, v.ycoord + ty) for v in vertices]
                     translated_pt = Point(candidate.xcoord + tx, candidate.ycoord + ty)
 
                 result = point_in_polygon(translated_verts, translated_pt)
@@ -353,12 +322,8 @@ class TestPolygonPointInclusion:
         # Translate polygon and test with translated test point
         translation_x = 10
         translation_y = 20
-        translated_vertices = [
-            Point(v.xcoord + translation_x, v.ycoord + translation_y) for v in vertices
-        ]
-        translated_test_point = Point(
-            test_point.xcoord + translation_x, test_point.ycoord + translation_y
-        )
+        translated_vertices = [Point(v.xcoord + translation_x, v.ycoord + translation_y) for v in vertices]
+        translated_test_point = Point(test_point.xcoord + translation_x, test_point.ycoord + translation_y)
         translated_result = point_in_polygon(translated_vertices, translated_test_point)
 
         # Both should give the same result (inside or outside)
@@ -368,7 +333,7 @@ class TestPolygonPointInclusion:
 class TestPolygonGeometricProperties:
     """Test geometric properties and invariants."""
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_closure(self, poly: Polygon) -> None:
         """Test that polygon vectors form a closed shape."""
         # Sum of all vectors should return to origin (approximately)
@@ -399,7 +364,7 @@ class TestPolygonGeometricProperties:
             # The absolute area should be positive
             assert abs(area_x2) > 0
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_polygon_vertex_count_consistency(self, poly: Polygon) -> None:
         """Test consistency of vertex count."""
         # Number of vectors should be number of vertices minus 1
@@ -421,9 +386,7 @@ class TestPolygonEdgeCases:
         numeric_values,
         numeric_values,
     )
-    def test_degenerate_triangle_handling(
-        self, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float
-    ) -> None:
+    def test_degenerate_triangle_handling(self, x1: float, y1: float, x2: float, y2: float, x3: float, y3: float) -> None:
         """Test handling of degenerate triangles (collinear points)."""
         p1 = Point(x1, y1)
         p2 = Point(x2, y2)
@@ -436,7 +399,7 @@ class TestPolygonEdgeCases:
         area_x2 = tri.signed_area_x2
         assert isinstance(area_x2, (int, float))
 
-    @given(simple_polygon_strategy)
+    @given(simple_polygon_strategy)  # type: ignore[arg-type]
     def test_empty_polygon_handling(self, poly: Polygon) -> None:
         """Test that polygon operations handle edge cases gracefully."""
         # All operations should work without raising exceptions
@@ -447,9 +410,7 @@ class TestPolygonEdgeCases:
         # Note: vectors are displacements from the origin, not from previous vertex
         vertices = [poly._origin]
         for vec in poly._vecs:
-            vertices.append(
-                Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y)
-            )
+            vertices.append(Point(poly._origin.xcoord + vec.x, poly._origin.ycoord + vec.y))
 
         # Test with various points
         _ = point_in_polygon(vertices, poly._origin)

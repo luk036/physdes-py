@@ -104,7 +104,9 @@ class TestGlobalRoutingTree:
         s1_id = tree.insert_steiner_node(Point(10, 10))
         t1_id = tree.insert_terminal_node(Point(11, 11))  # Should connect to s1_id
         assert t1_id == "terminal_1"
-        assert tree.nodes[t1_id].parent.id == tree.nodes[s1_id].id
+        parent = tree.nodes[t1_id].parent
+        assert parent is not None
+        assert parent.id == tree.nodes[s1_id].id
         assert tree.nodes[s1_id].children[0] == tree.nodes[t1_id]
 
     def test_insert_terminal_node_to_parent(self) -> None:
@@ -124,9 +126,7 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
-        new_s_id = tree.insert_node_on_branch(
-            NodeType.STEINER, Point(1, 1), s1_id, s2_id
-        )
+        new_s_id = tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), s1_id, s2_id)
 
         assert new_s_id == "steiner_3"
         assert tree.nodes[new_s_id].parent == tree.nodes[s1_id]
@@ -139,9 +139,7 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
-        new_t_id = tree.insert_node_on_branch(
-            NodeType.TERMINAL, Point(1, 1), s1_id, s2_id
-        )
+        new_t_id = tree.insert_node_on_branch(NodeType.TERMINAL, Point(1, 1), s1_id, s2_id)
 
         assert new_t_id == "terminal_1"
         assert tree.nodes[new_t_id].type == NodeType.TERMINAL
@@ -152,30 +150,22 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree.insert_node_on_branch(
-                NodeType.STEINER, Point(1, 1), s1_id, "non_existent"
-            )
+            tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), s1_id, "non_existent")
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree.insert_node_on_branch(
-                NodeType.STEINER, Point(1, 1), "non_existent", s1_id
-            )
+            tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), "non_existent", s1_id)
 
     def test_insert_node_on_branch_not_direct_child(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2))
-        with pytest.raises(
-            ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
-        ):
+        with pytest.raises(ValueError, match=f"{s2_id} is not a direct child of {s1_id}"):
             tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), s1_id, s2_id)
 
     def test_insert_node_on_branch_invalid_node_type(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
-        with pytest.raises(
-            ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"
-        ):
+        with pytest.raises(ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"):
             tree.insert_node_on_branch(NodeType.SOURCE, Point(1, 1), s1_id, s2_id)
 
     def test_find_nearest_node(self) -> None:
@@ -216,11 +206,7 @@ class TestGlobalRoutingTree:
         tree = GlobalRoutingTree(Point(0, 0))
         s1 = tree.insert_steiner_node(Point(1, 1))
         _ = tree.insert_terminal_node(Point(2, 2), s1)
-        expected_structure = (
-            "SourceNode(source, (0, 0))\n"
-            + "  SteinerNode(steiner_1, (1, 1))\n"
-            + "    TerminalNode(terminal_1, (2, 2))\n"
-        )
+        expected_structure = "SourceNode(source, (0, 0))\n" + "  SteinerNode(steiner_1, (1, 1))\n" + "    TerminalNode(terminal_1, (2, 2))\n"
         assert tree.get_tree_structure() == expected_structure
 
     def test_find_path_to_source(self) -> None:
@@ -270,12 +256,16 @@ class TestGlobalRoutingTree:
         t1_id = tree.insert_terminal_node(Point(2, 2), s1_id)
         # Initial state: source -> s1 -> t1
         assert len(tree.get_all_steiner_nodes()) == 1
-        assert tree.nodes[t1_id].parent.id == s1_id
+        parent = tree.nodes[t1_id].parent
+        assert parent is not None
+        assert parent.id == s1_id
 
         tree.optimize_steiner_points()
         # After optimization: source -> t1 (s1 should be removed)
         assert len(tree.get_all_steiner_nodes()) == 0
-        assert tree.nodes[t1_id].parent.id == "source"
+        parent2 = tree.nodes[t1_id].parent
+        assert parent2 is not None
+        assert parent2.id == "source"
         assert tree.nodes[t1_id] in tree.source.children
         assert s1_id not in tree.nodes
 
@@ -405,11 +395,11 @@ class TestGlobalRoutingTree3d:
     def test_insert_terminal_node_nearest(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(10, 10), 10))
-        t1_id = tree3d.insert_terminal_node(
-            Point(Point(11, 11), 11)
-        )  # Should connect to s1_id
+        t1_id = tree3d.insert_terminal_node(Point(Point(11, 11), 11))  # Should connect to s1_id
         assert t1_id == "terminal_1"
-        assert tree3d.nodes[t1_id].parent.id == tree3d.nodes[s1_id].id
+        parent = tree3d.nodes[t1_id].parent
+        assert parent is not None
+        assert parent.id == tree3d.nodes[s1_id].id
         assert tree3d.nodes[s1_id].children[0] == tree3d.nodes[t1_id]
 
     def test_insert_terminal_node_to_parent(self) -> None:
@@ -429,9 +419,7 @@ class TestGlobalRoutingTree3d:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
-        new_s_id = tree3d.insert_node_on_branch(
-            NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id
-        )
+        new_s_id = tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id)
 
         assert new_s_id == "steiner_3"
         assert tree3d.nodes[new_s_id].parent == tree3d.nodes[s1_id]
@@ -444,9 +432,7 @@ class TestGlobalRoutingTree3d:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
-        new_t_id = tree3d.insert_node_on_branch(
-            NodeType.TERMINAL, Point(Point(1, 1), 1), s1_id, s2_id
-        )
+        new_t_id = tree3d.insert_node_on_branch(NodeType.TERMINAL, Point(Point(1, 1), 1), s1_id, s2_id)
 
         assert new_t_id == "terminal_1"
         assert tree3d.nodes[new_t_id].type == NodeType.TERMINAL
@@ -457,35 +443,23 @@ class TestGlobalRoutingTree3d:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), s1_id, "non_existent"
-            )
+            tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 1), 1), s1_id, "non_existent")
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
-            tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), "non_existent", s1_id
-            )
+            tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 1), 1), "non_existent", s1_id)
 
     def test_insert_node_on_branch_not_direct_child(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2))
-        with pytest.raises(
-            ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
-        ):
-            tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id
-            )
+        with pytest.raises(ValueError, match=f"{s2_id} is not a direct child of {s1_id}"):
+            tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id)
 
     def test_insert_node_on_branch_invalid_node_type(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
-        with pytest.raises(
-            ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"
-        ):
-            tree3d.insert_node_on_branch(
-                NodeType.SOURCE, Point(Point(1, 1), 1), s1_id, s2_id
-            )
+        with pytest.raises(ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"):
+            tree3d.insert_node_on_branch(NodeType.SOURCE, Point(Point(1, 1), 1), s1_id, s2_id)
 
     def test_find_nearest_node(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
@@ -525,11 +499,7 @@ class TestGlobalRoutingTree3d:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
         _ = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
-        expected_structure = (
-            "SourceNode(source, ((0, 0), 0))\n"
-            + "  SteinerNode(steiner_1, ((1, 1), 1))\n"
-            + "    TerminalNode(terminal_1, ((2, 2), 2))\n"
-        )
+        expected_structure = "SourceNode(source, ((0, 0), 0))\n" + "  SteinerNode(steiner_1, ((1, 1), 1))\n" + "    TerminalNode(terminal_1, ((2, 2), 2))\n"
         assert tree3d.get_tree_structure() == expected_structure
 
     def test_find_path_to_source(self) -> None:
@@ -579,12 +549,16 @@ class TestGlobalRoutingTree3d:
         t1_id = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1_id)
         # Initial state: source -> s1 -> t1
         assert len(tree3d.get_all_steiner_nodes()) == 1
-        assert tree3d.nodes[t1_id].parent.id == s1_id
+        parent = tree3d.nodes[t1_id].parent
+        assert parent is not None
+        assert parent.id == s1_id
 
         tree3d.optimize_steiner_points()
         # After optimization: source -> t1 (s1 should be removed)
         assert len(tree3d.get_all_steiner_nodes()) == 0
-        assert tree3d.nodes[t1_id].parent.id == "source"
+        parent2 = tree3d.nodes[t1_id].parent
+        assert parent2 is not None
+        assert parent2.id == "source"
         assert tree3d.nodes[t1_id] in tree3d.source.children
         assert s1_id not in tree3d.nodes
 
@@ -595,18 +569,14 @@ class TestGlobalRoutingTree3d:
         _ = tree3d2.insert_terminal_node(Point(Point(0, 2), 2), s1_id_2)
         assert len(tree3d2.get_all_steiner_nodes()) == 1
         tree3d2.optimize_steiner_points()
-        assert (
-            len(tree3d2.get_all_steiner_nodes()) == 1
-        )  # s1_id_2 should not be removed
+        assert len(tree3d2.get_all_steiner_nodes()) == 1  # s1_id_2 should not be removed
 
         # Test with a steiner node that should not be removed (no parent - source)
         tree3d3 = GlobalRoutingTree(Point(Point(0, 0), 0))
         _ = tree3d3.insert_steiner_node(Point(Point(1, 1), 1))  # Connected to source
         assert len(tree3d3.get_all_steiner_nodes()) == 1
         tree3d3.optimize_steiner_points()
-        assert (
-            len(tree3d3.get_all_steiner_nodes()) == 1
-        )  # s1_id_3 should not be removed
+        assert len(tree3d3.get_all_steiner_nodes()) == 1  # s1_id_3 should not be removed
 
     def test_node_type_enum_values(self) -> None:
         """Test that NodeType enum has the expected values"""

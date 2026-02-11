@@ -59,10 +59,10 @@ def test_rectangle() -> None:
 def test_segment() -> None:
     rng1 = Interval(4, 8)
     vseg = VSegment(5, rng1)
-    assert vseg.contains(Point(5, 6))
+    assert vseg.contains(Point(5, 6))  # type: ignore[arg-type]
     hseg = vseg.flip()
-    assert hseg.contains(Point(6, 5))
-    assert hseg.contains(Point(7, 5))
+    assert hseg.contains(Point(6, 5))  # type: ignore[arg-type]
+    assert hseg.contains(Point(7, 5))  # type: ignore[arg-type]
     assert hseg == HSegment(rng1, 5)
     assert hseg.flip() == vseg
 

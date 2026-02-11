@@ -78,4 +78,4 @@ def test_intersect_with_interval() -> None:
 def test_min_dist_with_interval() -> None:
     r = Point(Interval(3, 4), Interval(5, 6))
     a = Point(1, 1)
-    assert r.min_dist_with(a) == 6  # (3-1) + (5-1) = 2 + 4 = 6
+    assert r.min_dist_with(a) == 6  # type: ignore[arg-type] # (3-1) + (5-1) = 2 + 4 = 6

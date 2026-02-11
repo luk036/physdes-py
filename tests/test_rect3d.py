@@ -77,8 +77,8 @@ def test_rectangle_3d() -> None:
     # assert (r1 - v) + v == r1
 
     # assert r1 <= p
-    assert r1.contains(p1)
-    assert not r1.contains(p2)
+    assert r1.contains(p1)  # type: ignore[arg-type]
+    assert not r1.contains(p2)  # type: ignore[arg-type]
     assert r1.contains(r2)
     assert r1.overlaps(r2)
     assert overlap(r1, r2)
@@ -86,7 +86,7 @@ def test_rectangle_3d() -> None:
     assert r1.min_dist_with(r2) == 0
     assert min_dist(r1, r2) == 0
 
-    assert r1.min_dist_with(p2) == p2.min_dist_with(r1)
+    assert r1.min_dist_with(p2) == p2.min_dist_with(r1)  # type: ignore[arg-type]
     # assert min_dist(r1, p2) == min_dist(p2, r1)
 
 

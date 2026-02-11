@@ -15,12 +15,12 @@ def test_point() -> None:
 def test_point2() -> None:
     a = Point(3, 4)
     r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
-    assert not r.contains(a)
-    assert r.contains(Point(4, 5))
-    assert not r.overlaps(a)
-    assert r.overlaps(Point(4, 5))
-    assert r.overlaps(Point(4, 6))
-    assert r.intersect_with(Point(4, 5)) == Point(Interval(4, 4), Interval(5, 5))
+    assert not r.contains(a)  # type: ignore[arg-type]
+    assert r.contains(Point(4, 5))  # type: ignore[arg-type]
+    assert not r.overlaps(a)  # type: ignore[arg-type]
+    assert r.overlaps(Point(4, 5))  # type: ignore[arg-type]
+    assert r.overlaps(Point(4, 6))  # type: ignore[arg-type]
+    assert r.intersect_with(Point(4, 5)) == Point(Interval(4, 4), Interval(5, 5))  # type: ignore[arg-type]
 
 
 def test_transform() -> None:

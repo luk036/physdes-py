@@ -339,9 +339,7 @@ class RPolygon:
             raise ValueError("RPolygon must have at least 2 points")
 
         # Find the point with minimum coordinates (bottom-left point)
-        min_index, min_point = min(
-            enumerate(pointset), key=lambda it: (it[1].x, it[1].y)
-        )
+        min_index, min_point = min(enumerate(pointset), key=lambda it: (it[1].x, it[1].y))
 
         # Get the previous and next points in the polygon (with wrap-around)
         num_points = len(pointset)
@@ -390,9 +388,7 @@ class RPolygon:
         return Polygon(self._origin, new_vecs)
 
 
-def partition(
-    pred: Callable[[Any], bool], iterable: Iterable[Any]
-) -> Tuple[List[Any], List[Any]]:
+def partition(pred: Callable[[Any], bool], iterable: Iterable[Any]) -> Tuple[List[Any], List[Any]]:
     """Use a predicate to partition entries into true entries and false entries
 
     Examples:
@@ -518,9 +514,7 @@ def create_xmono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> is_anticlockwise
         True
     """
-    return create_mono_rpolygon(
-        lst, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b
-    )
+    return create_mono_rpolygon(lst, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b)
 
 
 def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
@@ -555,9 +549,7 @@ def create_ymono_rpolygon(lst: PointSet) -> Tuple[PointSet, bool]:
         >>> is_clockwise
         False
     """
-    return create_mono_rpolygon(
-        lst, lambda pt: (pt.ycoord, pt.xcoord), lambda a, b: a > b
-    )
+    return create_mono_rpolygon(lst, lambda pt: (pt.ycoord, pt.xcoord), lambda a, b: a > b)
 
 
 def create_test_rpolygon(lst: PointSet) -> PointSet:
@@ -605,9 +597,7 @@ def create_test_rpolygon(lst: PointSet) -> PointSet:
     return lsta + lstb + lstc + lstd
 
 
-def rpolygon_is_monotone(
-    lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]]
-) -> bool:
+def rpolygon_is_monotone(lst: PointSet, dir: Callable[[Point[int, int]], Tuple[int, int]]) -> bool:
     """
     Check if a rectilinear polygon is monotone in a given direction.
 
@@ -633,9 +623,7 @@ def rpolygon_is_monotone(
     v_min = rdll[min_index]
     v_max = rdll[max_index]
 
-    def voilate(
-        vi: Dllink[int], v_stop: Dllink[int], cmp: Callable[[int, int], bool]
-    ) -> bool:
+    def voilate(vi: Dllink[int], v_stop: Dllink[int], cmp: Callable[[int, int], bool]) -> bool:
         while id(vi) != id(v_stop):
             vnext = vi.next
             if cmp(dir(lst[vi.data])[0], dir(lst[vnext.data])[0]):
@@ -781,11 +769,7 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     res = False
     pt0 = pointset[-1]
     for pt1 in pointset:
-        if (
-            (pt1.ycoord <= ptq.ycoord < pt0.ycoord)
-            or (pt0.ycoord <= ptq.ycoord < pt1.ycoord)
-            and pt1.xcoord > ptq.xcoord
-        ):
+        if (pt1.ycoord <= ptq.ycoord < pt0.ycoord) or (pt0.ycoord <= ptq.ycoord < pt1.ycoord) and pt1.xcoord > ptq.xcoord:
             res = not res
         pt0 = pt1
     return res
@@ -834,12 +818,8 @@ def rpolygon_make_monotone_hull(
             prev_point = lst[vprev.data]
             curr_point = lst[vcurr.data]
             next_point = lst[vnext.data]
-            if cmp(dir(curr_point)[0], dir(next_point)[0]) or cmp(
-                dir(prev_point)[0], dir(curr_point)[0]
-            ):
-                area_diff = (curr_point.ycoord - prev_point.ycoord) * (
-                    next_point.xcoord - curr_point.xcoord
-                )
+            if cmp(dir(curr_point)[0], dir(next_point)[0]) or cmp(dir(prev_point)[0], dir(curr_point)[0]):
+                area_diff = (curr_point.ycoord - prev_point.ycoord) * (next_point.xcoord - curr_point.xcoord)
                 if cmp2(area_diff):
                     vcurr.detach()
                     vcurr = vprev
@@ -850,22 +830,14 @@ def rpolygon_make_monotone_hull(
 
     if is_anticlockwise:
         # Chain from min to max
-        process(
-            v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area >= 0, dir
-        )
+        process(v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area >= 0, dir)
         # Chain from max to min
-        process(
-            v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area >= 0, dir
-        )
+        process(v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area >= 0, dir)
     else:
         # Chain from min to max
-        process(
-            v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area <= 0, dir
-        )
+        process(v_min, v_max, lambda val1, val2: val1 >= val2, lambda area: area <= 0, dir)
         # Chain from max to min
-        process(
-            v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area <= 0, dir
-        )
+        process(v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area <= 0, dir)
 
     return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
 
@@ -885,9 +857,7 @@ def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
         >>> len(hull)
         3
     """
-    return rpolygon_make_monotone_hull(
-        lst, is_anticlockwise, lambda p: (p.xcoord, p.ycoord)
-    )
+    return rpolygon_make_monotone_hull(lst, is_anticlockwise, lambda p: (p.xcoord, p.ycoord))
 
 
 def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
@@ -905,9 +875,7 @@ def rpolygon_make_ymonotone_hull(lst: PointSet, is_anticlockwise: bool) -> Point
         >>> len(hull)
         3
     """
-    return rpolygon_make_monotone_hull(
-        lst, is_anticlockwise, lambda p: (p.ycoord, p.xcoord)
-    )
+    return rpolygon_make_monotone_hull(lst, is_anticlockwise, lambda p: (p.ycoord, p.xcoord))
 
 
 def rpolygon_make_convex_hull(pointset: PointSet, is_anticlockwise: bool) -> PointSet:

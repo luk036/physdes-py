@@ -17,9 +17,7 @@ def test_route3d_with_steiner_and_keepouts() -> None:
     router.route_with_steiners()
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(
-        router.tree, keepouts, scale_z, width=1000, height=1000
-    )
+    svg_output = visualize_routing_tree3d_svg(router.tree, keepouts, scale_z, width=1000, height=1000)
     print(svg_output)
 
 

@@ -40,9 +40,7 @@ def test_rpolygon_cut_convex_area_preservation() -> None:
         total_area += piece_polygon.signed_area_x2
 
     # The sum of areas should equal the original area
-    assert (
-        total_area == original_area
-    ), f"Area mismatch: original={original_area}, sum={total_area}"
+    assert total_area == original_area, f"Area mismatch: original={original_area}, sum={total_area}"
 
 
 def test_rpolygon_cut_explicit_area_preservation() -> None:
@@ -71,9 +69,7 @@ def test_convex_decomposition_with_simple_polygon() -> None:
     for piece in convex_pieces:
         piece_polygon = Polygon.from_pointset(piece)
         total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
+    assert total_area == original_area, f"Convex cut area mismatch: original={original_area}, sum={total_area}"
 
     # Note: rpolygon_cut_explicit seems to have issues with certain polygons
     # so we're only testing with rpolygon_cut_convex for this simple case
@@ -108,9 +104,7 @@ def test_convex_decomposition_with_complex_polygon() -> None:
     for piece in convex_pieces:
         piece_polygon = Polygon.from_pointset(piece)
         total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
+    assert total_area == original_area, f"Convex cut area mismatch: original={original_area}, sum={total_area}"
 
     # Note: rpolygon_cut_explicit seems to have issues with certain polygons
     # so we're only testing with rpolygon_cut_convex for this complex case
@@ -132,9 +126,7 @@ def test_convex_decomposition_with_clockwise_polygon() -> None:
     for piece in convex_pieces:
         piece_polygon = Polygon.from_pointset(piece)
         total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
+    assert total_area == original_area, f"Convex cut area mismatch: original={original_area}, sum={total_area}"
 
     # Note: rpolygon_cut_explicit seems to have issues with certain polygons
     # so we're only testing with rpolygon_cut_convex for this case
@@ -146,9 +138,7 @@ def test_multiple_random_polygons() -> None:
         for size in [10, 15, 20]:
             hgen = Halton(seed, [7, 11])
             coords = [hgen.pop() for _ in range(size)]
-            S0 = create_test_rpolygon(
-                [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            )
+            S0 = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
 
             # Create a convex hull to ensure we have a valid polygon
             P = RPolygon.from_pointset(S0)
@@ -169,6 +159,4 @@ def test_multiple_random_polygons() -> None:
                 total_area += piece_polygon.signed_area_x2
 
             # The sum of areas should equal the original area
-            assert (
-                total_area == original_area
-            ), f"Area mismatch for seed={seed}, size={size}: original={original_area}, sum={total_area}"
+            assert total_area == original_area, f"Area mismatch for seed={seed}, size={size}: original={original_area}, sum={total_area}"
