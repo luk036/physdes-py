@@ -283,9 +283,7 @@ latex_elements: dict[str, str] = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-    ("index", "user_guide.tex", "physdes-py Documentation", "Wai-Shing Luk", "manual")
-]
+latex_documents = [("index", "user_guide.tex", "physdes-py Documentation", "Wai-Shing Luk", "manual")]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.

@@ -12,9 +12,7 @@ def test_route3d_with_steiner() -> None:
     router.route_with_steiners()
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(
-        router.tree, None, scale_z, width=1000, height=1000
-    )
+    svg_output = visualize_routing_tree3d_svg(router.tree, None, scale_z, width=1000, height=1000)
     print(svg_output)
 
     # Save to file
@@ -30,9 +28,7 @@ def test_route3d_with_constraints() -> None:
     router.route_with_constraints(1.0)
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree3d_svg(
-        router.tree, None, scale_z, width=1000, height=1000
-    )
+    svg_output = visualize_routing_tree3d_svg(router.tree, None, scale_z, width=1000, height=1000)
     print(svg_output)
 
     # Save to file
