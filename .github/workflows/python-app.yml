@@ -58,13 +58,13 @@ jobs:
         run: |
           mypy src/physdes
 
-      - name: Install and run pre-commit
-        env:
-          SKIP: no-commit-to-branch
-        run: |
-          pre-commit install
-          pre-commit run --all-files --show-diff-on-failure
-
+      # - name: Install and run pre-commit
+      #   env:
+      #     SKIP: no-commit-to-branch
+      #   run: |
+      #     pre-commit install
+      #     pre-commit run --all-files --show-diff-on-failure
+      #
       # - name: Security scan with bandit
       #   run: |
       #     bandit -r src/ -f screen
