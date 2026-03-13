@@ -17,6 +17,8 @@ jobs:
         os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -57,6 +59,8 @@ jobs:
           mypy src/physdes
 
       - name: Run pre-commit
+        env:
+          SKIP: no-commit-to-branch
         run: |
           pre-commit run --all-files --show-diff-on-failure
 
