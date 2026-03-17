@@ -74,17 +74,14 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
     def __init__(self, ma1: ManhattanArc, ma2: ManhattanArc, ma3: ManhattanArc) -> None:
         """
-        The function initializes an object with x and y coordinates and stores them in a Point object.
+        The function initializes a ManhattanArc3D object with three ManhattanArc objects representing different planes.
 
-        :param xcoord: The parameter `xcoord` represents the x-coordinate of a point in a 2D space. It
-            can be of any type `T1`
-
-        :type xcoord: T1
-
-        :param ycoord: The `ycoord` parameter represents the y-coordinate of a point in a
-            two-dimensional space. It is used to initialize the `y` attribute of the `Point` object
-
-        :type ycoord: T2
+        :param ma1: The first ManhattanArc object representing the x-y plane
+        :type ma1: ManhattanArc
+        :param ma2: The second ManhattanArc object representing the y-z plane
+        :type ma2: ManhattanArc
+        :param ma3: The third ManhattanArc object representing the x-z plane
+        :type ma3: ManhattanArc
         """
         self.ma1 = ma1
         self.ma2 = ma2
