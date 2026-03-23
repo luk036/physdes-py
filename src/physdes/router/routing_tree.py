@@ -17,6 +17,16 @@ class RoutingNode:
     """Represents a node in the global routing tree."""
 
     def __init__(self, node_id: str, node_type: NodeType, position: Point[Any, Any]):
+        """
+        Initialize a routing node.
+
+        :param node_id: Unique identifier for the node.
+        :type node_id: str
+        :param node_type: Type of the node (SOURCE, STEINER, or TERMINAL).
+        :type node_type: NodeType
+        :param position: Position of the node in 2D or 3D space.
+        :type position: Point
+        """
         self.id = node_id
         self.type = node_type
         self.pt = position
@@ -208,7 +218,17 @@ class GlobalRoutingTree:
         return steiner_id
 
     def _find_nearest_node(self, point: Point[Any, Any]) -> "RoutingNode":
-        """Find the nearest node to the given coordinates."""
+        """
+        Find the nearest node to the given coordinates.
+
+        This method searches through all nodes in the routing tree and returns
+        the node with the minimum Manhattan distance to the given point.
+
+        :param point: The point to find the nearest node to.
+        :type point: Point[Any, Any]
+        :return: The nearest RoutingNode to the given point.
+        :rtype: RoutingNode
+        """
         if not self.nodes:
             return self.source
 
@@ -617,7 +637,19 @@ class GlobalRoutingTree:
         node: Optional["RoutingNode"] = None,
         level: int = 0,
     ) -> str:
-        """Get a string representation of the tree structure."""
+        """
+        Get a string representation of the tree structure.
+
+        This method returns a hierarchical text representation of the routing tree,
+        showing the parent-child relationships between nodes with indentation.
+
+        :param node: The starting node for the tree traversal. If None, starts from source.
+        :type node: Optional[RoutingNode]
+        :param level: The current indentation level (used for recursion).
+        :type level: int
+        :return: A string representation of the tree structure.
+        :rtype: str
+        """
         if node is None:
             node = self.source
 

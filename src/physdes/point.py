@@ -412,11 +412,46 @@ class Point(Generic[T1, T2]):
         return Point(self.ycoord, self.xcoord)
 
     def rotates(self) -> "Point[T1, T2]":
+        """
+        Rotates the point by 45 degrees clockwise in the coordinate space.
+
+        This transformation is used for converting between regular Cartesian
+        coordinates and Manhattan (rotated) coordinates, which is useful
+        for certain geometric calculations.
+
+        :return: A new Point with rotated coordinates.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> print(a.rotates())
+            (-1, 7)
+            >>> from physdes.interval import Interval
+            >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
+            >>> print(r.rotates())
+            ([-2, -2], [8, 10])
+        """
         xcoord = self.xcoord - self.ycoord  # type: ignore
         ycoord = self.xcoord + self.ycoord  # type: ignore
         return Point(xcoord, ycoord)
 
     def inv_rotates(self) -> "Point[T1, T2]":
+        """
+        Inverse rotation of the point by 45 degrees (rotates back to original space).
+
+        This is the inverse transformation of `rotates()`. It converts Manhattan
+        (rotated) coordinates back to regular Cartesian coordinates.
+
+        :return: A new Point with inverse-rotated coordinates.
+
+        Examples:
+            >>> a = Point(3, 4)
+            >>> print(a.inv_rotates())
+            (3, 0)
+            >>> from physdes.interval import Interval
+            >>> r = Point(Interval(3, 4), Interval(5, 6))  # Rectangle
+            >>> print(r.inv_rotates())
+            ([4, 5], [0, 1])
+        """
         xcoord = self.ycoord + (self.xcoord - self.ycoord) // 2  # type: ignore
         ycoord = (-self.xcoord + self.ycoord) // 2  # type: ignore
         return Point(xcoord, ycoord)

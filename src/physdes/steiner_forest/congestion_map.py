@@ -1,4 +1,20 @@
 def draw_congestion_map(grid: list[list[int]], filename: str = "congestion_map.svg") -> None:
+    """
+    Generate an SVG visualization of a network congestion map.
+
+    This function creates an SVG image showing a grid where each cell's color
+    represents its congestion level (0-100%), using a green-yellow-red gradient.
+
+    :param grid: A 2D list of integers representing congestion values (0-100).
+    :type grid: list[list[int]]
+    :param filename: The output filename for the SVG file.
+    :type filename: str
+
+    Examples:
+        >>> grid = [[0, 50, 100], [25, 75, 50]]
+        >>> draw_congestion_map(grid, "test.svg")
+        Congestion map saved to test.svg
+    """
     if not grid or not grid[0]:
         raise ValueError("Grid must not be empty")
 

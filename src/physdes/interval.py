@@ -182,6 +182,24 @@ class Interval(Generic[T]):
         return self.ub - self.lb
 
     def __eq__(self, other: object) -> bool:
+        """
+        Check equality between this interval and another object.
+
+        :param other: The object to compare with.
+        :type other: object
+        :return: True if the intervals have the same lower and upper bounds, False otherwise.
+
+        Examples:
+            >>> a = Interval(3, 5)
+            >>> b = Interval(3, 5)
+            >>> a == b
+            True
+            >>> c = Interval(3, 6)
+            >>> a == c
+            False
+            >>> a == 3
+            False
+        """
         if not isinstance(other, Interval):
             return NotImplemented
         return (self.lb, self.ub) == (other.lb, other.ub)

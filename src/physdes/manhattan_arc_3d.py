@@ -89,6 +89,25 @@ class ManhattanArc3D(Generic[T1, T2, T3]):
 
     @classmethod
     def from_point(cls, pt: Point) -> "ManhattanArc3D[T1, T2, T3]":
+        """
+        Create a ManhattanArc3D object from a 3D point.
+
+        This method takes a 3D point (where the x-coordinate is itself a 2D point)
+        and creates a ManhattanArc3D object by transforming it into three 2D
+        Manhattan arcs representing the x-y, y-z, and x-z projections.
+
+        :param pt: A 3D point represented as Point[Point[T1, T2], T3].
+        :type pt: Point
+        :return: A new ManhattanArc3D object.
+        :rtype: ManhattanArc3D[T1, T2, T3]
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> pt = Point(Point(3, 4), 5)
+            >>> ma3d = ManhattanArc3D.from_point(pt)
+            >>> print(ma3d)
+            //-2, 8/, /1, 9/, /-1, 7//
+        """
         ma1 = ManhattanArc.from_point(Point(pt.xcoord.xcoord, pt.ycoord))  # x-y
         ma2 = ManhattanArc.from_point(Point(pt.ycoord, pt.xcoord.ycoord))  # y-z
         ma3 = ManhattanArc.from_point(pt.xcoord)  # x-z

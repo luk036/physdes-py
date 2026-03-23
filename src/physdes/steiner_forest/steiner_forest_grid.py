@@ -4,27 +4,61 @@ from typing import Dict, List, Set, Tuple
 
 class UnionFind:
     """
-    >>> uf = UnionFind(10)
-    >>> uf.union(1, 2)
-    True
-    >>> uf.union(2, 3)
-    True
-    >>> uf.find(1) == uf.find(3)
-    True
-    >>> uf.union(1, 3)
-    False
+    A Union-Find (Disjoint Set Union) data structure with path compression and union by rank.
+
+    This implementation supports efficient union and find operations for managing
+    connected components, commonly used in graph algorithms like Kruskal's MST.
+
+    Examples:
+        >>> uf = UnionFind(10)
+        >>> uf.union(1, 2)
+        True
+        >>> uf.union(2, 3)
+        True
+        >>> uf.find(1) == uf.find(3)
+        True
+        >>> uf.union(1, 3)
+        False
     """
 
     def __init__(self, size: int):
+        """
+        Initialize the Union-Find structure.
+
+        :param size: The number of elements in the set.
+        :type size: int
+        """
         self.parent: List[int] = list(range(size))
         self.rank: List[int] = [0] * size
 
     def find(self, idx: int) -> int:
+        """
+        Find the representative (root) of the set containing idx.
+
+        Uses path compression to flatten the tree structure for faster future lookups.
+
+        :param idx: The index to find.
+        :type idx: int
+        :return: The representative (root) of the set.
+        :rtype: int
+        """
         if self.parent[idx] != idx:
             self.parent[idx] = self.find(self.parent[idx])
         return self.parent[idx]
 
     def union(self, idx1: int, idx2: int) -> bool:
+        """
+        Unite the sets containing idx1 and idx2.
+
+        Uses union by rank to keep the tree balanced.
+
+        :param idx1: First index.
+        :type idx1: int
+        :param idx2: Second index.
+        :type idx2: int
+        :return: True if a union was performed, False if already in same set.
+        :rtype: bool
+        """
         pp = self.find(idx1)
         pq = self.find(idx2)
         if pp == pq:
@@ -308,7 +342,31 @@ def generate_svg(
     margin: int,
     filename: str,
 ) -> None:
-    """Generates an SVG visualization of the Steiner forest."""
+    """
+    Generate an SVG visualization of a Steiner forest on a grid.
+
+    This function creates an SVG image showing the grid with nodes (sources in red,
+    terminals in green, Steiner nodes in blue) and selected edges highlighted.
+
+    :param height: Grid height.
+    :type height: int
+    :param width: Grid width.
+    :type width: int
+    :param F_pruned: List of edges in the Steiner forest as (u, v, cost) tuples.
+    :type F_pruned: List[Tuple[int, int, float]]
+    :param sources: Set of source node indices.
+    :type sources: Set[int]
+    :param terminals: Set of terminal node indices.
+    :type terminals: Set[int]
+    :param steiner_nodes: Set of Steiner node indices.
+    :type steiner_nodes: Set[int]
+    :param cell_size: Size of each grid cell in pixels.
+    :type cell_size: int
+    :param margin: Margin around the grid in pixels.
+    :type margin: int
+    :param filename: Output SVG filename.
+    :type filename: str
+    """
     svg_width = width * cell_size + 2 * margin
     svg_height = height * cell_size + 2 * margin
     svg = f'<svg width="{svg_width}" height="{svg_height}" xmlns="http://www.w3.org/2000/svg">'
