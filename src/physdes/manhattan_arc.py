@@ -36,7 +36,7 @@ class provides a high-level interface for working with these rotated geometric o
 abstracting away some of the more complex mathematical calculations.
 """
 
-from typing import TYPE_CHECKING, Any, Generic, TypeVar, overload
+from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 from icecream import ic  # type: ignore
 
@@ -111,13 +111,13 @@ class ManhattanArc(Generic[T1, T2]):
         pt_xformed = pt.rotates()
         return cls(pt_xformed.xcoord, pt_xformed.ycoord)
 
-    @overload
-    @staticmethod
-    def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]": ...
+    # @overload
+    # @staticmethod
+    # def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]": ...
 
-    @overload
-    @staticmethod
-    def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
+    # @overload
+    # @staticmethod
+    # def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
 
     @staticmethod
     def construct(xcoord: int | float, ycoord: int | float) -> "ManhattanArc[int, int] | ManhattanArc[float, float]":

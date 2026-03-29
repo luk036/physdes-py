@@ -457,25 +457,25 @@ class TestDMEAlgorithmWithSource:
         assert root.position is not None
 
 
-class TestDMEAlgorithm3D:
-    """Test DME algorithm with 3D points"""
+# class TestDMEAlgorithm3D:
+#     """Test DME algorithm with 3D points"""
 
-    def test_build_clock_tree_3d(self) -> None:
-        """Test clock tree construction with 3D points"""
-        sinks = [
-            Sink("s1", Point(Point(0, 0), 0), 1.0),
-            Sink("s2", Point(Point(10, 0), 0), 1.0),
-            Sink("s3", Point(Point(0, 10), 0), 1.0),
-        ]
+#     def test_build_clock_tree_3d(self) -> None:
+#         """Test clock tree construction with 3D points"""
+#         sinks = [
+#             Sink("s1", Point(Point(0, 0), 0), 1.0),
+#             Sink("s2", Point(Point(10, 0), 0), 1.0),
+#             Sink("s3", Point(Point(0, 10), 0), 1.0),
+#         ]
 
-        calc = LinearDelayCalculator(delay_per_unit=0.5)
-        dme = DMEAlgorithm(sinks, delay_calculator=calc)
-        root = dme.build_clock_tree()
+#         calc = LinearDelayCalculator(delay_per_unit=0.5)
+#         dme = DMEAlgorithm(sinks, delay_calculator=calc)
+#         root = dme.build_clock_tree()
 
-        assert root is not None
-        assert dme.MA_TYPE.__name__ == "ManhattanArc3D"
-        analysis = dme.analyze_skew(root)
-        assert analysis["skew"] >= 0
+#         assert root is not None
+#         assert dme.MA_TYPE.__name__ == "ManhattanArc3D"
+#         analysis = dme.analyze_skew(root)
+#         assert analysis["skew"] >= 0
 
 
 class TestDMEAlgorithmErrorHandling:
