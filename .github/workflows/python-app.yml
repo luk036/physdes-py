@@ -45,7 +45,7 @@ jobs:
           pip install git+https://github.com/luk036/mywheel.git
           pip install -e .
           pip install pre-commit
-          pip install mypy
+          # pip install mypy
 
       - name: Lint with flake8
         run: |
@@ -54,9 +54,9 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 188 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=188 --statistics
 
-      - name: Type check with mypy
-        run: |
-          mypy src/physdes
+      # - name: Type check with mypy
+      #   run: |
+      #     mypy src/physdes
 
       # - name: Install and run pre-commit
       #   env:

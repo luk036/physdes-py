@@ -573,7 +573,7 @@ class DMEAlgorithm:
 
         def compute_segment(
             node: "TreeNode",
-        ) -> "ManhattanArc[Any, Any] | ManhattanArc3D[Any, Any, Any]":
+        ) -> "ManhattanArc[Any, Any] | ManhattanArc3D":
             if node.left is None and node.right is None:
                 # If it's a leaf node (a sink), its merging segment is simply its position.
                 # The delay for a leaf node is considered 0.0 at this stage.
