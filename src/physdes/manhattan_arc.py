@@ -289,31 +289,11 @@ class ManhattanArc(Generic[T1, T2]):
         return upper_point.inv_rotates()
 
     def _nearest_point_to(self, manhattan_arc: "ManhattanArc[Any, Any]") -> Point[Any, Any]:
-        """
-        Calculates the center of the merging segment
-
-        :return: The center of the merging segment.
-
-        Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> print(a.nearest_point_to(Point(0, 0)))
-            (4, 5)
-        """
         nearest_pt = self.impl.nearest_to(manhattan_arc.impl)
         ic(nearest_pt)
         return nearest_pt.inv_rotates()
 
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
-        """
-        Calculates the center of the merging segment
-
-        :return: The center of the merging segment.
-
-        Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> print(a.nearest_point_to(Point(0, 0)))
-            (4, 5)
-        """
         ms = ManhattanArc.from_point(other)
         ic(self)
         ic(ms)

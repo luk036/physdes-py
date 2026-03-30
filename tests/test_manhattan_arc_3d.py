@@ -140,9 +140,7 @@ def test_enlarge_with_zero() -> None:
 
 def test_enlarge_with_negative() -> None:
     """Test enlarge_with with negative alpha."""
-    a = ManhattanArc3D(
-        Interval(-5, -1), Interval(1, 5), Interval(5, 9), Interval(11, 15)
-    )
+    a = ManhattanArc3D(Interval(-5, -1), Interval(1, 5), Interval(5, 9), Interval(11, 15))
     r = a.enlarge_with(-1)
     assert r.x_i == Interval(-4, -2)
     assert r.y_i == Interval(2, 4)
@@ -163,12 +161,8 @@ def test_intersect_with() -> None:
 
 def test_intersect_with_intervals() -> None:
     """Test intersect_with with interval coordinates."""
-    r1 = ManhattanArc3D(
-        Interval(0, 10), Interval(0, 10), Interval(0, 10), Interval(0, 10)
-    )
-    r2 = ManhattanArc3D(
-        Interval(5, 15), Interval(5, 15), Interval(5, 15), Interval(5, 15)
-    )
+    r1 = ManhattanArc3D(Interval(0, 10), Interval(0, 10), Interval(0, 10), Interval(0, 10))
+    r2 = ManhattanArc3D(Interval(5, 15), Interval(5, 15), Interval(5, 15), Interval(5, 15))
     result = r1.intersect_with(r2)
     assert result.x_i == Interval(5, 10)
     assert result.y_i == Interval(5, 10)
@@ -195,29 +189,27 @@ def test_merge_with_zero_alpha() -> None:
     assert result is not None
 
 
-def test_get_point() -> None:
-    """Test get_point method."""
+def test_to_point() -> None:
+    """Test to_point method."""
     a = ManhattanArc3D(-4, 2, 6, 12)
-    pt = a.get_point()
+    pt = a.to_point()
     assert pt == Point(Point(4, 3), 5)
 
 
-def test_get_point_with_intervals() -> None:
-    """Test get_point method with interval coordinates."""
-    a = ManhattanArc3D(
-        Interval(0, 4), Interval(4, 8), Interval(8, 12), Interval(12, 16)
-    )
-    pt = a.get_point()
+def test_to_point_with_intervals() -> None:
+    """Test to_point method with interval coordinates."""
+    a = ManhattanArc3D(Interval(0, 4), Interval(4, 8), Interval(8, 12), Interval(12, 16))
+    pt = a.to_point()
     assert pt.xcoord.xcoord == Interval(6, 10)
     assert pt.ycoord == Interval(3, 5)
     assert pt.xcoord.ycoord == Interval(1, 3)
 
 
-def test_round_trip_construct_get_point() -> None:
-    """Test that construct followed by get_point returns original point."""
+def test_round_trip_construct_to_point() -> None:
+    """Test that construct followed by to_point returns original point."""
     original = Point(Point(4, 3), 5)
     arc = ManhattanArc3D.from_point(original)
-    result = arc.get_point()
+    result = arc.to_point()
     assert result == original
 
 
@@ -231,7 +223,7 @@ def test_round_trip_manual() -> None:
     z = xcoord + ycoord - zcoord
     w = xcoord + ycoord + zcoord
     arc = ManhattanArc3D(x, y, z, w)
-    result = arc.get_point()
+    result = arc.to_point()
     assert result.xcoord.xcoord == xcoord
     assert result.ycoord == ycoord
     assert result.xcoord.ycoord == zcoord

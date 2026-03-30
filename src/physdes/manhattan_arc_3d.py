@@ -17,7 +17,8 @@ with other ManhattanArc3D instances. It uses a 45-degree rotated coordinate syst
 for easier calculations in certain geometric operations.
 """
 
-from .generic import intersection, min_dist
+from .generic import center, lower, upper
+from .generic import intersection, nearest, min_dist
 from .interval import enlarge
 from .point import Point
 
@@ -218,7 +219,7 @@ class ManhattanArc3D:
         trr2 = other.enlarge_with(distance - alpha)
         return trr1.intersect_with(trr2)
 
-    def get_point(self):
+    def to_point(self):
         """
         Converts the ManhattanArc3D object back to a Point object.
 
@@ -226,7 +227,7 @@ class ManhattanArc3D:
 
         Examples:
             >>> a = ManhattanArc3D(-4, 2, 6, 12)
-            >>> print(a.get_point())
+            >>> print(a.to_point())
             ((4, 3), 5)
         """
         xcoord = (self.x_i + self.y_i + self.z_i + self.w_i) // 4
@@ -234,88 +235,102 @@ class ManhattanArc3D:
         zcoord = (-self.x_i + self.y_i - self.z_i + self.w_i) // 4
         return Point(Point(xcoord, zcoord), ycoord)
 
-    # def get_center(self):
-    #     """
-    #     Calculates the center of the merging segment
+    def get_center(self):
+        """
+        Calculates the center of the merging segment
 
-    #     :return: The center of the merging segment.
+        :return: The center of the merging segment.
 
-    #     Examples:
-    #         >>> a = ManhattanArc3D(4 - 5, 4 + 5)
-    #         >>> print(a.get_center())
-    #         (4, 5)
-    #     """
-    #     center_point = self.impl.get_center()
-    #     return center_point.inv_rotates()
+        Examples:
+            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
+            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r3 = r1.merge_with(r2, 40)
+            >>> print(r3.get_center())
+            ((55, 25), 70)
+        """
+        xcoord = center(self.x_i)
+        ycoord = center(self.y_i)
+        zcoord = center(self.z_i)
+        wcoord = center(self.w_i)
+        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
 
-    # def get_lower_corner(self) -> Point[Any, Any]:
-    #     """
-    #     Calculates the lower corner of the merging segment
+    def get_lower_corner(self):
+        """
+        Calculates the lower corner of the merging segment
 
-    #     :return: The lower corner of the merging segment.
+        :return: The lower corner of the merging segment.
 
-    #     Examples:
-    #         >>> a = ManhattanArc3D(4 - 5, 4 + 5)
-    #         >>> print(a.get_lower_corner())
-    #         (4, 5)
-    #     """
-    #     lower_point = self.impl.lower_corner()
-    #     return lower_point.inv_rotates()
+        Examples:
+            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
+            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r3 = r1.merge_with(r2, 40)
+            >>> print(r3.get_lower_corner())
+            ((35, 25), 85)
+        """
+        xcoord = lower(self.x_i)
+        ycoord = lower(self.y_i)
+        zcoord = lower(self.z_i)
+        wcoord = lower(self.w_i)
+        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
 
-    # def get_upper_corner(self) -> Point[Any, Any]:
-    #     """
-    #     Calculates the upper corner of the merging segment
+    def get_upper_corner(self):
+        """
+        Calculates the upper corner of the merging segment
 
-    #     :return: The upper corner of the merging segment.
+        :return: The upper corner of the merging segment.
 
-    #     Examples:
-    #         >>> a = ManhattanArc3D(4 - 5, 4 + 5)
-    #         >>> print(a.get_upper_corner())
-    #         (4, 5)
-    #     """
-    #     upper_point = self.impl.upper_corner()
-    #     return upper_point.inv_rotates()
+        Examples:
+            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
+            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r3 = r1.merge_with(r2, 40)
+            >>> print(r3.get_upper_corner())
+            ((75, 25), 55)
+        """
+        xcoord = upper(self.x_i)
+        ycoord = upper(self.y_i)
+        zcoord = upper(self.z_i)
+        wcoord = upper(self.w_i)
+        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
 
-    # def _nearest_point_to(self, manhattan_arc: "ManhattanArc3D[Any, Any]") -> Point[Any, Any]:
-    #     """
-    #     Calculates the center of the merging segment
+    def _nearest_point_to(self, manhattan_arc):
+        """
+        Calculates the nearest point on the merging segment to another ManhattanArc3D object.
 
-    #     :return: The center of the merging segment.
+        :param manhattan_arc: Another ManhattanArc3D object to which we want to find the nearest point on the merging segment.
 
-    #     Examples:
-    #         >>> a = ManhattanArc3D(4 - 5, 4 + 5)
-    #         >>> print(a.nearest_point_to(Point(0, 0)))
-    #         (4, 5)
-    #     """
-    #     nearest_pt = self.impl.nearest_to(manhattan_arc.impl)
-    #     ic(nearest_pt)
-    #     return nearest_pt.inv_rotates()
+        :return: The nearest point on the merging segment to the given ManhattanArc3D object.
 
-    # def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
-    #     """
-    #     Calculates the center of the merging segment
+        Examples:
+            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
+            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r3 = r1.merge_with(r2, 40)
+            >>> print(r3)
+            /[-80, 0], [-20, 40], [100, 100], [140, 160]/
+            >>> print(r3._nearest_point_to(ManhattanArc3D.construct(0, 0, 0)))
+            ((60, 10), 60)
+            >>> print(ManhattanArc3D(0, 0, 100, 140).to_point())
+            ((60, 10), 60)
+        """
+        xcoord = nearest(self.x_i, manhattan_arc.x_i)
+        ycoord = nearest(self.y_i, manhattan_arc.y_i)
+        zcoord = nearest(self.z_i, manhattan_arc.z_i)
+        wcoord = nearest(self.w_i, manhattan_arc.w_i)
+        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
 
-    #     :return: The center of the merging segment.
+    def nearest_point_to(self, other):
+        """
+        Calculates the nearest point on the merging segment to another ManhattanArc3D object.
 
-    #     Examples:
-    #         >>> a = ManhattanArc3D(4 - 5, 4 + 5)
-    #         >>> print(a.nearest_point_to(Point(0, 0)))
-    #         (4, 5)
-    #     """
-    #     ms = ManhattanArc3D.from_point(other)
-    #     ic(self)
-    #     ic(ms)
-    #     return self._nearest_point_to(ms)
+        :param manhattan_arc: Another ManhattanArc3D object to which we want to find the nearest point on the merging segment.
 
-    #     # distance = self.min_dist_with(ms)
-    #     # trr = ms.enlarge_with(distance)
-    #     # lb = self.impl.lower_corner()
-    #     # ub = self.impl.upper_corner()
-    #     # m = self.impl.get_center()
-    #     # if trr.impl.contains(lb):
-    #     #     m = lb
-    #     # elif trr.impl.contains(ub):
-    #     #     m = ub
-    #     # else:
-    #     #     ic(self)
-    #     # return m.inv_rotates()
+        :return: The nearest point on the merging segment to the given ManhattanArc3D object.
+
+        Examples:
+            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
+            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r3 = r1.merge_with(r2, 40)
+            >>> print(r3.nearest_point_to(Point(Point(1000, 1000), 1000)))
+            ((55, 45), 75)
+        """
+        ms = ManhattanArc3D.from_point(other)
+        return self._nearest_point_to(ms)
