@@ -194,10 +194,10 @@ class ManhattanArc(Generic[T1, T2]):
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
-            >>> r1 = ManhattanArc(4 - 5, 4 + 5)
-            >>> r2 = ManhattanArc(7 - 9, 7 + 9)
+            >>> r1 = ManhattanArc(40 - 50, 40 + 50)
+            >>> r2 = ManhattanArc(70 - 90, 70 + 90)
             >>> r1.min_dist_with(r2)
-            7
+            70
         """
         # Note: take max of xcoord and ycoord
         x_dist = min_dist(self.impl.xcoord, other.impl.xcoord)
@@ -246,6 +246,30 @@ class ManhattanArc(Generic[T1, T2]):
         point = self.impl.intersect_with(other.impl)
         return ManhattanArc(point.xcoord, point.ycoord)
 
+
+    def merge_with(self, other: "ManhattanArc[T1, T2]", alpha: int) -> "ManhattanArc[T1, T2]":
+        """
+        The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
+        the two objects, enlarges the objects based on the calculated distance, finds the intersection
+        of the enlarged objects, and returns a new object with the coordinates of the intersection.
+
+        :param other: The "other" parameter is an object of the same class as the current object. It
+            represents another instance of the class that we want to merge with the current instance
+
+        :return: The `merge_with` method returns a new `ManhattanArc` object with the x-coordinate and
+            y-coordinate of the intersection of the two objects being merged.
+
+        Examples:
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> print(a.merge_with(b, 350))
+            /[-450, 150], [1250, 1250]/
+        """
+        distance = self.min_dist_with(other)
+        trr1 = self.enlarge_with(alpha)
+        trr2 = other.enlarge_with(distance - alpha)
+        return trr1.intersect_with(trr2)
+
     def get_center(self) -> Point[Any, Any]:
         """
         Calculates the center of the merging segment
@@ -253,9 +277,11 @@ class ManhattanArc(Generic[T1, T2]):
         :return: The center of the merging segment.
 
         Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> print(a.get_center())
-            (4, 5)
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> ms = a.merge_with(b, 350)
+            >>> print(ms.get_center())
+            (550, 700)
         """
         center_point = self.impl.get_center()
         return center_point.inv_rotates()
@@ -267,9 +293,11 @@ class ManhattanArc(Generic[T1, T2]):
         :return: The lower corner of the merging segment.
 
         Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> print(a.get_lower_corner())
-            (4, 5)
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> ms = a.merge_with(b, 350)
+            >>> print(ms.get_lower_corner())
+            (400, 850)
         """
         lower_point = self.impl.lower_corner()
         return lower_point.inv_rotates()
@@ -281,19 +309,52 @@ class ManhattanArc(Generic[T1, T2]):
         :return: The upper corner of the merging segment.
 
         Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> print(a.get_upper_corner())
-            (4, 5)
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> ms = a.merge_with(b, 350)
+            >>> print(ms.get_upper_corner())
+            (700, 550)
         """
         upper_point = self.impl.upper_corner()
         return upper_point.inv_rotates()
 
     def _nearest_point_to(self, manhattan_arc: "ManhattanArc[Any, Any]") -> Point[Any, Any]:
+        """
+        Return the nearest position with respect to the given ManhattanArc.
+
+        :param manhattan_arc: The `manhattan_arc` parameter is an instance of the `ManhattanArc` class.
+
+        :return: The `_nearest_point_to` method returns a `Point` object that represents the nearest position
+            with respect to the given `manhattan_arc` parameter.
+
+        Examples:
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> ms = a.merge_with(b, 350)
+            >>> print(ms._nearest_point_to(ManhattanArc(1000, 0)))
+            (700, 550)
+        """
         nearest_pt = self.impl.nearest_to(manhattan_arc.impl)
         ic(nearest_pt)
         return nearest_pt.inv_rotates()
 
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
+        """
+        Return the nearest position with respect to the given Point.
+
+        :param other: The `other` parameter is a `Point` object that represents the point to which we want to find the nearest position on the `ManhattanArc`.
+
+        :return: The `_nearest_point_to` method returns a `Point` object that represents the nearest position
+            with respect to the given `manhattan_arc` parameter.
+
+        Examples:
+            >>> a = ManhattanArc(400 - 500, 400 + 500)
+            >>> b = ManhattanArc(700 - 900, 700 + 900)
+            >>> ms = a.merge_with(b, 350)
+            >>> print(ms.nearest_point_to(Point(0, 1000)))
+            (400, 850)
+        """
+
         ms = ManhattanArc.from_point(other)
         ic(self)
         ic(ms)
@@ -311,26 +372,3 @@ class ManhattanArc(Generic[T1, T2]):
         # else:
         #     ic(self)
         # return m.inv_rotates()
-
-    def merge_with(self, other: "ManhattanArc[T1, T2]", alpha: int) -> "ManhattanArc[T1, T2]":
-        """
-        The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
-        the two objects, enlarges the objects based on the calculated distance, finds the intersection
-        of the enlarged objects, and returns a new object with the coordinates of the intersection.
-
-        :param other: The "other" parameter is an object of the same class as the current object. It
-            represents another instance of the class that we want to merge with the current instance
-
-        :return: The `merge_with` method returns a new `ManhattanArc` object with the x-coordinate and
-            y-coordinate of the intersection of the two objects being merged.
-
-        Examples:
-            >>> a = ManhattanArc(4 - 5, 4 + 5)
-            >>> b = ManhattanArc(7 - 9, 7 + 9)
-            >>> print(a.merge_with(b, 3))
-            /[-4, 2], [12, 12]/
-        """
-        distance = self.min_dist_with(other)
-        trr1 = self.enlarge_with(alpha)
-        trr2 = other.enlarge_with(distance - alpha)
-        return trr1.intersect_with(trr2)

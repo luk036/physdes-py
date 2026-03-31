@@ -17,8 +17,7 @@ with other ManhattanArc3D instances. It uses a 45-degree rotated coordinate syst
 for easier calculations in certain geometric operations.
 """
 
-from .generic import center, lower, upper
-from .generic import intersection, nearest, min_dist
+from .generic import center, intersection, lower, min_dist, nearest, upper
 from .interval import enlarge
 from .point import Point
 
@@ -28,24 +27,24 @@ class ManhattanArc3D:
     Merging point, segment, or region ⛝
     """
 
-    def __init__(self, x, y, z, w) -> None:
+    def __init__(self, w, x, y, z) -> None:
         """
         Initialize a ManhattanArc3D object with 4-interval coordinates.
 
+        :param w: The w-interval coordinate in the 4-interval space.
         :param x: The x-interval coordinate in the 4-interval space.
         :param y: The y-interval coordinate in the 4-interval space.
         :param z: The z-interval coordinate in the 4-interval space.
-        :param w: The w-interval coordinate in the 4-interval space.
 
         Examples:
-            >>> a = ManhattanArc3D(4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
+            >>> a = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
             >>> print(a)
-            /-4, 2, 6, 12/
+            /12, -4, 2, 6/
         """
+        self.w_i = w
         self.x_i = x
         self.y_i = y
         self.z_i = z
-        self.w_i = w
 
     @classmethod
     def from_point(cls, pt) -> "ManhattanArc3D":
@@ -60,11 +59,13 @@ class ManhattanArc3D:
         xcoord = pt.xcoord.xcoord
         ycoord = pt.ycoord
         zcoord = pt.xcoord.ycoord
-        x = xcoord - ycoord - zcoord
-        y = xcoord - ycoord + zcoord
-        z = xcoord + ycoord - zcoord
-        w = xcoord + ycoord + zcoord
-        return cls(x, y, z, w)
+        xx = xcoord - ycoord
+        yy = xcoord + ycoord
+        w = yy + zcoord
+        x = xx - zcoord
+        y = xx + zcoord
+        z = yy - zcoord
+        return cls(w, x, y, z)
 
     @staticmethod
     def construct(xcoord, ycoord, zcoord) -> "ManhattanArc3D":
@@ -78,13 +79,15 @@ class ManhattanArc3D:
         Examples:
             >>> a = ManhattanArc3D.construct(4, 5, 3)
             >>> print(a)
-            /-4, 2, 6, 12/
+            /12, -4, 2, 6/
         """
-        x = xcoord - ycoord - zcoord
-        y = xcoord - ycoord + zcoord
-        z = xcoord + ycoord - zcoord
-        w = xcoord + ycoord + zcoord
-        return ManhattanArc3D(x, y, z, w)
+        xx = xcoord - ycoord
+        yy = xcoord + ycoord
+        w = yy + zcoord
+        x = xx - zcoord
+        y = xx + zcoord
+        z = yy - zcoord
+        return ManhattanArc3D(w, x, y, z)
 
     def __repr__(self) -> str:
         """
@@ -94,11 +97,11 @@ class ManhattanArc3D:
         :return: The `__repr__` method is returning a string representation of the `ManhattanArc3D` object.
 
         Examples:
-            >>> a = ManhattanArc3D(4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
+            >>> a = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
             >>> repr(a)
-            'ManhattanArc3D(-4, 2, 6, 12)'
+            'ManhattanArc3D(12, -4, 2, 6)'
         """
-        return f"{self.__class__.__name__}({self.x_i}, {self.y_i}, {self.z_i}, {self.w_i})"
+        return f"{self.__class__.__name__}({self.w_i}, {self.x_i}, {self.y_i}, {self.z_i})"
 
     def __str__(self) -> str:
         """
@@ -110,11 +113,11 @@ class ManhattanArc3D:
             coordinates of the object.
 
         Examples:
-            >>> a = ManhattanArc3D(4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
+            >>> a = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
             >>> print(a)
-            /-4, 2, 6, 12/
+            /12, -4, 2, 6/
         """
-        return f"/{self.x_i}, {self.y_i}, {self.z_i}, {self.w_i}/"
+        return f"/{self.w_i}, {self.x_i}, {self.y_i}, {self.z_i}/"
 
     def __eq__(self, other: object) -> bool:
         """
@@ -124,8 +127,8 @@ class ManhattanArc3D:
         :return: The `__eq__` method is returning a boolean value.
 
         Examples:
-            >>> a = ManhattanArc3D(4 - 5 - 3 , 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
-            >>> b = ManhattanArc3D(7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2, 7 + 9 + 2)
+            >>> a = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
+            >>> b = ManhattanArc3D(7 + 9 + 2, 7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2)
             >>> a == b
             False
             >>> c = ManhattanArc3D.construct(4, 5, 3)
@@ -134,7 +137,7 @@ class ManhattanArc3D:
         """
         if not isinstance(other, ManhattanArc3D):
             return NotImplemented
-        return (self.x_i, self.y_i, self.z_i, self.w_i) == (other.x_i, other.y_i, other.z_i, other.w_i)
+        return (self.w_i, self.x_i, self.y_i, self.z_i) == (other.w_i, other.x_i, other.y_i, other.z_i)
 
     def min_dist_with(self, other) -> int:
         """
@@ -146,16 +149,16 @@ class ManhattanArc3D:
         :return: the minimum rectilinear distance between the two objects.
 
         Examples:
-            >>> r1 = ManhattanArc3D(4 - 5 - 3 , 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
-            >>> r2 = ManhattanArc3D(7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2, 7 + 9 + 2)
+            >>> r1 = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
+            >>> r2 = ManhattanArc3D(7 + 9 + 2, 7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2)
             >>> r1.min_dist_with(r2)
             8
         """
+        w_dist = min_dist(self.w_i, other.w_i)
         x_dist = min_dist(self.x_i, other.x_i)
         y_dist = min_dist(self.y_i, other.y_i)
         z_dist = min_dist(self.z_i, other.z_i)
-        w_dist = min_dist(self.w_i, other.w_i)
-        return int(max([x_dist, y_dist, z_dist, w_dist]))
+        return int(max([w_dist, x_dist, y_dist, z_dist]))
 
     def enlarge_with(self, alpha: int) -> "ManhattanArc3D":
         """
@@ -168,16 +171,16 @@ class ManhattanArc3D:
         :return: A new ManhattanArc3D object with enlarged coordinates.
 
         Examples:
-            >>> a = ManhattanArc3D(4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
+            >>> a = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
             >>> r = a.enlarge_with(1)
             >>> print(r)
-            /[-5, -3], [1, 3], [5, 7], [11, 13]/
+            /[11, 13], [-5, -3], [1, 3], [5, 7]/
         """
+        wcoord = enlarge(self.w_i, alpha)
         xcoord = enlarge(self.x_i, alpha)
         ycoord = enlarge(self.y_i, alpha)
         zcoord = enlarge(self.z_i, alpha)
-        wcoord = enlarge(self.w_i, alpha)
-        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord)
+        return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord)
 
     def intersect_with(self, other: "ManhattanArc3D") -> "ManhattanArc3D":
         """
@@ -190,11 +193,11 @@ class ManhattanArc3D:
         :param other: Another ManhattanArc3D object to intersect with.
         :return: A new ManhattanArc3D object containing the intersection coordinates.
         """
+        w_inter = intersection(self.w_i, other.w_i)
         x_inter = intersection(self.x_i, other.x_i)
         y_inter = intersection(self.y_i, other.y_i)
         z_inter = intersection(self.z_i, other.z_i)
-        w_inter = intersection(self.w_i, other.w_i)
-        return ManhattanArc3D(x_inter, y_inter, z_inter, w_inter)
+        return ManhattanArc3D(w_inter, x_inter, y_inter, z_inter)
 
     def merge_with(self, other, alpha: int):
         """
@@ -209,10 +212,10 @@ class ManhattanArc3D:
             y-coordinate of the intersection of the two objects being merged.
 
         Examples:
-            >>> r1 = ManhattanArc3D(4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3, 4 + 5 + 3)
-            >>> r2 = ManhattanArc3D(7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2, 7 + 9 + 2)
+            >>> r1 = ManhattanArc3D(4 + 5 + 3, 4 - 5 - 3, 4 - 5 + 3, 4 + 5 - 3)
+            >>> r2 = ManhattanArc3D(7 + 9 + 2, 7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2)
             >>> r1.merge_with(r2, 4)
-            ManhattanArc3D([-8, 0], [-2, 4], [10, 10], [14, 16])
+            ManhattanArc3D([14, 16], [-8, 0], [-2, 4], [10, 10])
         """
         distance = self.min_dist_with(other)
         trr1 = self.enlarge_with(alpha)
@@ -226,13 +229,15 @@ class ManhattanArc3D:
         :return: A Point object representing the coordinates of the ManhattanArc3D object.
 
         Examples:
-            >>> a = ManhattanArc3D(-4, 2, 6, 12)
+            >>> a = ManhattanArc3D(12, -4, 2, 6)
             >>> print(a.to_point())
             ((4, 3), 5)
         """
-        xcoord = (self.x_i + self.y_i + self.z_i + self.w_i) // 4
-        ycoord = (-self.x_i - self.y_i + self.z_i + self.w_i) // 4
-        zcoord = (-self.x_i + self.y_i - self.z_i + self.w_i) // 4
+        xx = self.x_i + self.y_i
+        zz = self.z_i + self.w_i
+        xcoord = (xx + zz) // 4
+        ycoord = (-xx + zz) // 4
+        zcoord = (self.w_i - self.x_i + self.y_i - self.z_i) // 4
         return Point(Point(xcoord, zcoord), ycoord)
 
     def get_center(self):
@@ -242,17 +247,17 @@ class ManhattanArc3D:
         :return: The center of the merging segment.
 
         Examples:
-            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
-            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r1 = ManhattanArc3D(40 + 50 + 30, 40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30)
+            >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_center())
             ((55, 25), 70)
         """
+        wcoord = center(self.w_i)
         xcoord = center(self.x_i)
         ycoord = center(self.y_i)
         zcoord = center(self.z_i)
-        wcoord = center(self.w_i)
-        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
+        return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
     def get_lower_corner(self):
         """
@@ -261,17 +266,17 @@ class ManhattanArc3D:
         :return: The lower corner of the merging segment.
 
         Examples:
-            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
-            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r1 = ManhattanArc3D(40 + 50 + 30, 40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30)
+            >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_lower_corner())
             ((35, 25), 85)
         """
+        wcoord = lower(self.w_i)
         xcoord = lower(self.x_i)
         ycoord = lower(self.y_i)
         zcoord = lower(self.z_i)
-        wcoord = lower(self.w_i)
-        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
+        return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
     def get_upper_corner(self):
         """
@@ -280,17 +285,17 @@ class ManhattanArc3D:
         :return: The upper corner of the merging segment.
 
         Examples:
-            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
-            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r1 = ManhattanArc3D(40 + 50 + 30, 40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30)
+            >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_upper_corner())
             ((75, 25), 55)
         """
+        wcoord = upper(self.w_i)
         xcoord = upper(self.x_i)
         ycoord = upper(self.y_i)
         zcoord = upper(self.z_i)
-        wcoord = upper(self.w_i)
-        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
+        return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
     def _nearest_point_to(self, manhattan_arc):
         """
@@ -301,21 +306,21 @@ class ManhattanArc3D:
         :return: The nearest point on the merging segment to the given ManhattanArc3D object.
 
         Examples:
-            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
-            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r1 = ManhattanArc3D(40 + 50 + 30, 40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30)
+            >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3)
-            /[-80, 0], [-20, 40], [100, 100], [140, 160]/
+            /[140, 160], [-80, 0], [-20, 40], [100, 100]/
             >>> print(r3._nearest_point_to(ManhattanArc3D.construct(0, 0, 0)))
             ((60, 10), 60)
-            >>> print(ManhattanArc3D(0, 0, 100, 140).to_point())
+            >>> print(ManhattanArc3D(140, 0, 0, 100).to_point())
             ((60, 10), 60)
         """
+        wcoord = nearest(self.w_i, manhattan_arc.w_i)
         xcoord = nearest(self.x_i, manhattan_arc.x_i)
         ycoord = nearest(self.y_i, manhattan_arc.y_i)
         zcoord = nearest(self.z_i, manhattan_arc.z_i)
-        wcoord = nearest(self.w_i, manhattan_arc.w_i)
-        return ManhattanArc3D(xcoord, ycoord, zcoord, wcoord).to_point()
+        return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
     def nearest_point_to(self, other):
         """
@@ -326,8 +331,8 @@ class ManhattanArc3D:
         :return: The nearest point on the merging segment to the given ManhattanArc3D object.
 
         Examples:
-            >>> r1 = ManhattanArc3D(40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30, 40 + 50 + 30)
-            >>> r2 = ManhattanArc3D(70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20, 70 + 90 + 20)
+            >>> r1 = ManhattanArc3D(40 + 50 + 30, 40 - 50 - 30, 40 - 50 + 30, 40 + 50 - 30)
+            >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.nearest_point_to(Point(Point(1000, 1000), 1000)))
             ((55, 45), 75)
