@@ -1,5 +1,5 @@
 """
-ManhattanArc3D Class
+ManhattanArc3D Class (Not working)
 
 This code defines a class called ManhattanArc3D, which represents a geometric object in a 3D space.
 The purpose of this class is to handle operations on points, segments, or regions that are
@@ -61,10 +61,10 @@ class ManhattanArc3D:
         zcoord = pt.xcoord.ycoord
         xx = xcoord - ycoord
         yy = xcoord + ycoord
-        w = yy + zcoord
-        x = xx - zcoord
-        y = xx + zcoord
-        z = yy - zcoord
+        w = (yy + zcoord) // 2
+        x = (xx - zcoord) // 2
+        y = (xx + zcoord) // 2
+        z = (yy - zcoord) // 2
         return cls(w, x, y, z)
 
     @staticmethod
@@ -77,16 +77,16 @@ class ManhattanArc3D:
         :param zcoord: The z-coordinate.
         :return: A new ManhattanArc3D object.
         Examples:
-            >>> a = ManhattanArc3D.construct(4, 5, 3)
+            >>> a = ManhattanArc3D.construct(8, 10, 6)
             >>> print(a)
             /12, -4, 2, 6/
         """
         xx = xcoord - ycoord
         yy = xcoord + ycoord
-        w = yy + zcoord
-        x = xx - zcoord
-        y = xx + zcoord
-        z = yy - zcoord
+        w = (yy + zcoord) // 2
+        x = (xx - zcoord) // 2
+        y = (xx + zcoord) // 2
+        z = (yy - zcoord) // 2
         return ManhattanArc3D(w, x, y, z)
 
     def __repr__(self) -> str:
@@ -131,7 +131,7 @@ class ManhattanArc3D:
             >>> b = ManhattanArc3D(7 + 9 + 2, 7 - 9 - 2, 7 - 9 + 2, 7 + 9 - 2)
             >>> a == b
             False
-            >>> c = ManhattanArc3D.construct(4, 5, 3)
+            >>> c = ManhattanArc3D.construct(8, 10, 6)
             >>> a == c
             True
         """
@@ -231,13 +231,13 @@ class ManhattanArc3D:
         Examples:
             >>> a = ManhattanArc3D(12, -4, 2, 6)
             >>> print(a.to_point())
-            ((4, 3), 5)
+            ((8, 6), 10)
         """
         xx = self.x_i + self.y_i
         zz = self.z_i + self.w_i
-        xcoord = (xx + zz) // 4
-        ycoord = (-xx + zz) // 4
-        zcoord = (self.w_i - self.x_i + self.y_i - self.z_i) // 4
+        xcoord = (xx + zz) // 2
+        ycoord = (-xx + zz) // 2
+        zcoord = (self.w_i - self.x_i + self.y_i - self.z_i) // 2
         return Point(Point(xcoord, zcoord), ycoord)
 
     def get_center(self):
@@ -251,7 +251,7 @@ class ManhattanArc3D:
             >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_center())
-            ((55, 25), 70)
+            ((110, 50), 140)
         """
         wcoord = center(self.w_i)
         xcoord = center(self.x_i)
@@ -270,7 +270,7 @@ class ManhattanArc3D:
             >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_lower_corner())
-            ((35, 25), 85)
+            ((70, 50), 170)
         """
         wcoord = lower(self.w_i)
         xcoord = lower(self.x_i)
@@ -289,7 +289,7 @@ class ManhattanArc3D:
             >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.get_upper_corner())
-            ((75, 25), 55)
+            ((150, 50), 110)
         """
         wcoord = upper(self.w_i)
         xcoord = upper(self.x_i)
@@ -312,9 +312,9 @@ class ManhattanArc3D:
             >>> print(r3)
             /[140, 160], [-80, 0], [-20, 40], [100, 100]/
             >>> print(r3._nearest_point_to(ManhattanArc3D.construct(0, 0, 0)))
-            ((60, 10), 60)
+            ((120, 20), 120)
             >>> print(ManhattanArc3D(140, 0, 0, 100).to_point())
-            ((60, 10), 60)
+            ((120, 20), 120)
         """
         wcoord = nearest(self.w_i, manhattan_arc.w_i)
         xcoord = nearest(self.x_i, manhattan_arc.x_i)
@@ -335,7 +335,7 @@ class ManhattanArc3D:
             >>> r2 = ManhattanArc3D(70 + 90 + 20, 70 - 90 - 20, 70 - 90 + 20, 70 + 90 - 20)
             >>> r3 = r1.merge_with(r2, 40)
             >>> print(r3.nearest_point_to(Point(Point(1000, 1000), 1000)))
-            ((55, 45), 75)
+            ((110, 90), 150)
         """
         ms = ManhattanArc3D.from_point(other)
         return self._nearest_point_to(ms)

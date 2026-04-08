@@ -29,6 +29,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 from physdes.manhattan_arc import ManhattanArc
 from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
+from physdes.skeleton import _logger
 
 
 @dataclass
@@ -341,12 +342,14 @@ class ElmoreDelayCalculator(DelayCalculator):
             extend_left = 0
             delay_left = node_left.delay
             node_right.need_elongation = True
+            _logger.debug("Warning: Right node needs elongation: extend_left < 0  => extend_left set to 0")
         elif extend_left > distance:
             node_right.wire_length = 0
             node_left.wire_length = distance
             extend_left = distance
             delay_left = node_right.delay
             node_left.need_elongation = True
+            _logger.debug("Warning: Left node needs elongation: extend_left > distance => extend_left set to distance")
         else:
             node_left.wire_length = extend_left
             node_right.wire_length = distance - extend_left
