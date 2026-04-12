@@ -1,22 +1,23 @@
-from typing import List, Tuple
+import random
 
 from physdes.steiner_forest.steiner_forest_grid import steiner_forest_grid
 
 if __name__ == "__main__":
-    # Example parameters (modify as needed)
-    h: int = 8  # Height
-    w: int = 8  # Width
-    pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [
-        ((0, 0), (3, 2)),
-        ((0, 0), (0, 5)),
-        ((5, 5), (7, 6)),
-        ((5, 5), (6, 7)),
-    ]  # Terminal pairs
+    h: int = 20
+    w: int = 20
+    num_pairs: int = 150
+    random.seed(42)
+    pairs = []
+    while len(pairs) < num_pairs:
+        a = (random.randint(0, h - 1), random.randint(0, w - 1))
+        b = (random.randint(0, h - 1), random.randint(0, w - 1))
+        if a != b:
+            pairs.append((a, b))
 
     F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
 
     # Generate SVG and write to file
-    cell_size = 50
+    cell_size = 30
     margin = 20
     width = w * cell_size + 2 * margin
     height = h * cell_size + 2 * margin
@@ -40,19 +41,19 @@ if __name__ == "__main__":
             cy = margin + i * cell_size + cell_size / 2
             node = i * w + j
             if node in sources:
-                r = 10
+                r = 8
                 fill = "blue"
             elif node in terminals:
-                r = 10
+                r = 8
                 fill = "red"
             elif node in steiner_nodes:
-                r = 7
+                r = 5
                 fill = "green"
             else:
-                r = 5
+                r = 3
                 fill = "black"
             svg += f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>'
-            svg += f'<text x="{cx}" y="{cy + 4}" font-size="10" text-anchor="middle">{node}</text>'
+            svg += f'<text x="{cx}" y="{cy + 3}" font-size="7" text-anchor="middle">{node}</text>'
 
     # Selected edges
     for u, v, _c in F_pruned:
@@ -62,14 +63,17 @@ if __name__ == "__main__":
         uy = margin + ui * cell_size + cell_size / 2
         vx = margin + vj * cell_size + cell_size / 2
         vy = margin + vi * cell_size + cell_size / 2
-        svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="blue" stroke-width="5"/>'
+        svg += f'<line x1="{ux}" y1="{uy}" x2="{vx}" y2="{vy}" stroke="blue" stroke-width="3"/>'
 
     svg += "</svg>"
 
     # Write to SVG file
-    with open("steiner_forest.svg", "w") as f:
+    with open("steiner_forest_large.svg", "w") as f:
         f.write(svg)
 
-    print("SVG file 'steiner_forest.svg' generated successfully.")
+    print("SVG file 'steiner_forest_large.svg' generated successfully.")
     print(f"Total cost: {total_cost}")
     print(f"Edges: {F_pruned}")
+    print(f"Sources: {sources}")
+    print(f"Terminals: {terminals}")
+    print(f"Steiner nodes: {steiner_nodes}")
