@@ -2,7 +2,7 @@
 Deferred Merge Embedding (DME) Algorithm for Clock Tree Synthesis.
 
 This module provides a comprehensive implementation of the Deferred Merge Embedding (DME)
-algorithm, a widely used technique for constructing zero-skew clock trees in VLSI design.
+algorithm, a widely used technique for constructing prescribed-skew (not necessarily zero) clock trees in VLSI design.
 The DME algorithm is known for its efficiency and effectiveness in minimizing clock skew,
 a critical factor in high-performance digital circuits.
 
@@ -81,7 +81,7 @@ class TreeNode:
     right: Optional["TreeNode"] = None
     parent: Optional["TreeNode"] = None
     wire_length: int = 0
-    delay: float = 0.0
+    delay: float = 0.0  # default zero-skew
     capacitance: float = 0.0
     need_elongation = False
 
@@ -384,7 +384,7 @@ class DMEAlgorithm:
     *   **The Boxes Around L and R**: These boxes represent the **merging segments** (MS)
         of the left and right subtrees, respectively. A merging segment is a set of
         all possible locations where a new parent node can be placed to connect the
-        children while satisfying the zero-skew constraint.
+        children while satisfying the prescribed-skew (not necessarily zero) constraint.
 
     *   **v**: This is the **new parent node** being created to merge the left and right subtrees. Its exact position is not yet determined; it will be chosen from the new merging segment.
 
@@ -488,7 +488,7 @@ class DMEAlgorithm:
 
     def build_clock_tree(self) -> TreeNode:
         """
-        Build a zero-skew clock tree for the given sinks
+        Build a prescribed-skew (not necessarily zero) clock tree for the given sinks
 
         Returns:
             Root node of the clock tree
@@ -597,7 +597,7 @@ class DMEAlgorithm:
             distance = left_ms.min_dist_with(right_ms)  # type: ignore[arg-type]
 
             # Calculate the tapping point and delay for the merged segment using the configured
-            # delay calculator strategy. This step is crucial for achieving zero-skew by
+            # delay calculator strategy. This step is crucial for achieving prescribed-skew (not necessarily zero) by
             # determining how to balance the delays from the left and right branches.
             (
                 extend_left,
@@ -606,7 +606,7 @@ class DMEAlgorithm:
             node.delay = delay_left
             # Merge the left and right segments based on the calculated tapping point.
             # The 'extend_left' parameter dictates how much the left segment needs to be
-            # extended to meet the zero-skew requirement.
+            # extended to meet the prescribed-skew (not necessarily zero) requirement.
             merged_segment = left_ms.merge_with(right_ms, extend_left)  # type: ignore[arg-type]
             merging_segments[node.name] = merged_segment
 

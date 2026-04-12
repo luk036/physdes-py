@@ -246,7 +246,6 @@ class ManhattanArc(Generic[T1, T2]):
         point = self.impl.intersect_with(other.impl)
         return ManhattanArc(point.xcoord, point.ycoord)
 
-
     def merge_with(self, other: "ManhattanArc[T1, T2]", alpha: int) -> "ManhattanArc[T1, T2]":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between

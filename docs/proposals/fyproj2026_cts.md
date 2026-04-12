@@ -6,7 +6,7 @@ Deferred Merge Embedding (DME) Algorithm Implementation and Optimization for 3D 
 ## 1. Project Background and Motivation
 
 ### 1.1 Research Background
-As integrated circuit technology advances to 3D integration, clock tree synthesis (CTS) faces new challenges in managing clock skew and delay across multiple layers. The Deferred Merge Embedding (DME) algorithm is a well-established approach for zero-skew clock tree synthesis, but its application to 3D ICs requires careful consideration of vertical connections and layer-specific constraints.
+As integrated circuit technology advances to 3D integration, clock tree synthesis (CTS) faces new challenges in managing clock skew and delay across multiple layers. The Deferred Merge Embedding (DME) algorithm is a well-established approach for prescribed-skew (not necessarily zero) clock tree synthesis, but its application to 3D ICs requires careful consideration of vertical connections and layer-specific constraints.
 
 ### 1.2 Research Significance
 - **Industry Relevance**: 3D ICs are increasingly used in high-performance computing, mobile devices, and AI accelerators
@@ -23,7 +23,7 @@ Clock tree synthesis is a critical phase in physical design that ensures synchro
 
 ### 2.2 Deferred Merge Embedding (DME) Algorithm
 The DME algorithm is a two-phase approach:
-1. **Bottom-up phase**: Computes merging segments for zero-skew constraints
+1. **Bottom-up phase**: Computes merging segments for prescribed-skew (not necessarily zero) constraints
 2. **Top-down phase**: Embeds the tree by selecting actual node positions
 
 ### 2.3 3D IC Challenges
@@ -107,7 +107,7 @@ class DME3DAlgorithm(DMEAlgorithm):
 #### 4.3.2 3D Merging Segment Computation
 - Extending Manhattan arc concepts to 3D space
 - Efficient computation of 3D merging regions
-- Handling layer transitions in zero-skew calculations
+- Handling layer transitions in prescribed-skew (not necessarily zero) calculations
 
 #### 4.3.3 Performance Optimization
 - Managing computational complexity for large 3D designs
