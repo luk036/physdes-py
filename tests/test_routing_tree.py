@@ -183,14 +183,14 @@ class TestGlobalRoutingTree:
         nearest_to_s2 = tree._find_nearest_node(Point(21, 21))
         assert nearest_to_s2 == tree.nodes[s2_id]
 
-    def test_calculate_wirelength(self) -> None:
+    def test_calculate_total_wirelength(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
         s1 = tree.insert_steiner_node(Point(1, 1))
         _ = tree.insert_terminal_node(Point(2, 2), s1)
         # source(0,0) -> s1(1,1) = 2
         # s1(1,1) -> t1(2,2) = 2
         # Total = 4
-        assert tree.calculate_wirelength() == 4.0
+        assert tree.calculate_total_wirelength() == 4.0
 
         tree2 = GlobalRoutingTree(Point(0, 0))
         s1 = tree2.insert_steiner_node(Point(1, 0))
@@ -200,7 +200,7 @@ class TestGlobalRoutingTree:
         # s1(1,0) -> s2(1,1) = 1
         # s2(1,1) -> t1(0,1) = 1
         # Total = 3
-        assert tree2.calculate_wirelength() == 3.0
+        assert tree2.calculate_total_wirelength() == 3.0
 
     def test_get_tree_structure(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
@@ -476,14 +476,14 @@ class TestGlobalRoutingTree3d:
         nearest_to_s2 = tree3d._find_nearest_node(Point(Point(21, 21), 21))
         assert nearest_to_s2 == tree3d.nodes[s2_id]
 
-    def test_calculate_wirelength(self) -> None:
+    def test_calculate_total_wirelength(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
         _ = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
         # source(0,0) -> s1(1,1) = 2
         # s1(1,1) -> t1(2,2) = 2
         # Total = 4
-        assert tree3d.calculate_wirelength() == 6
+        assert tree3d.calculate_total_wirelength() == 6
 
         tree3d2 = GlobalRoutingTree(Point(Point(0, 0), 0))
         s1 = tree3d2.insert_steiner_node(Point(Point(1, 0), 0))
@@ -493,7 +493,7 @@ class TestGlobalRoutingTree3d:
         # s1(1,0) -> s2(1,1) = 1
         # s2(1,1) -> t1(0,1) = 1
         # Total = 3
-        assert tree3d2.calculate_wirelength() == 4
+        assert tree3d2.calculate_total_wirelength() == 4
 
     def test_get_tree_structure(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))

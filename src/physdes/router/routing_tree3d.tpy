@@ -338,7 +338,7 @@ class GlobalRoutingTree3d:
             >>> from physdes.point import Point
             >>> tree3d = GlobalRoutingTree3d()
             >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
@@ -424,7 +424,7 @@ class GlobalRoutingTree3d:
             >>> from physdes.point import Point
             >>> tree3d = GlobalRoutingTree3d()
             >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
@@ -468,7 +468,7 @@ class GlobalRoutingTree3d:
 
         return
 
-    def calculate_wirelength(self) -> int:
+    def calculate_total_wirelength(self) -> int:
         """Calculate total wirelength of the routing tree3d.
 
         Returns:
@@ -479,7 +479,7 @@ class GlobalRoutingTree3d:
             >>> tree3d = GlobalRoutingTree3d()
             >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
             >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
         """
         total_length = 0
@@ -609,7 +609,7 @@ class GlobalRoutingTree3d:
         print("Global Routing Tree3d Structure:")
         print("=" * 40)
         print(self.get_tree_structure())
-        print(f"Total wirelength: {self.calculate_wirelength():.2f}")
+        print(f"Total wirelength: {self.calculate_total_wirelength():.2f}")
         print(f"Total nodes: {len(self.nodes)}")
         print(f"Terminals: {len(self.get_all_terminals())}")
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
@@ -774,7 +774,7 @@ def visualize_routing_tree3d_svg(tree3d, scale_z, width=800, height=600, margin=
         f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>'
     )
     svg_parts.append(
-        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>'
+        f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_total_wirelength():.2f}</text>'
     )
 
     svg_parts.append("</svg>")
@@ -865,7 +865,7 @@ if __name__ == "__main__":
 #         print(f"  {node}")
 
 #     # Calculate wirelength
-#     print(f"\nTotal wirelength: {routing_tree3d.calculate_wirelength():.2f}")
+#     print(f"\nTotal wirelength: {routing_tree3d.calculate_total_wirelength():.2f}")
 
 #     # Show optimization
 #     print("\n=== After Optimization ===")

@@ -20,6 +20,60 @@ def test_route_with_steiner() -> None:
     save_routing_tree_svg(router.tree, filename="example_route_with_steiner.svg")
 
 
+def test_route_with_delay_constraint_4() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(0.4)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 14852
+
+
+def test_route_with_delay_constraint_6() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(0.6)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 14090
+
+
+def test_route_with_delay_constraint_8() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(0.8)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 10960
+
+
+def test_route_with_delay_constraint_10() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(1.0)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 6379
+
+
+def test_route_with_delay_constraint_12() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(1.2)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 5867
+
+
+def test_route_with_delay_constraint_14() -> None:
+    """Test routing with delay constraints."""
+    source, terminals = generate_random_points()
+    router = GlobalRouter(source, terminals)
+    router.route_with_constraints(1.4)
+    wirelength = router.tree.calculate_total_wirelength()
+    assert wirelength == 5854
+
+
 def test_route_with_delay_constraint() -> None:
     """Test routing with delay constraints."""
     source, terminals = generate_random_points()

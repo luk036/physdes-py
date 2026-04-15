@@ -358,12 +358,12 @@ graph LR
 ```python
 >>> tree2d = GlobalRoutingTree(Point(0, 0))
 >>> tree2d.insert_steiner_node(Point(2, 2))
->>> tree2d.calculate_wirelength()
+>>> tree2d.calculate_total_wirelength()
 4
 
 >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
 >>> tree3d.insert_steiner_node(Point(Point(2, 2), 2))
->>> tree3d.calculate_wirelength()
+>>> tree3d.calculate_total_wirelength()
 6  # 2 + 2 + 2 (includes z-layer cost)
 ```
 
@@ -469,7 +469,7 @@ router = GlobalRouter(source, terminals, keepouts)
 router.route_with_steiners()
 
 # Calculate total wirelength
-total_wl = router.tree.calculate_wirelength()
+total_wl = router.tree.calculate_total_wirelength()
 print(f"Total wirelength: {total_wl}")
 ```
 

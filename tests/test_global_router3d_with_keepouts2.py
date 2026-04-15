@@ -29,12 +29,12 @@ def test_route3d_with_keepouts_increases_wirelength() -> None:
     # Route without keepouts
     router_no_keepouts = GlobalRouter(source, terminals)
     router_no_keepouts.route_with_steiners()
-    wirelength_no_keepouts = router_no_keepouts.tree.calculate_wirelength()
+    wirelength_no_keepouts = router_no_keepouts.tree.calculate_total_wirelength()
 
     # Route with keepouts that obstruct the direct path
     keepouts = [Point(Point(Interval(5, 15), Interval(-1, 1)), Interval(5, 15))]
     router_with_keepouts = GlobalRouter(source, terminals, keepouts)
     router_with_keepouts.route_with_steiners()
-    wirelength_with_keepouts = router_with_keepouts.tree.calculate_wirelength()
+    wirelength_with_keepouts = router_with_keepouts.tree.calculate_total_wirelength()
 
     assert wirelength_with_keepouts > wirelength_no_keepouts

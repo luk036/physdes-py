@@ -602,12 +602,12 @@ class="math inline"><em>L</em><sub>2</sub> + 2<em>z</em></span></td>
 <div class="sourceCode" id="cb17"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree2d <span class="op">=</span> GlobalRoutingTree(Point(<span class="dv">0</span>, <span class="dv">0</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree2d.insert_steiner_node(Point(<span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree2d.calculate_wirelength()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree2d.calculate_total_wirelength()</span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree3d <span class="op">=</span> GlobalRoutingTree(Point(Point(<span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">0</span>))</span>
 <span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree3d.insert_steiner_node(Point(Point(<span class="dv">2</span>, <span class="dv">2</span>), <span class="dv">2</span>))</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree3d.calculate_wirelength()</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> tree3d.calculate_total_wirelength()</span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="dv">6</span>  <span class="co"># 2 + 2 + 2 (includes z-layer cost)</span></span></code></pre></div>
 <hr />
 <!-- slide 13 -->
@@ -705,7 +705,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a h
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>router.route_with_steiners()</span>
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate total wirelength</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>total_wl <span class="op">=</span> router.tree.calculate_wirelength()</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>total_wl <span class="op">=</span> router.tree.calculate_total_wirelength()</span>
 <span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&quot;Total wirelength: </span><span class="sc">{</span>total_wl<span class="sc">}</span><span class="ss">&quot;</span>)</span></code></pre></div>
 <hr />
 <!-- slide 19 -->

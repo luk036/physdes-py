@@ -493,18 +493,18 @@ class GlobalRoutingTree:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> tree.insert_terminal_with_steiner(Point(2, 2))
-            >>> tree.calculate_wirelength()
+            >>> tree.calculate_total_wirelength()
             4
             >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
             >>> tree3d.insert_terminal_with_steiner(Point(Point(2, 2), 2))
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
             >>> from physdes.interval import Interval
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> _ = tree.insert_terminal_node(Point(10, 0))
             >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
             >>> tree.insert_terminal_with_steiner(Point(5, 5), keepouts)
-            >>> tree.calculate_wirelength()
+            >>> tree.calculate_total_wirelength()
             20
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
@@ -555,18 +555,18 @@ class GlobalRoutingTree:
             >>> from physdes.point import Point
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> tree.insert_terminal_with_constraints(Point(2, 2), 10)
-            >>> tree.calculate_wirelength()
+            >>> tree.calculate_total_wirelength()
             4
             >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
             >>> tree3d.insert_terminal_with_constraints(Point(Point(2, 2), 2), 10)
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
             >>> from physdes.interval import Interval
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> _ = tree.insert_terminal_node(Point(10, 0))
             >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
             >>> tree.insert_terminal_with_constraints(Point(5, 5), 100, keepouts)
-            >>> tree.calculate_wirelength()
+            >>> tree.calculate_total_wirelength()
             20
         """
         terminal_id = f"terminal_{self.next_terminal_id}"
@@ -602,7 +602,7 @@ class GlobalRoutingTree:
 
         return
 
-    def calculate_wirelength(self) -> int:
+    def calculate_total_wirelength(self) -> int:
         """Calculate total wirelength of the routing tree.
 
         Returns:
@@ -613,12 +613,12 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
-            >>> tree.calculate_wirelength()
+            >>> tree.calculate_total_wirelength()
             4
             >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
             >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
             >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
-            >>> tree3d.calculate_wirelength()
+            >>> tree3d.calculate_total_wirelength()
             6
         """
         total_length = 0
@@ -790,7 +790,7 @@ class GlobalRoutingTree:
         print("Global Routing Tree Structure:")
         print("=" * 40)
         print(self.get_tree_structure())
-        print(f"Total wirelength: {self.calculate_wirelength():.2f}")
+        print(f"Total wirelength: {self.calculate_total_wirelength():.2f}")
         print(f"Total nodes: {len(self.nodes)}")
         print(f"Terminals: {len(self.get_all_terminals())}")
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")
@@ -800,7 +800,7 @@ class GlobalRoutingTree:
         print("Global Routing Tree3d Structure:")
         print("=" * 40)
         print(self.get_tree_structure())
-        print(f"Total wirelength: {self.calculate_wirelength():.2f}")
+        print(f"Total wirelength: {self.calculate_total_wirelength():.2f}")
         print(f"Total nodes: {len(self.nodes)}")
         print(f"Terminals: {len(self.get_all_terminals())}")
         print(f"Steiner points: {len(self.get_all_steiner_nodes())}")

@@ -163,7 +163,7 @@ def visualize_routing_tree_svg(
     svg_parts.append(f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree.nodes)}</text>')
     svg_parts.append(f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree.get_all_terminals())}</text>')
     svg_parts.append(f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree.get_all_steiner_nodes())}</text>')
-    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree.calculate_wirelength():.2f}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree.calculate_total_wirelength():.2f}</text>')
 
     svg_parts.append("</svg>")
 
@@ -372,7 +372,7 @@ def visualize_routing_tree3d_svg(
     svg_parts.append(f'<text x="20" y="{stats_y + 15}" font-family="Arial" font-size="9">Total Nodes: {len(tree3d.nodes)}</text>')
     svg_parts.append(f'<text x="20" y="{stats_y + 30}" font-family="Arial" font-size="9">Terminals: {len(tree3d.get_all_terminals())}</text>')
     svg_parts.append(f'<text x="20" y="{stats_y + 45}" font-family="Arial" font-size="9">Steiner: {len(tree3d.get_all_steiner_nodes())}</text>')
-    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_wirelength():.2f}</text>')
+    svg_parts.append(f'<text x="20" y="{stats_y + 60}" font-family="Arial" font-size="9">Wirelength: {tree3d.calculate_total_wirelength():.2f}</text>')
 
     svg_parts.append("</svg>")
 

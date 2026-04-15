@@ -18,7 +18,7 @@ def test_route_simple() -> None:
     source, terminals = generate_2d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_simple()
-    wirelength = router.tree.calculate_wirelength()
+    wirelength = router.tree.calculate_total_wirelength()
     assert wirelength == 4.0
 
 
@@ -26,7 +26,7 @@ def test_route_with_steiners() -> None:
     source, terminals = generate_2d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
-    wirelength = router.tree.calculate_wirelength()
+    wirelength = router.tree.calculate_total_wirelength()
     assert wirelength == 4.0
 
 
@@ -46,7 +46,7 @@ def test_route3d_simple() -> None:
     source, terminals = generate_3d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_simple()
-    wirelength = router.tree.calculate_wirelength()
+    wirelength = router.tree.calculate_total_wirelength()
     assert wirelength == 6
 
 
@@ -54,5 +54,5 @@ def test_route3d_with_steiners() -> None:
     source, terminals = generate_3d_simple_points()
     router = GlobalRouter(source, terminals)
     router.route_with_steiners()
-    wirelength = router.tree.calculate_wirelength()
+    wirelength = router.tree.calculate_total_wirelength()
     assert wirelength == 6

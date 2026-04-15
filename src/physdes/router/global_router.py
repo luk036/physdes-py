@@ -105,13 +105,13 @@ class GlobalRouter:
             >>> terminals = [Point(1, 1), Point(2, 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_simple()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             4
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_simple()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             6
         """
         for t in self.terminal_positions:
@@ -127,13 +127,13 @@ class GlobalRouter:
             >>> terminals = [Point(1, 1), Point(2, 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_steiners()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             4
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_steiners()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             5
         """
         for t in self.terminal_positions:
@@ -149,13 +149,13 @@ class GlobalRouter:
             >>> terminals = [Point(1, 1), Point(2, 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_constraints()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             4
             >>> source = Point(Point(0, 0), 0)
             >>> terminals = [Point(Point(1, 1), 1), Point(Point(2, 0), 2)]
             >>> router = GlobalRouter(source, terminals)
             >>> router.route_with_constraints()
-            >>> router.tree.calculate_wirelength()
+            >>> router.tree.calculate_total_wirelength()
             5
         """
         allowed_wirelength = round(self.worst_wirelength * alpha)
