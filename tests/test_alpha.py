@@ -3,7 +3,7 @@ from physdes.router.routing_visualizer import (
     save_routing_tree_svg,
     visualize_routing_tree_svg,
 )
-from tests.conftest import generate_random_points, generate_special_points
+from tests.conftest import generate_random_points
 
 
 def test_route_with_delay_constraint_4() -> None:
