@@ -632,6 +632,37 @@ class GlobalRoutingTree:
         traverse(self.source)
         return total_length
 
+    def calculate_worst_wirelength(self) -> int:
+        """Calculate the worst wirelength of the routing tree.
+
+        Returns:
+            The worst wirelength.
+
+        Examples:
+            >>> from physdes.point import Point
+            >>> tree = GlobalRoutingTree(Point(0, 0))
+            >>> s1 = tree.insert_steiner_node(Point(1, 1))
+            >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
+            >>> tree.calculate_worst_wirelength()
+            4
+            >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
+            >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
+            >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
+            >>> tree3d.calculate_worst_wirelength()
+            6
+        """
+        # worst_length = 0
+
+        def traverse(node: "RoutingNode") -> int:
+            worst_length = 0
+            for child in node.children:
+                length = traverse(child)
+                worst_length = max(worst_length, length + node.manhattan_distance(child))
+            return worst_length
+
+        length = traverse(self.source)
+        return length
+
     def get_tree_structure(
         self,
         node: Optional["RoutingNode"] = None,
