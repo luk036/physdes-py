@@ -159,5 +159,6 @@ class GlobalRouter:
             5
         """
         allowed_wirelength = round(self.worst_wirelength * alpha)
+        self.tree.worst_wirelength = self.worst_wirelength
         for t in self.terminal_positions:
             self.tree.insert_terminal_with_constraints(t, allowed_wirelength, self.keepouts)

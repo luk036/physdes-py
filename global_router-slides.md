@@ -275,8 +275,8 @@ for keepout in keepouts:
 ```python
 def _find_insertion_point(
     point: Point,
+    allowed_wirelength: int,
     keepouts: Optional[List[Point]] = None,
-    allowed_wirelength: Optional[int] = None,
 ) -> Tuple[Optional[RoutingNode], RoutingNode]:
 ```
 
@@ -585,7 +585,7 @@ def _find_nearest_node(self, point: Point) -> RoutingNode:
 
 ```python
 def insert_terminal_with_steiner(self, point, keepouts=None):
-    parent, nearest = self._find_insertion_point(point, keepouts)
+    parent, nearest = self._find_insertion_point(point, 10*12, keepouts)
     
     if parent is None:
         nearest.add_child(terminal)

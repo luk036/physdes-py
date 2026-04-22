@@ -168,6 +168,7 @@ class GlobalRoutingTree:
         self.nodes = {"source": self.source}
         self.next_steiner_id = 1
         self.next_terminal_id = 1
+        self.worst_wirelength = 1e100
 
     def insert_steiner_node(
         self,
@@ -384,8 +385,8 @@ class GlobalRoutingTree:
     def _find_insertion_point(
         self,
         point: Point[Any, Any],
+        allowed_wirelength: int,
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
-        allowed_wirelength: Optional[int] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
         """
         Find the nearest insertion point to the given coordinates, avoiding keepouts.
@@ -418,55 +419,75 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> _ = tree.insert_terminal_node(Point(10, 0))
             >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
-            >>> parent, nearest = tree._find_insertion_point(Point(5, 5), keepouts)
+            >>> parent, nearest = tree._find_insertion_point(Point(5, 5), 10**12, keepouts)
             >>> nearest.pt
             Point(0, 0)
         """
         if not self.nodes:
             return None, self.source
 
+        # nearest_node = self.source
         nearest_node = self.source
         parent_node = None
-        min_distance = self.source.pt.min_dist_with(point)
+        min_distance = self.worst_wirelength  # initially
+        valid_found = False
 
         def traverse(node: "RoutingNode") -> None:
             nonlocal nearest_node
             nonlocal parent_node
             nonlocal min_distance
+            nonlocal valid_found
+
             for child in node.children:
                 possible_path = node.pt.hull_with(child.pt)
                 distance = possible_path.min_dist_with(point)
                 nearest_pt = possible_path.nearest_to(point)
 
-                if allowed_wirelength is not None:
-                    path_length = node.path_length + node.pt.min_dist_with(nearest_pt) + distance
-                    if path_length > allowed_wirelength:
+                if keepouts is not None:
+                    block = False
+                    path1 = nearest_pt.hull_with(point)
+                    path2 = nearest_pt.hull_with(node.pt)
+                    path3 = nearest_pt.hull_with(child.pt)
+                    for keepout in keepouts:
+                        if keepout.contains(nearest_pt) or keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
+                            block = True
+                            break
+                    if block:
                         continue
 
-                if distance < min_distance:
-                    block = False
-                    if keepouts is not None:
-                        path1 = nearest_pt.hull_with(point)
-                        path2 = nearest_pt.hull_with(node.pt)
-                        path3 = nearest_pt.hull_with(child.pt)
-                        for keepout in keepouts:
-                            if keepout.contains(nearest_pt) or keepout.blocks(path1) or keepout.blocks(path2) or keepout.blocks(path3):
-                                block = True
-                                break
-                    if not block:
-                        min_distance = distance
-                        if nearest_pt == node.pt:
-                            nearest_node = node
-                            parent_node = None
-                        elif nearest_pt == child.pt:
-                            nearest_node = child
-                            parent_node = None
-                        else:  # need to insert steiner point
-                            nearest_node = child
-                            parent_node = node
+                path_length = node.path_length + node.pt.min_dist_with(nearest_pt) + distance
+                update = False
+                if path_length <= allowed_wirelength:
+                    if valid_found:
+                        if distance < min_distance:
+                            update = True
+                    else:
+                        valid_found = True
+                        update = True
+                else:
+                    if not valid_found:
+                        # don't care allowed_wirelength if we haven't found any valid point yet
+                        if path_length <= self.worst_wirelength and distance < min_distance:
+                            update = True
+
+                if update:
+                    min_distance = distance
+                    if nearest_pt == node.pt:
+                        nearest_node = node
+                        parent_node = None
+                    elif nearest_pt == child.pt:
+                        nearest_node = child
+                        parent_node = None
+                    else:  # need to insert steiner point
+                        nearest_node = child
+                        parent_node = node
+
                 traverse(child)
 
         traverse(self.source)
+        # if (not valid_found) or nearest_node is None:
+        #     nearest_node = self.source
+        #     parent_node = None
         return parent_node, nearest_node
 
     def insert_terminal_with_steiner(
@@ -512,7 +533,7 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
 
-        parent_node, nearest_node = self._find_insertion_point(point, keepouts)
+        parent_node, nearest_node = self._find_insertion_point(point, 10**12, keepouts)
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
@@ -574,7 +595,7 @@ class GlobalRoutingTree:
 
         terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
 
-        parent_node, nearest_node = self._find_insertion_point(point, keepouts, allowed_wirelength)
+        parent_node, nearest_node = self._find_insertion_point(point, allowed_wirelength, keepouts)
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)

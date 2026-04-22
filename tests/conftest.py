@@ -16,11 +16,11 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 
 
-def generate_random_points() -> tuple[Point, list[Point]]:
+def generate_random_points(num_points: int = 7) -> tuple[Point, list[Point]]:
     """Generate a set of random source and terminal points."""
     hgen = Halton([3, 2], [7, 11])
     hgen.reseed(19)
-    coords = [hgen.pop() for _ in range(7)]
+    coords = [hgen.pop() for _ in range(num_points)]
     terminals = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     src_coord = hgen.pop()
     source = Point(src_coord[0], src_coord[1])
