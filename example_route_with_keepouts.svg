@@ -48,6 +48,7 @@
 <circle cx="674.6995192307692" cy="203.84615384615384" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="682.6995192307692" y="207.84615384615384" font-family="Arial" font-size="10" fill="black">T7</text>
 <text x="674.6995192307692" y="192.84615384615384" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(2106,704)</text>
+<rect x="612.8004807692307" y="382.9326923076923" width="60.096153846153925" height = "60.09615384615381" fill="orange" stroke="black" stroke-width="1"/>
 <rect x="522.65625" y="292.78846153846155" width="90.14423076923072" height = "150.24038461538458" fill="orange" stroke="black" stroke-width="1"/>
 <rect x="192.12740384615384" y="172.59615384615384" width="90.1442307692308" height = "90.1442307692308" fill="orange" stroke="black" stroke-width="1"/>
 <text x="20" y="20" font-family="Arial" font-size="12" font-weight="bold">Legend:</text>

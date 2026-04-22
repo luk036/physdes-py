@@ -7,14 +7,15 @@ from physdes.router.routing_visualizer import (
 )
 from tests.conftest import generate_random_points
 
+keepouts = [
+    Point(Interval(1900, 2100), Interval(1300, 1500)),
+    Point(Interval(1600, 1900), Interval(1000, 1500)),
+    Point(Interval(500, 800), Interval(600, 900)),
+]
 
 def test_route_with_steiner_and_keepouts() -> None:
     """Test routing with Steiner points and keepouts."""
     source, terminals = generate_random_points()
-    keepouts = [
-        Point(Interval(1600, 1900), Interval(1000, 1500)),
-        Point(Interval(500, 800), Interval(600, 900)),
-    ]
     router = GlobalRouter(source, terminals, keepouts)
     router.route_with_steiners()
 
@@ -29,10 +30,6 @@ def test_route_with_steiner_and_keepouts() -> None:
 def test_route_with_keepouts() -> None:
     """Test routing with keepouts."""
     source, terminals = generate_random_points()
-    keepouts = [
-        Point(Interval(1600, 1900), Interval(1000, 1500)),
-        Point(Interval(500, 800), Interval(600, 900)),
-    ]
 
     router = GlobalRouter(source, terminals, keepouts)
     router.route_with_constraints(1.0)

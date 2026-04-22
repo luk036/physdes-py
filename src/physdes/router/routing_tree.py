@@ -3,6 +3,7 @@ from typing import Any, List, Optional, Tuple
 
 from physdes.interval import Interval
 from physdes.point import Point
+from physdes.skeleton import _logger
 
 
 class NodeType(Enum):
@@ -429,7 +430,7 @@ class GlobalRoutingTree:
         # nearest_node = self.source
         nearest_node = self.source
         parent_node = None
-        min_distance = self.worst_wirelength  # initially
+        min_distance = self.worst_wirelength # initially
         valid_found = False
 
         def traverse(node: "RoutingNode") -> None:
@@ -485,9 +486,9 @@ class GlobalRoutingTree:
                 traverse(child)
 
         traverse(self.source)
-        # if (not valid_found) or nearest_node is None:
-        #     nearest_node = self.source
-        #     parent_node = None
+        if not valid_found:
+            _logger.debug("Warning: no valid insertion point found within allowed wirelength. Consider increasing the constraint or relaxing keepouts.")
+
         return parent_node, nearest_node
 
     def insert_terminal_with_steiner(
