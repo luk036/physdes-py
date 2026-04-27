@@ -587,5 +587,111 @@ class TestDMEAlgorithmAdvanced:
         assert root.right is not None
 
 
+class TestDMEAlgorithmBoundaryConditions:
+    """Test boundary condition handling in LinearDelayCalculator"""
+
+    def test_linear_handle_boundary_conditions_extend_left_negative(self) -> None:
+        """Test boundary condition when extend_left < 0"""
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
+        node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.0)
+
+        result = calc._handle_boundary_conditions(
+            extend_left=-5,
+            distance=10,
+            node_left=node_left,
+            node_right=node_right,
+            delay_left=1.0,
+        )
+
+        assert result[0] == 0
+        assert node_left.wire_length == 0
+        assert node_right.wire_length == 10
+        assert node_right.need_elongation is True
+
+
+class TestDMEAlgorithm3D:
+    """Test DME algorithm with 3D points"""
+
+    def test_dme_algorithm_3d_initialization(self) -> None:
+        """Test DME algorithm correctly identifies 3D points"""
+        sinks = [
+            Sink("s1", Point(Point(0, 0), 0), 1.0),
+            Sink("s2", Point(Point(10, 0), 0), 1.0),
+        ]
+
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+
+        assert dme.MA_TYPE.__name__ == "ManhattanArc3D"
+
+    def test_build_clock_tree_3d(self) -> None:
+        """Test clock tree construction with 3D points"""
+        sinks = [
+            Sink("s1", Point(Point(0, 0), 0), 1.0),
+            Sink("s2", Point(Point(10, 0), 0), 1.0),
+            Sink("s3", Point(Point(0, 10), 0), 1.0),
+        ]
+
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+        root = dme.build_clock_tree()
+
+        assert root is not None
+        analysis = dme.analyze_skew(root)
+        assert analysis["skew"] >= 0
+
+
+class TestDMEAlgorithmEmbedding:
+    """Test tree embedding and positioning"""
+
+    def test_embed_node_with_parent(self) -> None:
+        """Test embedding internal nodes with parent positions"""
+        sinks = [
+            Sink("s1", Point(0, 0), 1.0),
+            Sink("s2", Point(20, 0), 1.0),
+            Sink("s3", Point(10, 10), 1.0),
+        ]
+
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+        root = dme.build_clock_tree()
+
+        assert root is not None
+        assert root.left is not None
+        assert root.right is not None
+
+
+class TestAnalyzeSkew:
+    """Test skew analysis"""
+
+    def test_analyze_skew_single_sink(self) -> None:
+        """Test skew analysis with single sink"""
+        sinks = [Sink("s1", Point(0, 0), 1.0)]
+
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+        root = dme.build_clock_tree()
+
+        analysis = dme.analyze_skew(root)
+
+        assert analysis["skew"] == 0.0
+        assert len(analysis["sink_delays"]) == 1
+        assert analysis["delay_model"] == "LinearDelayCalculator"
+
+
+class TestGetTreeStatistics:
+    """Test get_tree_statistics function"""
+
+    def test_get_tree_statistics_empty_tree(self) -> None:
+        """Test get_tree_statistics with empty tree (via single node)"""
+        s1 = TreeNode(name="s1", position=Point(10, 20))
+        stats = get_tree_statistics(s1)
+
+        assert stats["total_nodes"] == 1
+        assert stats["total_sinks"] == 1
+        assert stats["total_wires"] == 0
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

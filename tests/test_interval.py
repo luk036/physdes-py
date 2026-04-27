@@ -516,3 +516,37 @@ def test_enlarge(a, b, expected) -> None:
 #     assert a.overlaps(b)
 #     assert b.overlaps(a)
 #     assert min_dist(a, b) == 0
+
+
+class TestIntervalReverseOperators:
+    """Tests for reverse arithmetic operators"""
+
+    def test_radd(self) -> None:
+        result = 5 + Interval(1, 2)
+        assert result == Interval(6, 7)
+
+    def test_rsub(self) -> None:
+        result = 10 - Interval(3, 5)
+        assert result == Interval(7, 5)
+
+    def test_iadd_interval(self) -> None:
+        a = Interval(3, 4)
+        a += Interval(1, 2)
+        assert a == Interval(4, 6)
+
+    def test_isub_interval(self) -> None:
+        a = Interval(3, 4)
+        a -= Interval(1, 2)
+        assert a == Interval(2, 2)
+
+    def test_truediv(self) -> None:
+        result = Interval(10, 20) / 2
+        assert result == Interval(5.0, 10.0)
+
+    def test_floordiv(self) -> None:
+        result = Interval(10, 20) // 3
+        assert result == Interval(3, 6)
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

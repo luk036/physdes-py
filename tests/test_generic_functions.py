@@ -3,16 +3,75 @@ from typing import Union
 import pytest
 
 from physdes.generic import (
+    center,
     contain,
     displacement,
     intersection,
+    lower,
+    measure_of,
     min_dist,
     nearest,
     overlap,
+    upper,
 )
 from physdes.interval import Interval
 from physdes.point import Point
 from physdes.vector2 import Vector2
+
+
+class TestMeasureOf:
+    """Tests for measure_of function"""
+
+    def test_measure_of_scalar(self) -> None:
+        assert measure_of(1) == 1
+
+    def test_measure_of_interval(self) -> None:
+        assert measure_of(Interval(1, 3)) == 2
+
+
+class TestCenter:
+    """Tests for center function"""
+
+    def test_center_scalar(self) -> None:
+        assert center(5) == 5
+
+    def test_center_interval(self) -> None:
+        assert center(Interval(1, 5)) == 3
+
+    def test_center_point(self) -> None:
+        pt = Point(Interval(1, 5), Interval(2, 6))
+        result = center(pt)
+        assert result == Point(3, 4)
+
+
+class TestLower:
+    """Tests for lower function"""
+
+    def test_lower_scalar(self) -> None:
+        assert lower(5) == 5
+
+    def test_lower_interval(self) -> None:
+        assert lower(Interval(1, 5)) == 1
+
+    def test_lower_point(self) -> None:
+        pt = Point(Interval(1, 5), Interval(2, 6))
+        result = lower(pt)
+        assert result == Point(1, 2)
+
+
+class TestUpper:
+    """Tests for upper function"""
+
+    def test_upper_scalar(self) -> None:
+        assert upper(5) == 5
+
+    def test_upper_interval(self) -> None:
+        assert upper(Interval(1, 5)) == 5
+
+    def test_upper_point(self) -> None:
+        pt = Point(Interval(1, 5), Interval(2, 6))
+        result = upper(pt)
+        assert result == Point(5, 6)
 
 
 @pytest.mark.parametrize(
