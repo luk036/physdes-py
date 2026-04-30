@@ -85,7 +85,9 @@ def test_route_with_delay_constraint() -> None:
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, filename="example_route_with_delay_constraint.svg")
+    save_routing_tree_svg(
+        router.tree, filename="example_route_with_delay_constraint.svg"
+    )
 
 
 def test_route_with_steiner_special() -> None:
@@ -99,7 +101,9 @@ def test_route_with_steiner_special() -> None:
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, filename="example_route_with_steiner_special.svg")
+    save_routing_tree_svg(
+        router.tree, filename="example_route_with_steiner_special.svg"
+    )
 
 
 def test_route_with_constraints_special() -> None:

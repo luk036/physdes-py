@@ -13,6 +13,7 @@ keepouts = [
     Point(Interval(500, 800), Interval(600, 900)),
 ]
 
+
 def test_route_with_steiner_and_keepouts() -> None:
     """Test routing with Steiner points and keepouts."""
     source, terminals = generate_random_points()
@@ -20,11 +21,15 @@ def test_route_with_steiner_and_keepouts() -> None:
     router.route_with_steiners()
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree_svg(router.tree, keepouts, width=1000, height=1000)
+    svg_output = visualize_routing_tree_svg(
+        router.tree, keepouts, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, keepouts, filename="example_route_with_steiner_and_keepouts.svg")
+    save_routing_tree_svg(
+        router.tree, keepouts, filename="example_route_with_steiner_and_keepouts.svg"
+    )
 
 
 def test_route_with_keepouts() -> None:
@@ -35,8 +40,12 @@ def test_route_with_keepouts() -> None:
     router.route_with_constraints(1.0)
 
     # Generate and print SVG
-    svg_output = visualize_routing_tree_svg(router.tree, keepouts, width=1000, height=1000)
+    svg_output = visualize_routing_tree_svg(
+        router.tree, keepouts, width=1000, height=1000
+    )
     print(svg_output)
 
     # Save to file
-    save_routing_tree_svg(router.tree, keepouts, filename="example_route_with_keepouts.svg")
+    save_routing_tree_svg(
+        router.tree, keepouts, filename="example_route_with_keepouts.svg"
+    )

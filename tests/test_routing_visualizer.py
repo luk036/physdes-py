@@ -2,11 +2,10 @@ import pytest
 
 from physdes.interval import Interval
 from physdes.point import Point
-from physdes.router.routing_tree import GlobalRoutingTree, NodeType
+from physdes.router.routing_tree import GlobalRoutingTree
 from physdes.router.routing_visualizer import (
-    save_routing_tree_svg,
-    visualize_routing_tree_svg,
     visualize_routing_tree3d_svg,
+    visualize_routing_tree_svg,
 )
 
 

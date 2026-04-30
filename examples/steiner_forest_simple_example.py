@@ -11,14 +11,16 @@ if __name__ == "__main__":
         ((0, 3), (3, 0)),  # Anti-diagonal
     ]
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        h, w, pairs
+    )
 
     cell_size = 80
     margin = 40
     width = w * cell_size + 2 * margin
     height = h * cell_size + 2 * margin
 
-    svg = f'''<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">
+    svg = f"""<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">
   <style>
     .source {{ fill: #2563eb; stroke: #1e40af; stroke-width: 2; }}
     .terminal {{ fill: #dc2626; stroke: #991b1b; stroke-width: 2; }}
@@ -29,7 +31,7 @@ if __name__ == "__main__":
   </style>
   <!-- Grid background -->
   <rect x="{margin}" y="{margin}" width="{width - 2 * margin}" height="{height - 2 * margin}" fill="#f9fafb"/>
-'''
+"""
 
     # Grid lines
     for i in range(h + 1):

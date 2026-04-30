@@ -101,7 +101,9 @@ class ManhattanArc3D:
             >>> repr(a)
             'ManhattanArc3D(12, -4, 2, 6)'
         """
-        return f"{self.__class__.__name__}({self.w_i}, {self.x_i}, {self.y_i}, {self.z_i})"
+        return (
+            f"{self.__class__.__name__}({self.w_i}, {self.x_i}, {self.y_i}, {self.z_i})"
+        )
 
     def __str__(self) -> str:
         """
@@ -137,7 +139,12 @@ class ManhattanArc3D:
         """
         if not isinstance(other, ManhattanArc3D):
             return NotImplemented
-        return (self.w_i, self.x_i, self.y_i, self.z_i) == (other.w_i, other.x_i, other.y_i, other.z_i)
+        return (self.w_i, self.x_i, self.y_i, self.z_i) == (
+            other.w_i,
+            other.x_i,
+            other.y_i,
+            other.z_i,
+        )
 
     def min_dist_with(self, other) -> int:
         """

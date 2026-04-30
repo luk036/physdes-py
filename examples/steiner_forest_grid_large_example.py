@@ -14,7 +14,9 @@ if __name__ == "__main__":
         if a != b:
             pairs.append((a, b))
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(h, w, pairs)
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        h, w, pairs
+    )
 
     # Generate SVG and write to file
     cell_size = 30

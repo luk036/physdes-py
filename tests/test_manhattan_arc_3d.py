@@ -5,8 +5,8 @@ This module provides comprehensive tests for the ManhattanArc3D class
 which represents a 3D Manhattan arc (rotated coordinate system).
 """
 
+
 import pytest
-from typing import Union
 
 from physdes.interval import Interval
 from physdes.manhattan_arc_3d import ManhattanArc3D
@@ -149,8 +149,12 @@ class TestManhattanArc3DOperations:
 
     def test_min_dist_with_intervals(self):
         """Test min_dist_with with interval coordinates."""
-        r1 = ManhattanArc3D(Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15))
-        r2 = ManhattanArc3D(Interval(15, 25), Interval(0, 10), Interval(5, 15), Interval(10, 20))
+        r1 = ManhattanArc3D(
+            Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15)
+        )
+        r2 = ManhattanArc3D(
+            Interval(15, 25), Interval(0, 10), Interval(5, 15), Interval(10, 20)
+        )
         result = r1.min_dist_with(r2)
         assert isinstance(result, int)
         assert result >= 0
@@ -185,15 +189,23 @@ class TestManhattanArc3DOperations:
 
     def test_intersect_with(self):
         """Test intersect_with method."""
-        r1 = ManhattanArc3D(Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15))
-        r2 = ManhattanArc3D(Interval(15, 25), Interval(0, 10), Interval(5, 15), Interval(10, 20))
+        r1 = ManhattanArc3D(
+            Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15)
+        )
+        r2 = ManhattanArc3D(
+            Interval(15, 25), Interval(0, 10), Interval(5, 15), Interval(10, 20)
+        )
         result = r1.intersect_with(r2)
         assert isinstance(result, ManhattanArc3D)
 
     def test_intersect_with_no_overlap(self):
         """Test intersect_with with non-overlapping intervals."""
-        r1 = ManhattanArc3D(Interval(0, 10), Interval(0, 10), Interval(0, 10), Interval(0, 10))
-        r2 = ManhattanArc3D(Interval(20, 30), Interval(20, 30), Interval(20, 30), Interval(20, 30))
+        r1 = ManhattanArc3D(
+            Interval(0, 10), Interval(0, 10), Interval(0, 10), Interval(0, 10)
+        )
+        r2 = ManhattanArc3D(
+            Interval(20, 30), Interval(20, 30), Interval(20, 30), Interval(20, 30)
+        )
         result = r1.intersect_with(r2)
         # Non-overlapping should result in invalid/empty intervals
         assert isinstance(result, ManhattanArc3D)
@@ -231,7 +243,9 @@ class TestManhattanArc3DToPoint:
 
     def test_to_point_with_intervals(self):
         """Test to_point with interval coordinates."""
-        a = ManhattanArc3D(Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15))
+        a = ManhattanArc3D(
+            Interval(10, 20), Interval(-5, 5), Interval(0, 10), Interval(5, 15)
+        )
         pt = a.to_point()
         assert isinstance(pt, Point)
 

@@ -290,7 +290,7 @@ registers) with <strong>minimum skew</strong>.</p>
     B --&gt; D[FF2]
     B --&gt; E[FF3]
     B --&gt; F[FFn]
-    
+
     style A fill:#ff9800
     style B fill:#2196f3
     style C fill:#4caf50
@@ -314,7 +314,7 @@ Concept</h2>
 <pre class="mermaid"><code>flowchart LR
     A[Phase 1:&lt;br/&gt;Bottom-Up] --&gt; B[Phase 2:&lt;br/&gt;Top-Down]
     B --&gt; C[prescribed-skew (not necessarily zero)&lt;br/&gt;Clock Tree]
-    
+
     style A fill:#ff9800
     style B fill:#2196f3
     style C fill:#4caf50</code></pre>
@@ -728,11 +728,11 @@ necessarily zero).</p>
     B --&gt;|No| D{extend_left &gt; distance?}
     D --&gt;|Yes| E[Left branch too short&lt;br/&gt;Set extend_left = distance]
     D --&gt;|No| F[Normal case&lt;br/&gt;Use calculated value]
-    
+
     C --&gt; G[Mark node.need_elongation = True]
     E --&gt; G
     F --&gt; H[Assign wire lengths normally]
-    
+
     style A fill:#ff9800
     style G fill:#f44336
     style H fill:#4caf50</code></pre>
@@ -800,11 +800,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a h
    :align: center
 
    Before Elongation:      After Elongation:
-   
+
    L ---- v ---- R        L ---- v ---- R
    |                     |
    +----Elongation----+  +----Elongation----+
-   
+
    The dotted line shows the extra wire added to balance delays.</code></pre>
 <h3 id="the-need_elongation-flag">The <code>need_elongation</code>
 Flag</h3>
@@ -983,7 +983,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a h
     DME[DMEAlgorithm] --&gt;|uses| DC[DelayCalculator]
     DC --&gt;|implements| Linear[LinearDelayCalculator]
     DC --&gt;|implements| Elmore[ElmoreDelayCalculator]
-    
+
     style DME fill:#ff9800
     style DC fill:#2196f3
     style Linear fill:#4caf50
@@ -1210,17 +1210,17 @@ class="math display"><em>C</em><sub><em>t</em><em>o</em><em>t</em><em>a</em><em>
         +calculate_wire_capacitance(length)
         +calculate_tapping_point(node_left, node_right, distance)
     }
-    
+
     class LinearDelayCalculator {
         +delay_per_unit: float
         +capacitance_per_unit: float
     }
-    
+
     class ElmoreDelayCalculator {
         +unit_resistance: float
         +unit_capacitance: float
     }
-    
+
     DelayCalculator &lt;|-- LinearDelayCalculator
     DelayCalculator &lt;|-- ElmoreDelayCalculator</code></pre>
 <hr />

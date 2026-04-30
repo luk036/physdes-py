@@ -73,7 +73,9 @@ class UnionFind:
         return True
 
 
-def steiner_forest_grid(height: int, width: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
+def steiner_forest_grid(
+    height: int, width: int, pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]]
+) -> Tuple[List[Tuple[int, int, float]], float, Set[int], Set[int], Set[int]]:
     """
     Computes an approximate Steiner forest on a grid graph.
 
@@ -435,7 +437,9 @@ def main() -> None:
         ((0, 1), (4, 1)),
     ]  # Terminal pairs
 
-    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(height, width, pairs)
+    F_pruned, total_cost, sources, terminals, steiner_nodes = steiner_forest_grid(
+        height, width, pairs
+    )
 
     print(f"Total cost: {total_cost}")
     print(f"Edges: {F_pruned}")

@@ -284,7 +284,7 @@ the exact wire positions.</p>
     B --&gt; C[Routing Regions]
     C --&gt; D[Detailed Routing]
     D --&gt; E[Final Layout]
-    
+
     style A fill:#e1f5fe
     style B fill:#b3e5fc
     style C fill:#81d4fa
@@ -350,9 +350,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a hr
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># - TERMINAL: End points (sinks)</span></span></code></pre></div>
 <h3 id="tree-visualization">Tree Visualization:</h3>
 <pre><code>                    +--.----------o (terminal)
-                    |   `.        
+                    |   `.
                     |     `.      (steiner)
-                    |       `.    
+                    |       `.
                     o---------`---+ (source)
 
          +--&lt;---o
@@ -378,7 +378,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a hr
     S[Source&lt;br/&gt;📍] --&gt; T1[Terminal 1]
     S --&gt; T2[Terminal 2]
     S --&gt; T3[Terminal 3]
-    
+
     style S fill:#ff9800
     style T1 fill:#4caf50
     style T2 fill:#4caf50
@@ -417,7 +417,7 @@ the tree.</p>
     S[Source] --&gt; SP[Steiner Point]
     SP --&gt; T1[Terminal 1]
     SP --&gt; T2[Terminal 2]
-    
+
     style S fill:#ff9800
     style SP fill:#9c27b0
     style T1 fill:#4caf50
@@ -490,7 +490,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a h
     B{Keepout 1}
     C{Keepout 2}
     D[Free to Route]
-    
+
     A --&gt; B
     A --&gt; C
     A --&gt; D</code></pre>
@@ -531,7 +531,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
     I --&gt;|No| K
     H --&gt; B
     K --&gt; L[Return Parent &amp; Nearest]
-    
+
     style A fill:#ff9800
     style K fill:#4caf50</code></pre>
 <hr />
@@ -554,12 +554,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a h
     subgraph &quot;2D View&quot;
         A[x, y]
     end
-    subgraph &quot;3D View&quot; 
+    subgraph &quot;3D View&quot;
         B[x, y, z]
     end
-    
+
     A --&gt;|&quot;extend&quot;| B
-    
+
     style A fill:#e3f2fd
     style B fill:#bbdefb</code></pre>
 <h3 id="distance-calculation">Distance Calculation:</h3>
@@ -935,22 +935,22 @@ alt="3D Constraints" /></td>
         B[Terminals] --&gt; R
         C[Keepouts] --&gt; R
     end
-    
+
     R --&gt; D{route_simple}
     R --&gt; E{route_with_steiners}
     R --&gt; F{route_with_constraints}
-    
+
     D --&gt; G[Direct Connection]
     E --&gt; H[Find Optimal Branch]
     F --&gt; I[Check Wirelength Budget]
-    
+
     G --&gt; J[GlobalRoutingTree]
     H --&gt; J
     I --&gt; J
-    
+
     J --&gt; K[Calculate Wirelength]
     K --&gt; L[Visualize SVG]
-    
+
     style R fill:#ff9800
     style J fill:#4caf50
     style L fill:#2196f3</code></pre>
@@ -976,7 +976,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a h
     Steiner1 --&gt; Terminal1
     Steiner1 --&gt; Terminal2
     Steiner2 --&gt; Terminal3
-    
+
     style Source fill:#ff9800
     style Steiner1 fill:#9c27b0
     style Steiner2 fill:#9c27b0
@@ -1176,7 +1176,7 @@ Styles</h2>
     A[Source/Start] --&gt; B[Process]
     B --&gt; C[Output]
     B --&gt; D[Alternative]
-    
+
     style A fill:#ff9800,color:#000
     style B fill:#2196f3,color:#fff
     style C fill:#4caf50,color:#000

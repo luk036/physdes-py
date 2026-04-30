@@ -7,6 +7,7 @@ from tests.conftest import generate_random_points
 
 source, terminals = generate_random_points()
 
+
 def test_route_with_delay_constraint_4() -> None:
     """Test routing with delay constraints."""
     router = GlobalRouter(source, terminals)
