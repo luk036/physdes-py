@@ -5,7 +5,6 @@ This module provides comprehensive tests for the ManhattanArc3D class
 which represents a 3D Manhattan arc (rotated coordinate system).
 """
 
-
 import pytest
 
 from physdes.interval import Interval

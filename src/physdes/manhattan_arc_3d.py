@@ -76,6 +76,7 @@ class ManhattanArc3D:
         :param ycoord: The y-coordinate.
         :param zcoord: The z-coordinate.
         :return: A new ManhattanArc3D object.
+
         Examples:
             >>> a = ManhattanArc3D.construct(8, 10, 6)
             >>> print(a)

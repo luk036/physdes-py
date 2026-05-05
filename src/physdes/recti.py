@@ -301,3 +301,41 @@ class HSegment(Point[Interval[int], int]):
             (5, [30, 40])
         """
         return VSegment(self.ycoord, self.xcoord)
+
+
+def detect_overlap(rectangles: list[Rectangle]) -> tuple[Rectangle, Rectangle] | None:
+    """
+    Detect if any pair of rectangles overlap using the line sweep algorithm.
+
+    :param rectangles: A list of Rectangle objects to check for overlaps
+    :return: A tuple of two overlapping rectangles if found, otherwise None
+    """
+    if len(rectangles) < 2:
+        return None
+
+    events: list[tuple[int, int, int]] = []
+    for idx, rect in enumerate(rectangles):
+        if rect.xcoord.is_invalid() or rect.ycoord.is_invalid():
+            continue
+        events.append((rect.xcoord.lb, 1, idx))
+        events.append((rect.xcoord.ub, -1, idx))
+
+    events.sort(key=lambda e: e[0])
+
+    active: list[tuple[int, Interval[int]]] = []
+
+    for _, event_type, idx in events:
+        rect = rectangles[idx]
+
+        if event_type == 1:
+            for other_idx, other_y in active:
+                if rect.ycoord.overlaps(other_y):
+                    return (rect, rectangles[other_idx])
+            active.append((idx, rect.ycoord))
+        else:
+            for i, (other_idx, _) in enumerate(active):
+                if other_idx == idx:
+                    active.pop(i)
+                    break
+
+    return None
