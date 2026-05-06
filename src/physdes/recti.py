@@ -44,6 +44,8 @@ structured and object-oriented way, making it easier to perform common operation
 these shapes in more complex programs.
 """
 
+from typing import Generator
+
 from .interval import Interval
 from .point import Point
 
@@ -303,7 +305,7 @@ class HSegment(Point[Interval[int], int]):
         return VSegment(self.ycoord, self.xcoord)
 
 
-def detect_overlap(rectangles: list[Rectangle]) -> tuple[Rectangle, Rectangle] | None:
+def detect_overlap_gen(rectangles: list) -> Generator[tuple]:
     """
     Detect if any pair of rectangles overlap using the line sweep algorithm.
 
@@ -311,7 +313,7 @@ def detect_overlap(rectangles: list[Rectangle]) -> tuple[Rectangle, Rectangle] |
     :return: A tuple of two overlapping rectangles if found, otherwise None
     """
     if len(rectangles) < 2:
-        return None
+        return
 
     events: list[tuple[int, int, int]] = []
     for idx, rect in enumerate(rectangles):
@@ -330,7 +332,7 @@ def detect_overlap(rectangles: list[Rectangle]) -> tuple[Rectangle, Rectangle] |
         if event_type == 1:
             for other_idx, other_y in active:
                 if rect.ycoord.overlaps(other_y):
-                    return (rect, rectangles[other_idx])
+                    yield (rect, rectangles[other_idx])
             active.append((idx, rect.ycoord))
         else:
             for i, (other_idx, _) in enumerate(active):
@@ -338,4 +340,4 @@ def detect_overlap(rectangles: list[Rectangle]) -> tuple[Rectangle, Rectangle] |
                     active.pop(i)
                     break
 
-    return None
+    return

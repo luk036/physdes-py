@@ -7,8 +7,8 @@ date: "2026-05-05"
 
 # 🎯 Presentation Overview
 
-> **Duration**: 30 minutes  
-> **Goal**: Understand line sweep algorithm for rectangle overlap detection  
+> **Duration**: 30 minutes
+> **Goal**: Understand line sweep algorithm for rectangle overlap detection
 > **Outcome**: Working implementation with visualization demo
 
 ---
@@ -76,19 +76,19 @@ flowchart TB
     subgraph Step1 [Step 1: Create Events]
         E1[For each rectangle<br/>Create 2 events: left & right edge]
     end
-    
+
     subgraph Step2 [Step 2: Sort]
         E2[Sort all events<br/>by x-coordinate]
     end
-    
+
     subgraph Step3 [Step 3: Sweep]
         E3[Sweep left to right<br/>Maintain active rectangles]
     end
-    
+
     subgraph Step4 [Step 4: Check]
         E4[On entering event<br/>Check y-overlap with active]
     end
-    
+
     E1 --> E2 --> E3 --> E4
 ```
 
@@ -103,14 +103,14 @@ graph TB
         R2["Rect B: [3,8]×[3,8]"]
         R3["Rect C: [10,15]×[10,15]"]
     end
-    
+
     subgraph "Active Set"
         A1["x=2: {A}"]
         A2["x=3: {A,B}"] --> O[⚠️ B overlaps A!]
         A3["x=8: {B}"]
         A4["x=10: {C}"]
     end
-    
+
     R1 --> A1
     R2 --> A2
     R3 --> A3
@@ -388,10 +388,10 @@ pie title "Comparison for n=1000 rectangles"
 
 ## Summary
 
-✅ **Implemented** line sweep algorithm for rectangle overlap detection  
-✅ **Python**: `src/physdes/recti.py` with 9 tests  
-✅ **C++**: `include/recti/recti.hpp` with 154 tests  
-✅ **Demo**: SVG visualization for both Python and C++  
+✅ **Implemented** line sweep algorithm for rectangle overlap detection
+✅ **Python**: `src/physdes/recti.py` with 9 tests
+✅ **C++**: `include/recti/recti.hpp` with 154 tests
+✅ **Demo**: SVG visualization for both Python and C++
 ✅ **Achieved** $O(n \log n)$ time complexity
 
 ## Project Locations
@@ -424,7 +424,7 @@ pie title "Comparison for n=1000 rectangles"
 
 # 🙏 Thank You!
 
-> **Questions?**  
+> **Questions?**
 > Feel free to ask! 🙋‍♂️
 
 ```mermaid

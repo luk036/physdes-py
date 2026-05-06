@@ -330,19 +330,19 @@ Overview</h2>
     subgraph Step1 [Step 1: Create Events]
         E1[For each rectangle&lt;br/&gt;Create 2 events: left &amp; right edge]
     end
-    
+
     subgraph Step2 [Step 2: Sort]
         E2[Sort all events&lt;br/&gt;by x-coordinate]
     end
-    
+
     subgraph Step3 [Step 3: Sweep]
         E3[Sweep left to right&lt;br/&gt;Maintain active rectangles]
     end
-    
+
     subgraph Step4 [Step 4: Check]
         E4[On entering event&lt;br/&gt;Check y-overlap with active]
     end
-    
+
     E1 --&gt; E2 --&gt; E3 --&gt; E4</code></pre>
 <hr />
 <h2 id="visual-example">Visual Example</h2>
@@ -352,14 +352,14 @@ Overview</h2>
         R2[&quot;Rect B: [3,8]×[3,8]&quot;]
         R3[&quot;Rect C: [10,15]×[10,15]&quot;]
     end
-    
+
     subgraph &quot;Active Set&quot;
         A1[&quot;x=2: {A}&quot;]
         A2[&quot;x=3: {A,B}&quot;] --&gt; O[⚠️ B overlaps A!]
         A3[&quot;x=8: {B}&quot;]
         A4[&quot;x=10: {C}&quot;]
     end
-    
+
     R1 --&gt; A1
     R2 --&gt; A2
     R3 --&gt; A3</code></pre>
