@@ -2,7 +2,7 @@ from random import randint
 
 from physdes.interval import Interval
 from physdes.point import Point
-from physdes.recti import HSegment, Rectangle, VSegment, detect_overlap
+from physdes.recti import HSegment, Rectangle, VSegment, detect_overlap_gen
 
 # class my_point(Point):
 #     def __init__(self, xcoord, ycoord, data: float):
@@ -94,61 +94,68 @@ def test_rectilinear() -> None:
 def test_detect_overlap_basic() -> None:
     r1 = Rectangle(Interval(0, 5), Interval(0, 5))
     r2 = Rectangle(Interval(3, 8), Interval(3, 8))
-    result = detect_overlap([r1, r2])
-    assert result is not None
-    r_a, r_b = result
-    assert (r_a.xcoord == r1.xcoord and r_a.ycoord == r1.ycoord) or (
-        r_a.xcoord == r2.xcoord and r_a.ycoord == r2.ycoord
-    )
+    for result in detect_overlap_gen([r1, r2]):
+        r_a, r_b = result
+        assert (r_a.xcoord == r1.xcoord and r_a.ycoord == r1.ycoord) or (
+            r_a.xcoord == r2.xcoord and r_a.ycoord == r2.ycoord
+        )
 
 
 def test_detect_overlap_no_overlap() -> None:
     r3 = Rectangle(Interval(0, 2), Interval(0, 2))
     r4 = Rectangle(Interval(3, 5), Interval(3, 5))
-    assert detect_overlap([r3, r4]) is None
+    for _ in detect_overlap_gen([r3, r4]):
+        assert False, "Rectangles with no overlap should not yield any overlaps"
 
 
 def test_detect_overlap_multiple_rectangles() -> None:
     r1 = Rectangle(Interval(0, 2), Interval(0, 2))
     r2 = Rectangle(Interval(1, 3), Interval(1, 3))
     r3 = Rectangle(Interval(10, 12), Interval(10, 12))
-    result = detect_overlap([r1, r2, r3])
-    assert result is not None
-    r_a, r_b = result
-    assert r_a.xcoord.lb <= 2 and r_b.xcoord.lb <= 2
+    for result in detect_overlap_gen([r1, r2, r3]):
+        r_a, r_b = result
+        assert r_a.xcoord.lb <= 2 and r_b.xcoord.lb <= 2
 
 
 def test_detect_overlap_single_rectangle() -> None:
     r1 = Rectangle(Interval(0, 5), Interval(0, 5))
-    assert detect_overlap([r1]) is None
+    for _ in detect_overlap_gen([r1]):
+        assert False, "A single rectangle should not yield any overlaps"
 
 
 def test_detect_overlap_empty_list() -> None:
-    assert detect_overlap([]) is None
+    for _ in detect_overlap_gen([]):
+        assert False, "No rectangles should yield no overlaps"
 
 
 def test_detect_overlap_touching_edges() -> None:
     r1 = Rectangle(Interval(0, 5), Interval(0, 5))
     r2 = Rectangle(Interval(5, 10), Interval(5, 10))
-    result = detect_overlap([r1, r2])
-    assert result is None
+    for _ in detect_overlap_gen([r1, r2]):
+        assert (
+            False
+        ), "Rectangles with touching edges should not be considered overlapping"
 
 
 def test_detect_overlap_partial_y_overlap() -> None:
     r1 = Rectangle(Interval(0, 5), Interval(0, 3))
     r2 = Rectangle(Interval(3, 8), Interval(2, 6))
-    result = detect_overlap([r1, r2])
-    assert result is not None
+    for result in detect_overlap_gen([r1, r2]):
+        r_a, r_b = result
+        assert r_a.overlaps(r_b)
 
 
 def test_detect_overlap_no_x_overlap() -> None:
     r1 = Rectangle(Interval(0, 2), Interval(0, 5))
     r2 = Rectangle(Interval(3, 5), Interval(0, 5))
-    assert detect_overlap([r1, r2]) is None
+    for _ in detect_overlap_gen([r1, r2]):
+        assert (
+            False
+        ), "Rectangles with no x-overlap should not be considered overlapping"
 
 
 def test_detect_overlap_invalid_rectangle() -> None:
     r1 = Rectangle(Interval(0, 5), Interval(0, 5))
     r2 = Rectangle(Interval(5, 3), Interval(5, 3))
-    result = detect_overlap([r1, r2])
-    assert result is None
+    for _ in detect_overlap_gen([r1, r2]):
+        assert False, "Invalid rectangles should not be considered overlapping"
