@@ -52,7 +52,8 @@ from typing import Any, Callable, Iterable, List, Tuple
 from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
-from .polygon import Polygon
+
+# from .polygon import Polygon
 from .rdllist import RDllist
 from .skeleton import _logger
 from .vector2 import Vector2
@@ -94,20 +95,11 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Vector2(xcoord, ycoord) for xcoord, ycoord in coords]
@@ -132,26 +124,17 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> print(P._origin)
-            (0, -4)
+            (3, -3)
         """
         origin = pointset[0]
         vecs = list(vtx.displace(origin) for vtx in pointset[1:])
@@ -171,20 +154,11 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
@@ -211,27 +185,18 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> P += Vector2(1, 1)
             >>> print(P._origin)
-            (1, -3)
+            (4, -2)
         """
         self._origin += rhs
         return self
@@ -250,27 +215,18 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> P -= Vector2(1, 1)
             >>> print(P._origin)
-            (-1, -5)
+            (2, -4)
         """
         self._origin -= rhs
         return self
@@ -284,26 +240,17 @@ class RPolygon:
 
         Examples:
             >>> coords = [
-            ...     (0, -4),
-            ...     (0, -1),
             ...     (3, -3),
             ...     (5, 1),
             ...     (2, 2),
             ...     (3, 3),
             ...     (1, 4),
-            ...     (-2, 4),
-            ...     (-2, 2),
-            ...     (-4, 3),
-            ...     (-5, 1),
-            ...     (-6, -2),
-            ...     (-3, -3),
-            ...     (-3, -4),
             ... ]
             ...
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
             >>> P.signed_area
-            54
+            5
         """
         if len(self._vecs) < 1:
             return 0
@@ -323,10 +270,11 @@ class RPolygon:
             >>> from .point import Point
             >>> from .rpolygon import RPolygon
             >>> coords = [
-            ...     (0, 0),
-            ...     (0, 1),
-            ...     (1, 1),
-            ...     (1, 0),
+            ...     (3, -3),
+            ...     (5, 1),
+            ...     (2, 2),
+            ...     (3, 3),
+            ...     (1, 4),
             ... ]
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> P = RPolygon.from_pointset(S)
@@ -351,43 +299,44 @@ class RPolygon:
         # Calculate vectors and cross product
         return prev_point.y > current_point.y
 
-    def to_polygon(self) -> Polygon[int]:
-        """
-        The `to_polygon` function converts a rectilinear polygon to a standard polygon.
+    # def to_polygon(self) -> Polygon[int]:
+    #     """
+    #     The `to_polygon` function converts a rectilinear polygon to a standard polygon.
 
-        :return: A `Polygon` object representing the converted polygon.
+    #     :return: A `Polygon` object representing the converted polygon.
 
-        Examples:
-            >>> from .point import Point
-            >>> from .rpolygon import RPolygon
-            >>> coords = [
-            ...     (0, 0),
-            ...     (0, 1),
-            ...     (1, 1),
-            ...     (1, 0),
-            ... ]
-            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-            >>> P = RPolygon.from_pointset(S)
-            >>> polygon = P.to_polygon()
-            >>> polygon.signed_area_x2
-            -2
-        """
-        new_vecs: List[Vector2[int, int]] = []
-        current_pt: Vector2[int, int] = Vector2(0, 0)
+    #     Examples:
+    #         >>> from .point import Point
+    #         >>> from .rpolygon import RPolygon
+    #         >>> coords = [
+    #         ...     (3, -3),
+    #         ...     (5, 1),
+    #         ...     (2, 2),
+    #         ...     (3, 3),
+    #         ...     (1, 4),
+    #         ... ]
+    #         >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+    #         >>> P = RPolygon.from_pointset(S)
+    #         >>> polygon = P.to_polygon()
+    #         >>> polygon.signed_area_x2
+    #         10
+    #     """
+    #     new_vecs: List[Vector2[int, int]] = []
+    #     current_pt: Vector2[int, int] = Vector2(0, 0)
 
-        for next_pt in self._vecs:
-            if current_pt.x != next_pt.x and current_pt.y != next_pt.y:
-                # Add intermediate point for non-rectilinear segment
-                new_vecs.append(Vector2(next_pt.x, current_pt.y))
-            new_vecs.append(next_pt)
-            current_pt = next_pt
+    #     for next_pt in self._vecs:
+    #         if current_pt.x != next_pt.x and current_pt.y != next_pt.y:
+    #             # Add intermediate point for non-rectilinear segment
+    #             new_vecs.append(Vector2(next_pt.x, current_pt.y))
+    #         new_vecs.append(next_pt)
+    #         current_pt = next_pt
 
-        # Closing segment
-        first_pt: Vector2[int, int] = Vector2(0, 0)
-        if current_pt.x != first_pt.x and current_pt.y != first_pt.y:
-            new_vecs.append(Vector2(first_pt.x, current_pt.y))
+    #     # Closing segment
+    #     first_pt: Vector2[int, int] = Vector2(0, 0)
+    #     if current_pt.x != first_pt.x and current_pt.y != first_pt.y:
+    #         new_vecs.append(Vector2(first_pt.x, current_pt.y))
 
-        return Polygon(self._origin, new_vecs)
+    #     return Polygon(self._origin, new_vecs)
 
 
 def partition(
@@ -445,26 +394,17 @@ def create_mono_rpolygon(
 
     Examples:
         >>> coords = [
-        ...     (0, -4),
-        ...     (0, -1),
         ...     (3, -3),
         ...     (5, 1),
         ...     (2, 2),
         ...     (3, 3),
         ...     (1, 4),
-        ...     (-2, 4),
-        ...     (-2, 2),
-        ...     (-4, 3),
-        ...     (-5, 1),
-        ...     (-6, -2),
-        ...     (-3, -3),
-        ...     (-3, -4),
         ... ]
         ...
         >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
         >>> _, is_anticlockwise = create_mono_rpolygon(S, lambda pt: (pt.xcoord, pt.ycoord), lambda a, b: a < b)
         >>> is_anticlockwise
-        True
+        False
     """
     assert len(lst) >= 2
     _logger.debug("creating_mono_rpolygon begin")

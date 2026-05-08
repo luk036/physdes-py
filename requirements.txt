@@ -4,5 +4,14 @@
 # Note: Production dependencies are defined in setup.cfg
 # This file is optional - use 'pip install -e .' for full setup
 
--r requirements/default.txt
--r requirements/test.txt
+codecov>=2.0.9
+coverage>=4.4.1
+decorator>=4.1.0
+hypothesis>=4.44.0
+icecream>=1.0
+lds-gen>=0.2
+mywheel>=0.2
+pytest>=2.6.0
+pytest-benchmark>=3.0.0
+pytest-cov>=2.5.0
+typing_extensions>=4.5

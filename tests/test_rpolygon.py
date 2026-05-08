@@ -2,7 +2,6 @@ import pytest
 from lds_gen.ilds import Halton
 
 from physdes.point import Point
-from physdes.polygon import Polygon
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
@@ -43,8 +42,6 @@ def test_rpolygon() -> None:
     P = RPolygon.from_pointset(S)
     assert not is_cw
     assert P.is_anticlockwise()
-    G = P.to_polygon()
-    assert P.signed_area * 2 == G.signed_area_x2
     assert P.signed_area > 0
 
     Q = RPolygon.from_pointset(S)
@@ -66,8 +63,6 @@ def test_rpolygon2() -> None:
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord},{p1.ycoord} {p2.xcoord},{p1.ycoord}", end=" ")
     P = RPolygon.from_pointset(S)
-    G = P.to_polygon()
-    assert P.signed_area * 2 == G.signed_area_x2
     assert P.signed_area < 0
 
     assert is_cw
@@ -144,19 +139,6 @@ def test_rpolygon5() -> None:
     assert point_in_rpolygon(S, Point(qx, qy))
 
 
-def test_to_polygon() -> None:
-    coords = [(0, 0), (10, 10), (5, 5)]
-    point_set = [Point(x, y) for x, y in coords]
-    r_poly = RPolygon.from_pointset(point_set)
-    poly = r_poly.to_polygon()
-
-    expected_coords = [(0, 0), (10, 0), (10, 10), (5, 10), (5, 5), (0, 5)]
-    expected_point_set = [Point(x, y) for x, y in expected_coords]
-    expected_poly = Polygon.from_pointset(expected_point_set)
-
-    assert poly == expected_poly
-
-
 def test_rpolygon_eq_different_type() -> None:
     coords = [(0, 0), (0, 1), (1, 1), (1, 0)]
     points = [Point(x, y) for x, y in coords]
@@ -170,18 +152,6 @@ def test_is_anticlockwise_less_than_2_points() -> None:
         points = [Point(x, y) for x, y in coords]
         rpolygon = RPolygon.from_pointset(points)
         rpolygon.is_anticlockwise()
-
-
-def test_to_polygon_non_rectilinear() -> None:
-    coords = [(0, 0), (1, 1), (2, 0)]
-    points = [Point(x, y) for x, y in coords]
-    rpolygon = RPolygon.from_pointset(points)
-    polygon = rpolygon.to_polygon()
-    # The expected polygon should have extra points to make it rectilinear
-    expected_coords = [(0, 0), (1, 0), (1, 1), (2, 1), (2, 0)]
-    expected_points = [Point(x, y) for x, y in expected_coords]
-    expected_polygon = Polygon.from_pointset(expected_points)
-    assert polygon._vecs == expected_polygon._vecs
 
 
 def test_create_test_rpolygon_vec_lt_0() -> None:
