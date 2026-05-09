@@ -16,7 +16,7 @@ from physdes.recti import detect_overlap_gen
 
 def visualize_overlap_svg(
     rectangles: list,
-    overlapping_pair_gen: Generator[tuple],
+    overlapping_pair_gen: Generator[tuple, None, None],
     width: int = 800,
     height: int = 600,
     margin: int = 50,

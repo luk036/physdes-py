@@ -305,7 +305,7 @@ class HSegment(Point[Interval[int], int]):
         return VSegment(self.ycoord, self.xcoord)
 
 
-def detect_overlap_gen(rectangles: list) -> Generator[tuple]:
+def detect_overlap_gen(rectangles: list) -> Generator[tuple, None, None]:
     """
     Detect if any pair of rectangles overlap using the line sweep algorithm.
 
