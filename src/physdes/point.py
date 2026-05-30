@@ -38,7 +38,7 @@ in a 2D space, making it easier for programmers to handle geometric calculations
 manipulations in their code.
 """
 
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, TypeVar, Union
 
 from .generic import (
     center,
@@ -717,7 +717,7 @@ class Point(Generic[T1, T2]):
             nearest(self.xcoord, other.xcoord), nearest(self.ycoord, other.ycoord)
         )
 
-    def enlarge_with(self, alpha: int | float) -> "Point[Any, Any]":
+    def enlarge_with(self, alpha: Union[int, float]) -> "Point[Any, Any]":
         """
         Enlarges the point by a given amount in each dimension.
 

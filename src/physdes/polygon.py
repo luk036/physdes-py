@@ -46,7 +46,7 @@ various applications involving 2D geometry.
 
 from functools import cached_property
 from itertools import filterfalse, tee
-from typing import Any, Callable, Generic, Iterable, List, Tuple, TypeVar
+from typing import Any, Callable, Generic, Iterable, List, Optional, Tuple, TypeVar
 
 from mywheel.dllist import Dllink  # type: ignore
 
@@ -363,7 +363,7 @@ class Polygon(Generic[T]):
         cross_product = (current_point - prev_point).cross(next_point - current_point)
         return bool(cross_product > 0)
 
-    def is_convex(self, is_anticlockwise: bool | None = None) -> bool:
+    def is_convex(self, is_anticlockwise: Optional[bool] = None) -> bool:
         """
         Check if the polygon is convex.
 
