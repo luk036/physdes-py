@@ -1,3 +1,10 @@
+"""
+SVG congestion-map visualisation for grid-based routing.
+
+Renders a 2-D congestion grid using a green-yellow-red colour gradient
+and an interactive legend.
+"""
+
 def draw_congestion_map(
     grid: list[list[int]], filename: str = "congestion_map.svg"
 ) -> None:

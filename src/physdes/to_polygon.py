@@ -1,3 +1,10 @@
+"""
+Conversion utilities between rectilinear (RPolygon) and general (Polygon) formats.
+
+The ``to_polygon`` function adds intermediate vertices to non-rectilinear edges
+so that a general ``Polygon`` can represent an ``RPolygon`` faithfully.
+"""
+
 from typing import List
 
 from .point import Point

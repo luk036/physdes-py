@@ -1,3 +1,11 @@
+"""
+physdes-py — VLSI physical design Python library.
+
+Provides core geometric types (Point, Interval, Rectangle, RPolygon, Polygon,
+Vector2, ManhattanArc) and algorithms for clock tree synthesis (DME), global
+routing, Steiner forest construction, and polygon decomposition.
+"""
+
 import sys
 
 if sys.version_info[:2] >= (3, 8):

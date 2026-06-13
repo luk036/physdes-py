@@ -1,3 +1,11 @@
+"""
+Steiner-forest construction on grid graphs using a primal-dual approximation.
+
+Provides ``UnionFind`` (disjoint-set) and ``steiner_forest_grid`` which grows
+paths from active terminal components until all required pairs are connected,
+then prunes redundant edges via reverse delete.
+"""
+
 import collections
 from typing import Dict, List, Set, Tuple
 

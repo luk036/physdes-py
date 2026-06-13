@@ -1,3 +1,10 @@
+"""
+SVG visualisation functions for global routing trees (2D and 3D).
+
+Renders ``GlobalRoutingTree`` instances as SVG with colour-coded nodes
+(SOURCE/STEINER/TERMINAL), connection arrows, keepout regions, and statistics.
+"""
+
 import doctest
 from typing import TYPE_CHECKING, List, Optional
 

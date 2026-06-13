@@ -1,3 +1,10 @@
+"""
+Round-Robin Doubly Linked List (RDllist) data structure.
+
+Provides a circular doubly-linked list with node-based iteration, used by
+polygon monotone/convex-hull algorithms for efficient vertex removal.
+"""
+
 from typing import List, TypeVar
 
 from mywheel.dllist import Dllink  # type: ignore

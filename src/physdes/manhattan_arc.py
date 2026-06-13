@@ -1,39 +1,9 @@
 """
-ManhattanArc Class
+ManhattanArc class for 45-degree rotated coordinate geometry.
 
-This code defines a class called ManhattanArc, which represents a geometric object in a 2D space.
-The purpose of this class is to handle operations on points, segments, or regions that are
-rotated 45 degrees. It's designed to work with different types of coordinates, such as
-integers, floats, or intervals.
-
-The ManhattanArc class takes two inputs when creating an object: xcoord and ycoord. These
-represent the coordinates of the object in the rotated space. The class doesn't produce a
-specific output on its own, but it provides various methods to manipulate and interact
-with these objects.
-
-The class achieves its purpose by storing the coordinates in a Point object and providing
-methods to perform operations like translation, enlargement, intersection, and merging
-with other ManhattanArc instances. It uses a 45-degree rotated coordinate system, which allows
-for easier calculations in certain geometric operations.
-
-Some important logic flows in this code include:
-
-1. The constructor (init) creates a Point object with the given coordinates.
-2. The construct method creates a ManhattanArc from regular x and y coordinates by rotating
-   them 45 degrees.
-3. The translation methods (iadd and isub) move the object by adding or subtracting
-   vector components.
-4. The min_dist_with method calculates the minimum rectilinear distance between two
-   ManhattanArc instances.
-5. The enlarge_with method creates a new ManhattanArc with enlarged coordinates.
-6. The intersect_with method finds the intersection point between two ManhattanArc instances.
-7. The merge_with method combines two ManhattanArc instances by enlarging them based on their
-   distance and finding their intersection.
-
-These operations allow for complex geometric manipulations, which can be useful in various
-applications such as computer graphics, game development, or computational geometry. The
-class provides a high-level interface for working with these rotated geometric objects,
-abstracting away some of the more complex mathematical calculations.
+Encapsulates a point/segment/region in a rotated (u, v) coordinate space where
+u = x - y and v = x + y. Used by the DME algorithm for merging-segment
+operations during clock tree synthesis.
 """
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar, Union

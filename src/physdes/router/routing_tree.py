@@ -1,3 +1,12 @@
+"""
+Global routing tree data structure and node types.
+
+Provides ``RoutingNode`` (with SOURCE / STEINER / TERMINAL types) and
+``GlobalRoutingTree`` which supports simple insertion, Steiner-optimised
+insertion, performance-constrained insertion, keepout avoidance, and basic
+tree analysis (wirelength, structure, path finding).
+"""
+
 from enum import Enum, auto
 from typing import Any, List, Optional, Tuple
 
@@ -179,8 +188,7 @@ class GlobalRoutingTree:
         """Insert a new Steiner node into the routing tree.
 
         Args:
-            x: The x-coordinate of the new node.
-            y: The y-coordinate of the new node.
+            pt: The position of the new Steiner node.
             parent_id: The ID of the parent node. If None, connect to the source.
 
         Returns:
@@ -254,7 +262,7 @@ class GlobalRoutingTree:
         """Insert a new terminal (sink) node into the routing tree.
 
         Args:
-            pt: The position of the new node.
+            point: The position of the new terminal node.
             parent_id: The ID of the parent node. If None, find the nearest node.
 
         Returns:
@@ -320,8 +328,7 @@ class GlobalRoutingTree:
 
         Args:
             new_node_type: The type of the new node (NodeType.STEINER or NodeType.TERMINAL).
-            x: The x-coordinate of the new node.
-            y: The y-coordinate of the new node.
+            point: The position of the new node.
             branch_start_id: The ID of the starting node of the branch.
             branch_end_id: The ID of the ending node of the branch.
 
