@@ -781,7 +781,7 @@ Using hypothesis for property-based testing:
 
 ```python
 @given(st.lists(st.tuples(st.integers(), st.integers()), min_size=3, max_size=10))
-def test_polygon_area_property(coords):
+def test_polygon_area_property(coords) -> None:
     points = [Point(x, y) for x, y in coords]
     polygon = Polygon.from_pointset(points)
     # Area should be invariant under translation
