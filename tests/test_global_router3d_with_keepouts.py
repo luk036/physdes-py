@@ -1,3 +1,5 @@
+from typing import Any
+
 from icecream import ic
 
 from physdes.interval import Interval
@@ -75,7 +77,7 @@ def test_route3d_with_constraints_and_keepouts() -> None:
         )
         # { id: 'S', type: NODE_TYPES.SOURCE, position: { x: 27, y: 0, z: 1728 } },
 
-    def draw_connections(node):
+    def draw_connections(node: Any) -> None:
         for child in node.children:
             print(
                 f"{{ from: '{node.id}', to: '{child.id}', type: CONNECTION_TYPES.ROUTED }},"

@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers())
-def test_vector2_hypo(a, b, c, d) -> None:
+def test_vector2_hypo(a: int, b: int, c: int, d: int) -> None:
     p = Vector2(a, b)
     q = Vector2(c, d)
     r = Vector2(-b, c)

@@ -17,6 +17,8 @@ with other ManhattanArc3D instances. It uses a 45-degree rotated coordinate syst
 for easier calculations in certain geometric operations.
 """
 
+from typing import Any
+
 from .generic import center, intersection, lower, min_dist, nearest, upper
 from .interval import enlarge
 from .point import Point
@@ -27,7 +29,7 @@ class ManhattanArc3D:
     Merging point, segment, or region ⛝
     """
 
-    def __init__(self, w, x, y, z) -> None:
+    def __init__(self, w: Any, x: Any, y: Any, z: Any) -> None:
         """
         Initialize a ManhattanArc3D object with 4-interval coordinates.
 
@@ -47,7 +49,7 @@ class ManhattanArc3D:
         self.z_i = z
 
     @classmethod
-    def from_point(cls, pt) -> "ManhattanArc3D":
+    def from_point(cls, pt: Point) -> "ManhattanArc3D":
         """
         Create a ManhattanArc3D object from a 3D point.
 
@@ -68,7 +70,7 @@ class ManhattanArc3D:
         return cls(w, x, y, z)
 
     @staticmethod
-    def construct(xcoord, ycoord, zcoord) -> "ManhattanArc3D":
+    def construct(xcoord: Any, ycoord: Any, zcoord: Any) -> "ManhattanArc3D":
         """
         Constructs a ManhattanArc3D object from standard x and y coordinates.
 
@@ -147,7 +149,7 @@ class ManhattanArc3D:
             other.z_i,
         )
 
-    def min_dist_with(self, other) -> int:
+    def min_dist_with(self, other: "ManhattanArc3D") -> int:
         """
         The `min_dist_with` function calculates the minimum rectilinear distance between two objects.
 
@@ -207,7 +209,7 @@ class ManhattanArc3D:
         z_inter = intersection(self.z_i, other.z_i)
         return ManhattanArc3D(w_inter, x_inter, y_inter, z_inter)
 
-    def merge_with(self, other, alpha: int):
+    def merge_with(self, other: "ManhattanArc3D", alpha: int) -> "ManhattanArc3D":
         """
         The `merge_with` function takes another object as input, calculates the minimum Manhattan distance between
         the two objects, enlarges the objects based on the calculated distance, finds the intersection
@@ -230,7 +232,7 @@ class ManhattanArc3D:
         trr2 = other.enlarge_with(distance - alpha)
         return trr1.intersect_with(trr2)
 
-    def to_point(self):
+    def to_point(self) -> Point:
         """
         Converts the ManhattanArc3D object back to a Point object.
 
@@ -248,7 +250,7 @@ class ManhattanArc3D:
         zcoord = (self.w_i - self.x_i + self.y_i - self.z_i) // 2
         return Point(Point(xcoord, zcoord), ycoord)
 
-    def get_center(self):
+    def get_center(self) -> Point:
         """
         Calculates the center of the merging segment
 
@@ -267,7 +269,7 @@ class ManhattanArc3D:
         zcoord = center(self.z_i)
         return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
-    def get_lower_corner(self):
+    def get_lower_corner(self) -> Point:
         """
         Calculates the lower corner of the merging segment
 
@@ -286,7 +288,7 @@ class ManhattanArc3D:
         zcoord = lower(self.z_i)
         return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
-    def get_upper_corner(self):
+    def get_upper_corner(self) -> Point:
         """
         Calculates the upper corner of the merging segment
 
@@ -305,7 +307,7 @@ class ManhattanArc3D:
         zcoord = upper(self.z_i)
         return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
-    def _nearest_point_to(self, manhattan_arc):
+    def _nearest_point_to(self, manhattan_arc: "ManhattanArc3D") -> Point:
         """
         Calculates the nearest point on the merging segment to another ManhattanArc3D object.
 
@@ -330,7 +332,7 @@ class ManhattanArc3D:
         zcoord = nearest(self.z_i, manhattan_arc.z_i)
         return ManhattanArc3D(wcoord, xcoord, ycoord, zcoord).to_point()
 
-    def nearest_point_to(self, other):
+    def nearest_point_to(self, other: Point) -> Point:
         """
         Calculates the nearest point on the merging segment to another ManhattanArc3D object.
 

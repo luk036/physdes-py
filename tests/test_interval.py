@@ -2,6 +2,8 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import integers
 
+from typing import Any
+
 from physdes.generic import contain, displacement, intersection, min_dist, overlap
 from physdes.interval import Interval, enlarge, hull
 
@@ -20,7 +22,7 @@ def test_interval_arithmetic_hypo() -> None:
         integers(min_value=0, max_value=1000),
         integers(min_value=-1000, max_value=1000),
     )
-    def test_add_sub(a1, a2, v) -> None:
+    def test_add_sub(a1: int, a2: int, v: int) -> None:
         a = Interval(min(a1, a2), max(a1, a2))
         assert (a + v) - v == a
 
@@ -333,7 +335,7 @@ class TestIntervalFunctions:
         (Interval(3, 5), "*=", 2, Interval(6, 10)),
     ],
 )
-def test_arithmetic(interval, op, value, expected) -> None:
+def test_arithmetic(interval: Interval, op: str, value: Any, expected: Any) -> None:
     if op == "+":
         assert interval + value == expected
     elif op == "-":
@@ -367,7 +369,7 @@ def test_arithmetic(interval, op, value, expected) -> None:
         (4, 4, True),
     ],
 )
-def test_overlap(a, b, expected) -> None:
+def test_overlap(a: Any, b: Any, expected: bool) -> None:
     assert overlap(a, b) is expected
     if isinstance(a, Interval):
         assert a.overlaps(b) is expected
@@ -386,7 +388,7 @@ def test_overlap(a, b, expected) -> None:
         (4, 4, True),
     ],
 )
-def test_contains(a, b, expected) -> None:
+def test_contains(a: Any, b: Any, expected: bool) -> None:
     assert contain(a, b) is expected
     if isinstance(a, Interval):
         assert a.contains(b) is expected
@@ -404,7 +406,7 @@ def test_contains(a, b, expected) -> None:
         (4, 4, 4),
     ],
 )
-def test_intersection(a, b, expected) -> None:
+def test_intersection(a: Any, b: Any, expected: Any) -> None:
     if expected is not None:
         assert intersection(a, b) == expected
         if isinstance(a, Interval):
@@ -427,7 +429,7 @@ def test_intersection(a, b, expected) -> None:
         (4, 6, Interval(4, 6)),
     ],
 )
-def test_hull(a, b, expected) -> None:
+def test_hull(a: Any, b: Any, expected: Any) -> None:
     assert hull(a, b) == expected
     if isinstance(a, Interval):
         assert a.hull_with(b) == expected
@@ -445,7 +447,7 @@ def test_hull(a, b, expected) -> None:
         (6, Interval(3, 5), 1),
     ],
 )
-def test_min_dist(a, b, expected) -> None:
+def test_min_dist(a: Any, b: Any, expected: int) -> None:
     assert min_dist(a, b) == expected
     if isinstance(a, Interval):
         assert a.min_dist_with(b) == expected
@@ -462,7 +464,7 @@ def test_min_dist(a, b, expected) -> None:
         (6, 4, 2),
     ],
 )
-def test_displacement(a, b, expected) -> None:
+def test_displacement(a: Any, b: Any, expected: Any) -> None:
     assert displacement(a, b) == expected
     if isinstance(a, Interval):
         assert a.displace(b) == expected
@@ -476,7 +478,7 @@ def test_displacement(a, b, expected) -> None:
         (6, 4, Interval(2, 10)),
     ],
 )
-def test_enlarge(a, b, expected) -> None:
+def test_enlarge(a: Any, b: Any, expected: Any) -> None:
     assert enlarge(a, b) == expected
     if isinstance(a, Interval):
         assert a.enlarge_with(b) == expected

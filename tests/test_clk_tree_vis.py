@@ -171,7 +171,7 @@ class TestClockTreeVisualizer:
         """Test wire drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
-        def scale_coord(x_coord, y_coord):
+        def scale_coord(x_coord: float, y_coord: float) -> tuple[float, float]:
             return x_coord, y_coord  # Identity scaling for testing
 
         svg_elements = visualizer._draw_wires(sample_tree, scale_coord)
@@ -185,7 +185,7 @@ class TestClockTreeVisualizer:
         """Test node drawing functionality"""
         visualizer = ClockTreeVisualizer()
 
-        def scale_coord(x_coord, y_coord):
+        def scale_coord(x_coord: float, y_coord: float) -> tuple[float, float]:
             return x_coord, y_coord  # Identity scaling for testing
 
         svg_elements = visualizer._draw_nodes(sample_tree, sample_sinks, scale_coord)

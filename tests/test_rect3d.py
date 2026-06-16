@@ -8,7 +8,7 @@ from physdes.vector2 import Vector2
 
 
 @given(integers(), integers(), integers(), integers(), integers(), integers())
-def test_point_hypo(a1, a2, b1, b2, v1, v2) -> None:
+def test_point_hypo(a1: int, a2: int, b1: int, b2: int, v1: int, v2: int) -> None:
     a = Point(a1, a2)
     b = Point(b1, b2)
     v = Vector2(v1, v2)

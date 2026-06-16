@@ -68,7 +68,7 @@ class TestPointNumericProperties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # Check if either coordinate is a float to determine if we need approximate equality
@@ -352,7 +352,7 @@ class TestPointGeometricProperties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a, b, rel_tol=1e-9, abs_tol=1e-12):
+        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # Check if either coordinate is a float to determine if we need approximate equality
