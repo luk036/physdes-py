@@ -1,8 +1,8 @@
+from typing import Any
+
 import pytest
 from hypothesis import given
 from hypothesis.strategies import integers
-
-from typing import Any
 
 from physdes.generic import contain, displacement, intersection, min_dist, overlap
 from physdes.interval import Interval, enlarge, hull

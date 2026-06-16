@@ -50,7 +50,9 @@ class TestVector2Properties:
         # Check for floating-point precision issues
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # If any of the vectors have float components, use approximate equality
@@ -82,7 +84,9 @@ class TestVector2Properties:
         # Check for floating-point precision issues
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # If any of the vectors have float components, use approximate equality
@@ -112,7 +116,9 @@ class TestVector2Properties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         result1 = scalar * (v + v2)
@@ -130,7 +136,9 @@ class TestVector2Properties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         result1 = (s1 + s2) * v
@@ -148,7 +156,9 @@ class TestVector2Properties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         result1 = s1 * (s2 * v)
@@ -176,7 +186,9 @@ class TestVector2Properties:
         # Use approximate equality for all cases since division always produces floats
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         # Division always produces floating-point results, so use approximate equality
@@ -214,7 +226,9 @@ class TestVector2Properties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         result1 = (v1 + v2).cross(v3)
@@ -234,7 +248,9 @@ class TestVector2Properties:
         # Use approximate equality for floating-point operations
         import math
 
-        def approx_equal(a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12) -> bool:
+        def approx_equal(
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+        ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
         result1 = (scalar * v).cross(v2)
