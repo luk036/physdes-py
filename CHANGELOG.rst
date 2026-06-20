@@ -1,5 +1,5 @@
 # Changelog
-==========
+===========
 
 All notable changes to this project will be documented in this file.
 
@@ -32,7 +32,7 @@ Add automated changelog management (#123)
 
 
 ## Version 0.1
-==========
+==============
 
 - Initial release
 - Feature A added

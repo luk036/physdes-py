@@ -21,7 +21,7 @@ For AI Agents
 ==============
 
 If you are an AI agent working on this repository, please refer to
-:doc:`AGENTS.md <AGENTS.md>` for comprehensive development guidelines
+:file:`AGENTS.md` for comprehensive development guidelines
 including:
 
 * Build, lint, and test commands
