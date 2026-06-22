@@ -8,7 +8,7 @@ def esc(t):
     """Escape backtick for f-string."""
     return t.replace('`', '\\`')
 
-MD = r"""layout: true
+MD = r'''layout: true
 class: typo, typo-selection
 
 ---
@@ -571,7 +571,7 @@ class: nord-dark, middle, center
 - [`github.com/luk036/ellalgo`](https://github.com/luk036/ellalgo)
 
 @luk036 👨‍💻 · 2026 📅
-"""
+'''
 
 # Split into slides
 slides = [s.strip() for s in re.split(r'\n---\n', MD) if s.strip()]

@@ -41,8 +41,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest pytest-cov pytest-benchmark bandit safety
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install git+https://github.com/luk036/lds-gen.git
-          pip install git+https://github.com/luk036/mywheel.git
           pip install -e .
           pip install pre-commit
           # pip install mypy
