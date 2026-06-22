@@ -72,6 +72,7 @@ extensions = [
     "sphinxcontrib.svgbob",
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
+    "matplotlib.sphinxext.plot_directive",
 ]
 
 # Napoleon settings for better docstring support
@@ -98,6 +99,24 @@ autodoc_default_options = {
 # Type hints rendering
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented_params"
+
+# -- matplotlib.sphinxext.plot_directive configuration -----------------------
+plot_html_show_source_link = True
+plot_html_show_formats = False
+plot_include_source = True
+plot_working_directory = os.path.join(__location__, "examples")
+plot_pre_code = [
+    "import matplotlib.pyplot as plt",
+    "import numpy as np",
+    "from physdes.point import Point",
+    "from physdes.interval import Interval",
+    "from physdes.recti import Rectangle, detect_overlap_gen",
+    "from physdes.rpolygon import RPolygon",
+    "from physdes.vector2 import Vector2",
+    "from physdes.router.global_router import GlobalRouter",
+    "from physdes.router.routing_tree import NodeType, GlobalRoutingTree",
+    "plt.rcParams['figure.dpi'] = 100",
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

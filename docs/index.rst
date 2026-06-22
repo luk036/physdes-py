@@ -35,6 +35,7 @@ Contents
    Authors <authors>
    Changelog <changelog>
    Module Reference <api/modules>
+   Figures Demo <figures_demo>
 
 
 Indices and tables
