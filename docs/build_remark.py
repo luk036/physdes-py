@@ -4,7 +4,8 @@ Run: python build_remark.py
 """
 import re
 
-MD = r'''layout: true
+MD = (
+    r'''layout: true
 class: typo, typo-selection
 
 ---
@@ -249,12 +250,13 @@ docs/_build/html/                 target/doc/my_crate/
 .. svgbob::
    :align: center
 
-      _.-'''''''-._
+      _.-'''
+    """'-._
     ,'    |        `.
    /      |          \
    |       | .        |
    |       |          |
-    \      |         /
+    \\      |         /
      `._   |      _.'
         '-......-'
 ```
@@ -294,12 +296,12 @@ docs/_build/html/                 target/doc/my_crate/
 ```rst
 .. math::
 
-   \phi_b(n) =
-   \sum_{k=0}^{m} \frac{d_k}{b^{k+1}}
+   \\phi_b(n) =
+   \\sum_{k=0}^{m} \frac{d_k}{b^{k+1}}
 ```
 
 ```rst
-Inline :math:`\phi_2(n)` works too.
+Inline :math:`\\phi_2(n)` works too.
 ```
 
 ✅ `.. math::` display equations
@@ -316,9 +318,9 @@ Inline :math:`\phi_2(n)` works too.
 
 ```rust
 //! Display:
-//! $$ \phi_b(n) = \sum_{k=0}^{m} \frac{d_k}{b^{k+1}} $$
+//! $$ \\phi_b(n) = \\sum_{k=0}^{m} \frac{d_k}{b^{k+1}} $$
 //!
-//! Inline: $ \phi_2(n) $
+//! Inline: $ \\phi_2(n) $
 ```
 
 ✅ `$$...$$` display equations
@@ -578,27 +580,30 @@ class: nord-dark, middle, center
 - [`github.com/luk036/ellalgo`](https://github.com/luk036/ellalgo)
 
 @luk036 👨‍💻 · 2026 📅
-'''
+"""
+)
 
 # Split into slides
-slides = [s.strip() for s in re.split(r'\n---\n', MD) if s.strip()]
+slides = [s.strip() for s in re.split(r"\n---\n", MD) if s.strip()]
 
 # Annotate slides
 annotated = []
 for i, slide in enumerate(slides):
-    first_line = slide.split('\n')[0]
-    is_qa = '❓ Questions' in first_line
-    is_end = '🙏 Thank You' in first_line
+    first_line = slide.split("\n")[0]
+    is_qa = "❓ Questions" in first_line
+    is_end = "🙏 Thank You" in first_line
     if i == 0 or is_qa or is_end:
-        annotated.append(f'count: false\nclass: nord-dark, middle, center\n\n{slide}')
-    elif first_line.startswith('## 🐍'):
-        annotated.append(f'class: nord-light, middle, center\n\n{slide}')
+        annotated.append(f"count: false\nclass: nord-dark, middle, center\n\n{slide}")
+    elif first_line.startswith("## 🐍"):
+        annotated.append(f"class: nord-light, middle, center\n\n{slide}")
     else:
         annotated.append(slide)
 
-remark_content = 'layout: true\nclass: typo, typo-selection\n\n---\n' + '\n\n---\n\n'.join(annotated)
+remark_content = (
+    "layout: true\nclass: typo, typo-selection\n\n---\n" + "\n\n---\n\n".join(annotated)
+)
 
-html = f'''<!doctype html>
+html = f"""<!doctype html>
 <html>
   <head>
     <title>Embedding Figures in Docs — Python &amp; Rust</title>
@@ -645,9 +650,11 @@ html = f'''<!doctype html>
     </script>
     <script src="../js/mermaid-init.js"></script>
   </body>
-</html>'''
+</html>"""
 
-with open('D:/github/luk036.github.io/idea/doc-fig-py-remark.html', 'w', encoding='utf-8') as f:
+with open(
+    "D:/github/luk036.github.io/idea/doc-fig-py-remark.html", "w", encoding="utf-8"
+) as f:
     f.write(html)
 
-print(f'Written {len(html)} bytes, {len(slides)} slides')
+print(f"Written {len(html)} bytes, {len(slides)} slides")

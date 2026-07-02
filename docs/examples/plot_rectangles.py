@@ -5,8 +5,9 @@ Rectangle overlap detection
 Several rectangles visualized with overlapping pairs highlighted in red,
 using the sweep-line algorithm from ``detect_overlap_gen``.
 """
-import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+
 from physdes.interval import Interval
 from physdes.recti import Rectangle, detect_overlap_gen
 

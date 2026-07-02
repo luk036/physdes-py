@@ -4,31 +4,33 @@ Run: python build_from_md.py
 """
 import re
 
-with open('D:/github/py/physdes-py/docs/slides_content.md', 'r', encoding='utf-8') as f:
+with open("D:/github/py/physdes-py/docs/slides_content.md", encoding="utf-8") as f:
     md = f.read()
 
 # Split into slides
-slides = [s.strip() for s in re.split(r'\n---\n', md) if s.strip()]
+slides = [s.strip() for s in re.split(r"\n---\n", md) if s.strip()]
 
 # Annotate slides
 annotated = []
 for i, slide in enumerate(slides):
-    first_line = slide.split('\n')[0]
-    is_qa = '❓ Questions' in first_line
-    is_end = '🙏 Thank You' in first_line
+    first_line = slide.split("\n")[0]
+    is_qa = "❓ Questions" in first_line
+    is_end = "🙏 Thank You" in first_line
     if i == 0 or is_qa or is_end:
-        annotated.append(f'count: false\nclass: nord-dark, middle, center\n\n{slide}')
-    elif first_line.startswith('## 🐍'):
-        annotated.append(f'class: nord-light, middle, center\n\n{slide}')
+        annotated.append(f"count: false\nclass: nord-dark, middle, center\n\n{slide}")
+    elif first_line.startswith("## 🐍"):
+        annotated.append(f"class: nord-light, middle, center\n\n{slide}")
     else:
         annotated.append(slide)
 
-remark_content = 'layout: true\nclass: typo, typo-selection\n\n---\n' + '\n\n---\n\n'.join(annotated)
+remark_content = (
+    "layout: true\nclass: typo, typo-selection\n\n---\n" + "\n\n---\n\n".join(annotated)
+)
 
 # Escape for HTML textarea
-remark_content = remark_content.replace('</textarea>', '&lt;/textarea&gt;')
+remark_content = remark_content.replace("</textarea>", "&lt;/textarea&gt;")
 
-html = f'''<!doctype html>
+html = f"""<!doctype html>
 <html>
   <head>
     <title>Embedding Figures in Docs — Python &amp; Rust</title>
@@ -75,10 +77,10 @@ html = f'''<!doctype html>
     </script>
     <script src="../js/mermaid-init.js"></script>
   </body>
-</html>'''
+</html>"""
 
-out = 'D:/github/luk036.github.io/idea/doc-fig-py-remark-v2.html'
-with open(out, 'w', encoding='utf-8') as f:
+out = "D:/github/luk036.github.io/idea/doc-fig-py-remark-v2.html"
+with open(out, "w", encoding="utf-8") as f:
     f.write(html)
 
-print(f'Written {len(html)} bytes, {len(slides)} slides to {out}')
+print(f"Written {len(html)} bytes, {len(slides)} slides to {out}")

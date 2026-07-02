@@ -7,6 +7,7 @@ A rectilinear polygon is converted to a general ``Polygon`` via
 are axis-aligned, then plotted.
 """
 import matplotlib.pyplot as plt
+
 from physdes.point import Point
 from physdes.rpolygon import RPolygon
 from physdes.to_polygon import to_polygon

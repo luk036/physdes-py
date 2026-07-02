@@ -6,8 +6,9 @@ Clock tree built with the DME algorithm using a linear delay model.
 Sinks are green, internal nodes are blue, source is red.
 """
 import matplotlib.pyplot as plt
+
+from physdes.cts.dme_algorithm import DMEAlgorithm, LinearDelayCalculator, Sink
 from physdes.point import Point
-from physdes.cts.dme_algorithm import DMEAlgorithm, Sink, LinearDelayCalculator
 
 sinks = [
     Sink("s1", Point(-100, 40), 1.0),
@@ -27,6 +28,7 @@ tree = dme.build_clock_tree()
 
 sink_positions = {(s.position.xcoord, s.position.ycoord) for s in sinks}
 
+
 def walk(node, depth=0):
     """Collect nodes recursively."""
     if node is None:
@@ -40,6 +42,7 @@ def walk(node, depth=0):
             edges.extend(ce)
     return nodes, edges
 
+
 nodes, edges = walk(tree)
 
 fig, ax = plt.subplots(figsize=(8, 7))
@@ -47,7 +50,9 @@ for parent, child in edges:
     ax.plot(
         [parent.position.xcoord, child.position.xcoord],
         [parent.position.ycoord, child.position.ycoord],
-        color="gray", linewidth=1.5, zorder=1,
+        color="gray",
+        linewidth=1.5,
+        zorder=1,
     )
 
 for node, _depth in nodes:
@@ -62,8 +67,9 @@ for node, _depth in nodes:
         color, size, label = "#2196F3", 60, None
     ax.scatter(x, y, c=color, s=size, edgecolors="black", linewidths=0.8, zorder=2)
     if is_root:
-        ax.annotate(label, (x, y), xytext=(5, 8),
-                    textcoords="offset points", fontsize=9)
+        ax.annotate(
+            label, (x, y), xytext=(5, 8), textcoords="offset points", fontsize=9
+        )
 
 ax.set_title("DME Clock Tree (Linear Delay Model)")
 ax.set_xlabel("x")
