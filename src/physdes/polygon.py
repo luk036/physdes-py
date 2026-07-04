@@ -21,8 +21,7 @@ PointSet = List[Point[Any, Any]]
 
 
 class Polygon(Generic[T]):
-    _origin: Point[T, T]
-    _vecs: List[Vector2[Any, Any]]
+    __slots__ = ("_origin", "_vecs", "__dict__")
 
     def __init__(self, origin: Point[T, T], vecs: List[Vector2[T, T]]) -> None:
         """

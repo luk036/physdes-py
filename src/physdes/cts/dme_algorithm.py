@@ -23,7 +23,6 @@ Key components of the module include:
 
 import doctest
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from physdes.manhattan_arc import ManhattanArc
@@ -32,58 +31,54 @@ from physdes.point import Point
 from physdes.skeleton import _logger
 
 
-@dataclass
 class Sink:
-    """Represents a clock sink with position and capacitance
+    """Represents a clock sink with position and capacitance"""
 
-    Examples:
-        >>> sink = Sink(name="s1", position=Point(10, 20), capacitance=1.5)
-        >>> sink.name
-        's1'
-        >>> sink.position
-        Point(10, 20)
-        >>> sink.capacitance
-        1.5
-        >>> sink = Sink(name="s1", position=Point(Point(10, 20), 20), capacitance=1.5)
-        >>> sink.name
-        's1'
-        >>> sink.position
-        Point(Point(10, 20), 20)
-        >>> sink.capacitance
-        1.5
-    """
+    __slots__ = ("name", "position", "capacitance")
 
-    name: str
-    position: Point
-    capacitance: float = 1.0
+    def __init__(self, name: str, position: Point, capacitance: float = 1.0) -> None:
+        self.name = name
+        self.position = position
+        self.capacitance = capacitance
 
 
-@dataclass
 class TreeNode:
-    """Represents a node in the clock tree
+    """Represents a node in the clock tree"""
 
-    Examples:
-        >>> node = TreeNode(name="n1", position=Point(30, 40))
-        >>> node.name
-        'n1'
-        >>> node.position
-        Point(30, 40)
-        >>> node = TreeNode(name="n1", position=Point(Point(30, 40), 40))
-        >>> node.name
-        'n1'
-        >>> node.position
-        Point(Point(30, 40), 40)
-    """
+    __slots__ = (
+        "name",
+        "position",
+        "left",
+        "right",
+        "parent",
+        "segment",
+        "wire_length",
+        "delay",
+        "capacitance",
+        "need_elongation",
+    )
 
-    name: str
-    position: Point
-    left: Optional["TreeNode"] = None
-    right: Optional["TreeNode"] = None
-    parent: Optional["TreeNode"] = None
-    wire_length: int = 0
-    delay: float = 0.0  # default zero-skew
-    capacitance: float = 0.0
-    need_elongation = False
+    def __init__(
+        self,
+        name: str,
+        position: Point,
+        left: Optional["TreeNode"] = None,
+        right: Optional["TreeNode"] = None,
+        parent: Optional["TreeNode"] = None,
+        wire_length: int = 0,
+        delay: float = 0.0,
+        capacitance: float = 0.0,
+    ) -> None:
+        self.name = name
+        self.position = position
+        self.left = left
+        self.right = right
+        self.parent = parent
+        self.segment = None  # merging segment, set during DME
+        self.wire_length = wire_length
+        self.delay = delay
+        self.capacitance = capacitance
+        self.need_elongation = False
 
 
 class DelayCalculator(ABC):
@@ -517,10 +512,10 @@ class DMEAlgorithm:
         merging_tree = self._build_merging_tree(nodes, False)
 
         # Step 3: Perform bottom-up merging segment computation
-        merging_segments = self._compute_merging_segments(merging_tree)
+        self._compute_merging_segments(merging_tree)
 
         # Step 4: Perform top-down embedding
-        clock_tree = self._embed_tree(merging_tree, merging_segments)
+        clock_tree = self._embed_tree(merging_tree)
 
         # Step 5: Compute delays and wire lengths
         self._compute_tree_parameters(clock_tree)
@@ -531,40 +526,42 @@ class DMEAlgorithm:
         self,
         nodes: List["TreeNode"],
         vertical: bool,
+        lo: int = 0,
+        hi: Optional[int] = None,
     ) -> "TreeNode":
         """
         Build a balanced merging tree using recursive bipartition
 
         Args:
-            nodes: List of tree nodes to merge
+            nodes: List of tree nodes to merge (pre-sorted externally)
+            vertical: Sort axis toggle for balanced partition
+            lo: Start index in the nodes list (default 0)
+            hi: End index (exclusive) in the nodes list (default len(nodes))
 
         Returns:
             Root node of the merging tree
         """
-        if len(nodes) == 1:
-            return nodes[0]
+        if hi is None:
+            nodes.sort(
+                key=lambda n: n.position.ycoord
+            )  # initial sort by y
+            hi = len(nodes)
 
-        # Sort nodes along the appropriate axis (x or y) to facilitate balanced partitioning.
-        # This ensures that the division into left and right groups is as even as possible,
-        # which is crucial for building a balanced merging tree.
-        sorted_nodes = (
-            sorted(nodes, key=lambda n: n.position.xcoord)
-            if vertical
-            else sorted(nodes, key=lambda n: n.position.ycoord)
-        )
+        count = hi - lo
+        if count == 1:
+            return nodes[lo]
+        if count == 0:
+            raise ValueError("Empty node range")
 
-        # Split the sorted nodes into two balanced groups: left and right.
-        # The 'mid' index ensures an approximately equal distribution of nodes
-        # between the two child subtrees.
-        mid = len(sorted_nodes) // 2
-        left_group = sorted_nodes[:mid]
-        right_group = sorted_nodes[mid:]
+        # Partition at midpoint for balanced tree
+        mid = lo + count // 2
 
-        # Recursively build the left and right subtrees. The 'vertical' parameter is toggled
-        # to alternate the sorting axis (x then y, or y then x) at each level of recursion.
-        # This ensures that the tree is balanced in both dimensions.
-        left_child = self._build_merging_tree(left_group, not vertical)
-        right_child = self._build_merging_tree(right_group, not vertical)
+        # Reorder so left half < right half along the current axis
+        key_fn = (lambda n: n.position.xcoord) if vertical else (lambda n: n.position.ycoord)
+        nodes[lo:hi] = sorted(nodes[lo:hi], key=key_fn)
+
+        left_child = self._build_merging_tree(nodes, not vertical, lo, mid)
+        right_child = self._build_merging_tree(nodes, not vertical, mid, hi)
 
         # Create a new parent node for the two subtrees. Its position is temporary
         # and will be determined during the embedding phase. A unique ID is assigned
@@ -583,43 +580,30 @@ class DMEAlgorithm:
 
         return parent
 
-    def _compute_merging_segments(self, root: "TreeNode") -> Dict[str, Any]:
+    def _compute_merging_segments(self, root: "TreeNode") -> None:
         """
-        Compute merging segments for all nodes in bottom-up order
+        Compute merging segments for all nodes in bottom-up order,
+        storing each segment directly on the node via ``.segment``.
 
         Args:
             root: Root node of the merging tree
-
-        Returns:
-            Dictionary mapping node names to their merging segments
         """
-        merging_segments = {}
 
         def compute_segment(
             node: "TreeNode",
         ) -> "ManhattanArc[Any, Any] | ManhattanArc3D":
             if node.left is None and node.right is None:
-                # If it's a leaf node (a sink), its merging segment is simply its position.
-                # The delay for a leaf node is considered 0.0 at this stage.
-
                 manhattan_segment = self.MA_TYPE.from_point(node.position)
-                merging_segments[node.name] = manhattan_segment
+                node.segment = manhattan_segment
                 return manhattan_segment
 
-            # If it's an internal node, recursively compute the merging segments for its children.
-            # This bottom-up approach ensures that child segments are computed before parent segments.
             if node.left is None or node.right is None:
                 raise ValueError("Internal node must have both left and right children")
             left_ms = compute_segment(node.left)
             right_ms = compute_segment(node.right)
 
-            # Calculate the Manhattan distance between the two child merging segments.
-            # This distance represents the minimum possible wire length required to connect them.
             distance = left_ms.min_dist_with(right_ms)  # type: ignore[arg-type]
 
-            # Calculate the tapping point and delay for the merged segment using the configured
-            # delay calculator strategy. This step is crucial for achieving prescribed-skew (not necessarily zero) by
-            # determining how to balance the delays from the left and right branches.
             (
                 extend_left,
                 delay_left,
@@ -627,32 +611,22 @@ class DMEAlgorithm:
                 node.left, node.right, distance
             )
             node.delay = delay_left
-            # Merge the left and right segments based on the calculated tapping point.
-            # The 'extend_left' parameter dictates how much the left segment needs to be
-            # extended to meet the prescribed-skew (not necessarily zero) requirement.
             merged_segment = left_ms.merge_with(right_ms, extend_left)  # type: ignore[arg-type]
-            merging_segments[node.name] = merged_segment
+            node.segment = merged_segment
 
-            # Update the capacitance of the current node. This includes the capacitances
-            # of its children and the capacitance of the wire segment connecting them.
             wire_cap = self.delay_calculator.calculate_wire_capacitance(distance)
             node.capacitance = node.left.capacitance + node.right.capacitance + wire_cap
             return merged_segment
 
         compute_segment(root)
-        return merging_segments
 
-    def _embed_tree(
-        self,
-        merging_tree: "TreeNode",
-        merging_segments: Dict[str, Any],
-    ) -> "TreeNode":
+    def _embed_tree(self, merging_tree: "TreeNode") -> "TreeNode":
         """
-        Embed the clock tree by selecting actual positions for internal nodes
+        Embed the clock tree by selecting actual positions for internal nodes.
+        Uses ``node.segment`` set during :meth:`_compute_merging_segments`.
 
         Args:
             merging_tree: The merging tree structure
-            merging_segments: Computed merging segments for all nodes
 
         Returns:
             Embedded clock tree with actual positions
@@ -666,29 +640,19 @@ class DMEAlgorithm:
                 return
 
             if parent_segment is None:
-                # If it's the root node (no parent segment), its position is chosen as
-                # the upper corner of its merging segment. This is an arbitrary but consistent
-                # choice for the root's physical location.
-                node_segment = merging_segments[node.name]
+                node_segment = node.segment
                 if self.source is None:
                     node.position = node_segment.get_upper_corner()
                 else:
                     node.position = node_segment.nearest_point_to(self.source)
             else:
-                # For internal nodes, the actual position is determined by finding the point
-                # within its merging segment that is closest to its parent's position.
-                # This minimizes the wire length connecting the node to its parent.
-                node_segment = merging_segments[node.name]
-                # Compute wire length to parent
+                node_segment = node.segment
                 if node.parent:
                     node.position = node_segment.nearest_point_to(node.parent.position)
                     node.wire_length = node.position.min_dist_with(node.parent.position)
 
-            # Recursively call embed_node for the left and right children.
-            # The merging segment of the current node becomes the 'parent_segment'
-            # for its children, guiding their embedding process.
-            embed_node(node.left, merging_segments[node.name])
-            embed_node(node.right, merging_segments[node.name])
+            embed_node(node.left, node.segment)
+            embed_node(node.right, node.segment)
 
         embed_node(merging_tree)
         return merging_tree
@@ -737,22 +701,29 @@ class DMEAlgorithm:
         Returns:
             Dictionary with skew analysis results
         """
-        sink_delays = []
+        min_delay = float("inf")
+        max_delay = float("-inf")
+        sink_delays: List[float] = []
 
-        def collect_sink_delays(node: Optional["TreeNode"]) -> None:
+        def traverse(node: Optional["TreeNode"]) -> None:
+            nonlocal min_delay, max_delay
             if node is None:
                 return
             if node.left is None and node.right is None:
-                sink_delays.append(node.delay)
+                d = node.delay
+                sink_delays.append(d)
+                if d < min_delay:
+                    min_delay = d
+                if d > max_delay:
+                    max_delay = d
             if node.left:
-                collect_sink_delays(node.left)
+                traverse(node.left)
             if node.right:
-                collect_sink_delays(node.right)
+                traverse(node.right)
 
-        collect_sink_delays(root)
-
-        max_delay = max(sink_delays) if sink_delays else 0
-        min_delay = min(sink_delays) if sink_delays else 0
+        traverse(root)
+        if min_delay == float("inf"):
+            min_delay = max_delay = 0.0
         skew = max_delay - min_delay
 
         return {

@@ -22,35 +22,7 @@ T2 = TypeVar("T2", int, float, "Interval[int]", "Interval[float]")
 
 
 class ManhattanArc(Generic[T1, T2]):
-    """
-    Merging point, segment, or region ⛝
-
-    A 45 degree rotated point, vertical or horizontal segment, or rectangle
-
-    .. svgbob::
-       :align: center
-
-              .
-            .' `.
-          .'     `.
-        .'    .    `.
-         `.       .'
-           `.   .'
-             `.'
-
-              .
-            .' `.
-          .'     `.
-        .'    .    `.
-         `.    `.    `.
-           `.    `.    `.
-             `.       .'
-               `.   .'
-                 `.'
-
-    """
-
-    impl: Point[T1, T2]
+    __slots__ = ("impl",)
 
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """

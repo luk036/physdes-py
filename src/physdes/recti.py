@@ -13,7 +13,7 @@ from .point import Point
 
 
 class Rectangle(Point[Interval[int], Interval[int]]):
-    """Axis-parallel Rectangle"""
+    __slots__ = ()
 
     def __init__(self, xcoord: Interval[int], ycoord: Interval[int]):
         """
@@ -176,9 +176,7 @@ class Rectangle(Point[Interval[int], Interval[int]]):
 
 
 class VSegment(Point[int, Interval[int]]):
-    """
-    Represents a VSegment.
-    """
+    __slots__ = ()
 
     def contains(self, other: Point[int, Interval[int]]) -> bool:
         """
@@ -222,9 +220,7 @@ class VSegment(Point[int, Interval[int]]):
 
 
 class HSegment(Point[Interval[int], int]):
-    """
-    Represents a HSegment.
-    """
+    __slots__ = ()
 
     def contains(self, other: Point[Interval[int], int]) -> bool:
         """

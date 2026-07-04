@@ -32,8 +32,7 @@ class Point(Generic[T1, T2]):
     Generic Rectilinear Point class (▪️, ──, │, or 🔲)
     """
 
-    xcoord: T1
-    ycoord: T2
+    __slots__ = ("xcoord", "ycoord")
 
     def __init__(self, xcoord: T1, ycoord: T2) -> None:
         """
