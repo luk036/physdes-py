@@ -120,15 +120,15 @@ def visualize_routing_tree_svg(
         x_pos, y_pos = scale_coords(node.pt.xcoord, node.pt.ycoord)
 
         # Different colors and sizes for different node types
-        if node.type == NodeType.SOURCE:
+        if node.type == NodeType.Source:
             color = "red"
             radius = 8
             label = "S"
-        elif node.type == NodeType.STEINER:
+        elif node.type == NodeType.Steiner:
             color = "blue"
             radius = 6
             label = f"S{node.id.split('_')[1]}"
-        elif node.type == NodeType.TERMINAL:
+        elif node.type == NodeType.Terminal:
             color = "green"
             radius = 6
             label = f"T{node.id.split('_')[1]}"
@@ -353,15 +353,15 @@ def visualize_routing_tree3d_svg(
         x_pos, y_pos = scale_coords(node.pt.xcoord.xcoord, node.pt.ycoord)
 
         # Different colors and sizes for different node types
-        if node.type == NodeType.SOURCE:
+        if node.type == NodeType.Source:
             color = "red"
             radius = 8
             label = "S"
-        elif node.type == NodeType.STEINER:
+        elif node.type == NodeType.Steiner:
             color = "blue"
             radius = 6
             label = f"S{node.id.split('_')[1]}"
-        elif node.type == NodeType.TERMINAL:
+        elif node.type == NodeType.Terminal:
             color = "green"
             radius = 6
             label = f"T{node.id.split('_')[1]}"

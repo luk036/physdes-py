@@ -18,9 +18,9 @@ from physdes.skeleton import _logger
 class NodeType(Enum):
     """Enum representing different types of routing nodes."""
 
-    STEINER = auto()
-    TERMINAL = auto()
-    SOURCE = auto()
+    Steiner = auto()
+    Terminal = auto()
+    Source = auto()
 
 
 class RoutingNode:
@@ -50,15 +50,15 @@ class RoutingNode:
         """Add a child node to this node.
 
         Examples:
-            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
-            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+            >>> parent = RoutingNode("p1", NodeType.Steiner, Point(0, 0))
+            >>> child = RoutingNode("c1", NodeType.Terminal, Point(0, 0))
             >>> parent.add_child(child)
             >>> len(parent.children)
             1
             >>> child.parent == parent
             True
-            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
-            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+            >>> parent = RoutingNode("p1", NodeType.Steiner, Point(Point(0, 0), 0))
+            >>> child = RoutingNode("c1", NodeType.Terminal, Point(Point(0, 0), 0))
             >>> parent.add_child(child)
             >>> len(parent.children)
             1
@@ -72,16 +72,16 @@ class RoutingNode:
         """Remove a child node.
 
         Examples:
-            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
-            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+            >>> parent = RoutingNode("p1", NodeType.Steiner, Point(0, 0))
+            >>> child = RoutingNode("c1", NodeType.Terminal, Point(0, 0))
             >>> parent.add_child(child)
             >>> parent.remove_child(child)
             >>> len(parent.children)
             0
             >>> child.parent is None
             True
-            >>> parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
-            >>> child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+            >>> parent = RoutingNode("p1", NodeType.Steiner, Point(Point(0, 0), 0))
+            >>> child = RoutingNode("c1", NodeType.Terminal, Point(Point(0, 0), 0))
             >>> parent.add_child(child)
             >>> parent.remove_child(child)
             >>> len(parent.children)
@@ -101,10 +101,10 @@ class RoutingNode:
 
         Examples:
             >>> from physdes.point import Point
-            >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
+            >>> node = RoutingNode("n1", NodeType.Terminal, Point(10, 20))
             >>> node.get_position()
             Point(10, 20)
-            >>> node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
+            >>> node = RoutingNode("n1", NodeType.Terminal, Point(Point(10, 20), 20))
             >>> node.get_position()
             Point(Point(10, 20), 20)
         """
@@ -121,12 +121,12 @@ class RoutingNode:
 
         Examples:
             >>> from physdes.point import Point
-            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, Point(0, 0))
-            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, Point(3, 4))
+            >>> node1 = RoutingNode("n1", NodeType.Terminal, Point(0, 0))
+            >>> node2 = RoutingNode("n2", NodeType.Terminal, Point(3, 4))
             >>> node1.manhattan_distance(node2)
             7
-            >>> node1 = RoutingNode("n1", NodeType.TERMINAL, Point(Point(0, 0), 0))
-            >>> node2 = RoutingNode("n2", NodeType.TERMINAL, Point(Point(3, 4), 4))
+            >>> node1 = RoutingNode("n1", NodeType.Terminal, Point(Point(0, 0), 0))
+            >>> node2 = RoutingNode("n2", NodeType.Terminal, Point(Point(3, 4), 4))
             >>> node1.manhattan_distance(node2)
             11
         """
@@ -174,7 +174,7 @@ class GlobalRoutingTree:
             >>> tree3d.source.pt
             Point(Point(1, 1), 1)
         """
-        self.source = RoutingNode("source", NodeType.SOURCE, source_position)
+        self.source = RoutingNode("source", NodeType.Source, source_position)
         self.nodes = {"source": self.source}
         self.next_steiner_id = 1
         self.next_terminal_id = 1
@@ -211,7 +211,7 @@ class GlobalRoutingTree:
         steiner_id = f"steiner_{self.next_steiner_id}"
         self.next_steiner_id += 1
 
-        steiner_node = RoutingNode(steiner_id, NodeType.STEINER, pt)
+        steiner_node = RoutingNode(steiner_id, NodeType.Steiner, pt)
         self.nodes[steiner_id] = steiner_node
 
         if parent_id is None:
@@ -242,7 +242,7 @@ class GlobalRoutingTree:
         if not self.nodes:
             return self.source
 
-        target_node = RoutingNode("temp", NodeType.STEINER, point)
+        target_node = RoutingNode("temp", NodeType.Steiner, point)
         nearest_node = self.source
         min_distance = self.source.manhattan_distance(target_node)
 
@@ -286,7 +286,7 @@ class GlobalRoutingTree:
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
-        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
+        terminal_node = RoutingNode(terminal_id, NodeType.Terminal, point)
 
         if parent_id is None:
             # If no parent specified, find the nearest node
@@ -327,7 +327,7 @@ class GlobalRoutingTree:
             +-------------+      +----------+      +-----------+
 
         Args:
-            new_node_type: The type of the new node (NodeType.STEINER or NodeType.TERMINAL).
+            new_node_type: The type of the new node (NodeType.Steiner or NodeType.Terminal).
             point: The position of the new node.
             branch_start_id: The ID of the starting node of the branch.
             branch_end_id: The ID of the ending node of the branch.
@@ -340,7 +340,7 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> s1 = tree.insert_steiner_node(Point(1, 1))
             >>> t1 = tree.insert_terminal_node(Point(2, 2), s1)
-            >>> new_id = tree.insert_node_on_branch(NodeType.STEINER, Point(1, 2), s1, t1)
+            >>> new_id = tree.insert_node_on_branch(NodeType.Steiner, Point(1, 2), s1, t1)
             >>> new_id
             'steiner_2'
             >>> tree.nodes[new_id].parent.id == s1
@@ -350,7 +350,7 @@ class GlobalRoutingTree:
             >>> tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
             >>> s1 = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
             >>> t1 = tree3d.insert_terminal_node(Point(Point(2, 2), 2), s1)
-            >>> new_id = tree3d.insert_node_on_branch(NodeType.STEINER, Point(Point(1, 2), 2), s1, t1)
+            >>> new_id = tree3d.insert_node_on_branch(NodeType.Steiner, Point(Point(1, 2), 2), s1, t1)
             >>> new_id
             'steiner_2'
             >>> tree3d.nodes[new_id].parent.id == s1
@@ -371,14 +371,14 @@ class GlobalRoutingTree:
             )
 
         # Create new node
-        if new_node_type == NodeType.STEINER:
+        if new_node_type == NodeType.Steiner:
             node_id = f"steiner_{self.next_steiner_id}"
             self.next_steiner_id += 1
-        elif new_node_type == NodeType.TERMINAL:
+        elif new_node_type == NodeType.Terminal:
             node_id = f"terminal_{self.next_terminal_id}"
             self.next_terminal_id += 1
         else:
-            raise ValueError("Node type must be NodeType.STEINER or NodeType.TERMINAL")
+            raise ValueError("Node type must be NodeType.Steiner or NodeType.Terminal")
 
         new_node = RoutingNode(node_id, new_node_type, point)
         self.nodes[node_id] = new_node
@@ -553,7 +553,7 @@ class GlobalRoutingTree:
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
-        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
+        terminal_node = RoutingNode(terminal_id, NodeType.Terminal, point)
 
         parent_node, nearest_node = self._find_insertion_point(
             point, 10**12, keepouts
@@ -567,7 +567,7 @@ class GlobalRoutingTree:
 
             possible_path = parent_node.pt.hull_with(nearest_node.pt)
             nearest_pt = possible_path.nearest_to(point)  # type: ignore
-            new_node = RoutingNode(node_id, NodeType.STEINER, nearest_pt)
+            new_node = RoutingNode(node_id, NodeType.Steiner, nearest_pt)
             self.nodes[node_id] = new_node
 
             # Remove direct connection between parent and nearest node
@@ -617,7 +617,7 @@ class GlobalRoutingTree:
         terminal_id = f"terminal_{self.next_terminal_id}"
         self.next_terminal_id += 1
 
-        terminal_node = RoutingNode(terminal_id, NodeType.TERMINAL, point)
+        terminal_node = RoutingNode(terminal_id, NodeType.Terminal, point)
 
         parent_node, nearest_node = self._find_insertion_point(
             point, allowed_wirelength, keepouts
@@ -634,7 +634,7 @@ class GlobalRoutingTree:
 
             possible_path = parent_node.pt.hull_with(nearest_node.pt)
             nearest_pt = possible_path.nearest_to(point)
-            new_node = RoutingNode(node_id, NodeType.STEINER, nearest_pt)
+            new_node = RoutingNode(node_id, NodeType.Steiner, nearest_pt)
             self.nodes[node_id] = new_node
 
             # Remove direct connection between parent and nearest node
@@ -814,7 +814,7 @@ class GlobalRoutingTree:
             >>> len(terminals)
             2
         """
-        return [node for node in self.nodes.values() if node.type == NodeType.TERMINAL]
+        return [node for node in self.nodes.values() if node.type == NodeType.Terminal]
 
     def get_all_steiner_nodes(self) -> List["RoutingNode"]:
         """Get all Steiner nodes in the tree.
@@ -836,7 +836,7 @@ class GlobalRoutingTree:
             >>> len(steiners)
             2
         """
-        return [node for node in self.nodes.values() if node.type == NodeType.STEINER]
+        return [node for node in self.nodes.values() if node.type == NodeType.Steiner]
 
     def optimize_steiner_points(self) -> None:
         """Simple optimization to remove unnecessary Steiner points.

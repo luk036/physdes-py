@@ -102,11 +102,13 @@ class DelayCalculator(ABC):
     @abstractmethod
     def calculate_tapping_point(
         self,
-        node_left: TreeNode,
-        node_right: TreeNode,
         distance: int,
-    ) -> Tuple[int, float]:
-        """Calculate extra length based on skew"""
+        left_delay: float,
+        right_delay: float,
+        left_capacitance: float,
+        right_capacitance: float,
+    ) -> Tuple[int, int, float]:
+        """Calculate tapping point. Returns (extend_left, raw_extend_left, delay_left)."""
         pass
 
 
@@ -114,256 +116,97 @@ class LinearDelayCalculator(DelayCalculator):
     """Linear delay model: delay = k * length"""
 
     def __init__(self, delay_per_unit: float = 1.0, capacitance_per_unit: float = 1.0):
-        """
-        Initialize linear delay calculator
-
-        Args:
-            delay_per_unit: Delay per unit wire length
-            capacitance_per_unit: Capacitance per unit wire length
-
-        Examples:
-            >>> calc = LinearDelayCalculator(delay_per_unit=0.5, capacitance_per_unit=0.2)
-            >>> calc.delay_per_unit
-            0.5
-        """
         self.delay_per_unit = delay_per_unit
         self.capacitance_per_unit = capacitance_per_unit
 
     def calculate_wire_delay(self, length: int, load_capacitance: float) -> float:
-        """
-        Calculate wire delay using linear model
-
-        Args:
-            length: Wire length
-            load_capacitance: Load capacitance (ignored in linear model)
-
-        Returns:
-            Wire delay
-
-        Examples:
-            >>> calc = LinearDelayCalculator(delay_per_unit=0.5)
-            >>> calc.calculate_wire_delay(10, 5.0)
-            5.0
-        """
         return self.delay_per_unit * length
 
     def calculate_wire_delay_per_unit(self, load_capacitance: float) -> float:
-        """
-        Calculate delay per unit length
-
-        Args:
-            load_capacitance: Load capacitance (ignored in linear model)
-
-        Returns:
-            Delay per unit length
-
-        Examples:
-            >>> calc = LinearDelayCalculator(delay_per_unit=0.5)
-            >>> calc.calculate_wire_delay_per_unit(5.0)
-            0.5
-        """
         return self.delay_per_unit
 
     def calculate_wire_capacitance(self, length: int) -> float:
-        """
-        Calculate wire capacitance
-
-        Args:
-            length: Wire length
-
-        Returns:
-            Wire capacitance
-
-        Examples:
-            >>> calc = LinearDelayCalculator(capacitance_per_unit=0.2)
-            >>> calc.calculate_wire_capacitance(10)
-            2.0
-        """
         return self.capacitance_per_unit * length
 
     def calculate_tapping_point(
         self,
-        node_left: TreeNode,
-        node_right: TreeNode,
         distance: int,
-    ) -> Tuple[int, float]:
-        """Calculate extra length based on skew"""
+        left_delay: float,
+        right_delay: float,
+        left_capacitance: float,
+        right_capacitance: float,
+    ) -> Tuple[int, int, float]:
+        """Pure tapping-point calculation (no node mutation).
+        Returns (extend_left, raw_extend_left, delay_left)."""
         if distance == 0:
-            return 0, max(node_left.delay, node_right.delay)
+            return 0, 0, max(left_delay, right_delay)
 
-        # Compute required delay balancing
-        skew = node_right.delay - node_left.delay
-        extend_left = round((skew / self.delay_per_unit + distance) / 2)
-        delay_left = node_left.delay + extend_left * self.delay_per_unit
+        skew = right_delay - left_delay
+        raw = round((skew / self.delay_per_unit + distance) / 2)
+        delay_left = left_delay + raw * self.delay_per_unit
 
-        extend_left, delay_left = self._handle_boundary_conditions(
-            extend_left, distance, node_left, node_right, delay_left
-        )
-        return extend_left, delay_left
-
-    def _handle_boundary_conditions(
-        self,
-        extend_left: int,
-        distance: int,
-        node_left: TreeNode,
-        node_right: TreeNode,
-        delay_left: float,
-    ) -> Tuple[int, float]:
-        if extend_left < 0:
-            node_left.wire_length = 0
-            node_right.wire_length = distance
+        extend_left = raw
+        if raw < 0:
             extend_left = 0
-            delay_left = node_left.delay
-            node_right.need_elongation = True
-        elif extend_left > distance:
-            node_right.wire_length = 0
-            node_left.wire_length = distance
+            delay_left = left_delay
+        elif raw > distance:
             extend_left = distance
-            delay_left = node_right.delay
-            node_left.need_elongation = True
-        else:
-            node_left.wire_length = extend_left
-            node_right.wire_length = distance - extend_left
+            delay_left = right_delay
 
-        return extend_left, delay_left
+        return extend_left, raw, delay_left
 
 
 class ElmoreDelayCalculator(DelayCalculator):
     """Elmore delay model for RC trees"""
 
     def __init__(self, unit_resistance: float = 1.0, unit_capacitance: float = 1.0):
-        """
-        Initialize Elmore delay calculator
-
-        Args:
-            unit_resistance: Resistance per unit length
-            unit_capacitance: Capacitance per unit length
-
-        Examples:
-            >>> calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-            >>> calc.unit_resistance
-            0.1
-        """
         self.unit_resistance = unit_resistance
         self.unit_capacitance = unit_capacitance
 
     def calculate_wire_delay(self, length: int, load_capacitance: float) -> float:
-        """
-        Calculate Elmore delay for a wire segment
-
-        Args:
-            length: Wire length
-            load_capacitance: Load capacitance at the end of the wire
-
-        Returns:
-            Elmore delay
-
-        Examples:
-            >>> calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-            >>> calc.calculate_wire_delay(10, 5.0)
-            6.0
-        """
         wire_resistance = self.unit_resistance * length
         wire_capacitance = self.unit_capacitance * length
-        # Elmore delay: R_wire * (C_wire/2 + C_load)
         return wire_resistance * (wire_capacitance / 2 + load_capacitance)
 
     def calculate_wire_delay_per_unit(self, load_capacitance: float) -> float:
-        """
-        Calculate Elmore delay per unit length
-
-        Args:
-            load_capacitance: Load capacitance
-
-        Returns:
-            Delay per unit length
-
-        Examples:
-            >>> calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-            >>> calc.calculate_wire_delay_per_unit(5.0)
-            0.51
-        """
         return self.unit_resistance * (self.unit_capacitance / 2 + load_capacitance)
 
     def calculate_wire_capacitance(self, length: int) -> float:
-        """
-        Calculate wire capacitance
-
-        Args:
-            length: Wire length
-
-        Returns:
-            Wire capacitance
-
-        Examples:
-            >>> calc = ElmoreDelayCalculator(unit_capacitance=0.2)
-            >>> calc.calculate_wire_capacitance(10)
-            2.0
-        """
         return self.unit_capacitance * length
 
     def calculate_tapping_point(
         self,
-        node_left: TreeNode,
-        node_right: TreeNode,
         distance: int,
-    ) -> Tuple[int, float]:
-        """Calculate extra length based on skew"""
+        left_delay: float,
+        right_delay: float,
+        left_capacitance: float,
+        right_capacitance: float,
+    ) -> Tuple[int, int, float]:
+        """Pure tapping-point calculation (no node mutation).
+        Returns (extend_left, raw_extend_left, delay_left)."""
         if distance == 0:
-            return 0, max(node_left.delay, node_right.delay)
+            return 0, 0, max(left_delay, right_delay)
 
-        # Compute required delay balancing
-        skew = node_right.delay - node_left.delay
-        resistance = distance * self.unit_resistance
-        capacitance = distance * self.unit_capacitance
-        tapping_pt = (
-            skew + resistance * (node_right.capacitance + capacitance / 2.0)
-        ) / (
-            resistance * (capacitance + node_right.capacitance + node_left.capacitance)
+        skew = right_delay - left_delay
+        r = distance * self.unit_resistance
+        c_w = distance * self.unit_capacitance
+        z = (skew + r * (right_capacitance + c_w / 2.0)) / (
+            r * (c_w + right_capacitance + left_capacitance)
         )
-        extend_left = round(tapping_pt * distance)
-        res_left = extend_left * self.unit_resistance
-        cap_left = extend_left * self.unit_capacitance
-        delay_left = node_left.delay + res_left * (
-            cap_left / 2.0 + node_left.capacitance
-        )
+        raw = round(z * distance)
+        r_left = raw * self.unit_resistance
+        c_left = raw * self.unit_capacitance
+        delay_left = left_delay + r_left * (c_left / 2.0 + left_capacitance)
 
-        extend_left, delay_left = self._handle_boundary_conditions(
-            extend_left, distance, node_left, node_right, delay_left
-        )
-        return extend_left, delay_left
-
-    def _handle_boundary_conditions(
-        self,
-        extend_left: int,
-        distance: int,
-        node_left: TreeNode,
-        node_right: TreeNode,
-        delay_left: float,
-    ) -> Tuple[int, float]:
-        if extend_left < 0:
-            node_left.wire_length = 0
-            node_right.wire_length = distance
+        extend_left = raw
+        if raw < 0:
             extend_left = 0
-            delay_left = node_left.delay
-            node_right.need_elongation = True
-            _logger.debug(
-                "Warning: Right node needs elongation: extend_left < 0  => extend_left set to 0"
-            )
-        elif extend_left > distance:
-            node_right.wire_length = 0
-            node_left.wire_length = distance
+            delay_left = left_delay
+        elif raw > distance:
             extend_left = distance
-            delay_left = node_right.delay
-            node_left.need_elongation = True
-            _logger.debug(
-                "Warning: Left node needs elongation: extend_left > distance => extend_left set to distance"
-            )
-        else:
-            node_left.wire_length = extend_left
-            node_right.wire_length = distance - extend_left
+            delay_left = right_delay
 
-        return extend_left, delay_left
+        return extend_left, raw, delay_left
 
 
 class DMEAlgorithm:
@@ -529,22 +372,11 @@ class DMEAlgorithm:
         lo: int = 0,
         hi: Optional[int] = None,
     ) -> "TreeNode":
-        """
-        Build a balanced merging tree using recursive bipartition
-
-        Args:
-            nodes: List of tree nodes to merge (pre-sorted externally)
-            vertical: Sort axis toggle for balanced partition
-            lo: Start index in the nodes list (default 0)
-            hi: End index (exclusive) in the nodes list (default len(nodes))
-
-        Returns:
-            Root node of the merging tree
-        """
+        """Build balanced merging tree using median-partition (like Rust's select_nth_unstable_by)."""
         if hi is None:
             nodes.sort(
                 key=lambda n: n.position.ycoord
-            )  # initial sort by y
+            )
             hi = len(nodes)
 
         count = hi - lo
@@ -553,12 +385,22 @@ class DMEAlgorithm:
         if count == 0:
             raise ValueError("Empty node range")
 
-        # Partition at midpoint for balanced tree
         mid = lo + count // 2
-
-        # Reorder so left half < right half along the current axis
         key_fn = (lambda n: n.position.xcoord) if vertical else (lambda n: n.position.ycoord)
-        nodes[lo:hi] = sorted(nodes[lo:hi], key=key_fn)
+
+        # Median-partition in O(n): like Rust's select_nth_unstable_by / C++ nth_element
+        sub = nodes[lo:hi]
+        values = sorted([key_fn(n) for n in sub])
+        median_val = values[len(values) // 2]
+        lt = [n for n in sub if key_fn(n) < median_val]
+        eq = [n for n in sub if key_fn(n) == median_val]
+        gt = [n for n in sub if key_fn(n) > median_val]
+        need = count // 2 - len(lt)
+        if need > 0:
+            lt.extend(eq[:need])
+            eq = eq[need:]
+        gt = eq + gt
+        nodes[lo:hi] = lt + gt
 
         left_child = self._build_merging_tree(nodes, not vertical, lo, mid)
         right_child = self._build_merging_tree(nodes, not vertical, mid, hi)
@@ -581,13 +423,7 @@ class DMEAlgorithm:
         return parent
 
     def _compute_merging_segments(self, root: "TreeNode") -> None:
-        """
-        Compute merging segments for all nodes in bottom-up order,
-        storing each segment directly on the node via ``.segment``.
-
-        Args:
-            root: Root node of the merging tree
-        """
+        """Compute merging segments bottom-up, storing each on node.segment."""
 
         def compute_segment(
             node: "TreeNode",
@@ -604,12 +440,35 @@ class DMEAlgorithm:
 
             distance = left_ms.min_dist_with(right_ms)  # type: ignore[arg-type]
 
-            (
-                extend_left,
-                delay_left,
-            ) = self.delay_calculator.calculate_tapping_point(
-                node.left, node.right, distance
+            # Pure calculator: no node mutation inside
+            (extend_left, raw_extend_left, delay_left) = (
+                self.delay_calculator.calculate_tapping_point(
+                    distance, node.left.delay, node.right.delay,
+                    node.left.capacitance, node.right.capacitance,
+                )
             )
+
+            # Apply elongation logic (matches Rust/C++ TappingResult handling)
+            left_node = node.left
+            right_node = node.right
+            if raw_extend_left < 0:
+                left_node.wire_length = 0
+                right_node.wire_length = distance - raw_extend_left
+                right_node.need_elongation = True
+                _logger.debug(
+                    "Warning: Right node needs elongation: extend_left < 0  => extend_left set to 0"
+                )
+            elif raw_extend_left > distance:
+                right_node.wire_length = 0
+                left_node.wire_length = raw_extend_left
+                left_node.need_elongation = True
+                _logger.debug(
+                    "Warning: Left node needs elongation: extend_left > distance => extend_left set to distance"
+                )
+            else:
+                left_node.wire_length = extend_left
+                right_node.wire_length = distance - extend_left
+
             node.delay = delay_left
             merged_segment = left_ms.merge_with(right_ms, extend_left)  # type: ignore[arg-type]
             node.segment = merged_segment

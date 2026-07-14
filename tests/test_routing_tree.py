@@ -7,9 +7,9 @@ from physdes.router.routing_tree import GlobalRoutingTree, NodeType, RoutingNode
 # Tests for RoutingNode
 class TestRoutingNode:
     def test_init(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(10, 20))
         assert node.id == "n1"
-        assert node.type == NodeType.TERMINAL
+        assert node.type == NodeType.Terminal
         assert node.pt == Point(10, 20)
         assert node.children == []
         assert node.parent is None
@@ -17,48 +17,48 @@ class TestRoutingNode:
         assert node.delay == 0.0
 
     def test_add_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(0, 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(0, 0))
         parent.add_child(child)
         assert len(parent.children) == 1
         assert parent.children[0] == child
         assert child.parent == parent
 
     def test_remove_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(0, 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(0, 0))
         parent.add_child(child)
         parent.remove_child(child)
         assert len(parent.children) == 0
         assert child.parent is None
 
     def test_remove_non_existent_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(0, 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(0, 0))
-        non_child = RoutingNode("nc1", NodeType.TERMINAL, Point(0, 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(0, 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(0, 0))
+        non_child = RoutingNode("nc1", NodeType.Terminal, Point(0, 0))
         parent.add_child(child)
         parent.remove_child(non_child)
         assert len(parent.children) == 1  # Should not remove anything
         assert child.parent == parent
 
     def test_get_position(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(10, 20))
         assert node.get_position() == Point(10, 20)
 
     def test_manhattan_distance(self) -> None:
-        node1 = RoutingNode("n1", NodeType.TERMINAL, Point(0, 0))
-        node2 = RoutingNode("n2", NodeType.TERMINAL, Point(3, 4))
+        node1 = RoutingNode("n1", NodeType.Terminal, Point(0, 0))
+        node2 = RoutingNode("n2", NodeType.Terminal, Point(3, 4))
         assert node1.manhattan_distance(node2) == 7
         assert node2.manhattan_distance(node1) == 7
-        node3 = RoutingNode("n3", NodeType.TERMINAL, Point(-1, -1))
+        node3 = RoutingNode("n3", NodeType.Terminal, Point(-1, -1))
         assert node1.manhattan_distance(node3) == 2
 
     def test_str(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(10, 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(10, 20))
         assert str(node) == "TerminalNode(n1, (10, 20))"
-        node2 = RoutingNode("s1", NodeType.STEINER, Point(5, 5))
+        node2 = RoutingNode("s1", NodeType.Steiner, Point(5, 5))
         assert str(node2) == "SteinerNode(s1, (5, 5))"
-        node3 = RoutingNode("src", NodeType.SOURCE, Point(0, 0))
+        node3 = RoutingNode("src", NodeType.Source, Point(0, 0))
         assert str(node3) == "SourceNode(src, (0, 0))"
 
 
@@ -67,7 +67,7 @@ class TestGlobalRoutingTree:
     def test_init(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
         assert tree.source.id == "source"
-        assert tree.source.type == NodeType.SOURCE
+        assert tree.source.type == NodeType.Source
         assert tree.source.pt == Point(0, 0)
         assert tree.nodes["source"] == tree.source
         assert tree.next_steiner_id == 1
@@ -81,7 +81,7 @@ class TestGlobalRoutingTree:
         steiner_id = tree.insert_steiner_node(Point(1, 1))
         assert steiner_id == "steiner_1"
         assert tree.nodes[steiner_id].pt == Point(1, 1)
-        assert tree.nodes[steiner_id].type == NodeType.STEINER
+        assert tree.nodes[steiner_id].type == NodeType.Steiner
         assert tree.nodes[steiner_id].parent == tree.source
         assert tree.source.children[0] == tree.nodes[steiner_id]
         assert tree.next_steiner_id == 2
@@ -127,7 +127,7 @@ class TestGlobalRoutingTree:
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
         new_s_id = tree.insert_node_on_branch(
-            NodeType.STEINER, Point(1, 1), s1_id, s2_id
+            NodeType.Steiner, Point(1, 1), s1_id, s2_id
         )
 
         assert new_s_id == "steiner_3"
@@ -142,11 +142,11 @@ class TestGlobalRoutingTree:
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
         new_t_id = tree.insert_node_on_branch(
-            NodeType.TERMINAL, Point(1, 1), s1_id, s2_id
+            NodeType.Terminal, Point(1, 1), s1_id, s2_id
         )
 
         assert new_t_id == "terminal_1"
-        assert tree.nodes[new_t_id].type == NodeType.TERMINAL
+        assert tree.nodes[new_t_id].type == NodeType.Terminal
         assert tree.nodes[new_t_id].parent == tree.nodes[s1_id]
         assert tree.nodes[new_t_id].children[0] == tree.nodes[s2_id]
 
@@ -155,11 +155,11 @@ class TestGlobalRoutingTree:
         s1_id = tree.insert_steiner_node(Point(0, 0))
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
             tree.insert_node_on_branch(
-                NodeType.STEINER, Point(1, 1), s1_id, "non_existent"
+                NodeType.Steiner, Point(1, 1), s1_id, "non_existent"
             )
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
             tree.insert_node_on_branch(
-                NodeType.STEINER, Point(1, 1), "non_existent", s1_id
+                NodeType.Steiner, Point(1, 1), "non_existent", s1_id
             )
 
     def test_insert_node_on_branch_not_direct_child(self) -> None:
@@ -169,16 +169,16 @@ class TestGlobalRoutingTree:
         with pytest.raises(
             ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
         ):
-            tree.insert_node_on_branch(NodeType.STEINER, Point(1, 1), s1_id, s2_id)
+            tree.insert_node_on_branch(NodeType.Steiner, Point(1, 1), s1_id, s2_id)
 
     def test_insert_node_on_branch_invalid_node_type(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
         s1_id = tree.insert_steiner_node(Point(0, 0))
         s2_id = tree.insert_steiner_node(Point(2, 2), s1_id)
         with pytest.raises(
-            ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"
+            ValueError, match="Node type must be NodeType.Steiner or NodeType.Terminal"
         ):
-            tree.insert_node_on_branch(NodeType.SOURCE, Point(1, 1), s1_id, s2_id)
+            tree.insert_node_on_branch(NodeType.Source, Point(1, 1), s1_id, s2_id)
 
     def test_find_nearest_node(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
@@ -250,7 +250,7 @@ class TestGlobalRoutingTree:
         assert "terminal_2" in terminal_ids
         # Verify all returned nodes are actually terminals
         for terminal in terminals:
-            assert terminal.type == NodeType.TERMINAL
+            assert terminal.type == NodeType.Terminal
 
     def test_get_all_steiner_nodes(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
@@ -264,7 +264,7 @@ class TestGlobalRoutingTree:
         assert "steiner_2" in steiner_ids
         # Verify all returned nodes are actually steiner nodes
         for steiner in steiner_nodes:
-            assert steiner.type == NodeType.STEINER
+            assert steiner.type == NodeType.Steiner
 
     def test_optimize_steiner_points(self) -> None:
         tree = GlobalRoutingTree(Point(0, 0))
@@ -303,22 +303,22 @@ class TestGlobalRoutingTree:
 
     def test_node_type_enum_values(self) -> None:
         """Test that NodeType enum has the expected values"""
-        assert NodeType.STEINER.name == "STEINER"
-        assert NodeType.TERMINAL.name == "TERMINAL"
-        assert NodeType.SOURCE.name == "SOURCE"
+        assert NodeType.Steiner.name == "Steiner"
+        assert NodeType.Terminal.name == "Terminal"
+        assert NodeType.Source.name == "Source"
 
         # Test enum comparison
-        node = RoutingNode("test", NodeType.TERMINAL, Point(0, 0))
-        assert node.type == NodeType.TERMINAL
-        assert node.type != NodeType.STEINER
+        node = RoutingNode("test", NodeType.Terminal, Point(0, 0))
+        assert node.type == NodeType.Terminal
+        assert node.type != NodeType.Steiner
 
 
 # Tests for RoutingNode3d
 class TestRoutingNode3d:
     def test_init(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(Point(10, 20), 20))
         assert node.id == "n1"
-        assert node.type == NodeType.TERMINAL
+        assert node.type == NodeType.Terminal
         assert node.pt == Point(Point(10, 20), 20)
         assert node.children == []
         assert node.parent is None
@@ -326,48 +326,48 @@ class TestRoutingNode3d:
         assert node.delay == 0.0
 
     def test_add_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(Point(0, 0), 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(Point(0, 0), 0))
         parent.add_child(child)
         assert len(parent.children) == 1
         assert parent.children[0] == child
         assert child.parent == parent
 
     def test_remove_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(Point(0, 0), 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(Point(0, 0), 0))
         parent.add_child(child)
         parent.remove_child(child)
         assert len(parent.children) == 0
         assert child.parent is None
 
     def test_remove_non_existent_child(self) -> None:
-        parent = RoutingNode("p1", NodeType.STEINER, Point(Point(0, 0), 0))
-        child = RoutingNode("c1", NodeType.TERMINAL, Point(Point(0, 0), 0))
-        non_child = RoutingNode("nc1", NodeType.TERMINAL, Point(Point(0, 0), 0))
+        parent = RoutingNode("p1", NodeType.Steiner, Point(Point(0, 0), 0))
+        child = RoutingNode("c1", NodeType.Terminal, Point(Point(0, 0), 0))
+        non_child = RoutingNode("nc1", NodeType.Terminal, Point(Point(0, 0), 0))
         parent.add_child(child)
         parent.remove_child(non_child)
         assert len(parent.children) == 1  # Should not remove anything
         assert child.parent == parent
 
     def test_get_position(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(Point(10, 20), 20))
         assert node.get_position() == Point(Point(10, 20), 20)
 
     def test_manhattan_distance(self) -> None:
-        node1 = RoutingNode("n1", NodeType.TERMINAL, Point(Point(0, 0), 0))
-        node2 = RoutingNode("n2", NodeType.TERMINAL, Point(Point(3, 4), 4))
+        node1 = RoutingNode("n1", NodeType.Terminal, Point(Point(0, 0), 0))
+        node2 = RoutingNode("n2", NodeType.Terminal, Point(Point(3, 4), 4))
         assert node1.manhattan_distance(node2) == 11
         assert node2.manhattan_distance(node1) == 11
-        node3 = RoutingNode("n3", NodeType.TERMINAL, Point(Point(-1, -1), -1))
+        node3 = RoutingNode("n3", NodeType.Terminal, Point(Point(-1, -1), -1))
         assert node1.manhattan_distance(node3) == 3
 
     def test_str(self) -> None:
-        node = RoutingNode("n1", NodeType.TERMINAL, Point(Point(10, 20), 20))
+        node = RoutingNode("n1", NodeType.Terminal, Point(Point(10, 20), 20))
         assert str(node) == "TerminalNode(n1, ((10, 20), 20))"
-        node2 = RoutingNode("s1", NodeType.STEINER, Point(Point(5, 5), 5))
+        node2 = RoutingNode("s1", NodeType.Steiner, Point(Point(5, 5), 5))
         assert str(node2) == "SteinerNode(s1, ((5, 5), 5))"
-        node3 = RoutingNode("src", NodeType.SOURCE, Point(Point(0, 0), 0))
+        node3 = RoutingNode("src", NodeType.Source, Point(Point(0, 0), 0))
         assert str(node3) == "SourceNode(src, ((0, 0), 0))"
 
 
@@ -376,7 +376,7 @@ class TestGlobalRoutingTree3d:
     def test_init(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
         assert tree3d.source.id == "source"
-        assert tree3d.source.type == NodeType.SOURCE
+        assert tree3d.source.type == NodeType.Source
         assert tree3d.source.pt == Point(Point(0, 0), 0)
         assert tree3d.nodes["source"] == tree3d.source
         assert tree3d.next_steiner_id == 1
@@ -390,7 +390,7 @@ class TestGlobalRoutingTree3d:
         steiner_id = tree3d.insert_steiner_node(Point(Point(1, 1), 1))
         assert steiner_id == "steiner_1"
         assert tree3d.nodes[steiner_id].pt == Point(Point(1, 1), 1)
-        assert tree3d.nodes[steiner_id].type == NodeType.STEINER
+        assert tree3d.nodes[steiner_id].type == NodeType.Steiner
         assert tree3d.nodes[steiner_id].parent == tree3d.source
         assert tree3d.source.children[0] == tree3d.nodes[steiner_id]
         assert tree3d.next_steiner_id == 2
@@ -438,7 +438,7 @@ class TestGlobalRoutingTree3d:
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
         new_s_id = tree3d.insert_node_on_branch(
-            NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id
+            NodeType.Steiner, Point(Point(1, 1), 1), s1_id, s2_id
         )
 
         assert new_s_id == "steiner_3"
@@ -453,11 +453,11 @@ class TestGlobalRoutingTree3d:
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
         new_t_id = tree3d.insert_node_on_branch(
-            NodeType.TERMINAL, Point(Point(1, 1), 1), s1_id, s2_id
+            NodeType.Terminal, Point(Point(1, 1), 1), s1_id, s2_id
         )
 
         assert new_t_id == "terminal_1"
-        assert tree3d.nodes[new_t_id].type == NodeType.TERMINAL
+        assert tree3d.nodes[new_t_id].type == NodeType.Terminal
         assert tree3d.nodes[new_t_id].parent == tree3d.nodes[s1_id]
         assert tree3d.nodes[new_t_id].children[0] == tree3d.nodes[s2_id]
 
@@ -466,11 +466,11 @@ class TestGlobalRoutingTree3d:
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
             tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), s1_id, "non_existent"
+                NodeType.Steiner, Point(Point(1, 1), 1), s1_id, "non_existent"
             )
         with pytest.raises(ValueError, match="One or both branch nodes not found"):
             tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), "non_existent", s1_id
+                NodeType.Steiner, Point(Point(1, 1), 1), "non_existent", s1_id
             )
 
     def test_insert_node_on_branch_not_direct_child(self) -> None:
@@ -481,7 +481,7 @@ class TestGlobalRoutingTree3d:
             ValueError, match=f"{s2_id} is not a direct child of {s1_id}"
         ):
             tree3d.insert_node_on_branch(
-                NodeType.STEINER, Point(Point(1, 1), 1), s1_id, s2_id
+                NodeType.Steiner, Point(Point(1, 1), 1), s1_id, s2_id
             )
 
     def test_insert_node_on_branch_invalid_node_type(self) -> None:
@@ -489,10 +489,10 @@ class TestGlobalRoutingTree3d:
         s1_id = tree3d.insert_steiner_node(Point(Point(0, 0), 0))
         s2_id = tree3d.insert_steiner_node(Point(Point(2, 2), 2), s1_id)
         with pytest.raises(
-            ValueError, match="Node type must be NodeType.STEINER or NodeType.TERMINAL"
+            ValueError, match="Node type must be NodeType.Steiner or NodeType.Terminal"
         ):
             tree3d.insert_node_on_branch(
-                NodeType.SOURCE, Point(Point(1, 1), 1), s1_id, s2_id
+                NodeType.Source, Point(Point(1, 1), 1), s1_id, s2_id
             )
 
     def test_find_nearest_node(self) -> None:
@@ -565,7 +565,7 @@ class TestGlobalRoutingTree3d:
         assert "terminal_2" in terminal_ids
         # Verify all returned nodes are actually terminals
         for terminal in terminals:
-            assert terminal.type == NodeType.TERMINAL
+            assert terminal.type == NodeType.Terminal
 
     def test_get_all_steiner_nodes(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
@@ -579,7 +579,7 @@ class TestGlobalRoutingTree3d:
         assert "steiner_2" in steiner_ids
         # Verify all returned nodes are actually steiner nodes
         for steiner in steiner_nodes:
-            assert steiner.type == NodeType.STEINER
+            assert steiner.type == NodeType.Steiner
 
     def test_optimize_steiner_points(self) -> None:
         tree3d = GlobalRoutingTree(Point(Point(0, 0), 0))
@@ -622,11 +622,11 @@ class TestGlobalRoutingTree3d:
 
     def test_node_type_enum_values(self) -> None:
         """Test that NodeType enum has the expected values"""
-        assert NodeType.STEINER.name == "STEINER"
-        assert NodeType.TERMINAL.name == "TERMINAL"
-        assert NodeType.SOURCE.name == "SOURCE"
+        assert NodeType.Steiner.name == "Steiner"
+        assert NodeType.Terminal.name == "Terminal"
+        assert NodeType.Source.name == "Source"
 
         # Test enum comparison
-        node = RoutingNode("test", NodeType.TERMINAL, Point(Point(0, 0), 0))
-        assert node.type == NodeType.TERMINAL
-        assert node.type != NodeType.STEINER
+        node = RoutingNode("test", NodeType.Terminal, Point(Point(0, 0), 0))
+        assert node.type == NodeType.Terminal
+        assert node.type != NodeType.Steiner

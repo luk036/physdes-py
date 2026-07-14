@@ -63,11 +63,11 @@ def test_route3d_with_constraints_and_keepouts() -> None:
     ic(keepouts)
     all_nodes = list(router.tree.nodes.values())
     for node in all_nodes:
-        if node.type == NodeType.SOURCE:
+        if node.type == NodeType.Source:
             node_type = "NODE_TYPES.SOURCE"
-        elif node.type == NodeType.STEINER:
+        elif node.type == NodeType.Steiner:
             node_type = "NODE_TYPES.STEINER"
-        elif node.type == NodeType.TERMINAL:
+        elif node.type == NodeType.Terminal:
             node_type = "NODE_TYPES.TERMINAL"
         else:
             node_type = "NODE_TYPES.UNKNOWN"

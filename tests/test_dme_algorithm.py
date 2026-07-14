@@ -293,154 +293,68 @@ class TestIntegration:
 
 
 class TestLinearDelayCalculatorBoundaryConditions:
-    """Test boundary conditions in LinearDelayCalculator"""
+    """Test tapping point calculation in LinearDelayCalculator (pure function)"""
 
     def test_calculate_tapping_point_zero_distance(self) -> None:
-        """Test tapping point calculation with zero distance"""
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(0, 0), delay=1.5, capacitance=1.0)
-
-        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 0)
-
-        assert extend_left == 0
-        assert delay_left == max(node_left.delay, node_right.delay)
-
-    def test_calculate_tapping_point_negative_skew(self) -> None:
-        """Test tapping point with negative skew (left delay > right delay)"""
-        calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=5.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=1.0, capacitance=1.0)
-
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
-
-        # With large negative skew: skew = 1.0 - 5.0 = -4.0
-        # extend_left = round((-4.0 / 0.5 + 10) / 2) = round((-8 + 10) / 2) = round(1) = 1
-        # This is positive, so no boundary condition triggered
-        # Let's use an even larger skew to trigger negative extend_left
-        assert node_left.wire_length >= 0
-        assert node_right.wire_length >= 0
-
-    def test_calculate_tapping_point_positive_skew(self) -> None:
-        """Test tapping point with positive skew (right delay > left delay)"""
-        calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=5.0, capacitance=1.0)
-
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
-
-        # With large positive skew: skew = 5.0 - 1.0 = 4.0
-        # extend_left = round((4.0 / 0.5 + 10) / 2) = round((8 + 10) / 2) = round(9) = 9
-        # This is less than distance (10), so no boundary condition triggered
-        # Let's use an even larger skew to trigger extend_left > distance
-        assert node_left.wire_length >= 0
-        assert node_right.wire_length >= 0
+        el, raw, delay = calc.calculate_tapping_point(0, 1.0, 1.5, 1.0, 1.0)
+        assert el == 0
+        assert raw == 0
+        assert delay == 1.5
 
     def test_calculate_tapping_point_balanced(self) -> None:
-        """Test tapping point with balanced delays"""
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=1.0, capacitance=1.0)
+        el, raw, delay = calc.calculate_tapping_point(10, 1.0, 1.0, 1.0, 1.0)
+        assert el == 5
+        assert raw == 5
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
-
-        # Should split evenly
-        assert node_left.need_elongation is False
-        assert node_right.need_elongation is False
-        assert node_left.wire_length == 5
-        assert node_right.wire_length == 5
-
-    def test_handle_boundary_conditions_extend_left_negative(self) -> None:
-        """Test boundary condition when extend_left is negative"""
+    def test_calculate_tapping_point_right_slower(self) -> None:
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=2.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=1.0, capacitance=1.0)
+        el, raw, delay = calc.calculate_tapping_point(10, 1.0, 3.0, 1.0, 1.0)
+        assert el == 7
+        assert raw == 7
 
-        result = calc._handle_boundary_conditions(
-            extend_left=-5,
-            distance=10,
-            node_left=node_left,
-            node_right=node_right,
-            delay_left=1.0,
-        )
-
-        assert result == (0, 2.0)
-        assert node_left.wire_length == 0
-        assert node_right.wire_length == 10
-        assert node_right.need_elongation is True
-
-    def test_handle_boundary_conditions_extend_left_exceeds_distance(self) -> None:
-        """Test boundary condition when extend_left exceeds distance"""
+    def test_calculate_tapping_point_left_much_slower(self) -> None:
+        """When left delay >> right delay, raw becomes negative (elongation needed)"""
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.0)
+        el, raw, delay = calc.calculate_tapping_point(10, 10.0, 1.0, 1.0, 1.0)
+        assert el == 0  # clamped
+        assert raw == -4  # raw preserved for elongation
+        self.approx_eq(delay, 10.0)
 
-        result = calc._handle_boundary_conditions(
-            extend_left=15,
-            distance=10,
-            node_left=node_left,
-            node_right=node_right,
-            delay_left=2.0,
-        )
+    def test_calculate_tapping_point_right_much_slower(self) -> None:
+        """When right delay >> left delay, raw exceeds distance (elongation needed)"""
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        el, raw, delay = calc.calculate_tapping_point(10, 1.0, 10.0, 1.0, 1.0)
+        assert el == 10  # clamped
+        assert raw == 14  # raw preserved for elongation
+        self.approx_eq(delay, 10.0)
 
-        assert result == (10, 2.0)
-        assert node_left.wire_length == 10
-        assert node_right.wire_length == 0
-        assert node_left.need_elongation is True
+    def approx_eq(self, a: float, b: float) -> None:
+        assert abs(a - b) < 1e-9, f"{a} != {b}"
 
 
 class TestElmoreDelayCalculatorBoundaryConditions:
-    """Test boundary conditions in ElmoreDelayCalculator"""
+    """Test tapping point calculation in ElmoreDelayCalculator (pure function)"""
 
     def test_elmore_calculate_tapping_point_zero_distance(self) -> None:
-        """Test Elmore tapping point with zero distance"""
         calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(0, 0), delay=1.5, capacitance=1.0)
-
-        extend_left, delay_left = calc.calculate_tapping_point(node_left, node_right, 0)
-
-        assert extend_left == 0
-        assert delay_left == max(node_left.delay, node_right.delay)
+        el, raw, delay = calc.calculate_tapping_point(0, 1.0, 1.5, 1.0, 1.0)
+        assert el == 0
+        assert raw == 0
+        assert delay == 1.5
 
     def test_elmore_calculate_tapping_point_with_skew(self) -> None:
-        """Test Elmore tapping point with skew"""
         calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.5)
+        el, raw, delay = calc.calculate_tapping_point(10, 1.0, 2.0, 1.0, 1.5)
+        assert 0 <= el <= 10
+        assert delay >= 1.0
 
-        extend_left, delay_left = calc.calculate_tapping_point(
-            node_left, node_right, 10
-        )
-
-        # Should calculate appropriate tapping point
-        assert 0 <= extend_left <= 10
-        assert delay_left >= node_left.delay
-
-    def test_elmore_handle_boundary_conditions(self) -> None:
-        """Test Elmore boundary condition handling"""
+    def test_elmore_right_needs_elongation(self) -> None:
         calc = ElmoreDelayCalculator(unit_resistance=0.1, unit_capacitance=0.2)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.0)
-
-        result = calc._handle_boundary_conditions(
-            extend_left=15,
-            distance=10,
-            node_left=node_left,
-            node_right=node_right,
-            delay_left=2.0,
-        )
-
-        assert result == (10, 2.0)
-        assert node_left.wire_length == 10
-        assert node_right.wire_length == 0
-        assert node_left.need_elongation is True
+        el, raw, delay = calc.calculate_tapping_point(10, 10.0, 1.0, 1.0, 1.0)
+        assert el == 0
+        assert raw == -18  # matches Rust test_elmore_elongation_right_branch
 
 
 class TestDMEAlgorithmWithSource:
@@ -614,27 +528,39 @@ class TestDMEAlgorithmAdvanced:
         assert root.right is not None
 
 
-class TestDMEAlgorithmBoundaryConditions:
-    """Test boundary condition handling in LinearDelayCalculator"""
+class TestDMEAlgorithmElongation:
+    """Test elongation via calculator pure function (matching Rust tests)"""
 
-    def test_linear_handle_boundary_conditions_extend_left_negative(self) -> None:
-        """Test boundary condition when extend_left < 0"""
+    def test_linear_elongation_right_branch_calculator(self) -> None:
+        """Left delay >> right delay → raw negative → right branch elongated"""
         calc = LinearDelayCalculator(delay_per_unit=0.5)
-        node_left = TreeNode("n1", Point(0, 0), delay=1.0, capacitance=1.0)
-        node_right = TreeNode("n2", Point(10, 0), delay=2.0, capacitance=1.0)
+        el, raw, delay = calc.calculate_tapping_point(10, 10.0, 1.0, 0.0, 0.0)
+        assert el == 0
+        assert raw == -4
+        # Elongation: right_wire = distance - raw = 10 - (-4) = 14
+        assert (10 - raw) == 14
 
-        result = calc._handle_boundary_conditions(
-            extend_left=-5,
-            distance=10,
-            node_left=node_left,
-            node_right=node_right,
-            delay_left=1.0,
-        )
+    def test_linear_elongation_left_branch_calculator(self) -> None:
+        """Right delay >> left delay → raw > distance → left branch elongated"""
+        calc = LinearDelayCalculator(delay_per_unit=0.5)
+        el, raw, delay = calc.calculate_tapping_point(10, 1.0, 10.0, 0.0, 0.0)
+        assert el == 10
+        assert raw == 14
+        # Elongation: left_wire = raw = 14
+        assert raw == 14
 
-        assert result[0] == 0
-        assert node_left.wire_length == 0
-        assert node_right.wire_length == 10
-        assert node_right.need_elongation is True
+    def test_two_sinks_zero_skew_full_dme(self) -> None:
+        """Two symmetric sinks should have zero skew"""
+        sinks = [
+            Sink("s1", Point(0, 0), 1.0),
+            Sink("s2", Point(10, 0), 1.0),
+        ]
+        calc = LinearDelayCalculator(delay_per_unit=1.0, capacitance_per_unit=0.1)
+        dme = DMEAlgorithm(sinks, delay_calculator=calc)
+        root = dme.build_clock_tree()
+        analysis = dme.analyze_skew(root)
+        assert analysis["skew"] == 0.0
+        assert analysis["total_wirelength"] == 10
 
 
 class TestDMEAlgorithm3D:
