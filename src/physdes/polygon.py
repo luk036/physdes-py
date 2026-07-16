@@ -52,8 +52,8 @@ class Polygon(Generic[T]):
             >>> print(P._vecs[0])
             <0, -4>
         """
-        self._origin = origin
-        self._vecs = vecs
+        self._origin: Point[T, T] = origin
+        self._vecs: List[Vector2[T, T]] = vecs
 
     @classmethod
     def from_pointset(cls, pointset: PointSet) -> "Polygon[T]":
@@ -278,7 +278,7 @@ class Polygon(Generic[T]):
             >>> P.is_rectilinear()
             False
         """
-        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs
+        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs  # type: ignore[assignment]
         return all(
             p1.x == p2.x or p1.y == p2.y
             for p1, p2 in zip(pointset, pointset[1:] + [pointset[0]])
@@ -304,7 +304,7 @@ class Polygon(Generic[T]):
             >>> P.is_anticlockwise()
             True
         """
-        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs
+        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs  # type: ignore[assignment]
 
         if len(pointset) < 3:
             raise ValueError("Polygon must have at least 3 points")
@@ -354,7 +354,7 @@ class Polygon(Generic[T]):
         if is_anticlockwise is None:
             is_anticlockwise = self.is_anticlockwise()
 
-        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs
+        pointset: List[Vector2[T, T]] = [Vector2(0, 0)] + self._vecs  # type: ignore[assignment]
         # Check the cross product of all consecutive edges
         if is_anticlockwise:
             return all(

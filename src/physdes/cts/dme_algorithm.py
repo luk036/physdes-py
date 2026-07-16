@@ -74,7 +74,7 @@ class TreeNode:
         self.left = left
         self.right = right
         self.parent = parent
-        self.segment = None  # merging segment, set during DME
+        self.segment: Any = None  # merging segment, set during DME
         self.wire_length = wire_length
         self.delay = delay
         self.capacitance = capacitance
@@ -500,15 +500,18 @@ class DMEAlgorithm:
 
             if parent_segment is None:
                 node_segment = node.segment
+                if node_segment is None:
+                    return
                 if self.source is None:
                     node.position = node_segment.get_upper_corner()
                 else:
                     node.position = node_segment.nearest_point_to(self.source)
             else:
                 node_segment = node.segment
-                if node.parent:
-                    node.position = node_segment.nearest_point_to(node.parent.position)
-                    node.wire_length = node.position.min_dist_with(node.parent.position)
+                if node_segment is None or node.parent is None:
+                    return
+                node.position = node_segment.nearest_point_to(node.parent.position)
+                node.wire_length = node.position.min_dist_with(node.parent.position)
 
             embed_node(node.left, node.segment)
             embed_node(node.right, node.segment)
