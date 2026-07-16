@@ -374,9 +374,7 @@ class DMEAlgorithm:
     ) -> "TreeNode":
         """Build balanced merging tree using median-partition (like Rust's select_nth_unstable_by)."""
         if hi is None:
-            nodes.sort(
-                key=lambda n: n.position.ycoord
-            )
+            nodes.sort(key=lambda n: n.position.ycoord)
             hi = len(nodes)
 
         count = hi - lo
@@ -386,7 +384,9 @@ class DMEAlgorithm:
             raise ValueError("Empty node range")
 
         mid = lo + count // 2
-        key_fn = (lambda n: n.position.xcoord) if vertical else (lambda n: n.position.ycoord)
+        key_fn = (
+            (lambda n: n.position.xcoord) if vertical else (lambda n: n.position.ycoord)
+        )
 
         # Median-partition in O(n): like Rust's select_nth_unstable_by / C++ nth_element
         sub = nodes[lo:hi]
@@ -441,11 +441,16 @@ class DMEAlgorithm:
             distance = left_ms.min_dist_with(right_ms)  # type: ignore[arg-type]
 
             # Pure calculator: no node mutation inside
-            (extend_left, raw_extend_left, delay_left) = (
-                self.delay_calculator.calculate_tapping_point(
-                    distance, node.left.delay, node.right.delay,
-                    node.left.capacitance, node.right.capacitance,
-                )
+            (
+                extend_left,
+                raw_extend_left,
+                delay_left,
+            ) = self.delay_calculator.calculate_tapping_point(
+                distance,
+                node.left.delay,
+                node.right.delay,
+                node.left.capacitance,
+                node.right.capacitance,
             )
 
             # Apply elongation logic (matches Rust/C++ TappingResult handling)
