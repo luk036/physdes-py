@@ -22,13 +22,15 @@ Key components of the module include:
 """
 
 import doctest
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from physdes.manhattan_arc import ManhattanArc
 from physdes.manhattan_arc_3d import ManhattanArc3D
 from physdes.point import Point
-from physdes.skeleton import _logger
+
+_logger = logging.getLogger(__name__)
 
 
 class Sink:

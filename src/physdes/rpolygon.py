@@ -7,6 +7,7 @@ and convex decomposition.
 """
 
 # from enum import Enum
+import logging
 from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Any, Callable, Iterable, List, Tuple
@@ -17,8 +18,9 @@ from .point import Point
 
 # from .polygon import Polygon
 from .rdllist import RDllist
-from .skeleton import _logger
 from .vector2 import Vector2
+
+_logger = logging.getLogger(__name__)
 
 PointSet = List[Point[int, int]]
 

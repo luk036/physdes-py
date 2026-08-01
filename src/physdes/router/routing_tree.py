@@ -7,12 +7,14 @@ insertion, performance-constrained insertion, keepout avoidance, and basic
 tree analysis (wirelength, structure, path finding).
 """
 
+import logging
 from enum import Enum, auto
 from typing import Any, List, Optional, Tuple
 
 from physdes.interval import Interval
 from physdes.point import Point
-from physdes.skeleton import _logger
+
+_logger = logging.getLogger(__name__)
 
 
 class NodeType(Enum):
