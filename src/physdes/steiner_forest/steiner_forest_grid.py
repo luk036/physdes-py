@@ -198,8 +198,6 @@ def steiner_forest_grid(
 
     # Generate all possible grid edges: horizontal, vertical, diagonal
     edges: List[Tuple[int, int, float]] = []
-    # diag_cost = 1.0  # Unit cost for demonstration; alternatively use math.sqrt(2) for Euclidean distance
-    # diag_cost = 1.4142
     for row_idx in range(height):
         for col_idx in range(width):
             node = row_idx * width + col_idx
@@ -209,12 +207,6 @@ def steiner_forest_grid(
             # Vertical
             if row_idx + 1 < height:
                 edges.append((node, node + width, 1.0))
-            # # Diagonal \
-            # if row_idx + 1 < h and col_idx + 1 < w:
-            #     edges.append((node, node + w + 1, diag_cost))
-            # # Diagonal /
-            # if row_idx + 1 < h and col_idx - 1 >= 0:
-            #     edges.append((node, node + w - 1, diag_cost))
 
     paid: Dict[Tuple[int, int], float] = collections.defaultdict(float)
     F: List[Tuple[int, int, float]] = []  # list of (u, v, c) added in order
@@ -380,7 +372,6 @@ def generate_svg(
     svg_width = width * cell_size + 2 * margin
     svg_height = height * cell_size + 2 * margin
     svg = f'<svg width="{svg_width}" height="{svg_height}" xmlns="http://www.w3.org/2000/svg">'
-    svg = f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
 
     # Grid lines horizontal
     for row_idx in range(height + 1):
@@ -393,7 +384,6 @@ def generate_svg(
         svg += f'<line x1="{x_pos}" y1="{margin}" x2="{x_pos}" y2="{svg_height - margin}" stroke="gray" stroke-width="1"/>'
 
     # Nodes
-    sources | terminals
     for row_idx in range(height):
         for col_idx in range(width):
             cx = margin + col_idx * cell_size + cell_size / 2

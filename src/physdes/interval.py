@@ -117,21 +117,6 @@ class Interval(Generic[T]):
         """
         return self.lb > self.ub
 
-    # def copy(self) -> "Interval[T]":
-    #     """
-    #     The `copy` function returns a new instance of the same class with the same lower and upper
-    #     bounds.
-    #     :return: The `copy` method is returning a new instance of the same class as `self`, with the
-    #         same lower bound (`_lb`) and upper bound (`_ub`) values.
-    #
-    #     Examples:
-    #         >>> a = Interval(3, 4)
-    #         >>> print(a.copy())
-    #         [3, 4]
-    #     """
-    #     S = type(self)
-    #     return S(self._lb, self._ub)
-
     def measure(self) -> T:
         """
         Calculates the measure (length) of the interval.
@@ -620,8 +605,6 @@ class Interval(Generic[T]):
             >>> print(a.intersect_with(Interval(0, 2)))
             [3, 2]
         """
-        # `a` can be an Interval or int
-        # assert self.overlaps(obj)
         if isinstance(obj, Interval):
             return Interval(max(self.lb, obj.lb), min(self.ub, obj.ub))
         else:  # assume scalar
@@ -742,28 +725,6 @@ class Interval(Generic[T]):
             7
         """
         return self.ub
-
-    # def min_dist_change_with(self, obj: Union["Interval[T]", T]):
-    #     """[summary]
-    #
-    #     Args:
-    #         other ([type]): [description]
-    #
-    #     Returns:
-    #         [type]: [description]
-    #     """
-    #     if self < obj:
-    #         self._lb = self._ub
-    #         return min_dist_change(self._ub, obj)
-    #     if obj < self:
-    #         self._ub = self._lb
-    #         return min_dist_change(self._lb, obj)
-    #     S = type(self)
-    #     if isinstance(obj, S):
-    #         self = obj = self.intersect_with(obj)  # what???
-    #     else:  # assume scalar
-    #         self._ub = self._lb = obj
-    #     return 0
 
     def enlarge_with(self, alpha: T) -> "Interval[T]":
         """

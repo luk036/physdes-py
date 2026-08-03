@@ -438,7 +438,6 @@ class GlobalRoutingTree:
         if not self.nodes:
             return None, self.source
 
-        # nearest_node = self.source
         nearest_node = self.source
         parent_node = None
         min_distance = self.worst_wirelength  # initially
@@ -706,7 +705,6 @@ class GlobalRoutingTree:
             >>> tree3d.calculate_worst_wirelength()
             6
         """
-        # worst_length = 0
 
         def traverse(node: "RoutingNode") -> int:
             worst_length = 0

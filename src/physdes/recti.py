@@ -68,25 +68,6 @@ class Rectangle(Point[Interval[int], Interval[int]]):
         """
         return Point(self.xcoord.ub, self.ycoord.ub)
 
-    # def copy(self):
-    #     """[summary]
-    #
-    #     Returns:
-    #         [type]: [description]
-    #
-    #     Examples:
-    #         >>> a = Rectangle(Interval(3, 4), Interval(5, 6))
-    #         >>> print(a.copy())
-    #         ([3, 4], [5, 6])
-    #         >>> a3d = Rectangle(a, Interval(7, 8))  # Rectangle in 3d
-    #         >>> print(a3d.copy())
-    #         (([3, 4], [5, 6]), [7, 8])
-    #     """
-    #     return Rectangle(self.xcoord, self.ycoord)
-    #
-    # def __eq__(self, rhs) -> bool:
-    #     return self.xcoord == rhs.xcoord and self.ycoord == rhs.ycoord
-
     def flip(self) -> "Rectangle":
         """
         The `flip` function returns a new `Rectangle` object with the x and y coordinates swapped.

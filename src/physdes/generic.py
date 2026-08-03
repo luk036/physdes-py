@@ -234,50 +234,6 @@ def nearest(lhs: Any, rhs: Any) -> Any:
         return lhs
 
 
-# def min_dist_change(lhs, rhs):
-#     """
-#     The `min_dist_change` function calculates the minimum Manhattan distance change between two objects.
-#
-#     :param lhs: The `lhs` parameter represents the left-hand side value or object that you want to
-#     compare
-#     :param rhs: The `rhs` parameter represents the right-hand side value or object that we want to
-#     compare with the `lhs` parameter
-#     :return: The function `min_dist_change` returns the minimum Manhattan distance change between `lhs` and `rhs`.
-#
-#     Examples:
-#         >>> min_dist_change(1, 1)
-#         0
-#         >>> min_dist_change(1, 3)
-#         2
-#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(3, 4))
-#         1
-#         >>> min_dist_change(Interval(1, 2), 2)
-#         0
-#         >>> min_dist_change(Interval(1, 2), 4)
-#         2
-#         >>> min_dist_change(2, Interval(2, 3))
-#         0
-#         >>> min_dist_change(1, Interval(3, 4))
-#         2
-#         >>> min_dist_change(1, Interval(1, 2))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(1, 2))
-#         0
-#         >>> min_dist_change(Interval(1, 2), Interval(2, 3))
-#         0
-#         >>> min_dist_change(Interval(1, 2), 2)
-#         0
-#     """
-#     if hasattr(lhs, "min_dist_change_with"):
-#         return lhs.min_dist_change_with(rhs)
-#     elif hasattr(rhs, "min_dist_change_with"):
-#         return rhs.min_dist_change_with(lhs)
-#     else:  # assume scalar
-#         return abs(lhs - rhs)
-
-
 def measure_of(obj: Any) -> Union[int, Any]:
     """
     The `measure_of` function calculates the measure of an object.

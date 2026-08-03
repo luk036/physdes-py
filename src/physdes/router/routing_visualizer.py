@@ -286,7 +286,6 @@ def visualize_routing_tree3d_svg(
 
     # Get all coordinates to determine bounds
     all_x = [node.pt.xcoord.xcoord for node in all_nodes]
-    # all_z = [node.pt.xcoord.ycoord for node in all_nodes]
     all_y = [node.pt.ycoord for node in all_nodes]
 
     min_x, max_x = min(all_x), max(all_x)
@@ -415,20 +414,6 @@ def visualize_routing_tree3d_svg(
         )
         svg_parts.append(
             f'<text x="{x_pos + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
-        )
-
-    legend_items = [
-        ("Source", "red", 20, legend_y + 20),
-        ("Steiner", "blue", 20, legend_y + 40),
-        ("Terminal", "green", 20, legend_y + 60),
-    ]
-
-    for text, color, x_coord, y_pos in legend_items:
-        svg_parts.append(
-            f'<circle cx="{x_coord}" cy="{y_pos - 4}" r="4" fill="{color}" stroke="black"/>'
-        )
-        svg_parts.append(
-            f'<text x="{x_coord + 10}" y="{y_pos}" font-family="Arial" font-size="10">{text}</text>'
         )
 
     # Display statistics

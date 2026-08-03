@@ -53,14 +53,6 @@ class ManhattanArc(Generic[T1, T2]):
         pt_xformed = pt.rotates()
         return cls(pt_xformed.xcoord, pt_xformed.ycoord)
 
-    # @overload
-    # @staticmethod
-    # def construct(xcoord: int, ycoord: int) -> "ManhattanArc[int, int]": ...
-
-    # @overload
-    # @staticmethod
-    # def construct(xcoord: float, ycoord: float) -> "ManhattanArc[float, float]": ...
-
     @staticmethod
     def construct(
         xcoord: Union[int, float], ycoord: Union[int, float]
@@ -306,16 +298,3 @@ class ManhattanArc(Generic[T1, T2]):
         ic(self)
         ic(ms)
         return self._nearest_point_to(ms)
-
-        # distance = self.min_dist_with(ms)
-        # trr = ms.enlarge_with(distance)
-        # lb = self.impl.lower_corner()
-        # ub = self.impl.upper_corner()
-        # m = self.impl.get_center()
-        # if trr.impl.contains(lb):
-        #     m = lb
-        # elif trr.impl.contains(ub):
-        #     m = ub
-        # else:
-        #     ic(self)
-        # return m.inv_rotates()

@@ -539,8 +539,6 @@ def visualize_example_tree() -> Tuple[str, str, str]:
         LinearDelayCalculator,
     )
 
-    # coords = generate_random_points_for_sinks()
-    # example_sinks = [Sink(f"s{i}", Point(x * 100, y * 100), 1.0) for i, (x, y) in enumerate(coords)]
     # Generate example clock tree with both delay models
     example_sinks = [
         Sink("s1", Point(-100, 40), 1.0),
