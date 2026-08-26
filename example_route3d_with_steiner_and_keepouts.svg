@@ -57,12 +57,6 @@
 <text x="30" y="60" font-family="Arial" font-size="10">Steiner</text>
 <circle cx="20" cy="76" r="4" fill="green" stroke="black"/>
 <text x="30" y="80" font-family="Arial" font-size="10">Terminal</text>
-<circle cx="20" cy="36" r="4" fill="red" stroke="black"/>
-<text x="30" y="40" font-family="Arial" font-size="10">Source</text>
-<circle cx="20" cy="56" r="4" fill="blue" stroke="black"/>
-<text x="30" y="60" font-family="Arial" font-size="10">Steiner</text>
-<circle cx="20" cy="76" r="4" fill="green" stroke="black"/>
-<text x="30" y="80" font-family="Arial" font-size="10">Terminal</text>
 <text x="20" y="110" font-family="Arial" font-size="10" font-weight="bold">Statistics:</text>
 <text x="20" y="125" font-family="Arial" font-size="9">Total Nodes: 11</text>
 <text x="20" y="140" font-family="Arial" font-size="9">Terminals: 7</text>
