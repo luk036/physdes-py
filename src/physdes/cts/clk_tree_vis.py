@@ -14,6 +14,84 @@ from physdes.cts.dme_algorithm import Sink
 from physdes.point import Point
 
 
+class ClockTreeVisualizerBuilder:
+    """
+    Fluent builder for configuring a ClockTreeVisualizer.
+
+    Unset options fall back to the same defaults as ``ClockTreeVisualizer()``.
+
+    Examples:
+        >>> viz = ClockTreeVisualizerBuilder().margin(10).node_radius(5).build()
+        >>> viz.margin
+        10
+        >>> viz.node_radius
+        5
+    """
+
+    def __init__(self) -> None:
+        self._margin = 50
+        self._node_radius = 8
+        self._wire_width = 2
+        self._sink_color = "#4CAF50"
+        self._internal_color = "#2196F3"
+        self._root_color = "#F44336"
+        self._wire_color = "#666666"
+        self._text_color = "#333333"
+
+    def margin(self, value: int) -> "ClockTreeVisualizerBuilder":
+        """Set the margin around the drawing."""
+        self._margin = value
+        return self
+
+    def node_radius(self, value: int) -> "ClockTreeVisualizerBuilder":
+        """Set the radius of node circles."""
+        self._node_radius = value
+        return self
+
+    def wire_width(self, value: int) -> "ClockTreeVisualizerBuilder":
+        """Set the width of wire lines."""
+        self._wire_width = value
+        return self
+
+    def sink_color(self, value: str) -> "ClockTreeVisualizerBuilder":
+        """Set the color for sink nodes."""
+        self._sink_color = value
+        return self
+
+    def internal_color(self, value: str) -> "ClockTreeVisualizerBuilder":
+        """Set the color for internal nodes."""
+        self._internal_color = value
+        return self
+
+    def root_color(self, value: str) -> "ClockTreeVisualizerBuilder":
+        """Set the color for the root node."""
+        self._root_color = value
+        return self
+
+    def wire_color(self, value: str) -> "ClockTreeVisualizerBuilder":
+        """Set the color for wires."""
+        self._wire_color = value
+        return self
+
+    def text_color(self, value: str) -> "ClockTreeVisualizerBuilder":
+        """Set the color for text labels."""
+        self._text_color = value
+        return self
+
+    def build(self) -> "ClockTreeVisualizer":
+        """Build the configured ClockTreeVisualizer."""
+        return ClockTreeVisualizer(
+            margin=self._margin,
+            node_radius=self._node_radius,
+            wire_width=self._wire_width,
+            sink_color=self._sink_color,
+            internal_color=self._internal_color,
+            root_color=self._root_color,
+            wire_color=self._wire_color,
+            text_color=self._text_color,
+        )
+
+
 class ClockTreeVisualizer:
     """Visualizes clock trees in SVG format"""
 
@@ -56,6 +134,11 @@ class ClockTreeVisualizer:
         self.root_color = root_color
         self.wire_color = wire_color
         self.text_color = text_color
+
+    @classmethod
+    def builder(cls) -> ClockTreeVisualizerBuilder:
+        """Return a fluent builder for customizing the visualizer appearance."""
+        return ClockTreeVisualizerBuilder()
 
     def visualize_tree(
         self,
@@ -344,15 +427,17 @@ def create_interactive_svg(
         SVG string content
     """
 
-    visualizer = ClockTreeVisualizer(
-        margin=60,
-        node_radius=10,
-        wire_width=3,
-        sink_color="#2E7D32",
-        internal_color="#1565C0",
-        root_color="#C62828",
-        wire_color="#455A64",
-        text_color="#263238",
+    visualizer = (
+        ClockTreeVisualizer.builder()
+        .margin(60)
+        .node_radius(10)
+        .wire_width(3)
+        .sink_color("#2E7D32")
+        .internal_color("#1565C0")
+        .root_color("#C62828")
+        .wire_color("#455A64")
+        .text_color("#263238")
+        .build()
     )
 
     svg_content = visualizer.visualize_tree(
@@ -421,13 +506,15 @@ def create_comparison_visualization(
         '<rect width="100%" height="100%" fill="white"/>',
     ]
 
-    visualizer = ClockTreeVisualizer(
-        margin=40,
-        node_radius=6,
-        wire_width=2,
-        sink_color="#4CAF50",
-        internal_color="#2196F3",
-        root_color="#F44336",
+    visualizer = (
+        ClockTreeVisualizer.builder()
+        .margin(40)
+        .node_radius(6)
+        .wire_width(2)
+        .sink_color("#4CAF50")
+        .internal_color("#2196F3")
+        .root_color("#F44336")
+        .build()
     )
 
     for i, tree_data in enumerate(trees_data):

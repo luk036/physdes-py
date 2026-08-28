@@ -11,6 +11,7 @@ import pytest
 
 from physdes.cts.clk_tree_vis import (
     ClockTreeVisualizer,
+    ClockTreeVisualizerBuilder,
     create_comparison_visualization,
     create_delay_model_comparison,
     create_interactive_svg,
@@ -692,6 +693,51 @@ class TestVisualizationStyling:
         assert viz.margin == 100
         assert viz.node_radius == 15
         assert viz.wire_width == 5
+
+    def test_builder_configuration(self) -> None:
+        """Test builder produces a visualizer with the configured options"""
+        viz = (
+            ClockTreeVisualizer.builder()
+            .margin(20)
+            .node_radius(12)
+            .wire_width(4)
+            .sink_color("#112233")
+            .internal_color("#445566")
+            .root_color("#778899")
+            .wire_color("#AABBCC")
+            .text_color("#DDEEFF")
+            .build()
+        )
+
+        assert viz.margin == 20
+        assert viz.node_radius == 12
+        assert viz.wire_width == 4
+        assert viz.sink_color == "#112233"
+        assert viz.internal_color == "#445566"
+        assert viz.root_color == "#778899"
+        assert viz.wire_color == "#AABBCC"
+        assert viz.text_color == "#DDEEFF"
+
+    def test_builder_defaults_match_constructor(self) -> None:
+        """Test builder defaults are identical to the default constructor"""
+        from_builder = ClockTreeVisualizer.builder().build()
+        from_default = ClockTreeVisualizer()
+
+        assert from_builder.margin == from_default.margin
+        assert from_builder.node_radius == from_default.node_radius
+        assert from_builder.wire_width == from_default.wire_width
+        assert from_builder.sink_color == from_default.sink_color
+        assert from_builder.internal_color == from_default.internal_color
+        assert from_builder.root_color == from_default.root_color
+        assert from_builder.wire_color == from_default.wire_color
+        assert from_builder.text_color == from_default.text_color
+
+    def test_builder_is_fluent_and_reusable(self) -> None:
+        """Test builder setters return self for chaining"""
+        builder = ClockTreeVisualizerBuilder()
+        assert builder.margin(10) is builder
+        assert builder.node_radius(9) is builder
+        assert builder.wire_width(3) is builder
 
 
 if __name__ == "__main__":
