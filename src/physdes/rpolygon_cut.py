@@ -84,10 +84,67 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
     return v_min, vertical
 
 
-def rpolygon_cut_convex_recur(
-    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+def _find_convex_concave_point(
+    lst: PointSet, vstart: Dllink[int], cmp2: Callable[[int], bool]
+) -> Optional[Dllink[int]]:
+    """Concave-vertex hook for the convex variant: also requires a direction reversal."""
+    vcurr = vstart
+    vstop = vstart
+    while True:
+        vnext = vcurr.next
+        vprev = vcurr.prev
+        prev_point = lst[vprev.data]
+        curr_point = lst[vcurr.data]
+        next_point = lst[vnext.data]
+        vec1 = curr_point.displace(prev_point)
+        vec2 = next_point.displace(curr_point)
+        if vec1.x_ * vec2.x_ < 0 or vec1.y_ * vec2.y_ < 0:
+            area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+                next_point.xcoord - curr_point.xcoord
+            )
+            if cmp2(area_diff):
+                return vcurr
+        vcurr = vnext
+        if id(vcurr) == id(vstop):
+            break
+    return None  # convex
+
+
+def _find_explicit_concave_point(
+    lst: PointSet, vstart: Dllink[int], cmp2: Callable[[int], bool]
+) -> Optional[Dllink[int]]:
+    """Concave-vertex hook for the explicit variant: area sign only."""
+    vcurr = vstart
+    while True:
+        vnext = vcurr.next
+        vprev = vcurr.prev
+        prev_point = lst[vprev.data]
+        curr_point = lst[vcurr.data]
+        next_point = lst[vnext.data]
+        area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+            next_point.xcoord - curr_point.xcoord
+        )
+        if cmp2(area_diff):
+            return vcurr
+        vcurr = vnext
+        if id(vcurr) == id(vstart):
+            break
+    return None  # convex
+
+
+def rpolygon_cut_recur(
+    v1: Dllink[int],
+    lst: PointSet,
+    is_anticlockwise: bool,
+    rdll: RDllist,
+    find_concave_point: Callable[
+        [PointSet, Dllink[int], Callable[[int], bool]], Optional[Dllink[int]]
+    ],
+    has_triangle_base_case: bool,
 ) -> List[List[int]]:
     r"""
+    Template Method: shared recursive skeleton for the decomposition variants.
+
     .. svgbob::
        :align: center
 
@@ -107,43 +164,24 @@ def rpolygon_cut_convex_recur(
                         o───┘    │   o──────┘
                                  │   │
                                  o───┘
+
+    The convex / explicit variants share this skeleton and differ only in the
+    concave-vertex hook (`find_concave_point`) and whether a 3-node triangle
+    short-circuits the recursion (`has_triangle_base_case`).
     """
     v2 = v1.next
     v3 = v2.next
     if id(v3) == id(v1):  # rectangle
         vertices = [v1.data, v2.data]
         return [vertices]
-    if id(v3.next) == id(v1):  # monotone
+    if has_triangle_base_case and id(v3.next) == id(v1):  # monotone
         vertices = [v1.data, v2.data, v3.data]
         return [vertices]
 
-    def _find_concave_point(
-        vcurr: Dllink[int], cmp2: Callable[[int], bool]
-    ) -> Optional[Dllink[int]]:
-        vstop = vcurr
-        while True:
-            vnext = vcurr.next
-            vprev = vcurr.prev
-            prev_point = lst[vprev.data]
-            curr_point = lst[vcurr.data]
-            next_point = lst[vnext.data]
-            vec1 = curr_point.displace(prev_point)
-            vec2 = next_point.displace(curr_point)
-            if vec1.x_ * vec2.x_ < 0 or vec1.y_ * vec2.y_ < 0:
-                area_diff = (curr_point.ycoord - prev_point.ycoord) * (
-                    next_point.xcoord - curr_point.xcoord
-                )
-                if cmp2(area_diff):
-                    return vcurr
-            vcurr = vnext
-            if id(vcurr) == id(vstop):
-                break
-        return None  # convex
-
     vcurr = (
-        _find_concave_point(v1, lambda a: a > 0)
+        find_concave_point(lst, v1, lambda a: a > 0)
         if is_anticlockwise
-        else _find_concave_point(v1, lambda a: a < 0)
+        else find_concave_point(lst, v1, lambda a: a < 0)
     )
 
     if vcurr is None:  # convex
@@ -174,9 +212,64 @@ def rpolygon_cut_convex_recur(
         p_new = Point(curr_point.xcoord, p_min.ycoord)
     lst.append(p_new)
 
-    list1 = rpolygon_cut_convex_recur(vcurr, lst, is_anticlockwise, rdll)
-    list2 = rpolygon_cut_convex_recur(new_node, lst, is_anticlockwise, rdll)
+    list1 = rpolygon_cut_recur(
+        vcurr, lst, is_anticlockwise, rdll, find_concave_point, has_triangle_base_case
+    )
+    list2 = rpolygon_cut_recur(
+        new_node,
+        lst,
+        is_anticlockwise,
+        rdll,
+        find_concave_point,
+        has_triangle_base_case,
+    )
     return list1 + list2
+
+
+def rpolygon_cut_convex_recur(
+    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+) -> List[List[int]]:
+    """Convex decomposition variant (direction-reversal concave test, triangle base case)."""
+    return rpolygon_cut_recur(
+        v1,
+        lst,
+        is_anticlockwise,
+        rdll,
+        _find_convex_concave_point,
+        has_triangle_base_case=True,
+    )
+
+
+def rpolygon_cut_explicit_recur(
+    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
+) -> List[List[int]]:
+    """Explicit decomposition variant (area-sign concave test only)."""
+    return rpolygon_cut_recur(
+        v1,
+        lst,
+        is_anticlockwise,
+        rdll,
+        _find_explicit_concave_point,
+        has_triangle_base_case=False,
+    )
+
+
+def rpolygon_cut_impl(
+    lst: PointSet,
+    is_anticlockwise: bool,
+    recur: Callable[[Dllink[int], PointSet, bool, RDllist], List[List[int]]],
+) -> List[PointSet]:
+    """
+    Shared wrapper: runs the given recursive decomposer and converts the
+    resulting index lists back into point polygons.
+    """
+    rdll = RDllist(len(lst))
+    vertices_list = recur(rdll[0], lst, is_anticlockwise, rdll)
+    res = []
+    for item in vertices_list:
+        points = [lst[i] for i in item]
+        res.append(points)
+    return res
 
 
 def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
@@ -209,99 +302,7 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
         >>> len(hull)
         1
     """
-    rdll = RDllist(len(lst))
-    vertices_list = rpolygon_cut_convex_recur(rdll[0], lst, is_anticlockwise, rdll)
-    res = []
-    for item in vertices_list:
-        points = [lst[i] for i in item]
-        res.append(points)
-    return res
-
-
-def rpolygon_cut_explicit_recur(
-    v1: Dllink[int], lst: PointSet, is_anticlockwise: bool, rdll: RDllist
-) -> List[List[int]]:
-    r"""
-    .. svgbob::
-       :align: center
-
-                ┌──────────o
-                │          │
-           ┌────o~~~~~~~~~~└──────o
-           │                      │
-           │                      └─────────o
-           │                                │
-           o───────┐                        │
-                   │                        │
-                   o────┐                   │
-                        o────────┐          │
-                                 │          │
-                                 +~~~o──────┘
-                                 │   │
-                                 o───┘
-    """
-    v2 = v1.next
-    if id(v2.next) == id(v1):  # rectangle
-        vertices = [v1.data, v2.data]
-        return [vertices]
-
-    def find_explicit_concave_point(
-        vstart: Dllink[int], cmp2: Callable[[int], bool]
-    ) -> Optional[Dllink[int]]:
-        vcurr = vstart
-        while True:
-            vnext = vcurr.next
-            vprev = vcurr.prev
-            prev_point = lst[vprev.data]
-            curr_point = lst[vcurr.data]
-            next_point = lst[vnext.data]
-            area_diff = (curr_point.ycoord - prev_point.ycoord) * (
-                next_point.xcoord - curr_point.xcoord
-            )
-            if cmp2(area_diff):
-                return vcurr
-            vcurr = vnext
-            if id(vcurr) == id(vstart):
-                break
-        return None  # convex
-
-    vcurr = (
-        find_explicit_concave_point(v1, lambda a: a > 0)
-        if is_anticlockwise
-        else find_explicit_concave_point(v1, lambda a: a < 0)
-    )
-
-    if vcurr is None:  # convex
-        vertices = [v1.data] + [vi.data for vi in rdll.from_node(v1.data)]
-        return [vertices]
-
-    v_min, vertical = find_min_dist_point(lst, vcurr)
-    num_points = len(lst)
-    p_min = lst[v_min.data]
-    curr_point = lst[vcurr.data]
-    rdll.cycle.append(Dllink(num_points))
-    new_node = rdll[num_points]
-    if vertical:
-        new_node.next = vcurr.next
-        new_node.prev = v_min.prev
-        v_min.prev.next = new_node
-        vcurr.next.prev = new_node
-        vcurr.next = v_min
-        v_min.prev = vcurr
-        p_new = Point(p_min.xcoord, curr_point.ycoord)
-    else:
-        new_node.prev = vcurr.prev
-        new_node.next = v_min.next
-        v_min.next.prev = new_node
-        vcurr.prev.next = new_node
-        vcurr.prev = v_min
-        v_min.next = vcurr
-        p_new = Point(curr_point.xcoord, p_min.ycoord)
-    lst.append(p_new)
-
-    list1 = rpolygon_cut_explicit_recur(vcurr, lst, is_anticlockwise, rdll)
-    list2 = rpolygon_cut_explicit_recur(new_node, lst, is_anticlockwise, rdll)
-    return list1 + list2
+    return rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_convex_recur)
 
 
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
@@ -326,10 +327,4 @@ def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSe
     Returns:
         A list of point sets, where each point set represents a convex rectilinear polygon.
     """
-    rdll = RDllist(len(lst))
-    vertices_list = rpolygon_cut_explicit_recur(rdll[0], lst, is_anticlockwise, rdll)
-    res = list()
-    for item in vertices_list:
-        points = [lst[i] for i in item]
-        res.append(points)
-    return res
+    return rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_explicit_recur)
