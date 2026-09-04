@@ -24,27 +24,27 @@
 <circle cx="455.64903846153845" cy="357.6923076923077" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="463.64903846153845" y="361.6923076923077" font-family="Arial" font-size="10" fill="black">T2</text>
 <text x="455.64903846153845" y="346.6923076923077" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,1216)</text>
-<circle cx="455.64903846153845" cy="396.15384615384613" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="463.64903846153845" y="400.15384615384613" font-family="Arial" font-size="10" fill="black">S1</text>
-<text x="455.64903846153845" y="385.15384615384613" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,1344)</text>
 <circle cx="601.6826923076923" cy="550.0" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="609.6826923076923" y="554.0" font-family="Arial" font-size="10" fill="black">T3</text>
 <text x="601.6826923076923" y="539.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1863,1856)</text>
-<circle cx="382.63221153846155" cy="396.15384615384613" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="390.63221153846155" y="400.15384615384613" font-family="Arial" font-size="10" fill="black">S2</text>
-<text x="382.63221153846155" y="385.15384615384613" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,1344)</text>
+<circle cx="455.64903846153845" cy="396.15384615384613" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="463.64903846153845" y="400.15384615384613" font-family="Arial" font-size="10" fill="black">S1</text>
+<text x="455.64903846153845" y="385.15384615384613" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1377,1344)</text>
 <circle cx="382.63221153846155" cy="242.3076923076923" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="390.63221153846155" y="246.3076923076923" font-family="Arial" font-size="10" fill="black">T4</text>
 <text x="382.63221153846155" y="231.3076923076923" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,832)</text>
+<circle cx="382.63221153846155" cy="396.15384615384613" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="390.63221153846155" y="400.15384615384613" font-family="Arial" font-size="10" fill="black">S2</text>
+<text x="382.63221153846155" y="385.15384615384613" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1134,1344)</text>
 <circle cx="236.59855769230768" cy="50.0" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="244.59855769230768" y="54.0" font-family="Arial" font-size="10" fill="black">T5</text>
 <text x="236.59855769230768" y="39.0" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(648,192)</text>
-<circle cx="236.59855769230768" cy="88.46153846153845" r="6" fill="blue" stroke="black" stroke-width="1"/>
-<text x="244.59855769230768" y="92.46153846153845" font-family="Arial" font-size="10" fill="black">S3</text>
-<text x="236.59855769230768" y="77.46153846153845" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(648,320)</text>
 <circle cx="528.6658653846154" cy="88.46153846153845" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="536.6658653846154" y="92.46153846153845" font-family="Arial" font-size="10" fill="black">T6</text>
 <text x="528.6658653846154" y="77.46153846153845" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(1620,320)</text>
+<circle cx="236.59855769230768" cy="88.46153846153845" r="6" fill="blue" stroke="black" stroke-width="1"/>
+<text x="244.59855769230768" y="92.46153846153845" font-family="Arial" font-size="10" fill="black">S3</text>
+<text x="236.59855769230768" y="77.46153846153845" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(648,320)</text>
 <circle cx="674.6995192307692" cy="203.84615384615384" r="6" fill="green" stroke="black" stroke-width="1"/>
 <text x="682.6995192307692" y="207.84615384615384" font-family="Arial" font-size="10" fill="black">T7</text>
 <text x="674.6995192307692" y="192.84615384615384" font-family="Arial" font-size="8" fill="gray" text-anchor="middle">(2106,704)</text>
