@@ -564,7 +564,9 @@ class GlobalRoutingTree:
         """
         terminal_node = self._create_node(NodeType.Terminal, point)
 
-        parent_node, nearest_node = self._find_insertion_point(point, 10**12, keepouts)
+        parent_node, nearest_node = self._find_insertion_point(
+            point, 10**12, keepouts
+        )
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)

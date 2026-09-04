@@ -14,7 +14,6 @@ from typing import Any, Callable, Iterable, List, Tuple
 from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
-
 from .rdllist import RDllist
 from .vector2 import Vector2
 
