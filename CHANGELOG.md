@@ -1,5 +1,28 @@
 # Changelog
 
+## Version 0.8 (2026-09-04)
+
+### Features
+- **Builder pattern for ClockTreeVisualizer**: Added fluent `ClockTreeVisualizerBuilder` (`builder().margin(..).node_radius(..)...build()`) mirroring the C++/Rust siblings; `create_interactive_svg` and `create_comparison_visualization` now use it. (#311848a)
+
+### Refactoring
+- **Template Method in rpolygon cut decomposition**: Collapsed the duplicated convex/explicit recursive decomposers into one `rpolygon_cut_recur` Template Method plus shared `rpolygon_cut_impl`; public entry points unchanged. (#3666c82)
+- **Factory Method in global routing tree**: Concentrated 5 duplicated ID-generation/registration sites behind a single `_create_node` factory, preserving the `insert_node_on_branch` ValueError contract and ordering constraints. (#2e03732)
+- **Module-level logging**: Replaced `skeleton._logger` with standard module-level `logging`. (#6c863fd)
+
+### Testing & Code Quality
+- **Builder tests**: Added tests for builder output, default-equivalence and fluent reuse, plus a doctest on the builder class. (#311848a)
+- **mypy fixes**: Resolved None checks and type annotations. (#2a5f7b2)
+
+### Code Cleanup
+- **Removed AI slop**: Stripped boilerplate from docstrings and comments. (#587ad95)
+- **Deduped route3d legends**: Removed duplicated legend entries in example SVGs. (#678aa21)
+- **Stripped empty `entry_points`**: Removed dead section from setup.cfg. (#fd06baf)
+- **EOF newlines in example SVGs**: Added trailing newlines to 15 figures and formatted sources. (#23aaf16)
+
+### Build & CI
+- **RTD doc build**: Added matplotlib and numpy to `docs/requirements.txt`. (#41cad71)
+
 ## Version 0.7 (2026-07-16)
 
 ### Performance
