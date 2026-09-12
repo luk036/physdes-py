@@ -9,11 +9,24 @@ Read more about conftest.py under:
 
 # import pytest
 
+from pathlib import Path
 from random import randint
 
+import pytest
 from lds_gen.ilds import Halton
 
 from physdes.point import Point
+
+
+@pytest.fixture(autouse=True)
+def _isolate_cwd(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Run each test in a temporary working directory.
+
+    Several tests write SVG visualizations by relative filename; isolating the
+    cwd keeps those outputs in pytest's temporary directory instead of the
+    repository root.
+    """
+    monkeypatch.chdir(tmp_path)
 
 
 def generate_random_points(num_points: int = 7) -> tuple[Point, list[Point]]:
