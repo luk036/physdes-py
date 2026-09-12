@@ -119,11 +119,12 @@ def draw_congestion_map(
     print(f"Congestion map saved to {filename}")
 
 
-grid = [
-    [0, 20, 40, 80, 100],
-    [10, 30, 60, 90, 70],
-    [25, 50, 75, 95, 50],
-    [0, 15, 35, 55, 30],
-]
+if __name__ == "__main__":
+    grid = [
+        [0, 20, 40, 80, 100],
+        [10, 30, 60, 90, 70],
+        [25, 50, 75, 95, 50],
+        [0, 15, 35, 55, 30],
+    ]
 
-draw_congestion_map(grid, "my_congestion.svg")
+    draw_congestion_map(grid, "my_congestion.svg")

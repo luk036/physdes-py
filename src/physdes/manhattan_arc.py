@@ -8,8 +8,6 @@ operations during clock tree synthesis.
 
 from typing import TYPE_CHECKING, Any, Generic, TypeVar, Union
 
-from icecream import ic  # type: ignore
-
 from .generic import min_dist
 from .interval import enlarge
 from .point import Point
@@ -274,7 +272,6 @@ class ManhattanArc(Generic[T1, T2]):
             (700, 550)
         """
         nearest_pt = self.impl.nearest_to(manhattan_arc.impl)
-        ic(nearest_pt)
         return nearest_pt.inv_rotates()
 
     def nearest_point_to(self, other: Point[int, int]) -> Point[Any, Any]:
@@ -295,6 +292,4 @@ class ManhattanArc(Generic[T1, T2]):
         """
 
         ms = ManhattanArc.from_point(other)
-        ic(self)
-        ic(ms)
         return self._nearest_point_to(ms)

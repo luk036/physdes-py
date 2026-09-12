@@ -43,16 +43,21 @@ class UnionFind:
         """
         Find the representative (root) of the set containing idx.
 
-        Uses path compression to flatten the tree structure for faster future lookups.
+        Uses iterative path compression to flatten the tree structure for
+        faster future lookups.
 
         :param idx: The index to find.
         :type idx: int
         :return: The representative (root) of the set.
         :rtype: int
         """
-        if self.parent[idx] != idx:
-            self.parent[idx] = self.find(self.parent[idx])
-        return self.parent[idx]
+        parent = self.parent
+        root = idx
+        while parent[root] != root:
+            root = parent[root]
+        while parent[idx] != root:
+            parent[idx], idx = root, parent[idx]
+        return root
 
     def union(self, idx1: int, idx2: int) -> bool:
         """
@@ -208,13 +213,12 @@ def steiner_forest_grid(
             if row_idx + 1 < height:
                 edges.append((node, node + width, 1.0))
 
-    paid: Dict[Tuple[int, int], float] = collections.defaultdict(float)
+    paid: List[float] = [0.0] * len(edges)
     F: List[Tuple[int, int, float]] = []  # list of (u, v, c) added in order
 
     while True:
-        # Compute term_root
-        term_root: Dict[int, int] = {term: uf.find(term) for term in all_term}
-        # Check if feasible
+        find = uf.find
+        term_root: Dict[int, int] = {term: find(term) for term in all_term}
         feasible = True
         for source in pair_dict:
             root_source = term_root[source]
@@ -227,12 +231,10 @@ def steiner_forest_grid(
         if feasible:
             break
 
-        # Compute comp_terms
         comp_terms: Dict[int, Set[int]] = collections.defaultdict(set)
         for terminal in all_term:
             comp_terms[term_root[terminal]].add(terminal)
 
-        # Compute active_comps
         active_comps: Set[int] = set()
         for root, terms in comp_terms.items():
             is_active = False
@@ -246,14 +248,15 @@ def steiner_forest_grid(
             if is_active:
                 active_comps.add(root)
 
-        # Find min_delta and chosen edge(s)
         min_delta = float("inf")
-        candidate_es: List[Tuple[int, int, float, Tuple[int, int]]] = []
-        for node_u, node_v, cost in edges:
-            if uf.find(node_u) == uf.find(node_v):
+        chosen_idx = -1
+        chosen_u = chosen_v = 0
+        chosen_c = 0.0
+        for edge_idx, (node_u, node_v, cost) in enumerate(edges):
+            root_u = find(node_u)
+            root_v = find(node_v)
+            if root_u == root_v:
                 continue
-            root_u = uf.find(node_u)
-            root_v = uf.find(node_v)
             num = 0
             if root_u in active_comps:
                 num += 1
@@ -261,29 +264,23 @@ def steiner_forest_grid(
                 num += 1
             if num == 0:
                 continue
-            key = (min(node_u, node_v), max(node_u, node_v))
-            paid_val = paid[key]
+            paid_val = paid[edge_idx]
             if paid_val > cost:
                 continue
-            delta_e = (cost - paid_val) / num if num > 0 else float("inf")
+            delta_e = (cost - paid_val) / num
             if delta_e < min_delta:
                 min_delta = delta_e
-                candidate_es = [(node_u, node_v, cost, key)]
-            elif delta_e == min_delta:
-                candidate_es.append((node_u, node_v, cost, key))
+                chosen_idx = edge_idx
+                chosen_u, chosen_v, chosen_c = node_u, node_v, cost
 
         if min_delta == float("inf"):
             raise ValueError("Graph is not connected or cannot connect pairs")
 
-        # Pick first candidate
-        chosen_u, chosen_v, chosen_c, chosen_key = candidate_es[0]
-
-        # Update paid for all eligible edges
-        for u2, v2, c2 in edges:
-            if uf.find(u2) == uf.find(v2):
+        for edge_idx, (u2, v2, c2) in enumerate(edges):
+            ru2 = find(u2)
+            rv2 = find(v2)
+            if ru2 == rv2:
                 continue
-            ru2 = uf.find(u2)
-            rv2 = uf.find(v2)
             num2 = 0
             if ru2 in active_comps:
                 num2 += 1
@@ -291,39 +288,52 @@ def steiner_forest_grid(
                 num2 += 1
             if num2 == 0:
                 continue
-            key2 = (min(u2, v2), max(u2, v2))
-            paid[key2] += min_delta * num2
-            if paid[key2] > c2 + 1e-6:  # tolerance
-                paid[key2] = c2
+            new_paid = paid[edge_idx] + min_delta * num2
+            if new_paid > c2 + 1e-6:  # tolerance
+                new_paid = c2
+            paid[edge_idx] = new_paid
 
-        # Add chosen edge if not overpaid
-        if paid[chosen_key] >= chosen_c - 1e-6:
+        if paid[chosen_idx] >= chosen_c - 1e-6:
             F.append((chosen_u, chosen_v, chosen_c))
             uf.union(chosen_u, chosen_v)
 
-    # Reverse delete
-    F_pruned: List[Tuple[int, int, float]] = F[:]
-    for idx in range(len(F) - 1, -1, -1):
-        temp_uf = UnionFind(n)
-        for jdx in range(len(F)):
-            if jdx != idx:
-                node_u, node_v, _ = F[jdx]
-                temp_uf.union(node_u, node_v)
-        connected = True
-        for source in sources:
-            for target in pair_dict[source]:
-                if temp_uf.find(source) != temp_uf.find(target):
-                    connected = False
-                    break
-            if not connected:
-                break
-        if connected:
-            del F_pruned[idx]
+    # ``F`` is a forest: every added edge merges two distinct components. The
+    # minimal sub-forest preserving all required pair connections is therefore
+    # the union of the unique paths between each pair, so mark those paths
+    # directly instead of running O(|F|^2) reverse-delete passes that rebuild a
+    # UnionFind per candidate edge.
+    adjacency: Dict[int, List[Tuple[int, int]]] = collections.defaultdict(list)
+    for edge_idx, (node_u, node_v, _cost) in enumerate(F):
+        adjacency[node_u].append((node_v, edge_idx))
+        adjacency[node_v].append((node_u, edge_idx))
 
-    # Compute cost
+    needed: List[bool] = [False] * len(F)
+    for source in sources:
+        parent_edge: Dict[int, int] = {}
+        parent_node: Dict[int, int] = {}
+        visited: Set[int] = {source}
+        stack: List[int] = [source]
+        while stack:
+            node = stack.pop()
+            for neighbor, edge_idx in adjacency[node]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    parent_edge[neighbor] = edge_idx
+                    parent_node[neighbor] = node
+                    stack.append(neighbor)
+        for target in pair_dict[source]:
+            current = target
+            while current != source:
+                edge_idx = parent_edge[current]
+                needed[edge_idx] = True
+                current = parent_node[current]
+
+    F_pruned: List[Tuple[int, int, float]] = [
+        edge for edge_idx, edge in enumerate(F) if needed[edge_idx]
+    ]
+
     total_cost: float = sum(cost for _, _, cost in F_pruned)
 
-    # Identify Steiner nodes
     used_nodes: Set[int] = set()
     for node_u, node_v, _ in F_pruned:
         used_nodes.add(node_u)

@@ -386,23 +386,25 @@ class DMEAlgorithm:
             raise ValueError("Empty node range")
 
         mid = lo + count // 2
-        key_fn = (
-            (lambda n: n.position.xcoord) if vertical else (lambda n: n.position.ycoord)
-        )
 
-        # Median-partition in O(n): like Rust's select_nth_unstable_by / C++ nth_element
         sub = nodes[lo:hi]
-        values = sorted([key_fn(n) for n in sub])
-        median_val = values[len(values) // 2]
-        lt = [n for n in sub if key_fn(n) < median_val]
-        eq = [n for n in sub if key_fn(n) == median_val]
-        gt = [n for n in sub if key_fn(n) > median_val]
-        need = count // 2 - len(lt)
-        if need > 0:
-            lt.extend(eq[:need])
-            eq = eq[need:]
-        gt = eq + gt
-        nodes[lo:hi] = lt + gt
+        keys = (
+            [n.position.xcoord for n in sub]
+            if vertical
+            else [n.position.ycoord for n in sub]
+        )
+        median_val = sorted(keys)[count // 2]
+        lt: List["TreeNode"] = []
+        eq: List["TreeNode"] = []
+        gt: List["TreeNode"] = []
+        for node, value in zip(sub, keys):
+            if value < median_val:
+                lt.append(node)
+            elif value == median_val:
+                eq.append(node)
+            else:
+                gt.append(node)
+        nodes[lo:hi] = lt + eq + gt
 
         left_child = self._build_merging_tree(nodes, not vertical, lo, mid)
         right_child = self._build_merging_tree(nodes, not vertical, mid, hi)

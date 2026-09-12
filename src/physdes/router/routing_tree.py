@@ -454,6 +454,10 @@ class GlobalRoutingTree:
         min_distance = self.worst_wirelength  # initially
         valid_found = False
 
+        px = point.xcoord
+        py = point.ycoord
+        scalar_coords = isinstance(px, (int, float)) and isinstance(py, (int, float))
+
         def traverse(node: "RoutingNode") -> None:
             nonlocal nearest_node
             nonlocal parent_node
@@ -461,30 +465,82 @@ class GlobalRoutingTree:
             nonlocal valid_found
 
             for child in node.children:
-                possible_path = node.pt.hull_with(child.pt)
-                distance = possible_path.min_dist_with(point)
-                nearest_pt = possible_path.nearest_to(point)
+                if scalar_coords:
+                    nx = node.pt.xcoord
+                    ny = node.pt.ycoord
+                    cx = child.pt.xcoord
+                    cy = child.pt.ycoord
+                    if nx <= cx:
+                        lo_x, hi_x = nx, cx
+                    else:
+                        lo_x, hi_x = cx, nx
+                    if ny <= cy:
+                        lo_y, hi_y = ny, cy
+                    else:
+                        lo_y, hi_y = cy, ny
+                    if px < lo_x:
+                        distance = lo_x - px
+                        qx = lo_x
+                    elif px > hi_x:
+                        distance = px - hi_x
+                        qx = hi_x
+                    else:
+                        distance = 0
+                        qx = px
+                    if py < lo_y:
+                        distance += lo_y - py
+                        qy = lo_y
+                    elif py > hi_y:
+                        distance += py - hi_y
+                        qy = hi_y
+                    else:
+                        qy = py
+                    to_node = abs(nx - qx) + abs(ny - qy)
+                    at_node = qx == nx and qy == ny
+                    at_child = qx == cx and qy == cy
+                    if keepouts:
+                        nearest_pt = Point(qx, qy)
+                        path1 = nearest_pt.hull_with(point)
+                        path2 = nearest_pt.hull_with(node.pt)
+                        path3 = nearest_pt.hull_with(child.pt)
+                        block = False
+                        for keepout in keepouts:
+                            if (
+                                keepout.contains(nearest_pt)
+                                or keepout.blocks(path1)
+                                or keepout.blocks(path2)
+                                or keepout.blocks(path3)
+                            ):
+                                block = True
+                                break
+                        if block:
+                            continue
+                else:
+                    possible_path = node.pt.hull_with(child.pt)
+                    distance = possible_path.min_dist_with(point)
+                    nearest_pt = possible_path.nearest_to(point)
+                    to_node = node.pt.min_dist_with(nearest_pt)
+                    at_node = nearest_pt == node.pt
+                    at_child = nearest_pt == child.pt
 
-                if keepouts is not None:
-                    block = False
-                    path1 = nearest_pt.hull_with(point)
-                    path2 = nearest_pt.hull_with(node.pt)
-                    path3 = nearest_pt.hull_with(child.pt)
-                    for keepout in keepouts:
-                        if (
-                            keepout.contains(nearest_pt)
-                            or keepout.blocks(path1)
-                            or keepout.blocks(path2)
-                            or keepout.blocks(path3)
-                        ):
-                            block = True
-                            break
-                    if block:
-                        continue
+                    if keepouts:
+                        block = False
+                        path1 = nearest_pt.hull_with(point)
+                        path2 = nearest_pt.hull_with(node.pt)
+                        path3 = nearest_pt.hull_with(child.pt)
+                        for keepout in keepouts:
+                            if (
+                                keepout.contains(nearest_pt)
+                                or keepout.blocks(path1)
+                                or keepout.blocks(path2)
+                                or keepout.blocks(path3)
+                            ):
+                                block = True
+                                break
+                        if block:
+                            continue
 
-                path_length = (
-                    node.path_length + node.pt.min_dist_with(nearest_pt) + distance
-                )
+                path_length = node.path_length + to_node + distance
                 update = False
                 if path_length <= allowed_wirelength:
                     if valid_found:
@@ -504,10 +560,10 @@ class GlobalRoutingTree:
 
                 if update:
                     min_distance = distance
-                    if nearest_pt == node.pt:
+                    if at_node:
                         nearest_node = node
                         parent_node = None
-                    elif nearest_pt == child.pt:
+                    elif at_child:
                         nearest_node = child
                         parent_node = None
                     else:  # need to insert steiner point
@@ -564,9 +620,7 @@ class GlobalRoutingTree:
         """
         terminal_node = self._create_node(NodeType.Terminal, point)
 
-        parent_node, nearest_node = self._find_insertion_point(
-            point, 10**12, keepouts
-        )
+        parent_node, nearest_node = self._find_insertion_point(point, 10**12, keepouts)
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
@@ -732,11 +786,15 @@ class GlobalRoutingTree:
         if node is None:
             node = self.source
 
-        result = "  " * level + str(node) + "\n"
-        for child in node.children:
-            result += self.get_tree_structure(child, level + 1)
+        parts: List[str] = []
 
-        return result
+        def collect(current: "RoutingNode", depth: int) -> None:
+            parts.append("  " * depth + str(current) + "\n")
+            for child in current.children:
+                collect(child, depth + 1)
+
+        collect(node, level)
+        return "".join(parts)
 
     def find_path_to_source(self, node_id: str) -> List["RoutingNode"]:
         """Find the path from a node back to the source.
