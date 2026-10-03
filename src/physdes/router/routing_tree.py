@@ -179,7 +179,7 @@ class GlobalRoutingTree:
         self.nodes: dict[str, RoutingNode] = {}
         self.next_steiner_id = 1
         self.next_terminal_id = 1
-        self.worst_wirelength = 1e100
+        self.worst_wirelength = float("inf")
         self.source = self._create_node(NodeType.Source, source_position)
 
     def _create_node(self, node_type: NodeType, pt: Point[Any, Any]) -> "RoutingNode":
@@ -408,7 +408,7 @@ class GlobalRoutingTree:
     def _find_insertion_point(
         self,
         point: Point[Any, Any],
-        allowed_wirelength: int,
+        allowed_wirelength: float,
         keepouts: Optional[List[Point[Interval[int], Interval[int]]]] = None,
     ) -> Tuple[Optional["RoutingNode"], "RoutingNode"]:
         """
@@ -442,7 +442,7 @@ class GlobalRoutingTree:
             >>> tree = GlobalRoutingTree(Point(0, 0))
             >>> _ = tree.insert_terminal_node(Point(10, 0))
             >>> keepouts = [Point(Interval(4, 6), Interval(-1, 1))]
-            >>> parent, nearest = tree._find_insertion_point(Point(5, 5), 10**12, keepouts)
+            >>> parent, nearest = tree._find_insertion_point(Point(5, 5), float("inf"), keepouts)
             >>> nearest.pt
             Point(0, 0)
         """
@@ -620,7 +620,9 @@ class GlobalRoutingTree:
         """
         terminal_node = self._create_node(NodeType.Terminal, point)
 
-        parent_node, nearest_node = self._find_insertion_point(point, 10**12, keepouts)
+        parent_node, nearest_node = self._find_insertion_point(
+            point, self.worst_wirelength, keepouts
+        )
 
         if parent_node is None:
             nearest_node.add_child(terminal_node)
