@@ -1,5 +1,23 @@
 # Changelog
 
+## Version 0.9 (2026-10-09)
+
+### Performance
+- **Hot-path allocation & debug-I/O cuts**: `manhattan_arc` drops live `ic()` calls from the DME embedding path (and removes `icecream` from the runtime deps); `congestion_map` guards its demo behind `__main__`; `steiner_forest_grid` uses an iterative `UnionFind.find`, hoists finds 4→2 per edge, indexes `paid` by edge, and replaces O(|F|²) reverse-delete with union-of-paths pruning (~1.7×); `routing_tree` gets a scalar 2D fast path in `_find_insertion_point` and list-join `get_tree_structure` (~4× insertion); `dme_algorithm` precomputes keys and does a single-pass stable partition in `_build_merging_tree` (1.2–1.5×). Output-identical, verified by differential tests. (#10a4e9f)
+
+### Bug Fixes
+- **Unbounded wirelength sentinel**: `insert_terminal_with_steiner` previously ignored the tree's `worst_wirelength` by passing a literal `10**12`; the default is now `float('inf')` and Steiner insertion passes it through, so the unconstrained variant honors any caller-set bound. (#0947827)
+
+### Testing & Code Quality
+- **Temp-cwd isolation for tests**: Added an autouse `_isolate_cwd` fixture so visualization tests' relative-path SVG writes land in pytest's temporary directory instead of the repository root. (#409d422)
+- **New benchmarks**: Added `test_benchmarks.py` (5 benchmarks). (#10a4e9f)
+
+### Code Cleanup
+- **SVG EOF newlines**: Added trailing newlines to the example SVGs and formatted the sources. (#0c698e0)
+
+### Build & CI
+- **Dropped `icecream` runtime dep**: Removed it from `setup.cfg` and `requirements/default.txt`. (#10a4e9f)
+
 ## Version 0.8 (2026-09-04)
 
 ### Features
