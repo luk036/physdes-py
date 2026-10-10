@@ -1,0 +1,11 @@
+---
+# LaTeX/PDF rendering options. Loaded via `--metadata-file=latex.yaml`.
+# IEEEtran journal is the canonical two-column style; the algorithm packages
+# provide the pseudocode floats; colorlinks keeps the citations clickable.
+documentclass: IEEEtran
+classoption: journal
+link-citations: true
+colorlinks: true
+header-includes:
+  - '\usepackage{algorithm}'
+  - '\usepackage{algpseudocode}'

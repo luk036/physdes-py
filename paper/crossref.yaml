@@ -1,0 +1,13 @@
+---
+# pandoc-crossref options. Loaded via `--metadata-file=crossref.yaml`.
+# cref is off so references use plain \ref (IEEEtran-safe), and the prefixes are
+# spelled out rather than the terse defaults (fig./eq./sec.).
+cref: false
+figPrefix:
+  - "Fig."
+eqnPrefix:
+  - "Eq."
+tblPrefix:
+  - "Table"
+secPrefix:
+  - "Section"

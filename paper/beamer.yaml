@@ -1,0 +1,19 @@
+---
+# Metadata for the Beamer deck. Load with: --metadata-file=beamer.yaml
+# NOTE: `include-in-header` does NOT work from this file (pandoc parses it as
+# Markdown and mangles raw LaTeX); pass `--include-in-header=preamble.tex` on
+# the command line instead. Reproduce with:
+#   pandoc --citeproc -s -t beamer --slide-level=2 \
+#     --metadata-file=beamer.yaml --include-in-header=preamble.tex \
+#     phys_des-talk.md -o phys_des-talk.tex && lualatex phys_des-talk.tex (twice)
+title: "Algorithms and an Exact Cross-Language Toolkit for VLSI Physical Design Automation"
+subtitle: "Geometry, primal-dual routing, prescribed-skew clocking, and verification"
+author: "Wai-Shing Luk"
+institute: "physdes"
+date: "\\today"
+theme: "Frankfurt"
+aspectratio: 169
+bibliography: phys_des.bib
+csl: ieee.csl
+link-citations: true
+---
