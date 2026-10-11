@@ -11,7 +11,7 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 from physdes.polygon import Polygon
 from physdes.rpolygon import RPolygon, create_test_rpolygon, rpolygon_make_convex_hull
-from physdes.rpolygon_cut import rpolygon_cut_convex
+from physdes.rpolygon_cut import rpolygon_cut_convex, rpolygon_cut_explicit
 
 
 def test_rpolygon_cut_convex_area_preservation() -> None:
@@ -47,12 +47,22 @@ def test_rpolygon_cut_convex_area_preservation() -> None:
 
 def test_rpolygon_cut_explicit_area_preservation() -> None:
     """Test that rpolygon_cut_explicit preserves the signed area of the original polygon."""
-    # Skip this test for now as rpolygon_cut_explicit seems to have implementation issues
-    # with certain polygon types. The function may need to be fixed or the test approach
-    # needs to be adjusted to handle the specific requirements of this algorithm.
-    import pytest
+    # This clockwise L-shape previously drove rpolygon_cut_explicit into unbounded
+    # recursion; with the corrected concave-vertex test it matches the convex variant.
+    coords = [(0, 0), (0, 2), (1, 2), (1, 1), (2, 1), (2, 0)]
+    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
 
-    pytest.skip("rpolygon_cut_explicit has issues with certain polygon types")
+    original_area = Polygon.from_pointset(S).signed_area_x2
+    convex_pieces = rpolygon_cut_explicit(S, False)
+
+    total_area = 0
+    for piece in convex_pieces:
+        piece_polygon = Polygon.from_pointset(piece)
+        total_area += piece_polygon.signed_area_x2
+
+    assert (
+        total_area == original_area
+    ), f"Area mismatch: original={original_area}, sum={total_area}"
 
 
 def test_convex_decomposition_with_simple_polygon() -> None:
@@ -74,9 +84,6 @@ def test_convex_decomposition_with_simple_polygon() -> None:
     assert (
         total_area == original_area
     ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
-
-    # Note: rpolygon_cut_explicit seems to have issues with certain polygons
-    # so we're only testing with rpolygon_cut_convex for this simple case
 
 
 def test_convex_decomposition_with_complex_polygon() -> None:
@@ -112,9 +119,6 @@ def test_convex_decomposition_with_complex_polygon() -> None:
         total_area == original_area
     ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
 
-    # Note: rpolygon_cut_explicit seems to have issues with certain polygons
-    # so we're only testing with rpolygon_cut_convex for this complex case
-
 
 def test_convex_decomposition_with_clockwise_polygon() -> None:
     """Test area preservation with a clockwise-oriented polygon."""
@@ -135,9 +139,6 @@ def test_convex_decomposition_with_clockwise_polygon() -> None:
     assert (
         total_area == original_area
     ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
-
-    # Note: rpolygon_cut_explicit seems to have issues with certain polygons
-    # so we're only testing with rpolygon_cut_convex for this case
 
 
 def test_multiple_random_polygons() -> None:

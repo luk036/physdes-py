@@ -113,7 +113,7 @@ def _find_convex_concave_point(
 def _find_explicit_concave_point(
     lst: PointSet, vstart: Dllink[int], cmp2: Callable[[int], bool]
 ) -> Optional[Dllink[int]]:
-    """Concave-vertex hook for the explicit variant: area sign only."""
+    """Concave-vertex hook for the explicit variant: direction reversal and area sign."""
     vcurr = vstart
     while True:
         vnext = vcurr.next
@@ -121,11 +121,14 @@ def _find_explicit_concave_point(
         prev_point = lst[vprev.data]
         curr_point = lst[vcurr.data]
         next_point = lst[vnext.data]
-        area_diff = (curr_point.ycoord - prev_point.ycoord) * (
-            next_point.xcoord - curr_point.xcoord
-        )
-        if cmp2(area_diff):
-            return vcurr
+        vec1 = curr_point.displace(prev_point)
+        vec2 = next_point.displace(curr_point)
+        if vec1.x_ * vec2.x_ < 0 or vec1.y_ * vec2.y_ < 0:
+            area_diff = (curr_point.ycoord - prev_point.ycoord) * (
+                next_point.xcoord - curr_point.xcoord
+            )
+            if cmp2(area_diff):
+                return vcurr
         vcurr = vnext
         if id(vcurr) == id(vstart):
             break
