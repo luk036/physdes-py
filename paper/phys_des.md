@@ -611,12 +611,12 @@ is chosen from each merging segment---the point nearest the parent---which
 minimizes total wirelength. A merging segment is a Manhattan arc, the $L_1$
 analogue of a disc, and three operations suffice: the minimum distance between
 two arcs, the merge of two arcs offset by a tapping distance, and the nearest
-point of an arc to a query. The construction is $O(n\log n)$ for $n$ sinks
-when the partition midpoint is found by linear-time selection---the scheme the
-C++ and Rust ports use---and $O(n\log^2 n)$ when each partition is sorted, as
-the Python reference currently does; the cost is dominated by the balanced
-bipartition that builds the topology; @fig:clocklin and @fig:clockelmore show
-the result under each delay model.
+point of an arc to a query. The construction is $O(n\log n)$ for $n$ sinks:
+all three implementations find the partition midpoint by linear-time
+selection---median-of-medians in Python and `nth_element` /
+`select_nth_unstable` in the C++ and Rust ports---and the cost is dominated by
+the balanced bipartition that builds the topology; @fig:clocklin and
+@fig:clockelmore show the result under each delay model.
 
 The tapping point is where the delay model enters. For the *linear* model,
 $\text{delay} = k\cdot\text{length}$, the fraction of the inter-segment
@@ -789,10 +789,12 @@ The bounds are deliberately conservative: the primal-dual Steiner forest is
 $O(V^2)$ on a grid of $V$ nodes, convex decomposition is $O(n^2)$ in the worst
 case ($O(n\log n)$ when the cuts are balanced), the global router is $O(n^2k)$
 for $n$ terminals and $k$ keepouts, and the congestion map is a rendering pass
-with no congestion computation at all. One bound deserves an explicit
-correction: the DME construction is $O(n\log n)$ with linear-time midpoint
-selection---the scheme the C++ and Rust ports use---but the Python reference
-sorts each partition and is therefore $O(n\log^2 n)$. Scaling to a full-chip
+with no congestion computation at all. The DME construction is $O(n\log n)$ in
+all three implementations, each finding the partition midpoint by linear-time
+selection (median-of-medians in Python, `nth_element` / `select_nth_unstable`
+in the C++ and Rust ports); an earlier Python reference sorted each partition
+and was therefore $O(n\log^2 n)$, which a later output-preserving pass
+corrected. Scaling to a full-chip
 instance with $n>10^3$ sites or sinks remains open. The geometric routines are
 protected by the domain rule that a polygon has at most about a hundred
 vertices; the network routines are not, and restoring scalability there (locally
@@ -810,7 +812,7 @@ routine & time & note \\
 \hline
 primal-dual Steiner forest & $O(V^2)$ & $V$ = grid nodes; two edge scans per added edge \\
 convex decomposition & $O(n^2)$ worst, $O(n\log n)$ balanced & one $O(n)$ scan per cut \\
-DME build & $O(n\log n)$ selection; $O(n\log^2 n)$ sorting & Python sorts each partition \\
+DME build & $O(n\log n)$ & linear-time median selection in all three implementations \\
 global router & $O(n^2 k)$ & $n$ terminals, $k$ keepouts \\
 congestion map & $O(RC)$ & rendering only \\
 monotone hull / point-in-polygon & $O(n)$ & rectilinear convex hull and ray casting \\
@@ -868,7 +870,10 @@ returning, a tie-break that depended on set-iteration order, and an unsigned
 underflow in a Rust partition all surfaced only because a second implementation
 disagreed. Second, it constrains optimization to *output-preserving* changes,
 the discipline that let us remove the $O(n^3)$, $O(n^2)$ and $O(kE)$ hot paths
-while proving the results unchanged. The constraint is not a bar on
+while proving the results unchanged---and later to replace the Python
+$O(n\log^2 n)$ clock-tree bipartition with linear-time selection and to prune
+the Steiner-forest edge scans and the global router's insertion search. The
+constraint is not a bar on
 language-specific engineering: the ports use Rust `unsafe` and `no_std`, C++
 `constexpr`/concepts and link-time optimization, and Python `__slots__`, and
 they differ in data layout wherever the result is invariant. What is forbidden

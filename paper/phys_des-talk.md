@@ -197,7 +197,7 @@ $$c(F')=\sum_{S} y_S\,\lvert F'\cap\delta(S)\rvert \;\le\; 2\sum_{S} y_S \;\le\;
 
 - Bottom-up: annotate every node with its **merging segment**.
 - Top-down: place each node at the nearest point of its segment [@chao1992zero].
-- Handles **prescribed skew** (a generalization of zero-skew); $O(n\log n)$ with linear-time selection.
+- Handles **prescribed skew** (a generalization of zero-skew); $O(n\log n)$, linear-time median selection in all three implementations.
 
 ## Two Delay Models 📊
 
