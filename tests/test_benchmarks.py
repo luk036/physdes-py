@@ -13,6 +13,7 @@ are run with ``--benchmark-only`` (or ``--benchmark-enable``).
 
 from __future__ import annotations
 
+import random
 from typing import List, Tuple
 
 import pytest
@@ -80,9 +81,45 @@ _POLYGON_COORDS: List[Tuple[int, int]] = [
 ]
 
 
+def _make_dme_sinks(count: int) -> List[Sink]:
+    """Deterministic spread of ``count`` sinks used by the DME size sweep."""
+    rng = random.Random(0xD3E)
+    return [
+        Sink(
+            f"s{i}",
+            Point(rng.randrange(10_000), rng.randrange(10_000)),
+            1.0 + i * 0.01,
+        )
+        for i in range(count)
+    ]
+
+
+def _make_steiner_pairs(
+    size: int, num_pairs: int
+) -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
+    """Deterministic ``num_pairs`` distinct terminal pairs on a ``size``x``size`` grid."""
+    rng = random.Random(0x5EE2)
+    pairs: List[Tuple[Tuple[int, int], Tuple[int, int]]] = []
+    while len(pairs) < num_pairs:
+        src = (rng.randrange(size), rng.randrange(size))
+        dst = (rng.randrange(size), rng.randrange(size))
+        if src != dst:
+            pairs.append((src, dst))
+    return pairs
+
+
 def test_bench_steiner_forest_grid(benchmark: BenchmarkFixture) -> None:
     """Benchmark the primal-dual Steiner forest on an 8x8 grid with 5 pairs."""
     benchmark(steiner_forest_grid, _STEINER_HEIGHT, _STEINER_WIDTH, _STEINER_PAIRS)
+
+
+@pytest.mark.parametrize("size", [8, 12, 16])
+def test_bench_steiner_forest_grid_sweep(
+    benchmark: BenchmarkFixture, size: int
+) -> None:
+    """Benchmark the primal-dual Steiner forest across a range of grid sizes."""
+    pairs = _make_steiner_pairs(size, size)
+    benchmark(steiner_forest_grid, size, size, pairs)
 
 
 def test_bench_dme_build_clock_tree(benchmark: BenchmarkFixture) -> None:
@@ -91,6 +128,20 @@ def test_bench_dme_build_clock_tree(benchmark: BenchmarkFixture) -> None:
 
     def build() -> None:
         DMEAlgorithm(_DME_SINKS, delay_calculator=calculator).build_clock_tree()
+
+    benchmark(build)
+
+
+@pytest.mark.parametrize("count", [64, 256, 1024])
+def test_bench_dme_build_clock_tree_sweep(
+    benchmark: BenchmarkFixture, count: int
+) -> None:
+    """Benchmark DME tree construction across a range of sink counts."""
+    calculator = LinearDelayCalculator(delay_per_unit=0.3, capacitance_per_unit=0.1)
+    sinks = _make_dme_sinks(count)
+
+    def build() -> None:
+        DMEAlgorithm(sinks, delay_calculator=calculator).build_clock_tree()
 
     benchmark(build)
 
