@@ -47,6 +47,8 @@ class RoutingNode:
         self.capacitance = 0.0
         self.delay = 0.0
         self.path_length = 0  # for performance-driven routing
+        self.subtree_bbox: Optional[Tuple[Any, Any, Any, Any]] = None
+        self._recompute_bbox()
 
     def add_child(self, child_node: "RoutingNode") -> None:
         """Add a child node to this node.
@@ -69,6 +71,7 @@ class RoutingNode:
         """
         child_node.parent = self
         self.children.append(child_node)
+        self._refresh_bbox_upward()
 
     def remove_child(self, child_node: "RoutingNode") -> None:
         """Remove a child node.
@@ -94,6 +97,38 @@ class RoutingNode:
         if child_node in self.children:
             self.children.remove(child_node)
             child_node.parent = None
+            self._refresh_bbox_upward()
+
+    def _recompute_bbox(self) -> None:
+        """Recompute this node's subtree bounding box from its children."""
+        px = self.pt.xcoord
+        py = self.pt.ycoord
+        if not (isinstance(px, (int, float)) and isinstance(py, (int, float))):
+            self.subtree_bbox = None
+            return
+        xmin = xmax = px
+        ymin = ymax = py
+        for child in self.children:
+            bbox = child.subtree_bbox
+            if bbox is None:
+                self.subtree_bbox = None
+                return
+            if bbox[0] < xmin:
+                xmin = bbox[0]
+            if bbox[1] > xmax:
+                xmax = bbox[1]
+            if bbox[2] < ymin:
+                ymin = bbox[2]
+            if bbox[3] > ymax:
+                ymax = bbox[3]
+        self.subtree_bbox = (xmin, xmax, ymin, ymax)
+
+    def _refresh_bbox_upward(self) -> None:
+        """Recompute subtree bounding boxes from this node up to the root."""
+        node: Optional["RoutingNode"] = self
+        while node is not None:
+            node._recompute_bbox()
+            node = node.parent
 
     def get_position(self) -> Point[int, int]:
         """Get the position of the node.
@@ -463,6 +498,27 @@ class GlobalRoutingTree:
             nonlocal parent_node
             nonlocal min_distance
             nonlocal valid_found
+
+            if valid_found:
+                # A subtree's path_length and bounding box are lower bounds on
+                # every candidate inside it, and an update needs distance <
+                # min_distance, so an equal-or-farther subtree cannot improve.
+                if node.path_length > allowed_wirelength:
+                    return
+                bbox = node.subtree_bbox
+                if scalar_coords and bbox is not None:
+                    bdx = 0
+                    if px < bbox[0]:
+                        bdx = bbox[0] - px
+                    elif px > bbox[1]:
+                        bdx = px - bbox[1]
+                    bdy = 0
+                    if py < bbox[2]:
+                        bdy = bbox[2] - py
+                    elif py > bbox[3]:
+                        bdy = py - bbox[3]
+                    if bdx + bdy >= min_distance:
+                        return
 
             for child in node.children:
                 if scalar_coords:
