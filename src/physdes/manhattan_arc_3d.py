@@ -1,5 +1,5 @@
 """
-ManhattanArc3D Class (Not working)
+ManhattanArc3D Class
 
 This code defines a class called ManhattanArc3D, which represents a geometric object in a 3D space.
 The purpose of this class is to handle operations on points, segments, or regions that are
