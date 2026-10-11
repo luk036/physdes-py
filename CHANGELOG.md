@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased
+
+### Performance
+- **True linear-time DME median selection**: `_build_merging_tree` found the partition median with `sorted(keys)[count // 2]`, making the recursion `O(n log²n)`. It now uses a median-of-medians `_select_kth` helper, restoring the `O(n log n)` construction the Rust/C++ ports achieve; the resulting tree stays bit-identical.
+- **Cheaper Steiner-forest scans**: `steiner_forest_grid` caches every node's component root once per outer iteration (instead of calling `find` per edge, twice) and retires edges that become internal to a merged component, using small-to-large component member lists so the two per-iteration scans shrink as unions proceed. Output is bit-identical (verified against a differential corpus). The plain heap/event-clock reformulation was rejected because lazy `paid` materialisation changes float rounding and can flip choices.
+- **Pruned global-router insertion search**: `GlobalRoutingTree._find_insertion_point` now maintains per-node subtree bounding boxes and prunes the depth-first scan with a path-length bound and a bounding-box lower bound once a valid candidate has been found (~5× on the query for an 800-terminal tree). DFS order and all arithmetic are unchanged, so the result is bit-identical.
+- **Scale-sweep benchmarks**: `test_benchmarks.py` now parametrizes the DME and Steiner-forest benchmarks over input size, exposing the asymptotic growth curves that the fixed-size micro-benchmarks could not.
+
+### Bug Fixes
+- **Stale complexity claim**: Corrected the `_build_merging_tree` docstring and the 0.7 changelog entry, which claimed `sorted()` had been replaced by median selection when the implementation still sorted each partition.
+- **`rpolygon_cut_explicit` infinite recursion**: The explicit decomposer's concave-vertex hook omitted the direction-reversal guard used by the convex variant, so concave polygons (such as a clockwise L-shape) drove the recursion unboundedly or produced degenerate pieces. Added the guard and replaced the skipped placeholder test with a real regression test.
+- **Stale `ManhattanArc3D` "(Not working)" docstring**: The class is functional (all 14 doctests pass); the label was outdated.
+- **Removed `tests/run_failing_tests.py`**: It pointed at `tests/test_geometric_hypothesis.py`, which does not exist.
+
 ## Version 0.9 (2026-10-09)
 
 ### Performance
@@ -47,7 +61,7 @@
 - **`__slots__` on core geometry classes**: Added `__slots__` to `Point`, `ManhattanArc`, `Polygon`, `RPolygon`, `TreeNode`, `Sink` — saving ~176 bytes per instance. Most impactful on `Point` which is used everywhere in the codebase. (#64242a6)
 
 ### Bug Fixes
-- **DME alignment with Rust**: Fixed elongation calculation with `raw_extend_left` to match Rust/C++. Replaced `sorted()` with median-partition in `build_merging_tree` (matches Rust `nth_element`). (#0267be3)
+- **DME alignment with Rust**: Fixed elongation calculation with `raw_extend_left` to match Rust/C++. (#0267be3)
 - **NodeType rename**: Changed `ALL_CAPS` enum values to `PascalCase` to align with Rust naming conventions. (#0267be3)
 
 ### Documentation
