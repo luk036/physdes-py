@@ -201,24 +201,46 @@ def steiner_forest_grid(
 
     all_term: Set[int] = sources | terminals
 
-    # Generate all possible grid edges: horizontal, vertical, diagonal
+    # Generate all possible grid edges: horizontal and vertical
     edges: List[Tuple[int, int, float]] = []
+    incident: List[List[int]] = [[] for _ in range(n)]
     for row_idx in range(height):
         for col_idx in range(width):
             node = row_idx * width + col_idx
             # Horizontal
             if col_idx + 1 < width:
+                incident[node].append(len(edges))
+                incident[node + 1].append(len(edges))
                 edges.append((node, node + 1, 1.0))
             # Vertical
             if row_idx + 1 < height:
+                incident[node].append(len(edges))
+                incident[node + width].append(len(edges))
                 edges.append((node, node + width, 1.0))
 
     paid: List[float] = [0.0] * len(edges)
     F: List[Tuple[int, int, float]] = []  # list of (u, v, c) added in order
 
+    # An edge internal to a merged component can never be chosen again, so retire
+    # it and shrink the scan set. ``dead_pending`` drives an amortised rebuild of
+    # ``alive_list``; ``comp_nodes`` holds each component's members so a union can
+    # walk the smaller side to retire the edges that just became internal.
+    alive_edge: List[bool] = [True] * len(edges)
+    alive_list: List[int] = list(range(len(edges)))
+    dead_pending: int = 0
+    comp_nodes: List[List[int]] = [[node] for node in range(n)]
+
     while True:
-        find = uf.find
-        term_root: Dict[int, int] = {term: find(term) for term in all_term}
+        if dead_pending * 4 > len(alive_list):
+            alive_list = [edge_idx for edge_idx in alive_list if alive_edge[edge_idx]]
+            dead_pending = 0
+
+        # Cache every node's component root once per outer iteration. Both scans
+        # below only read find() results, and no union happens between them, so
+        # this is identical to calling find() per edge, just far cheaper.
+        roots: List[int] = [uf.find(node) for node in range(n)]
+
+        term_root: Dict[int, int] = {term: roots[term] for term in all_term}
         feasible = True
         for source in pair_dict:
             root_source = term_root[source]
@@ -248,19 +270,24 @@ def steiner_forest_grid(
             if is_active:
                 active_comps.add(root)
 
+        active_flag: List[bool] = [False] * n
+        for root in active_comps:
+            active_flag[root] = True
+
         min_delta = float("inf")
         chosen_idx = -1
         chosen_u = chosen_v = 0
         chosen_c = 0.0
-        for edge_idx, (node_u, node_v, cost) in enumerate(edges):
-            root_u = find(node_u)
-            root_v = find(node_v)
+        for edge_idx in alive_list:
+            node_u, node_v, cost = edges[edge_idx]
+            root_u = roots[node_u]
+            root_v = roots[node_v]
             if root_u == root_v:
                 continue
             num = 0
-            if root_u in active_comps:
+            if active_flag[root_u]:
                 num += 1
-            if root_v in active_comps:
+            if active_flag[root_v]:
                 num += 1
             if num == 0:
                 continue
@@ -276,15 +303,16 @@ def steiner_forest_grid(
         if min_delta == float("inf"):
             raise ValueError("Graph is not connected or cannot connect pairs")
 
-        for edge_idx, (u2, v2, c2) in enumerate(edges):
-            ru2 = find(u2)
-            rv2 = find(v2)
+        for edge_idx in alive_list:
+            u2, v2, c2 = edges[edge_idx]
+            ru2 = roots[u2]
+            rv2 = roots[v2]
             if ru2 == rv2:
                 continue
             num2 = 0
-            if ru2 in active_comps:
+            if active_flag[ru2]:
                 num2 += 1
-            if rv2 in active_comps:
+            if active_flag[rv2]:
                 num2 += 1
             if num2 == 0:
                 continue
@@ -295,7 +323,30 @@ def steiner_forest_grid(
 
         if paid[chosen_idx] >= chosen_c - 1e-6:
             F.append((chosen_u, chosen_v, chosen_c))
+            ru = roots[chosen_u]
+            rv = roots[chosen_v]
+            a_list = comp_nodes[ru]
+            b_list = comp_nodes[rv]
+            if len(a_list) > len(b_list):
+                small, big = b_list, a_list
+            else:
+                small, big = a_list, b_list
             uf.union(chosen_u, chosen_v)
+            merged_root = uf.find(chosen_u)
+            for node in small:
+                for edge_idx in incident[node]:
+                    if alive_edge[edge_idx]:
+                        edge_u, edge_v, _ = edges[edge_idx]
+                        other = edge_v if edge_u == node else edge_u
+                        if uf.find(other) == merged_root:
+                            alive_edge[edge_idx] = False
+                            dead_pending += 1
+            big.extend(small)
+            comp_nodes[merged_root] = big
+            if ru != merged_root:
+                comp_nodes[ru] = []
+            if rv != merged_root:
+                comp_nodes[rv] = []
 
     # ``F`` is a forest: every added edge merges two distinct components. The
     # minimal sub-forest preserving all required pair connections is therefore
