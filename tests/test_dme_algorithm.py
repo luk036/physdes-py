@@ -2,6 +2,7 @@
 Unit tests for DME Algorithm with delay calculator strategy pattern
 """
 
+import random
 import sys
 from pathlib import Path
 from typing import List
@@ -14,11 +15,37 @@ from physdes.cts.dme_algorithm import (
     LinearDelayCalculator,
     Sink,
     TreeNode,
+    _select_kth,
     get_tree_statistics,
 )
 from physdes.point import Point
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+
+class TestSelectKth:
+    """Median-of-medians selection must agree exactly with ``sorted()``."""
+
+    def test_matches_sorted_on_random_data(self) -> None:
+        rng = random.Random(1234)
+        for length in range(1, 200):
+            values = [rng.randrange(-50, 50) for _ in range(length)]
+            for k in range(length):
+                assert _select_kth(values, k) == sorted(values)[k]
+
+    def test_handles_duplicates(self) -> None:
+        values = [7] * 50 + [3] * 30 + [9] * 20
+        for k, expected in enumerate(sorted(values)):
+            assert _select_kth(values, k) == expected
+
+    def test_does_not_mutate_input(self) -> None:
+        values = [5, 1, 4, 2, 3]
+        _select_kth(values, 2)
+        assert values == [5, 1, 4, 2, 3]
+
+    def test_out_of_range_raises(self) -> None:
+        with pytest.raises(IndexError):
+            _select_kth([1, 2, 3], 3)
 
 
 class TestDelayCalculators:

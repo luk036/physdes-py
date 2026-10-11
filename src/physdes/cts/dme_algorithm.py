@@ -33,6 +33,44 @@ from physdes.point import Point
 _logger = logging.getLogger(__name__)
 
 
+def _select_kth(values: List[Any], k: int) -> Any:
+    """
+    Return the element of rank ``k`` (0-indexed) in ascending order.
+
+    This is median-of-medians selection: the result is identical to
+    ``sorted(values)[k]`` but is computed in guaranteed linear time, matching
+    the ``select_nth_unstable_by`` primitive used by the Rust and C++ ports.
+    Only the ``<`` operator is required of the elements, so integer coordinates
+    and the nested ``Point``/``Interval`` coordinates of the 3D embedding are
+    both supported.
+
+    :param values: Sequence of orderable values. Not mutated.
+    :param k: Zero-based rank to select, with ``0 <= k < len(values)``.
+    :return: The element of ``values`` whose rank is ``k``.
+    :raises IndexError: If ``k`` is outside ``[0, len(values))``.
+    """
+    if not 0 <= k < len(values):
+        raise IndexError("selection index out of range")
+    if len(values) <= 5:
+        return sorted(values)[k]
+
+    groups = [values[i : i + 5] for i in range(0, len(values), 5)]
+    medians = [sorted(group)[len(group) // 2] for group in groups]
+    pivot = _select_kth(medians, len(medians) // 2)
+
+    lows = [value for value in values if value < pivot]
+    highs = [value for value in values if pivot < value]
+    # Elements equal to the pivot fall in neither partition. Nothing compares
+    # equal using ``<`` alone, so recover their count arithmetically.
+    equal_count = len(values) - len(lows) - len(highs)
+
+    if k < len(lows):
+        return _select_kth(lows, k)
+    if k < len(lows) + equal_count:
+        return pivot
+    return _select_kth(highs, k - len(lows) - equal_count)
+
+
 class Sink:
     """Represents a clock sink with position and capacitance"""
 
@@ -374,7 +412,7 @@ class DMEAlgorithm:
         lo: int = 0,
         hi: Optional[int] = None,
     ) -> "TreeNode":
-        """Build balanced merging tree using median-partition (like Rust's select_nth_unstable_by)."""
+        """Build balanced merging tree using linear-time median selection (like Rust's select_nth_unstable_by)."""
         if hi is None:
             nodes.sort(key=lambda n: n.position.ycoord)
             hi = len(nodes)
@@ -393,7 +431,7 @@ class DMEAlgorithm:
             if vertical
             else [n.position.ycoord for n in sub]
         )
-        median_val = sorted(keys)[count // 2]
+        median_val = _select_kth(keys, count // 2)
         lt: List["TreeNode"] = []
         eq: List["TreeNode"] = []
         gt: List["TreeNode"] = []
