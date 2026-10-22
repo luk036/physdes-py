@@ -54,27 +54,26 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
         A tuple containing the closest vertex and a boolean indicating whether the
         connection is vertical (True) or horizontal (False).
     """
-    vnext = vcurr.next
-    vprev = vcurr.prev
-    vi = vnext.next
+    vstop = vcurr
+    vi = vcurr.next
     min_value = math.inf
     vertical = True
     v_min = vcurr
     pcurr = lst[vcurr.data]
-    while id(vi) != id(vprev):
+    while id(vi) != id(vstop):
         prev_point = lst[vi.prev.data]
         curr_point = lst[vi.data]
         next_point = lst[vi.next.data]
         vec_i = curr_point.displace(pcurr)
-        if (prev_point.ycoord <= pcurr.ycoord <= curr_point.ycoord) or (
-            curr_point.ycoord <= pcurr.ycoord <= prev_point.ycoord
+        if (prev_point.ycoord < pcurr.ycoord <= curr_point.ycoord) or (
+            curr_point.ycoord <= pcurr.ycoord < prev_point.ycoord
         ):
             if abs(vec_i.x_) < min_value:
                 min_value = abs(vec_i.x_)
                 v_min = vi
                 vertical = True
-        if (next_point.xcoord <= pcurr.xcoord <= curr_point.xcoord) or (
-            curr_point.xcoord <= pcurr.xcoord <= next_point.xcoord
+        if (next_point.xcoord < pcurr.xcoord <= curr_point.xcoord) or (
+            curr_point.xcoord <= pcurr.xcoord < next_point.xcoord
         ):
             if abs(vec_i.y_) < min_value:
                 min_value = abs(vec_i.y_)
@@ -82,6 +81,19 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
                 vertical = False
         vi = vi.next
     return v_min, vertical
+
+
+def _even_index_signed_area(points: PointSet) -> int:
+    if len(points) < 2:
+        return 0
+    origin = points[0]
+    prev = points[1].displace(origin)
+    result = prev.x_ * prev.y_
+    for point in points[2:]:
+        curr = point.displace(origin)
+        result += curr.x_ * (curr.y_ - prev.y_)
+        prev = curr
+    return result
 
 
 def _find_convex_concave_point(
@@ -305,7 +317,8 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
         >>> len(hull)
         1
     """
-    return rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_convex_recur)
+    pieces = rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_convex_recur)
+    return [piece for piece in pieces if _even_index_signed_area(piece) != 0]
 
 
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
