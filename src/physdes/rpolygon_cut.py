@@ -83,19 +83,6 @@ def find_min_dist_point(lst: PointSet, vcurr: Dllink[int]) -> Tuple[Dllink[int],
     return v_min, vertical
 
 
-def _even_index_signed_area(points: PointSet) -> int:
-    if len(points) < 2:
-        return 0
-    origin = points[0]
-    prev = points[1].displace(origin)
-    result = prev.x_ * prev.y_
-    for point in points[2:]:
-        curr = point.displace(origin)
-        result += curr.x_ * (curr.y_ - prev.y_)
-        prev = curr
-    return result
-
-
 def _find_convex_concave_point(
     lst: PointSet, vstart: Dllink[int], cmp2: Callable[[int], bool]
 ) -> Optional[Dllink[int]]:
@@ -383,8 +370,7 @@ def rpolygon_cut_convex(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]
         >>> len(hull)
         1
     """
-    pieces = rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_convex_recur)
-    return [piece for piece in pieces if _even_index_signed_area(piece) != 0]
+    return rpolygon_cut_impl(lst, is_anticlockwise, rpolygon_cut_convex_recur)
 
 
 def rpolygon_cut_explicit(lst: PointSet, is_anticlockwise: bool) -> List[PointSet]:
