@@ -207,6 +207,72 @@ def rpolygon_cut_recur(
     num_points = len(lst)
     p_min = lst[v_min.data]
     curr_point = lst[vcurr.data]
+    # Degenerate cut: the cut point duplicates v_min, so split off the existing
+    # 2-node piece instead of appending a new point.
+    if (
+        vertical
+        and id(v_min.prev) == id(vcurr.next)
+        and p_min.ycoord == curr_point.ycoord
+    ):
+        first = vcurr.next
+        first_point = lst[first.data]
+        if first_point.xcoord != p_min.xcoord and first_point.ycoord != p_min.ycoord:
+            rest = v_min.next
+            first.next = v_min
+            first.prev = v_min
+            v_min.next = first
+            v_min.prev = first
+            vcurr.next = rest
+            rest.prev = vcurr
+            list1 = rpolygon_cut_recur(
+                first,
+                lst,
+                is_anticlockwise,
+                rdll,
+                find_concave_point,
+                has_triangle_base_case,
+            )
+            list2 = rpolygon_cut_recur(
+                vcurr,
+                lst,
+                is_anticlockwise,
+                rdll,
+                find_concave_point,
+                has_triangle_base_case,
+            )
+            return list1 + list2
+    if (
+        not vertical
+        and id(v_min.next) == id(vcurr.prev)
+        and p_min.xcoord == curr_point.xcoord
+    ):
+        first = v_min.next
+        first_point = lst[first.data]
+        if first_point.xcoord != p_min.xcoord and first_point.ycoord != p_min.ycoord:
+            rest = v_min.prev
+            first.next = v_min
+            first.prev = v_min
+            v_min.next = first
+            v_min.prev = first
+            vcurr.prev = rest
+            rest.next = vcurr
+            list1 = rpolygon_cut_recur(
+                first,
+                lst,
+                is_anticlockwise,
+                rdll,
+                find_concave_point,
+                has_triangle_base_case,
+            )
+            list2 = rpolygon_cut_recur(
+                vcurr,
+                lst,
+                is_anticlockwise,
+                rdll,
+                find_concave_point,
+                has_triangle_base_case,
+            )
+            return list1 + list2
     rdll.cycle.append(Dllink(num_points))
     new_node = rdll[num_points]
     if vertical:

@@ -12,7 +12,12 @@ from lds_gen.ilds import Halton
 
 from physdes.point import Point
 from physdes.polygon import Polygon
-from physdes.rpolygon import RPolygon, create_test_rpolygon, rpolygon_make_convex_hull
+from physdes.rpolygon import (
+    RPolygon,
+    create_test_rpolygon,
+    rpolygon_is_convex,
+    rpolygon_make_convex_hull,
+)
 from physdes.rpolygon_cut import rpolygon_cut_convex, rpolygon_cut_explicit
 
 
@@ -165,6 +170,42 @@ def test_convex_decomposition_with_even_index_polygon() -> None:
 
     convex_pieces = rpolygon_cut_convex(S, True)
     assert len(convex_pieces) > 1, "the non-convex polygon should be cut"
+
+    total_area = 0
+    for piece in convex_pieces:
+        piece_polygon = Polygon.from_pointset(_even_index_to_boundary(piece))
+        total_area += piece_polygon.signed_area_x2
+
+    assert (
+        total_area == original_area
+    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
+
+
+def test_convex_decomposition_with_twelve_point_even_index_polygon() -> None:
+    """Test area preservation and convexity for a non-convex 12-point even-index polygon."""
+    coords = [
+        (-1, 1),
+        (0, 0),
+        (1, -1),
+        (3, 0),
+        (4, 1),
+        (6, 2),
+        (5, 5),
+        (4, 4),
+        (3, 2),
+        (2, 3),
+        (1, 2),
+        (0, 3),
+    ]
+    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+
+    original_area = Polygon.from_pointset(_even_index_to_boundary(S)).signed_area_x2
+    assert original_area > 0, "the test polygon should be anticlockwise"
+
+    convex_pieces = rpolygon_cut_convex(S, True)
+    assert len(convex_pieces) > 1, "the non-convex polygon should be cut"
+    for piece in convex_pieces:
+        assert rpolygon_is_convex(piece), f"piece is not convex: {piece}"
 
     total_area = 0
     for piece in convex_pieces:
