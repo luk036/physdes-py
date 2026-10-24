@@ -4,6 +4,7 @@ from physdes.point import Point
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
+    is_canonical,
     rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
@@ -46,3 +47,4 @@ def test_rpolygon_cut_explicit() -> None:
     print("\n".join(svg_parts))
     for C in L:
         assert rpolygon_is_convex(C)
+        assert is_canonical(C)

@@ -7,6 +7,7 @@ from physdes.rpolygon import (
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
+    is_canonical,
     point_in_rpolygon,
     rpolygon_is_convex,
     rpolygon_is_monotone,
@@ -37,6 +38,7 @@ def test_rpolygon() -> None:
     S, is_cw = create_ymono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
+    assert is_canonical(rpolygon_make_ymonotone_hull(S, not is_cw))
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon.from_pointset(S)
@@ -59,6 +61,7 @@ def test_rpolygon2() -> None:
     assert rpolygon_is_ymonotone(S)
     assert not rpolygon_is_xmonotone(S)
     assert not rpolygon_is_convex(S)
+    assert is_canonical(rpolygon_make_ymonotone_hull(S, not is_cw))
 
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord},{p1.ycoord} {p2.xcoord},{p1.ycoord}", end=" ")
@@ -87,6 +90,7 @@ def test_rpolygon3() -> None:
     S, is_anticw = create_xmono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
+    assert is_canonical(rpolygon_make_xmonotone_hull(S, is_anticw))
     assert rpolygon_is_xmonotone(S)
     assert not rpolygon_is_ymonotone(S)
     assert not rpolygon_is_convex(S)
@@ -111,12 +115,14 @@ def test_rpolygon4() -> None:
     P = RPolygon.from_pointset(S)
     assert not is_anticw
     assert not P.is_anticlockwise()
+    assert is_canonical(rpolygon_make_xmonotone_hull(S, is_anticw))
 
 
 def test_rpolygon5() -> None:
     hgen = Halton([3, 2], [7, 11])
     coords = [hgen.pop() for _ in range(50)]
     S = create_test_rpolygon([Point(xcoord, ycoord) for xcoord, ycoord in coords])
+    assert is_canonical(S)
 
     qx, qy = hgen.pop()
 
@@ -208,6 +214,7 @@ def test_rpolygon_make_xmonotone_hull() -> None:
     print("\n".join(svg_parts))
 
     assert rpolygon_is_xmonotone(C)
+    assert is_canonical(C)
 
 
 def test_rpolygon_make_ymonotone_hull() -> None:
@@ -246,6 +253,7 @@ def test_rpolygon_make_ymonotone_hull() -> None:
     print("\n".join(svg_parts))
 
     assert rpolygon_is_ymonotone(C)
+    assert is_canonical(C)
 
 
 def test_rpolygon_make_convex_hull() -> None:
@@ -275,3 +283,4 @@ def test_rpolygon_make_convex_hull() -> None:
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
     assert rpolygon_is_convex(C)
+    assert is_canonical(C)

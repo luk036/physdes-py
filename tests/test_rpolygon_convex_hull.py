@@ -3,6 +3,7 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 from physdes.rpolygon import (
     create_test_rpolygon,
+    is_canonical,
     rpolygon_is_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
@@ -36,3 +37,4 @@ def test_rpolygon_make_convex_hull() -> None:
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
     assert rpolygon_is_convex(C)
+    assert is_canonical(C)

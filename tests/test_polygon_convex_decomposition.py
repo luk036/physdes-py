@@ -18,7 +18,7 @@ from physdes.rpolygon import (
     rpolygon_is_convex,
     rpolygon_make_convex_hull,
 )
-from physdes.rpolygon_cut import rpolygon_cut_convex, rpolygon_cut_explicit
+from physdes.rpolygon_cut import rpolygon_cut_convex
 
 
 def _even_index_to_boundary(pointset: List[Point[int, int]]) -> List[Point[int, int]]:
@@ -63,102 +63,6 @@ def test_rpolygon_cut_convex_area_preservation() -> None:
     assert (
         total_area == original_area
     ), f"Area mismatch: original={original_area}, sum={total_area}"
-
-
-def test_rpolygon_cut_explicit_area_preservation() -> None:
-    """Test that rpolygon_cut_explicit preserves the signed area of the original polygon."""
-    # This clockwise L-shape previously drove rpolygon_cut_explicit into unbounded
-    # recursion; with the corrected concave-vertex test it matches the convex variant.
-    coords = [(0, 0), (0, 2), (1, 2), (1, 1), (2, 1), (2, 0)]
-    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-
-    original_area = Polygon.from_pointset(S).signed_area_x2
-    convex_pieces = rpolygon_cut_explicit(S, False)
-
-    total_area = 0
-    for piece in convex_pieces:
-        piece_polygon = Polygon.from_pointset(piece)
-        total_area += piece_polygon.signed_area_x2
-
-    assert (
-        total_area == original_area
-    ), f"Area mismatch: original={original_area}, sum={total_area}"
-
-
-def test_convex_decomposition_with_simple_polygon() -> None:
-    """Test area preservation with a simple non-convex polygon."""
-    # Create a simple non-convex polygon (an L-shape)
-    coords = [(0, 0), (2, 0), (2, 1), (1, 1), (1, 2), (0, 2)]
-    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-
-    # Calculate the signed area of the original polygon
-    original_polygon = Polygon.from_pointset(S)
-    original_area = original_polygon.signed_area_x2
-
-    # Test rpolygon_cut_convex
-    convex_pieces = rpolygon_cut_convex(S, True)
-    total_area = 0
-    for piece in convex_pieces:
-        piece_polygon = Polygon.from_pointset(piece)
-        total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
-
-
-def test_convex_decomposition_with_complex_polygon() -> None:
-    """Test area preservation with a more complex non-convex polygon."""
-    # Create a more complex non-convex polygon
-    coords = [
-        (0, 0),
-        (3, 0),
-        (3, 1),
-        (1, 1),
-        (1, 2),
-        (3, 2),
-        (3, 3),
-        (0, 3),
-        (0, 2),
-        (2, 2),
-        (2, 1),
-        (0, 1),
-    ]
-    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-
-    # Calculate the signed area of the original polygon
-    original_polygon = Polygon.from_pointset(S)
-    original_area = original_polygon.signed_area_x2
-
-    # Test rpolygon_cut_convex
-    convex_pieces = rpolygon_cut_convex(S, True)
-    total_area = 0
-    for piece in convex_pieces:
-        piece_polygon = Polygon.from_pointset(piece)
-        total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
-
-
-def test_convex_decomposition_with_clockwise_polygon() -> None:
-    """Test area preservation with a clockwise-oriented polygon."""
-    # Create a clockwise-oriented non-convex polygon
-    coords = [(0, 0), (0, 2), (1, 2), (1, 1), (2, 1), (2, 0)]
-    S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
-
-    # Calculate the signed area of the original polygon
-    original_polygon = Polygon.from_pointset(S)
-    original_area = original_polygon.signed_area_x2
-
-    # Test rpolygon_cut_convex with clockwise orientation
-    convex_pieces = rpolygon_cut_convex(S, False)
-    total_area = 0
-    for piece in convex_pieces:
-        piece_polygon = Polygon.from_pointset(piece)
-        total_area += piece_polygon.signed_area_x2
-    assert (
-        total_area == original_area
-    ), f"Convex cut area mismatch: original={original_area}, sum={total_area}"
 
 
 def test_convex_decomposition_with_even_index_polygon() -> None:

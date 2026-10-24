@@ -235,6 +235,33 @@ class RPolygon:
         # Calculate vectors and cross product
         return prev_point.y > current_point.y
 
+    def is_canonical(self) -> bool:
+        """
+        Check whether the polygon is in canonical form.
+
+        The polygon is stored in the x-first even-index representation, so
+        ``_vecs`` holds the even-index vertices relative to the origin.  In
+        canonical form every consecutive pair of stored vertices, including the
+        closing pair, differs in both ``x`` and ``y``, and no vertex is
+        duplicated.
+
+        :return: True if the polygon is canonical, False otherwise.
+
+        Examples:
+            >>> from .point import Point
+            >>> from .rpolygon import RPolygon
+            >>> coords = [(2, 1), (2, 0)]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> RPolygon.from_pointset(S).is_canonical()
+            False
+            >>> coords = [(2, 1), (3, -3)]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> RPolygon.from_pointset(S).is_canonical()
+            True
+        """
+        stored_pointset = [Point(0, 0)] + [Point(vec.x, vec.y) for vec in self._vecs]
+        return is_canonical(stored_pointset)
+
 
 def partition(
     pred: Callable[[Any], bool], iterable: Iterable[Any]
@@ -545,6 +572,41 @@ def rpolygon_is_convex(lst: PointSet) -> bool:
     return rpolygon_is_xmonotone(lst) and rpolygon_is_ymonotone(lst)
 
 
+def is_canonical(pointset: PointSet) -> bool:
+    """
+    Check whether an even-index rectilinear polygon is in canonical form.
+
+    The input uses the x-first even-index representation.  In canonical form,
+    every consecutive pair of stored points, including the closing pair,
+    differs in both ``x`` and ``y``; sharing an axis would introduce
+    consecutive collinear segments.  Duplicate points are not allowed.
+
+    :param pointset: The x-first even-index vertices of the polygon.
+    :return: True if the polygon is canonical, False otherwise.
+
+    Examples:
+        >>> from .point import Point
+        >>> pointset = [Point(2, 1), Point(2, 0)]
+        >>> is_canonical(pointset)
+        False
+        >>> pointset = [Point(2, 1), Point(3, -3)]
+        >>> is_canonical(pointset)
+        True
+    """
+    num_points = len(pointset)
+    if num_points < 2:
+        return True
+
+    coords = [(pt.xcoord, pt.ycoord) for pt in pointset]
+    if len(set(coords)) != num_points:
+        return False
+
+    return all(
+        p0.xcoord != p1.xcoord and p0.ycoord != p1.ycoord
+        for p0, p1 in zip(pointset, pointset[1:] + pointset[:1])
+    )
+
+
 def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     """
     The function `point_in_rpolygon` determines if a given point is within a given RPolygon.
@@ -628,6 +690,31 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     return res
 
 
+def _drop_collinear_points(pointset: PointSet) -> PointSet:
+    """Remove even-index points that lie on a straight boundary edge.
+
+    In the x-first even-index representation, two consecutive points with the
+    same ``y`` make the second point collinear, while the same ``x`` makes the
+    first point collinear.  Removing them keeps the polygon unchanged.
+    """
+    result = list(pointset)
+    changed = True
+    while changed and len(result) > 2:
+        changed = False
+        for i in range(len(result)):
+            j = (i + 1) % len(result)
+            curr, nxt = result[i], result[j]
+            if curr.ycoord == nxt.ycoord:
+                del result[j]
+            elif curr.xcoord == nxt.xcoord:
+                del result[i]
+            else:
+                continue
+            changed = True
+            break
+    return result
+
+
 def rpolygon_make_monotone_hull(
     lst: PointSet,
     is_anticlockwise: bool,
@@ -648,7 +735,7 @@ def rpolygon_make_monotone_hull(
         3
     """
     if len(lst) <= 3:
-        return lst
+        return _drop_collinear_points(lst)
 
     min_index, min_point = min(enumerate(lst), key=lambda it: dir(it[1]))
     max_index, _ = max(enumerate(lst), key=lambda it: dir(it[1]))
@@ -704,7 +791,9 @@ def rpolygon_make_monotone_hull(
             v_max, v_min, lambda val1, val2: val1 <= val2, lambda area: area <= 0, dir
         )
 
-    return [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
+    return _drop_collinear_points(
+        [min_point] + [lst[v.data] for v in rdll.from_node(min_index)]
+    )
 
 
 def rpolygon_make_xmonotone_hull(lst: PointSet, is_anticlockwise: bool) -> PointSet:
