@@ -15,7 +15,9 @@ from physdes.polygon import Polygon
 from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
-    rpolygon_is_convex,
+    is_canonical,
+    is_simple,
+    rpolygon_is_orthogonally_convex,
     rpolygon_make_convex_hull,
 )
 from physdes.rpolygon_cut import rpolygon_cut_convex
@@ -74,6 +76,12 @@ def test_convex_decomposition_with_even_index_polygon() -> None:
 
     convex_pieces = rpolygon_cut_convex(S, True)
     assert len(convex_pieces) > 1, "the non-convex polygon should be cut"
+    for piece in convex_pieces:
+        assert is_canonical(piece), f"piece is not canonical: {piece}"
+        assert is_simple(piece), f"piece is not simple: {piece}"
+        assert rpolygon_is_orthogonally_convex(
+            piece
+        ), f"piece is not orthogonally convex: {piece}"
 
     total_area = 0
     for piece in convex_pieces:
@@ -109,7 +117,11 @@ def test_convex_decomposition_with_twelve_point_even_index_polygon() -> None:
     convex_pieces = rpolygon_cut_convex(S, True)
     assert len(convex_pieces) > 1, "the non-convex polygon should be cut"
     for piece in convex_pieces:
-        assert rpolygon_is_convex(piece), f"piece is not convex: {piece}"
+        assert is_canonical(piece), f"piece is not canonical: {piece}"
+        assert is_simple(piece), f"piece is not simple: {piece}"
+        assert rpolygon_is_orthogonally_convex(
+            piece
+        ), f"piece is not orthogonally convex: {piece}"
 
     total_area = 0
     for piece in convex_pieces:

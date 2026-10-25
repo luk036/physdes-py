@@ -5,7 +5,8 @@ from physdes.rpolygon import (
     RPolygon,
     create_test_rpolygon,
     is_canonical,
-    rpolygon_is_convex,
+    is_simple,
+    rpolygon_is_orthogonally_convex,
     rpolygon_is_xmonotone,
     rpolygon_is_ymonotone,
     rpolygon_make_convex_hull,
@@ -46,5 +47,6 @@ def test_rpolygon_cut_explicit() -> None:
     svg_parts.append("</svg>")
     print("\n".join(svg_parts))
     for C in L:
-        assert rpolygon_is_convex(C)
+        assert rpolygon_is_orthogonally_convex(C)
         assert is_canonical(C)
+        assert is_simple(C)

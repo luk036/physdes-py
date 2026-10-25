@@ -24,12 +24,17 @@ FLAGS  := -F pandoc-crossref --citeproc -s -t latex -N --reference-links \
 FIG_SVG := $(wildcard figures/*.svg)
 FIG_PDF := $(FIG_SVG:.svg=.pdf)
 
-.PHONY: paper talk figures clean
+.PHONY: paper rpolygon-paper talk figures clean
 
 paper: phys_des.pdf
 
+rpolygon-paper: rpolygon-creation-and-cut.pdf
+
 phys_des.pdf: phys_des.md phys_des.bib ieee.csl latex.yaml crossref.yaml $(FIG_PDF)
 	$(PANDOC) $(FLAGS) phys_des.md -o $@
+
+rpolygon-creation-and-cut.pdf: rpolygon-creation-and-cut.md phys_des.bib ieee.csl latex.yaml crossref.yaml $(FIG_PDF)
+	$(PANDOC) $(FLAGS) rpolygon-creation-and-cut.md -o $@
 
 figures: $(FIG_PDF)
 

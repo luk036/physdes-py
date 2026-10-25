@@ -579,7 +579,10 @@ def is_canonical(pointset: PointSet) -> bool:
     The input uses the x-first even-index representation.  In canonical form,
     every consecutive pair of stored points, including the closing pair,
     differs in both ``x`` and ``y``; sharing an axis would introduce
-    consecutive collinear segments.  Duplicate points are not allowed.
+    consecutive collinear segments.  Duplicate points are not allowed, and a
+    valid representation has at least two stored points.  This is a local
+    admissibility predicate, not a certificate of simplicity: a canonical list
+    can still expand to a self-intersecting chain.
 
     :param pointset: The x-first even-index vertices of the polygon.
     :return: True if the polygon is canonical, False otherwise.
@@ -595,7 +598,7 @@ def is_canonical(pointset: PointSet) -> bool:
     """
     num_points = len(pointset)
     if num_points < 2:
-        return True
+        return False
 
     coords = [(pt.xcoord, pt.ycoord) for pt in pointset]
     if len(set(coords)) != num_points:
@@ -605,6 +608,106 @@ def is_canonical(pointset: PointSet) -> bool:
         p0.xcoord != p1.xcoord and p0.ycoord != p1.ycoord
         for p0, p1 in zip(pointset, pointset[1:] + pointset[:1])
     )
+
+
+def expand_even_index(pointset: PointSet) -> PointSet:
+    """Expand a stored even-index sequence into the full boundary.
+
+    The omitted vertex between ``curr`` and ``nxt`` is ``(nxt.x, curr.y)``,
+    following the x-first convention.
+
+    :param pointset: Stored even-index vertices.
+    :return: The reconstructed boundary, or an empty list for fewer than two
+        stored points.
+    """
+    if len(pointset) < 2:
+        return []
+    boundary: PointSet = []
+    for curr, nxt in zip(pointset, pointset[1:] + pointset[:1]):
+        boundary.append(curr)
+        boundary.append(Point(nxt.xcoord, curr.ycoord))
+    return boundary
+
+
+def _is_between(low: int, value: int, high: int) -> bool:
+    return min(low, high) < value < max(low, high)
+
+
+def _axis_aligned_edges_intersect(
+    a0: Point[int, int], a1: Point[int, int], b0: Point[int, int], b1: Point[int, int]
+) -> bool:
+    a_horizontal = a0.ycoord == a1.ycoord
+    b_horizontal = b0.ycoord == b1.ycoord
+    if a_horizontal and b_horizontal:
+        if a0.ycoord != b0.ycoord:
+            return False
+        return max(min(a0.xcoord, a1.xcoord), min(b0.xcoord, b1.xcoord)) <= min(
+            max(a0.xcoord, a1.xcoord), max(b0.xcoord, b1.xcoord)
+        )
+    if not a_horizontal and not b_horizontal:
+        if a0.xcoord != b0.xcoord:
+            return False
+        return max(min(a0.ycoord, a1.ycoord), min(b0.ycoord, b1.ycoord)) <= min(
+            max(a0.ycoord, a1.ycoord), max(b0.ycoord, b1.ycoord)
+        )
+    if a_horizontal:
+        horizontal0, horizontal1, vertical0, vertical1 = a0, a1, b0, b1
+    else:
+        horizontal0, horizontal1, vertical0, vertical1 = b0, b1, a0, a1
+    if horizontal0.ycoord < min(
+        vertical0.ycoord, vertical1.ycoord
+    ) or horizontal0.ycoord > max(vertical0.ycoord, vertical1.ycoord):
+        return False
+    return (
+        min(horizontal0.xcoord, horizontal1.xcoord)
+        <= vertical0.xcoord
+        <= max(horizontal0.xcoord, horizontal1.xcoord)
+    )
+
+
+def is_simple(pointset: PointSet) -> bool:
+    """Check whether the expanded even-index boundary is a simple polygon.
+
+    This is a global check, separate from the local canonicality predicate.
+    The quadratic scan is intended for the small polygons of the domain.
+
+    :param pointset: Stored even-index vertices.
+    :return: True if the expanded boundary is simple, False otherwise.
+    """
+    boundary = expand_even_index(pointset)
+    num_points = len(boundary)
+    if num_points < 4:
+        return False
+    for i in range(num_points):
+        curr = boundary[i]
+        nxt = boundary[(i + 1) % num_points]
+        if curr.xcoord == nxt.xcoord and curr.ycoord == nxt.ycoord:
+            return False
+        if curr.xcoord != nxt.xcoord and curr.ycoord != nxt.ycoord:
+            return False
+    for i in range(num_points):
+        a0 = boundary[i]
+        a1 = boundary[(i + 1) % num_points]
+        for j in range(i + 1, num_points):
+            if j == (i + 1) % num_points or i == (j + 1) % num_points:
+                continue
+            b0 = boundary[j]
+            b1 = boundary[(j + 1) % num_points]
+            if _axis_aligned_edges_intersect(a0, a1, b0, b1):
+                return False
+    return True
+
+
+def rpolygon_is_orthogonally_convex(pointset: PointSet) -> bool:
+    """Check orthogonal convexity of the represented polygon.
+
+    The stored sequence is expanded first; checking the stored points alone can
+    miss a violation at an implicit vertex.
+
+    :param pointset: Stored even-index vertices.
+    :return: True if the expanded boundary is x- and y-monotone.
+    """
+    return rpolygon_is_convex(expand_even_index(pointset))
 
 
 def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
@@ -690,28 +793,49 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     return res
 
 
-def _drop_collinear_points(pointset: PointSet) -> PointSet:
-    """Remove even-index points that lie on a straight boundary edge.
+def cleanup_collinear(pointset: PointSet) -> Tuple[PointSet, bool]:
+    """Remove stored points that lie strictly between their neighbours.
 
-    In the x-first even-index representation, two consecutive points with the
-    same ``y`` make the second point collinear, while the same ``x`` makes the
-    first point collinear.  Removing them keeps the polygon unchanged.
+    In the x-first representation, two consecutive points with the same ``y``
+    make the second point collinear, while the same ``x`` makes the first point
+    collinear.  A point is removed only when it lies strictly between the
+    neighbours that define the straight edge; otherwise removing it would
+    change the represented boundary.  The boolean result reports whether the
+    cleaned list is canonical.
+
+    :param pointset: Stored even-index vertices.
+    :return: The cleaned list and its canonicality flag.
     """
     result = list(pointset)
     changed = True
     while changed and len(result) > 2:
         changed = False
-        for i in range(len(result)):
-            j = (i + 1) % len(result)
+        num_points = len(result)
+        for i in range(num_points):
+            j = (i + 1) % num_points
             curr, nxt = result[i], result[j]
             if curr.ycoord == nxt.ycoord:
-                del result[j]
+                after = result[(j + 1) % num_points]
+                if _is_between(curr.xcoord, nxt.xcoord, after.xcoord):
+                    del result[j]
+                    changed = True
+                    break
             elif curr.xcoord == nxt.xcoord:
-                del result[i]
-            else:
-                continue
-            changed = True
-            break
+                before = result[(i - 1) % num_points]
+                if _is_between(before.ycoord, curr.ycoord, nxt.ycoord):
+                    del result[i]
+                    changed = True
+                    break
+    return result, is_canonical(result)
+
+
+def _drop_collinear_points(pointset: PointSet) -> PointSet:
+    """Remove collinear stored points and reject a non-simple result."""
+    result, admissible = cleanup_collinear(pointset)
+    if not admissible or not is_simple(result):
+        raise ValueError(
+            "input does not describe a simple even-index rectilinear polygon"
+        )
     return result
 
 

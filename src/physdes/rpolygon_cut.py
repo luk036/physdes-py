@@ -28,6 +28,12 @@ from mywheel.dllist import Dllink  # type: ignore
 
 from .point import Point
 from .rdllist import RDllist
+from .rpolygon import (
+    cleanup_collinear,
+    expand_even_index,
+    is_simple,
+    rpolygon_is_convex,
+)
 
 PointSet = List[Point[int, int]]
 
@@ -328,14 +334,24 @@ def rpolygon_cut_impl(
     recur: Callable[[Dllink[int], PointSet, bool, RDllist], List[List[int]]],
 ) -> List[PointSet]:
     """
-    Shared wrapper: runs the given recursive decomposer and converts the
-    resulting index lists back into point polygons.
+    Shared wrapper: runs the given recursive decomposer, cleans each piece,
+    and rejects a piece that is not a simple canonical convex polygon.
     """
+    lst = list(lst)
     rdll = RDllist(len(lst))
     vertices_list = recur(rdll[0], lst, is_anticlockwise, rdll)
     res = []
     for item in vertices_list:
-        points = [lst[i] for i in item]
+        points, admissible = cleanup_collinear([lst[i] for i in item])
+        if not admissible or not is_simple(points):
+            if len(points) == 2 and (
+                points[0].xcoord == points[1].xcoord
+                or points[0].ycoord == points[1].ycoord
+            ):
+                continue
+            raise ValueError("cut produced a non-canonical or non-simple piece")
+        if not rpolygon_is_convex(expand_even_index(points)):
+            raise ValueError("cut produced a non-convex piece")
         res.append(points)
     return res
 

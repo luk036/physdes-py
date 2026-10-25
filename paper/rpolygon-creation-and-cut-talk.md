@@ -5,8 +5,8 @@
 #     rpolygon-creation-and-cut-talk.md -o rpolygon-creation-and-cut-talk.tex
 #   lualatex -interaction=nonstopmode -halt-on-error rpolygon-creation-and-cut-talk.tex
 #   lualatex -interaction=nonstopmode -halt-on-error rpolygon-creation-and-cut-talk.tex
-title: "Canonical Even-Index Representations and Recursive Decomposition of Rectilinear Polygons"
-subtitle: "Representation, monotone hulls, and exact canonical verification"
+title: "Even-Index Representations and Recursive Decomposition of Rectilinear Polygons"
+subtitle: "Representation, monotone repair, and three-step rectangle decomposition"
 author: "Wai-Shing Luk"
 institute: "physdes"
 date: "\\today"
@@ -37,18 +37,21 @@ link-citations: true
 
 ## Problem Statement and Contributions
 
-**Input.** A point sequence $S=(s_0,\ldots,s_{m-1})$ with $s_i\in\mathbb{Z}^2$.
+**Input.** A simple rectilinear polygon $P$ and its even-index encoding
+$S=(s_0,\ldots,s_{m-1})$ with $s_i\in\mathbb{Z}^2$.
 
 **Tasks.**
 
-1. A canonical representation with an exact structural predicate.
-2. Monotone and convex hulls that preserve the represented polygon.
-3. Recursive decomposition into convex pieces and rectangles.
-4. Cross-language verification (Python and C++20).
+1. A compact even-index representation and its local structural condition.
+2. Monotone repair and betweenness-safe collinear cleanup that preserve the
+   represented polygon.
+3. A three-step rectangle decomposition: convex decomposition, explicit
+   $270^\circ$ handling, and implicit $270^\circ$ handling.
+4. C++20 implementation and verification.
 
-**Contributions.** A template-method treatment of $x$ and $y$, a collinear-cleanup
-step for even-index hulls, and a canonicality invariant that area checks cannot
-replace.
+**Contributions.** The local condition of the encoding, the compressed area
+formula, a betweenness-safe cleanup, a three-step rectangle decomposition, and
+output-class tests that area checks alone cannot replace.
 
 # Representation
 
@@ -76,15 +79,7 @@ replace.
 ::: {.column width="48%"}
 ```{=latex}
 \begin{center}
-\begin{tikzpicture}[scale=0.62, font=\scriptsize]
-  \draw[thick, fill=nordgreen!18] (0,0)--(4,0)--(4,4)--(3,4)--(3,1)--(1,1)--(1,4)--(0,4)--cycle;
-  \foreach \p in {(0,0),(4,4),(3,1),(1,4)} \fill[nordblue] \p circle[radius=2.6pt];
-  \foreach \p in {(4,0),(3,4),(1,1),(0,4)} \fill[nordpurple] \p circle[radius=1.8pt];
-  \node[below left] at (0,0) {$S_0$};
-  \node[above right] at (4,4) {$S_1$};
-  \node[right] at (3,1) {$S_2$};
-  \node[above] at (1,4) {$S_3$};
-\end{tikzpicture}
+\includegraphics[width=0.9\linewidth,height=0.42\textheight,keepaspectratio]{figures/fig_even_index.pdf}
 \end{center}
 ```
 :::
@@ -157,36 +152,33 @@ before $S_{i+1}$, including the closing pair $S_{m-1}\to S_0$.
 - **3 stored points** represent a monotone / $L$-shaped piece: six corners.
 - These are not degenerate cases; they are the base cases of the decomposition.
 
-**Lemma.** $E(S)$ is a closed rectilinear polygon if and only if every cyclic
-consecutive pair of stored points differs in both coordinates.
+**Local condition.** For a simple input polygon, every cyclic consecutive pair
+of stored points differs in both coordinates. This is a property of the
+encoding, not a validity test; simplicity is an assumption on the input.
 
-*Proof sketch.* Each pair contributes a horizontal edge followed by a vertical
-edge; sharing an axis collapses one edge to zero. $\square$
+## Local Condition
 
-## Canonical Form
+**Definition.** A stored sequence $S=(s_0,\ldots,s_{m-1})$ satisfies the
+**local condition** if
 
-**Definition.** A stored sequence $S=(s_0,\ldots,s_{m-1})$ is **canonical** if
-
-1. the $s_i$ are pairwise distinct, and
+1. $m\ge 2$ and the $s_i$ are pairwise distinct, and
 2. for every $i$ (indices modulo $m$),
 $$x_i \ne x_{i+1}\quad\text{and}\quad y_i \ne y_{i+1}.$$
 
-```python
-def is_canonical(S):
-    if len(S) < 2:
-        return True
-    if len(set(S)) != len(S):
-        return False
-    return all(
-        a[0] != b[0] and a[1] != b[1]
-        for a, b in zip(S, S[1:] + S[:1])
-    )
+```text
+if |S| < 2: return false
+if duplicate points: return false
+for each cyclic pair:
+    if same x or same y: return false
+return true
 ```
 
+- The implementation keeps the name `is_canonical`; the paper calls this the
+  local condition (admissibility).
 - Duplicate detection is $O(m^2)$ naively, or $O(m\log m)$ by sorting.
 - The consecutive-pair test is $O(m)$.
 
-## Canonical Validation
+## Local Condition and Repair
 
 :::: {.columns}
 ::: {.column width="48%"}
@@ -201,7 +193,7 @@ def is_canonical(S):
   \fill[nordblue] (3,-3) circle[radius=2.5pt] node[right] {$S_2$};
   \fill[nordpurple] (3,0) circle[radius=2pt];
   \fill[nordpurple] (2,-3) circle[radius=2pt];
-  \node[nordred, below] at (2.5,-3.6) {not canonical};
+  \node[nordred, below] at (2.5,-3.6) {not locally admissible};
 \end{tikzpicture}
 \end{center}
 ```
@@ -215,17 +207,19 @@ def is_canonical(S):
   \fill[nordblue] (3,-3) circle[radius=2.5pt] node[right] {$S_1$};
   \fill[nordpurple] (3,1) circle[radius=2pt];
   \fill[nordpurple] (2,-3) circle[radius=2pt];
-  \node[nordgreen!45!black, below] at (2.5,-3.6) {canonical};
+  \node[nordgreen!45!black, below] at (2.5,-3.6) {locally admissible};
 \end{tikzpicture}
 \end{center}
 ```
 :::
 ::::
 
-- $S=((2,1),(2,0),(3,-3))$: the expansion contains two consecutive vertical
-  segments and is **not** a canonical even-index list.
-- Its canonical form is $((2,1),(3,-3))$.
-- Area alone cannot detect this defect; the predicate is **structural**.
+- $S=((2,1),(2,0),(3,-3))$ fails the local condition: the expansion contains
+  two consecutive vertical segments.
+- Its repaired form is $((2,1),(3,-3))$.
+- Area alone cannot detect this defect; the local condition is **structural**.
+- For a simple input polygon, the local condition holds by Lemma 1; no global
+  check is needed.
 
 ## Orientation and Signed Area
 
@@ -235,41 +229,35 @@ $$A=\frac12\sum_i\left(x_i y_{i+1}-x_{i+1}y_i\right).$$
 
 - $A>0$: anticlockwise; $A<0$: clockwise.
 - The even-index encoding admits an $O(m)$ evaluation over the stored points.
-- The sign drives the hull and cut branches and serves as a cheap postcondition.
+- The sign drives the repair and cut branches and serves as a cheap
+  postcondition.
 
 **Lemma.** The signed area is invariant under the x-first expansion $E$.
 
 *Proof sketch.* Each inserted vertex is collinear with an axis-aligned edge and
 contributes zero net area. $\square$
 
-# Monotone Hulls
+## Creation Outputs Are Not Locally Admissible
+
+```{=latex}
+\begin{center}
+\includegraphics[width=0.48\linewidth]{figures/f-noncanonical-xmono.pdf}\hfill
+\includegraphics[width=0.48\linewidth]{figures/f-noncanonical-ymono.pdf}
+\end{center}
+```
+
+- Raw creation orderings contain consecutive collinear triples.
+- The monotone repair and cleanup turn them into locally admissible encodings.
+
+# Monotone Hulls and Repair
 
 ## Monotonicity and Convexity
 
-:::: {.columns}
-::: {.column width="48%"}
 ```{=latex}
 \begin{center}
-\begin{tikzpicture}[scale=0.66, font=\scriptsize]
-  \draw[thick, fill=nordblue!15] (0,0)--(4,0)--(4,4)--(3,4)--(3,2)--(1,2)--(1,4)--(0,4)--cycle;
-  \draw[nordred, dashed] (2,-0.3)--(2,4.3);
-  \node[below] at (2,-0.5) {$x$-monotone, not $y$-monotone};
-\end{tikzpicture}
+\includegraphics[width=0.9\linewidth]{figures/fig_monotone.pdf}
 \end{center}
 ```
-:::
-::: {.column width="48%"}
-```{=latex}
-\begin{center}
-\begin{tikzpicture}[scale=0.66, font=\scriptsize]
-  \draw[thick, fill=nordblue!15] (0,0)--(0,4)--(4,4)--(4,3)--(2,3)--(2,1)--(4,1)--(4,0)--cycle;
-  \draw[nordred, dashed] (-0.3,2)--(4.3,2);
-  \node[below] at (2,-0.5) {$y$-monotone, not $x$-monotone};
-\end{tikzpicture}
-\end{center}
-```
-:::
-::::
 
 **Definition.** A rectilinear polygon is $x$-monotone if every vertical line
 meets it in a single interval; $y$-monotone is defined symmetrically.
@@ -277,7 +265,7 @@ meets it in a single interval; $y$-monotone is defined symmetrically.
 **Lemma.** A rectilinear polygon is orthogonally convex if and only if it is
 both $x$-monotone and $y$-monotone.
 
-## Monotone Hull Algorithm
+## Monotone Hulls and Repair Algorithm
 
 - Let $p,c,n$ be the previous, current, and next stored vertices.
 - A vertex is removed when monotonicity is violated and the turn has the wrong
@@ -297,7 +285,8 @@ for c in chain:
         c = next(c)
 ```
 
-**Complexity.** $O(m)$ time and $O(m)$ space per hull.
+**Complexity.** Each sweep is $O(m)$; the betweenness-safe cleanup is $O(m^2)$
+worst case, so the composed repair is $O(m^2)$.
 
 ## Collinear Cleanup
 
@@ -305,14 +294,13 @@ for c in chain:
 ::: {.column width="48%"}
 ```{=latex}
 \begin{center}
-\begin{tikzpicture}[scale=0.78, font=\scriptsize]
-  \draw[thick] (0,0)--(2,0)--(3,2);
-  \draw[nordred, dashed] (2,0)--(3,0);
-  \fill[nordblue] (0,0) circle[radius=2pt] node[below left] {$A$};
-  \fill[nordred] (2,0) circle[radius=2pt] node[below] {$B$};
-  \fill[nordblue] (3,2) circle[radius=2pt] node[right] {$C$};
-  \node[nordred] at (2.4,0.35) {drop};
-  \node[below] at (1.5,-0.5) {same $y$: drop the second};
+\begin{tikzpicture}[scale=0.70, font=\scriptsize]
+  \draw[thick] (-0.5,0)--(3,0)--(3,2);
+  \fill[nordblue] (-0.5,0) circle[radius=2pt] node[below left] {$s_i$};
+  \fill[nordred] (1.5,0) circle[radius=2pt] node[below] {$s_{i+1}$};
+  \fill[nordblue] (3,2) circle[radius=2pt] node[right] {$s_{i+2}$};
+  \draw[nordred, dashed, ->] (1.5,0)--(1.5,-0.6) node[below] {drop};
+  \node[below] at (1.2,-1.0) {same $y$: drop the second};
 \end{tikzpicture}
 \end{center}
 ```
@@ -320,60 +308,40 @@ for c in chain:
 ::: {.column width="48%"}
 ```{=latex}
 \begin{center}
-\begin{tikzpicture}[scale=0.78, font=\scriptsize]
-  \draw[thick] (-2,1)--(0,0)--(0,2)--(2,3);
-  \fill[nordblue] (-2,1) circle[radius=2pt] node[left] {$P$};
-  \fill[nordred] (0,0) circle[radius=2pt] node[below] {$A$};
-  \fill[nordblue] (0,2) circle[radius=2pt] node[right] {$B$};
-  \fill[nordblue] (2,3) circle[radius=2pt] node[right] {$C$};
-  \node[nordred] at (0.55,0.45) {drop};
-  \node[below] at (0,-0.5) {same $x$: drop the first};
+\begin{tikzpicture}[scale=0.70, font=\scriptsize]
+  \draw[thick] (-2,0)--(0,0)--(0,4)--(2,5);
+  \fill[nordblue] (-2,0) circle[radius=2pt] node[left] {$s_{i-1}$};
+  \fill[nordred] (0,1) circle[radius=2pt] node[right] {$s_i$};
+  \fill[nordblue] (0,4) circle[radius=2pt] node[right] {$s_{i+1}$};
+  \fill[nordblue] (2,5) circle[radius=2pt] node[right] {$s_{i+2}$};
+  \draw[nordred, dashed, ->] (0,1)--(1,1) node[right] {drop};
+  \node[below] at (0,-0.4) {same $x$: drop the first};
 \end{tikzpicture}
 \end{center}
 ```
 :::
 ::::
 
-- A monotone hull can still contain collinear even-index points.
-- Remove the second point of a same-$y$ pair; remove the first of a same-$x$ pair.
-- Repeat until no adjacent pair shares an axis.
+- A same-$y$ pair drops the second point when it lies strictly between its
+  neighbours; a same-$x$ pair drops the first analogously.
+- If no removable point remains but an adjacent pair still shares an axis, the
+  list is not admissible.
+- Under betweenness, cleanup preserves the boundary and area; otherwise it
+  reports failure.
 
-**Lemma.** The cleanup preserves the represented boundary and the signed area.
+## Hull Composition and Repair
 
-*Proof sketch.* The removed point lies in the interior of a straight boundary
-edge; deleting it merges two collinear edges into one. $\square$
-
-## Hull Composition and Correctness
-
-:::: {.columns}
-::: {.column width="48%"}
 ```{=latex}
 \begin{center}
-\begin{tikzpicture}[scale=0.62, font=\scriptsize]
-  \draw[thick, fill=nordblue!15] (0,0)--(4,0)--(4,4)--(3,4)--(3,2)--(1,2)--(1,4)--(0,4)--cycle;
-  \draw[nordred, line width=1.5pt] (3,2) circle[radius=3pt];
-  \draw[nordred, line width=1.5pt] (1,2) circle[radius=3pt];
-  \node[below] at (2,-0.4) {before};
-\end{tikzpicture}
+\includegraphics[width=0.72\linewidth,height=0.52\textheight,keepaspectratio]{figures/f-hull.pdf}
 \end{center}
 ```
-:::
-::: {.column width="48%"}
-```{=latex}
-\begin{center}
-\begin{tikzpicture}[scale=0.62, font=\scriptsize]
-  \draw[thick, fill=nordgreen!18] (0,0)--(4,0)--(4,4)--(0,4)--cycle;
-  \node[below] at (2,-0.4) {after};
-\end{tikzpicture}
-\end{center}
-```
-:::
-::::
 
 - $x$-hull then $y$-hull yields the rectilinear convex hull.
-- Both hulls are idempotent on canonical inputs.
-- The composition preserves the represented polygon and its area.
-- With cleanup, the output satisfies `is_canonical`.
+- Hulls also give monotone enclosures and preprocessing for decomposition.
+- The same passes repair raw creation orderings.
+- The output is checked for the local condition and monotonicity; the composed
+  cost is $O(m^2)$ worst case.
 
 # Recursive Decomposition
 
@@ -395,7 +363,8 @@ edge; deleting it merges two collinear edges into one. $\square$
 - **Step 1: convex cut.** Remove concavities; simplify the remaining geometry.
 - **Step 2: explicit $270^\circ$.** Resolve reflex corners that are stored vertices.
 - **Step 3: implicit $270^\circ$.** Resolve reflex corners introduced by expansion.
-- The final pieces are rectangles, suitable for layout fracturing and DRC
+- Steps 2 and 3 repeat until neither type remains; the final pieces are
+  rectangles, suitable for layout fracturing and DRC
   [@kahng2008layout; @liebmann2003layout].
 
 ## Cut Primitive
@@ -428,8 +397,20 @@ edge; deleting it merges two collinear edges into one. $\square$
 ```
 
 - Find a concave vertex: a direction reversal with the correct area sign.
-- Find the nearest vertex by Manhattan distance (horizontal or vertical).
-- Insert the cut point; split the circular list; recurse on both pieces.
+- Project $v$ onto each edge; choose the nearest visible edge and insert the
+  intersection point.
+- Splice the new node, split the circular list, and recurse on both pieces.
+
+## Convex Decomposition Example
+
+```{=latex}
+\begin{center}
+\includegraphics[width=0.85\linewidth,height=0.50\textheight,keepaspectratio]{figures/fig_convex_example.pdf}
+\end{center}
+```
+
+- Three orthogonally convex pieces.
+- Areas $1,9,10$; total area $20$.
 
 ## Base Cases and Recursion
 
@@ -455,7 +436,9 @@ cut(v1):
     return cut(c) + cut(new)
 ```
 
-**Recurrence.** $T(n)=T(k)+T(n-k+1)+O(n)$, hence $T(n)=O(n^2)$.
+**Complexity.** Each cut adds $O(1)$ list surgery; there are $O(n)$ cuts, so the
+total is $O(n^2)$. A degenerate two-node split handles a cut that duplicates an
+adjacent vertex.
 
 ## Explicit and Implicit 270° Vertices
 
@@ -481,30 +464,52 @@ cut(v1):
 - The convex cut handles the shape; the explicit and implicit cuts handle the
   corner types.
 
-## Rectangle Cutting and Canonicality
+## Implicit Cut of an L-Shape
+
+```{=latex}
+\begin{center}
+\includegraphics[width=0.62\linewidth,height=0.48\textheight,keepaspectratio]{figures/fig_implicit_l.pdf}
+\end{center}
+```
+
+- The implicit corner $(1,1)$ is reflex.
+- A horizontal cut yields rectangles of areas $2$ and $1$.
+
+## Rectangle Output and Local Condition
 
 - A rectangle piece has **2 stored points**: two opposite corners.
-- The test `x_0 \ne x_1` and `y_0 \ne y_1` is exactly the canonical predicate
-  for a 2-point list.
-- Rectangle pieces are therefore canonical by construction.
-- For larger pieces, canonicality must be checked explicitly; area and
-  convexity do not imply it.
+- The local condition for a 2-point list is exactly
+  `x_0 != x_1` and `y_0 != y_1`.
+- The three-step algorithm outputs rectangles; the tests assert the two-point
+  form, the local condition, and the area.
+- For larger intermediate pieces, the local condition and orthogonal convexity
+  are checked on the expanded boundary.
+
+## Rectangle Decomposition
+
+```{=latex}
+\begin{center}
+\includegraphics[width=0.82\linewidth,height=0.52\textheight,keepaspectratio]{figures/fig_rect7.pdf}
+\end{center}
+```
+
+- Seven rectangles, areas $1,1,2,2,4,4,6$.
+- Total area $20$.
 
 ## Correctness Invariants and Complexity
 
 **Invariants.**
 
 1. **Area:** the sum of signed piece areas equals the signed area of the input.
-2. **Convexity:** every piece is rectilinearly convex.
-3. **Canonicality:** every piece is a valid even-index list; where the
-   algorithm guarantees it, `is_canonical` holds.
+2. **Rectangle output:** the three-step algorithm returns two-point rectangles.
+3. **Local condition:** checked on the expanded boundary.
 
 **Complexity.**
 
 | operation | cost |
 |:----------|:-----|
 | concave-vertex scan | $O(n)$ |
-| nearest-vertex scan | $O(n)$ |
+| nearest-edge scan | $O(n)$ |
 | insert / split | $O(1)$ |
 | total decomposition | $O(n^2)$ |
 
@@ -515,45 +520,59 @@ implementation.
 
 ## Implementation and Tests
 
-:::: {.columns}
-::: {.column width="47%"}
-**Python**
-
-- canonical predicate tests
-- hull-before-check assertions
-- area + canonical checks on cut pieces
-- full suite: **627 passed**
-
-:::
-::: {.column width="47%"}
 **C++20 (xmake)**
 
 - `xmake build test_recti`
 - `xmake run test_recti`
-- **139 test cases**
-- **934 assertions**
+- **142 test cases**
+- **962 assertions**
 - **0 failures**
 
-:::
-::::
-
-- The hull is applied before the canonical check; raw creation is only an
-  ordering, not a canonical representation.
-- Three mixed even-index cut fixtures deliberately do not assert canonicality:
-  their pieces can still contain implicit collinear points.
+- The repair is applied before the local-condition check; raw creation is only
+  an ordering, not a polygon.
+- The tests assert the output class: local condition, orthogonal convexity,
+  and rectangle shape.
+- A bridged-hole fixture is cut into three pieces of areas 2, 15, and 10;
+  the area is preserved.
+- Two AGPLIB polygons and the bridged-hole fixture are tested in C++.
 
 ## Limitations and Threats to Validity
 
-1. **Representation-specific predicate.** `is_canonical` enforces the x-first
-   even-index convention; a geometrically valid rectangle can be written with a
-   same-axis pair and must be rewritten.
-2. **Synthetic inputs.** The evaluation uses generated point sets, not foundry
-   data; the claims are algorithmic, not signoff.
-3. **Quadratic scaling.** Decomposition is $O(n^2)$; $n>10^3$ is open.
-4. **Cut completeness.** Some implicit collinear points require the cleanup
-   phase; the cut algorithm alone does not guarantee canonical output.
-5. **Robustness.** Integer arithmetic is exact; degenerate input handling is
-   outside the present scope [@edelsbrunner1990sos].
+1. **Local condition.** It is a property of the encoding; simplicity is an
+   assumption on the input.
+2. **Synthetic inputs.** The evaluation uses generated point sets and hand-built
+   fixtures, not foundry data; the claims are algorithmic, not signoff.
+3. **Quadratic scaling.** Decomposition is $O(n^2)$; for $n\le 100$ this is
+   appropriate, and sub-quadratic methods are not addressed here.
+4. **No optimality claim.** The three-step algorithm returns a rectangle
+   partition, not a minimum-cardinality one.
+5. **Robustness.** Integer arithmetic is exact; degenerate input handling beyond
+   the stated invariants is outside the present scope
+   [@edelsbrunner1990sos].
+
+## Polygons with Holes
+
+```{=latex}
+\begin{center}
+\begin{tikzpicture}[scale=0.9, font=\scriptsize]
+  \draw[thick, fill=nordblue!15] (0,0) rectangle (4,4);
+  \draw[thick, fill=white] (1.5,1.5) rectangle (2.5,2.5);
+  \draw[nordred, dashed, line width=1.4pt] (4,2)--(2.5,2);
+  \node[nordred, above] at (3.25,2.05) {bridge};
+  \node[below] at (2,0) {outer boundary};
+  \node[below] at (2,1.45) {hole};
+\end{tikzpicture}
+\end{center}
+```
+
+- A bridge cut from the outer boundary to a hole merges the boundaries into a
+  single cycle; a zero-width bridge gives a weakly simple boundary, a narrow
+  bridge gives a simple one.
+- The bridge is traversed in both directions, so the area is unchanged.
+- The even-index encoding and the cut algorithms then apply; repeated bridge
+  vertices are handled by the degenerate split.
+- This is standard boundary bookkeeping, not specific to the even-index
+  representation.
 
 # Conclusion
 
@@ -561,22 +580,22 @@ implementation.
 
 **Contributions.**
 
-- A canonical even-index representation with an exact structural predicate.
-- A template-method treatment of creation and monotone hulls.
-- A collinear-cleanup lemma for even-index hulls.
-- A recursive decomposition with explicit and implicit $270^\circ$ handling.
-- Cross-language verification in Python and C++20.
+- A local structural condition for the encoding.
+- A monotone-repair pass with betweenness-safe collinear cleanup.
+- A three-step rectangle decomposition: convex decomposition, explicit
+  $270^\circ$ handling, and implicit $270^\circ$ handling.
+- Output-class tests and C++20 verification.
 
 **Open problems.**
 
-- Sub-quadratic decomposition for large polygons.
-- Canonical output for every cut variant, without a post-processing pass.
-- Integration with detailed routing and DRC flows.
-- Three-dimensional rectilinear decomposition.
+- A formal proof that the compressed predicate characterizes orthogonal
+  convexity.
+- Minimum-cardinality rectangle partitioning.
+- Cross-language differential testing on random polygons.
 
 ## Q&A
 
-- Code: `physdes-py` and `physdes-cpp` under the `luk036` organization.
+- Code: `physdes-cpp` under the `luk036` organization.
 - Thank you.
 
 ## References {.allowframebreaks}
