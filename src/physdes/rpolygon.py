@@ -7,6 +7,7 @@ and convex decomposition.
 """
 
 import logging
+from collections import deque
 from functools import cached_property
 from itertools import filterfalse, tee
 from typing import Any, Callable, Iterable, List, Tuple
@@ -239,11 +240,13 @@ class RPolygon:
         """
         Check whether the polygon is in canonical form.
 
-        The polygon is stored in the x-first even-index representation, so
-        ``_vecs`` holds the even-index vertices relative to the origin.  In
-        canonical form every consecutive pair of stored vertices, including the
-        closing pair, differs in both ``x`` and ``y``, and no vertex is
-        duplicated.
+        The polygon is stored in the x-first even-index representation.  A
+        stored point is redundant when deleting it and re-expanding the
+        remaining points preserves both the perimeter and the area.  For three
+        or more stored points this happens exactly when the point lies strictly
+        between its two neighbours on a shared axis; a spike, where the point
+        shares an axis but is not between, is not redundant and is allowed.  A
+        two-point list is canonical when its two points are distinct.
 
         :return: True if the polygon is canonical, False otherwise.
 
@@ -253,11 +256,15 @@ class RPolygon:
             >>> coords = [(2, 1), (2, 0)]
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> RPolygon.from_pointset(S).is_canonical()
-            False
-            >>> coords = [(2, 1), (3, -3)]
+            True
+            >>> coords = [(2, 1), (2, 0), (3, -3)]
             >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
             >>> RPolygon.from_pointset(S).is_canonical()
             True
+            >>> coords = [(0, 0), (1, 0), (2, 1)]
+            >>> S = [Point(xcoord, ycoord) for xcoord, ycoord in coords]
+            >>> RPolygon.from_pointset(S).is_canonical()
+            False
         """
         stored_pointset = [Point(0, 0)] + [Point(vec.x, vec.y) for vec in self._vecs]
         return is_canonical(stored_pointset)
@@ -574,15 +581,22 @@ def rpolygon_is_convex(lst: PointSet) -> bool:
 
 def is_canonical(pointset: PointSet) -> bool:
     """
-    Check whether an even-index rectilinear polygon is in canonical form.
+    Check whether an even-index rectilinear polygon is canonical.
 
-    The input uses the x-first even-index representation.  In canonical form,
-    every consecutive pair of stored points, including the closing pair,
-    differs in both ``x`` and ``y``; sharing an axis would introduce
-    consecutive collinear segments.  Duplicate points are not allowed, and a
-    valid representation has at least two stored points.  This is a local
-    admissibility predicate, not a certificate of simplicity: a canonical list
-    can still expand to a self-intersecting chain.
+    The input uses the x-first even-index representation.  A stored point is
+    redundant when removing it leaves the represented boundary unchanged, so
+    both the perimeter and the area are preserved.  Consecutive duplicate
+    points are checked first.  For three or more stored points a point is
+    redundant exactly when it lies strictly between its two neighbours on a
+    shared axis: the two neighbours share a ``y`` coordinate and the point's
+    ``x`` lies between theirs, or they share an ``x`` coordinate and its ``y``
+    lies between theirs.  A spike, where the point shares an axis but is not
+    between its neighbours, is not redundant and is allowed.  A two-point list
+    is canonical when its two points are distinct; they may share an axis.
+
+    Each stored point only needs its two neighbours, so the check is a single
+    O(m) pass.  It is not a certificate of simplicity: a canonical list can
+    still expand to a self-intersecting chain.
 
     :param pointset: The x-first even-index vertices of the polygon.
     :return: True if the polygon is canonical, False otherwise.
@@ -591,23 +605,113 @@ def is_canonical(pointset: PointSet) -> bool:
         >>> from .point import Point
         >>> pointset = [Point(2, 1), Point(2, 0)]
         >>> is_canonical(pointset)
-        False
-        >>> pointset = [Point(2, 1), Point(3, -3)]
+        True
+        >>> pointset = [Point(0, 0), Point(2, 0), Point(1, 1)]
         >>> is_canonical(pointset)
         True
+        >>> pointset = [Point(0, 0), Point(1, 0), Point(2, 1)]
+        >>> is_canonical(pointset)
+        False
     """
     num_points = len(pointset)
     if num_points < 2:
         return False
 
-    coords = [(pt.xcoord, pt.ycoord) for pt in pointset]
-    if len(set(coords)) != num_points:
+    cyclic = pointset[1:] + pointset[:1]
+    if any(p0 == p1 for p0, p1 in zip(pointset, cyclic)):
         return False
 
-    return all(
-        p0.xcoord != p1.xcoord and p0.ycoord != p1.ycoord
-        for p0, p1 in zip(pointset, pointset[1:] + pointset[:1])
-    )
+    if num_points == 2:
+        return True
+
+    for i in range(num_points):
+        prev_pt = pointset[i - 1]
+        curr_pt = pointset[i]
+        next_pt = pointset[(i + 1) % num_points]
+        if prev_pt.ycoord == curr_pt.ycoord and _is_between(
+            prev_pt.xcoord, curr_pt.xcoord, next_pt.xcoord
+        ):
+            return False
+        if curr_pt.xcoord == next_pt.xcoord and _is_between(
+            prev_pt.ycoord, curr_pt.ycoord, next_pt.ycoord
+        ):
+            return False
+    return True
+
+
+def canonicalize(pointset: PointSet) -> PointSet:
+    """
+    Remove redundant stored points until the polygon is canonical.
+
+    A stored point is redundant when removing it leaves the represented
+    boundary unchanged, so both the perimeter and the area are preserved.
+    Consecutive duplicate points are removed first, then redundant collinear
+    points.  Each point is removed at most once and only the neighbours of a
+    removed point are revisited, so the reduction is O(m).  A final
+    canonicality check is a safety net; spikes are kept because removing them
+    would change the perimeter or the area.
+
+    :param pointset: The x-first even-index vertices of the polygon.
+    :return: A canonical stored sequence.
+
+    Examples:
+        >>> from .point import Point
+        >>> canonicalize([Point(0, 0), Point(1, 0), Point(2, 1)])
+        [Point(0, 0), Point(2, 1)]
+        >>> canonicalize([Point(2, 1), Point(2, 0)])
+        [Point(2, 1), Point(2, 0)]
+        >>> canonicalize([Point(0, 0), Point(2, 0), Point(1, 1)])
+        [Point(0, 0), Point(2, 0), Point(1, 1)]
+    """
+    result = []
+    for pt in pointset:
+        if result and result[-1] == pt:
+            continue
+        result.append(pt)
+
+    if len(result) > 1 and result[0] == result[-1]:
+        result.pop()
+
+    num_points = len(result)
+    if num_points <= 2:
+        return result
+
+    prev_index = [(i - 1) % num_points for i in range(num_points)]
+    next_index = [(i + 1) % num_points for i in range(num_points)]
+    alive = [True] * num_points
+    queue = deque(range(num_points))
+    remaining = num_points
+
+    while queue and remaining > 2:
+        index = queue.popleft()
+        if not alive[index]:
+            continue
+        before = prev_index[index]
+        after = next_index[index]
+        removable = (
+            result[before].ycoord == result[index].ycoord
+            and _is_between(
+                result[before].xcoord, result[index].xcoord, result[after].xcoord
+            )
+        ) or (
+            result[index].xcoord == result[after].xcoord
+            and _is_between(
+                result[before].ycoord, result[index].ycoord, result[after].ycoord
+            )
+        )
+        if not removable:
+            continue
+        alive[index] = False
+        next_index[before] = after
+        prev_index[after] = before
+        remaining -= 1
+        queue.append(before)
+        queue.append(after)
+
+    result = [result[i] for i in range(num_points) if alive[i]]
+    if len(result) >= 2 and not is_canonical(result):
+        raise ValueError("input cannot be canonicalized")
+    return result
 
 
 def expand_even_index(pointset: PointSet) -> PointSet:
@@ -793,6 +897,27 @@ def point_in_rpolygon(pointset: PointSet, ptq: Point[int, int]) -> bool:
     return res
 
 
+def _is_locally_admissible(pointset: PointSet) -> bool:
+    """Check the structural local condition used by the cleanup routines.
+
+    The list needs at least two distinct points, and every cyclic consecutive
+    pair must differ in both coordinates.  This is the admissibility check from
+    the representation, independent of the redundant-vertex predicate.
+    """
+    num_points = len(pointset)
+    if num_points < 2:
+        return False
+
+    coords = [(pt.xcoord, pt.ycoord) for pt in pointset]
+    if len(set(coords)) != num_points:
+        return False
+
+    return all(
+        p0.xcoord != p1.xcoord and p0.ycoord != p1.ycoord
+        for p0, p1 in zip(pointset, pointset[1:] + pointset[:1])
+    )
+
+
 def cleanup_collinear(pointset: PointSet) -> Tuple[PointSet, bool]:
     """Remove stored points that lie strictly between their neighbours.
 
@@ -801,10 +926,10 @@ def cleanup_collinear(pointset: PointSet) -> Tuple[PointSet, bool]:
     collinear.  A point is removed only when it lies strictly between the
     neighbours that define the straight edge; otherwise removing it would
     change the represented boundary.  The boolean result reports whether the
-    cleaned list is canonical.
+    cleaned list passes the structural local condition.
 
     :param pointset: Stored even-index vertices.
-    :return: The cleaned list and its canonicality flag.
+    :return: The cleaned list and its admissibility flag.
     """
     result = list(pointset)
     changed = True
@@ -826,7 +951,7 @@ def cleanup_collinear(pointset: PointSet) -> Tuple[PointSet, bool]:
                     del result[i]
                     changed = True
                     break
-    return result, is_canonical(result)
+    return result, _is_locally_admissible(result)
 
 
 def _drop_collinear_points(pointset: PointSet) -> PointSet:

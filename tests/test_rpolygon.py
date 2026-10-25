@@ -4,6 +4,7 @@ from lds_gen.ilds import Halton
 from physdes.point import Point
 from physdes.rpolygon import (
     RPolygon,
+    canonicalize,
     create_test_rpolygon,
     create_xmono_rpolygon,
     create_ymono_rpolygon,
@@ -38,7 +39,7 @@ def test_rpolygon() -> None:
     S, is_cw = create_ymono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
-    assert is_canonical(rpolygon_make_ymonotone_hull(S, not is_cw))
+    assert is_canonical(canonicalize(S))
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord}, {p1.ycoord} {p2.xcoord}, {p1.ycoord})", end=" ")
     P = RPolygon.from_pointset(S)
@@ -61,7 +62,7 @@ def test_rpolygon2() -> None:
     assert rpolygon_is_ymonotone(S)
     assert not rpolygon_is_xmonotone(S)
     assert not rpolygon_is_convex(S)
-    assert is_canonical(rpolygon_make_ymonotone_hull(S, not is_cw))
+    assert is_canonical(canonicalize(S))
 
     for p1, p2 in zip(S, S[1:] + [S[0]]):
         print(f"{p1.xcoord},{p1.ycoord} {p2.xcoord},{p1.ycoord}", end=" ")
@@ -90,7 +91,7 @@ def test_rpolygon3() -> None:
     S, is_anticw = create_xmono_rpolygon(
         [Point(xcoord, ycoord) for xcoord, ycoord in coords]
     )
-    assert is_canonical(rpolygon_make_xmonotone_hull(S, is_anticw))
+    assert is_canonical(canonicalize(S))
     assert rpolygon_is_xmonotone(S)
     assert not rpolygon_is_ymonotone(S)
     assert not rpolygon_is_convex(S)
@@ -115,7 +116,7 @@ def test_rpolygon4() -> None:
     P = RPolygon.from_pointset(S)
     assert not is_anticw
     assert not P.is_anticlockwise()
-    assert is_canonical(rpolygon_make_xmonotone_hull(S, is_anticw))
+    assert is_canonical(canonicalize(S))
 
 
 def test_rpolygon5() -> None:

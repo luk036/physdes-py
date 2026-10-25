@@ -335,7 +335,7 @@ def rpolygon_cut_impl(
 ) -> List[PointSet]:
     """
     Shared wrapper: runs the given recursive decomposer, cleans each piece,
-    and rejects a piece that is not a simple canonical convex polygon.
+    and rejects a piece that is not a simple locally admissible convex polygon.
     """
     lst = list(lst)
     rdll = RDllist(len(lst))
@@ -349,7 +349,7 @@ def rpolygon_cut_impl(
                 or points[0].ycoord == points[1].ycoord
             ):
                 continue
-            raise ValueError("cut produced a non-canonical or non-simple piece")
+            raise ValueError("cut produced a non-admissible or non-simple piece")
         if not rpolygon_is_convex(expand_even_index(points)):
             raise ValueError("cut produced a non-convex piece")
         res.append(points)
