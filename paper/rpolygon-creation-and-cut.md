@@ -6,22 +6,30 @@ bibliography: phys_des.bib
 csl: ieee.csl
 abstract: >-
   Rectilinear polygons are the native geometry of VLSI physical design, where
-  coordinates are integers and the individual polygons are small. We study the
-  even-index representation, which stores every other boundary vertex and
-  recovers the omitted vertices by an x-first rule. We define the local
-  structural condition satisfied by the encoding of a simple polygon, prove the
-  compressed area formula, and present a monotone-hull pass (which also repairs
-  raw creation orderings) with a betweenness-safe collinear cleanup. We give a three-step rectangle
-  decomposition: convex decomposition, handling of stored $270^\circ$ vertices,
-  and handling of the $270^\circ$ vertices introduced by the expansion. We
-  prove that the convex stage returns orthogonally convex pieces and that the
-  rectangle stage returns a partition into rectangles. The decomposition runs
-  in $O(n^2)$ time, where $n$ is the number of stored points. The algorithms are
-  implemented in C++20. The C++ suite passes 142 cases with 962 assertions. On a twelve-point fixture the convex stage returns three
-  pieces of areas 1, 9, and 10, and the rectangle stage returns seven
-  rectangles of areas 1, 1, 2, 2, 4, 4, and 6, all summing to 20. The evaluation
-  asserts the output class, not only the area, because an area check alone can
-  accept a non-rectangle piece.
+  coordinates are integers. We study the even-index representation, which
+  stores every other boundary vertex and recovers the omitted vertices by an
+  x-first rule. We define the canonical form of the encoding: no stored point
+  is redundant, that is, deleting it preserves both the perimeter and the area.
+  Consecutive duplicates are rejected first; a two-point list is canonical when
+  its points are distinct, and for three or more points a stored point is
+  redundant exactly when it lies strictly between its neighbours on a shared
+  axis. We prove the
+  compressed area formula. We present a monotone-hull pass for hull
+  computation. We also give an $O(m)$ canonicalization that removes
+  consecutive duplicates and redundant collinear points. We give a
+  three-step rectangle decomposition: convex decomposition, handling of stored
+  $270^\circ$ vertices, and handling of the $270^\circ$ vertices introduced by
+  the expansion. We prove that the convex stage returns orthogonally convex
+  pieces and that the rectangle stage returns a partition into rectangles. The
+  decomposition runs in $O(m^2)$ time, where $m$ is the number of stored points
+  and $n=2m$ is the number of boundary vertices. The algorithms are implemented
+  in C++20. The C++ suite passes 143 cases with 974 assertions. On a
+  twelve-point fixture the convex stage returns three pieces of areas 1, 9, and
+  10, and the rectangle stage returns seven rectangles of areas 1, 1, 2, 2, 4,
+  4, and 6, all summing to 20. The evaluation asserts output-class
+  properties---canonicality where guaranteed, orthogonal convexity, and
+  rectangle shape---not only the area, because an area check alone can accept a
+  non-rectangle piece.
 ---
 
 ## Introduction {#sec:intro}
@@ -30,12 +38,15 @@ A modern integrated circuit is a physical object with billions of components,
 and physical design turns an abstract netlist into the polygons that a foundry
 can fabricate [@sherwani1999algorithms; @kahng2011vlsi; @sait1999vlsi]. The
 geometry of the layout is overwhelmingly *rectilinear*: every edge is
-horizontal or vertical, and every coordinate is an integer. Rounding is not
-merely imprecise but illegal, because two edges that should be collinear may
-miss and a design-rule check fails. At the same time, the individual objects
-are small: a standard-cell polygon has at most about one hundred vertices, a net
-a handful of pins, and a block a score of metal layers. Quadratic algorithms are
-therefore acceptable when they are exact, simple, and easy to verify.
+horizontal or vertical, and every coordinate is an integer. A $45^\circ$ edge
+is manufacturable, but the CAD/EDA tools and the algorithms that manipulate the
+layout are built around axis-aligned geometry; rectilinearity is the practical
+representation. Rounding is not merely imprecise but illegal, because two edges
+that should be collinear may miss and a design-rule check fails. At the same
+time, the individual objects are small: a standard-cell polygon has at most
+about one hundred vertices, a net a handful of pins, and a block a score of
+metal layers. Quadratic algorithms are therefore acceptable when they are
+exact, simple, and easy to verify.
 
 This paper is about the *representation* of a rectilinear polygon and the
 algorithms that consume it. The usual representation is the full boundary, a
@@ -43,49 +54,69 @@ cyclic list of all $n$ vertices. Because consecutive edges alternate between
 horizontal and vertical, every other vertex determines the omitted one under a
 suitable convention. The resulting *even-index* representation stores only
 $m=n/2$ points. It is compact, but it is also delicate: the expansion convention
-must be fixed, and a stored list can be degenerate or non-admissible if
-consecutive points share an axis or coincide.
+must be fixed, and a stored list can be non-canonical if a shared-axis point
+lies between its neighbours or if cyclic consecutive points coincide. The
+representation is lossless: expanding a
+stored list to the full boundary costs $O(m)$, so any algorithm written for the
+full boundary can be run with $O(m)$ overhead. GDSII files store rectilinear
+polygons as arbitrary polygons, so halving the stored vertices is a direct
+saving. Thus $n$ is the number of boundary vertices and $m=n/2$ the number of
+stored points.
 
 The input throughout this paper is a **simple rectilinear polygon** $P$, and
-$S$ is its even-index encoding. For such an encoding, consecutive stored points
-differ in both coordinates and no stored point is repeated; we call this the
-*local structural condition*. It is a property of the encoding, not a validity
-test, and we do not need a global simplicity check: simplicity is an assumption
-on the input, and the cut and cleanup operations preserve it. The proofs below
-therefore work directly with simple input polygons and their encodings.
+$S$ is its even-index encoding. For such an encoding, cyclic consecutive stored
+points are distinct and differ in both coordinates; every simple-polygon
+encoding is therefore canonical. Canonicality is a local property of the
+encoding: it does not imply simplicity, and a canonical list can repeat a
+non-adjacent point or expand to a self-intersecting boundary. Simplicity
+remains an assumption on the input,
+checked separately where the implementation needs a guard; the cut and
+canonicalization operations preserve it. The proofs below therefore work
+directly with simple input polygons and their encodings.
+
+A canonical form is a fixed normalization rather than an extra geometric
+assumption: by standardizing the traversal (x-first, even-index), the
+algorithms avoid repeated ad-hoc checks. The same template serves both axes, so
+the creation, hull, and cut routines are written once and instantiated for $x$
+and $y$. Canonical form is often treated as a convention rather than a result.
+We state it explicitly because the boundary cases (two-point lists,
+consecutive duplicates, and non-adjacent repeats) are easy to get wrong in an
+implementation.
 
 We make the following contributions.
 
-1. We define the x-first even-index encoding and the local structural condition
-   satisfied by the encoding of a simple polygon, and we prove the compressed
-   area formula (@sec:representation).
-2. We present a creation pass and a monotone-hull pass for stored sequences.
-   The hull pass computes $x$- and $y$-monotone hulls and, by composition, the
-   rectilinear convex hull; it also repairs raw creation orderings. It removes
-   stored vertices that violate monotonicity and applies a betweenness-safe
-   collinear cleanup; we prove boundary and area preservation under the
-   betweenness condition and analyze the resulting $O(m^2)$ worst-case cleanup
-   cost (@sec:hulls).
-3. We give a recursive cut framework for convex decomposition, with precise
+1. We define the x-first even-index encoding and its canonical form: no stored
+   point is redundant, where deleting a redundant point preserves both the
+   perimeter and the area. We characterize canonicality as a local condition on
+   cyclic consecutive stored points, prove that every simple-polygon encoding is
+   canonical, and prove the compressed area formula (@sec:representation).
+2. We present a creation pass and a monotone-hull pass that compute
+   $x$- and $y$-monotone hulls and, by composition, the rectilinear convex
+   hull (@sec:hulls).
+3. We give an $O(m)$ canonicalization that removes consecutive duplicates and
+   redundant collinear points, and we prove that it preserves the perimeter
+   and the area (@sec:hulls).
+4. We give a recursive cut framework for convex decomposition, with precise
    predicates, helper operations, the orientation-dependent sign test, the
    nearest-edge search, and the degenerate two-node split (@sec:cut).
-4. We give a rectangle decomposition in three steps: convex decomposition,
+5. We give a rectangle decomposition in three steps: convex decomposition,
    handling of stored $270^\circ$ vertices, and handling of the
    $270^\circ$ vertices introduced by the expansion; we prove that it returns a
    partition into rectangles (@sec:rectangle).
-5. We implement the algorithms in C++20, report the exact test counts and
+6. We implement the algorithms in C++20, report the exact test counts and
    commands, and show that output-class assertions catch non-rectangle outputs
    that an area-only test would accept (@sec:experiments). The C++ suite passes
-   142 cases with 962 assertions.
+   143 cases with 974 assertions.
 
 The terms used in these statements are defined before they are used: the
-representation and local condition in @sec:representation; the repair
-operations in @sec:hulls; and the cut operations and their helper functions in
-@sec:cut.
+representation and canonical form in @sec:representation; the canonicalization
+and hull operations in @sec:hulls; and the cut operations and their helper
+functions in @sec:cut.
 
 The remainder of the paper is organized as follows. @sec:related reviews related
-work. @sec:representation fixes notation and states the local condition.
-@sec:hulls presents creation, monotone hulls, and repair. @sec:cut develops
+work. @sec:representation fixes notation and states the canonical form.
+@sec:hulls presents creation, canonicalization, and monotone hulls. @sec:cut
+develops
 the recursive cut framework. @sec:convex develops convex decomposition, and
 @sec:rectangle develops the three-step rectangle stage.
 @sec:experiments reports the implementation and tests, @sec:discussion
@@ -128,8 +159,8 @@ Exact integer geometry avoids the rounding errors of floating-point predicates.
 Symbolic perturbation [@edelsbrunner1990sos] is a complementary technique for
 degeneracies; exact integer arithmetic avoids rounding but does not by itself
 remove duplicate vertices, zero-length edges, or collinear points. Our
-algorithms handle those cases through the local condition and the betweenness
-condition in the cleanup.
+algorithms handle those cases through the canonicality predicate and the
+canonicalization pass.
 
 The present work differs from the optimization literature in two ways. First,
 it focuses on a compressed even-index representation and on the implementation
@@ -153,8 +184,11 @@ applies to this boundary; repeated bridge vertices are handled by the degenerate
 split of @sec:cut. This reduction is standard and is not specific to the
 even-index representation. We state the proofs for a simply connected input;
 the bridge reduction supplies that case.
-We also assume the boundary is reduced, i.e. it has no $180^\circ$ vertices; a
-collinear vertex is removed before the representation is built.
+We also assume the full boundary is reduced, i.e. it has no $180^\circ$
+vertices; the canonicalization pass of @sec:hulls removes consecutive
+duplicates and redundant collinear points before the representation is used.
+Rather than assuming that the input has no redundant points, we state the
+reduced-boundary assumption and canonicalize the remaining redundancies.
 
 A rectilinear polygon is *orthogonally convex* (or *rectilinearly convex*) if
 every horizontal and every vertical line intersects it in a connected set, or in
@@ -186,55 +220,94 @@ boundary edge; the boundary follows the horizontal edge to $I_i$ and then the
 vertical edge to $s_{i+1}$. The y-first form $(x_0,y_1)$ reconstructs a
 different polygon and is not used.
 
-For an encoding of a simple polygon, consecutive stored points differ in both
-coordinates, because the omitted vertex between them is a genuine corner. A
-two-point representation is a rectangle; a three-point representation is an
-L-shaped monotone piece; more points describe a larger orthogonally convex
-polygon. The stored order follows the boundary, and the full boundary is
-reconstructed on demand. The implementation stores the first stored point as an
-origin and the remaining points as displacement vectors, so translating the
-polygon updates the origin in $O(1)$. Figure @fig:even-index shows stored and
-implicit vertices on an eight-vertex U-shape.
+![The x-first expansion inserts the implicit vertex $I_i=(x_1,y_0)$ between $S_i$ and $S_{i+1}$. The dashed chord is not a boundary edge.](figures/fig_xfirst.pdf){#fig:xfirst width="62%"}
+
+For an encoding of a simple polygon, every cyclic consecutive pair of stored
+points differs in both coordinates and no two cyclic consecutive points
+coincide, because the omitted vertex between them is a genuine corner. A
+two-point representation is a rectangle when the points differ in both
+coordinates; a distinct two-point list that shares an axis is a degenerate
+segment that is canonical but not a simple polygon. A three-point
+representation is an L-shaped monotone piece when the expansion is simple;
+more points can describe a larger polygon, and orthogonal convexity is checked
+separately on the expansion. The stored order follows the boundary, and the
+full boundary is reconstructed on demand in $O(m)$ time. The implementation
+stores the first stored point as an origin and the remaining points as
+displacement vectors, so translating the polygon updates the origin in
+$O(1)$. Figure @fig:even-index shows stored and implicit vertices on an
+eight-vertex U-shape.
 
 ![Stored (filled) and implicit (hollow) vertices of an eight-vertex U-shape. Dashed segments connect consecutive stored points; they are not polygon edges. The compressed representation has four stored points.](figures/fig_even_index.pdf){#fig:even-index width="72%"}
 
-### Local Condition
+### Canonical Form
 
-**Definition 1 (local condition).** A stored sequence
-$S=(s_0,\ldots,s_{m-1})$ is *locally admissible* if
+**Definition 1 (canonical form).** A stored sequence
+$S=(s_0,\ldots,s_{m-1})$ is *canonical* if
 
-1. $m\ge 2$,
-2. the points $s_i$ are pairwise distinct, and
-3. for every $i$ (indices modulo $m$),
+1. $m\ge 2$;
+2. no two cyclically consecutive points coincide:
 $$
-x_i\ne x_{i+1}\quad\text{and}\quad y_i\ne y_{i+1}.
-$$ {#eq:admissible}
+s_i\ne s_{i+1}\quad\text{(indices modulo }m\text{);}
+$$ {#eq:canonical-duplicate}
+3. if $m=2$, the two points are distinct; they may share an $x$ or $y$
+coordinate;
+4. if $m\ge 3$, no stored point is *redundant*: for every $i$, with
+$p=s_{i-1}$ and $q=s_{i+1}$,
+$$
+\neg\bigl(y_p=y_i \land x_i\text{ strictly between }x_p,x_q\bigr)
+\quad\text{and}\quad
+\neg\bigl(x_i=x_q \land y_i\text{ strictly between }y_p,y_q\bigr).
+$$ {#eq:canonical}
 
-The condition is structural: it constrains the encoding, not the geometry.
-Algorithm \ref{alg:admissible} checks it directly. The quantity $m<2$ is
-rejected, because a one-point list would expand to a single repeated vertex and
-an empty list does not describe a polygon at all.
+A stored point is *redundant* when deleting it and re-expanding the remaining
+points preserves both the perimeter and the area. The two tests in
+\eqref{eq:canonical} are exactly the deletable cases: if $p$ and $s_i$ share a
+$y$ coordinate and $x_i$ lies between $x_p$ and $x_q$, deleting $s_i$ merges
+two collinear horizontal edges; if $s_i$ and $q$ share an $x$ coordinate and
+$y_i$ lies between $y_p$ and $y_q$, it merges two collinear vertical edges. In
+both cases the represented boundary is unchanged, so the perimeter and the area
+are preserved. If neither test holds, deleting $s_i$ changes the perimeter or
+the area. We call a shared-axis point that is not between its neighbours a
+*spike*. A spike is a zero-width protrusion: deleting it would shorten the
+boundary, so it is not redundant.
+
+For $m=2$ the expansion has coincident vertices; we identify them, so the two
+stored points are the only distinct vertices. They are the opposite corners of
+a rectangle; when they are distinct, deleting one leaves a one-point list and
+changes the perimeter, while two coincident points are a duplicate and are
+rejected by condition 2.
+
+The condition is structural: it constrains the encoding, not the geometry. A
+canonical list may repeat a non-adjacent point or expand to a self-intersecting
+boundary. Algorithm \ref{alg:canonical} checks it directly. The quantity
+$m<2$ is rejected, because a one-point list would expand to a single repeated
+vertex and an empty list does not describe a polygon at all.
 
 ```{=latex}
 \begin{algorithm}[t]
 \footnotesize
-\caption{\textsc{IsAdmissible}$(S)$}
-\label{alg:admissible}
+\caption{\textsc{IsCanonical}$(S)$}
+\label{alg:canonical}
 \begin{algorithmic}[1]
 \Require stored points $S=(s_0,\ldots,s_{m-1})$
 \If{$m<2$}
   \State \Return \textsc{False}
 \EndIf
 \For{$i\gets 0$ \textbf{to} $m-1$}
-  \For{$j\gets i+1$ \textbf{to} $m-1$}
-    \If{$s_i=s_j$}
-      \State \Return \textsc{False}
-    \EndIf
-  \EndFor
-\EndFor
-\For{$i\gets 0$ \textbf{to} $m-1$}
   \State $j\gets(i+1)\bmod m$
-  \If{$x_i=x_j$ \textbf{or} $y_i=y_j$}
+  \If{$s_i=s_j$}
+    \State \Return \textsc{False}
+  \EndIf
+\EndFor
+\If{$m=2$}
+  \State \Return \textsc{True}
+\EndIf
+\For{$i\gets 0$ \textbf{to} $m-1$}
+  \State $p\gets(i-1)\bmod m$; $q\gets(i+1)\bmod m$
+  \If{$y_p=y_i$ \textbf{and} $x_i$ strictly between $x_p$ and $x_q$}
+    \State \Return \textsc{False}
+  \EndIf
+  \If{$x_i=x_q$ \textbf{and} $y_i$ strictly between $y_p$ and $y_q$}
     \State \Return \textsc{False}
   \EndIf
 \EndFor
@@ -243,48 +316,64 @@ an empty list does not describe a polygon at all.
 \end{algorithm}
 ```
 
-The duplicate scan is $O(m^2)$ in the worst case; sorting the points reduces it
-to $O(m\log m)$. The consecutive-pair scan is $O(m)$.
+The check is a single $O(m)$ pass: the consecutive-duplicate scan and the
+betweenness scan are each $O(m)$, and no sorting or all-pairs scan is needed.
 
-**Lemma 1 (the encoding satisfies the local condition).** If $P$ is a simple
-rectilinear polygon and $S$ is its even-index encoding, then $S$ is locally
-admissible.
+**Lemma 1 (the encoding is canonical).** If $P$ is a simple rectilinear polygon
+and $S$ is its even-index encoding, then $S$ is canonical.
 
-*Proof.* The boundary of a simple rectilinear polygon has at least four vertices,
-so $m=n/2\ge2$. The vertices are distinct, hence the stored points are distinct.
-Between two consecutive stored points $s_i$ and $s_{i+1}$, the omitted vertex
-$I_i$ is a genuine corner: the edge from $s_i$ to $I_i$ is horizontal and the
-edge from $I_i$ to $s_{i+1}$ is vertical, so $x_i\ne x_{i+1}$ and
-$y_i\ne y_{i+1}$. The closing pair is handled by the same argument. $\square$
+*Proof.* The boundary of a simple rectilinear polygon has at least four
+vertices, so $m=n/2\ge2$. The vertices are distinct, hence no two cyclically
+consecutive stored points coincide. Between two consecutive stored points $s_i$
+and $s_{i+1}$, the omitted vertex $I_i$ is a genuine corner: the edge from
+$s_i$ to $I_i$ is horizontal and the edge from $I_i$ to $s_{i+1}$ is vertical,
+so $x_i\ne x_{i+1}$ and $y_i\ne y_{i+1}$. The closing pair is handled by the
+same argument. $\square$
 
-Table \ref{tbl:admissible} lists the local-condition cases used by the test suite.
+Table \ref{tbl:canonical} lists the canonical-form examples and test cases.
+The row $((0,0),(1,0),(2,1))$ is the concrete reason for checking canonicality:
+its area and perimeter equal those of the two-point list $((0,0),(2,1))$, but
+the middle point is redundant. An area-only or perimeter-only test cannot
+detect the redundant encoding; the canonicality check rejects it.
 
 ```{=latex}
 \begin{table*}[t]
 \centering
-\caption{Local-condition test cases.}
-\label{tbl:admissible}
+\caption{Canonical-form examples and test cases.}
+\label{tbl:canonical}
 \begin{tabular}{lll}
 \hline
-Stored points & Locally admissible & Reason \\
+Stored points & Canonical & Reason \\
 \hline
-$(2,1),(2,0)$ & no & same $x$ \\
+$(2,1),(2,0)$ & yes & two distinct points; shared axis allowed at $m=2$ \\
 $(2,1),(3,-3)$ & yes & rectangle corners \\
-$(2,1),(2,0),(3,-3)$ & no & zero change in $x$ \\
-$(0,0),(0,0)$ & no & duplicate \\
-$(0,0),(0,1),(0,2)$ & no & vertical run \\
-$(0,0),(1,0),(2,0)$ & no & horizontal run \\
+$(2,1),(2,0),(3,-3)$ & yes & spike; shared $x$, point not between \\
+$(0,0),(0,0)$ & no & cyclic consecutive duplicate \\
+$(0,0),(0,1),(0,2)$ & no & middle point between \\
+$(0,0),(1,0),(2,0)$ & no & middle point between \\
+$(0,0),(1,0),(2,1)$ & no & middle point between \\
 $(0,0),(1,1)$ & yes & rectangle \\
+$(0,0),(1,1),(0,0),(2,2)$ & yes & non-adjacent duplicate; canonical, not simple \\
+$(0,2),(4,0),(2,4)$ & yes & canonical, not simple \\
+$(0,0),(2,0),(1,1)$ & yes & spike; shared $y$, point not between \\
 $(0,0)$ & no & fewer than two points \\
 \hline
 \end{tabular}
 \end{table*}
 ```
 
-### Area
+### Perimeter and Area
 
-The area of the polygon can be computed from the reconstructed boundary with the
-shoelace formula
+The perimeter of the represented polygon is
+$$
+P(S)=\sum_{i=0}^{m-1}\bigl(|x_{i+1}-x_i|+|y_{i+1}-y_i|\bigr),
+$$ {#eq:perimeter}
+with indices modulo $m$. Deleting a redundant stored point preserves both
+$P(S)$ and the area by definition; the betweenness test of @sec:hulls is the
+local criterion.
+
+The area can be computed from the reconstructed boundary with the shoelace
+formula
 $$
 A(S)=\frac12\sum_{i=0}^{|B|-1}\left(x_i y_{i+1}-x_{i+1}y_i\right),
 $$ {#eq:area}
@@ -294,9 +383,10 @@ $$
 A(S)=v_1^x v_1^y+\sum_{i=2}^{m-1}v_i^x\bigl(v_i^y-v_{i-1}^y\bigr),\qquad
 v_i=s_i-s_0.
 $$ {#eq:compressed-area}
-For a two-point rectangle the formula reduces to $(x_1-x_0)(y_1-y_0)$. The sign
-is positive for a counter-clockwise polygon and negative for a clockwise one;
-the orientation flag carries this sign through all algorithms.
+For a two-point list the formula reduces to $(x_1-x_0)(y_1-y_0)$; this is a
+rectangle when both coordinates differ and zero for a degenerate segment. The
+sign is positive for a counter-clockwise polygon and negative for a clockwise
+one; the orientation flag carries this sign through all algorithms.
 
 **Lemma 2 (area).** For a simple rectilinear polygon, the compressed formula
 \eqref{eq:compressed-area} equals the signed area of the reconstructed boundary.
@@ -304,18 +394,23 @@ the orientation flag carries this sign through all algorithms.
 *Proof sketch.* Expand the shoelace sum over the reconstructed sequence
 $s_0,I_0,s_1,\ldots$. Each implicit vertex contributes terms that cancel with
 the adjacent stored vertices, leaving the telescoping expression above. A direct
-expansion for the three-point L-shape and the two-point rectangle verifies the
-base cases; the general case follows by induction on $m$. $\square$
+expansion for the three-point L-shape and the two-point list verifies the base
+cases; the general case follows by induction on $m$. $\square$
 
 ### Base Cases
 
 The compressed representation turns the two smallest decompositions into base
-cases: two stored points are a rectangle, and three stored points are an
-L-shaped monotone piece. These are not degenerate cases; they expand to four and
-six boundary vertices, respectively. Since the input polygon is simple, both
-base cases are simple and the local condition holds by Lemma 1.
+cases: for a simple input polygon, two stored points are a non-degenerate
+rectangle, and three stored points are an L-shaped monotone piece when the
+expansion is simple. These are not degenerate cases; they expand to four and
+six boundary vertices, respectively. Canonicality alone also admits a distinct
+two-point list that shares an axis; it expands to a degenerate segment, is not
+a simple polygon, and is not used as a decomposition base case. Since the input
+polygon is simple, both base cases are simple and canonical by Lemma 1.
 
-## Creation, Monotone Hulls, and Repair {#sec:hulls}
+![The two smallest encodings: two stored points (opposite corners of a rectangle) and three stored points (an L-shaped monotone piece).](figures/fig_minimal.pdf){#fig:minimal width="95%"}
+
+## Creation, Canonicalization, and Monotone Hulls {#sec:hulls}
 
 ### Creation
 
@@ -353,21 +448,21 @@ algorithm sorts $P_1$ ascending by $\mathit{dir}$ and $P_2$ descending, and
 returns the concatenation $P_1P_2$. This is exactly the ordering used by the
 implementation; it is a chain order, not yet a polygon.
 
-The creation pass returns an *ordering*, not necessarily a locally admissible list.
+The creation pass returns an *ordering*, not necessarily a canonical list.
 Figure @fig:noncanonical shows the two orderings produced by the $x$-monotone
 and $y$-monotone creation routines on the twelve-point fixture used by the test
 suite. Both orderings contain consecutive collinear triples and therefore fail
-the local condition. The monotone-hull pass and the collinear cleanup turn
-such an ordering into a locally admissible representation.
+canonicality. Canonicalization removes the redundant collinear points from
+each ordering; the result may still be non-simple.
 
 ```{=latex}
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.48\linewidth]{figures/f-noncanonical-xmono.pdf}\hfill
 \includegraphics[width=0.48\linewidth]{figures/f-noncanonical-ymono.pdf}
-\caption{Non-admissible outputs of the creation routines on the twelve-point
+\caption{Non-canonical outputs of the creation routines on the twelve-point
 fixture: (left) the $x$-monotone ordering; (right) the $y$-monotone ordering.
-Red segments are consecutive collinear edges. Both lists fail the local condition.}
+Red segments are consecutive collinear edges. Both lists fail canonicality.}
 \label{fig:noncanonical}
 \end{figure*}
 ```
@@ -375,9 +470,11 @@ Red segments are consecutive collinear edges. Both lists fail the local conditio
 ### Monotone Hull
 
 The input to the hull pass is a stored sequence $S$ and an orientation flag
-$\sigma\in\{\textsc{clockwise},\textsc{anticlockwise}\}$. The pass finds the
-minimum and maximum vertices in the sweep direction, builds a circular doubly
-linked list, and walks the two chains from minimum to maximum and back. At a
+$\sigma\in\{\textsc{clockwise},\textsc{anticlockwise}\}$. The hull pass
+computes a monotone hull. It finds
+the minimum and maximum vertices in the sweep direction, builds a circular
+doubly linked list, and walks the two chains from minimum to maximum and back.
+At a
 vertex with previous, current, and next points $p,c,n$, it computes
 $$
 \Delta=(y_c-y_p)(x_n-x_c).
@@ -393,7 +490,7 @@ list. Algorithm \ref{alg:hull} states the procedure.
 \label{alg:hull}
 \begin{algorithmic}[1]
 \Require stored points $S$, orientation $\sigma$, sweep direction $\mathit{dir}$
-\Ensure a monotone repair, or a failure flag if the cleanup cannot produce an admissible simple list
+\Ensure a monotone hull
 \State $v_{\min}\gets\operatorname*{arg\,min}_{v\in S}\mathit{dir}(v)$;
        $v_{\max}\gets\operatorname*{arg\,max}_{v\in S}\mathit{dir}(v)$
 \State build a circular linked list over $S$
@@ -414,103 +511,114 @@ list. Algorithm \ref{alg:hull} states the procedure.
     \EndIf
   \EndWhile
 \EndFor
-\State \Return \textsc{CleanupCollinear}$(S)$
+\State remove collinear stored points from $S$
+\State \Return $S$
 \end{algorithmic}
 \end{algorithm}
 ```
 
 **Proposition 1 (termination and cost).** Algorithm \ref{alg:hull} terminates.
-Each sweep is $O(m)$; the cleanup is $O(m^2)$ in the worst case, so the composed
-repair is $O(m^2)$.
+Each sweep is $O(m)$. The collinear scan used by the monotone-hull
+implementation is $O(m^2)$ in the worst case.
 
 *Proof.* Every detach strictly decreases the number of stored vertices, so the
 loop terminates. Each vertex is visited $O(1)$ times per chain and each detach
-is $O(1)$, hence $O(m)$ per sweep. The cleanup may remove $O(m)$ points and
-restart an $O(m)$ scan after each removal, hence $O(m^2)$ worst case. $\square$
+is $O(1)$, hence $O(m)$ per sweep. The collinear cleanup may remove $O(m)$
+points and restart an $O(m)$ scan after each removal, hence $O(m^2)$ worst case.
+$\square$
 
 The loop stops only when no stored vertex violates the monotonicity condition,
-so each surviving chain is monotone at termination. The cleanup preserves the
-boundary and the area by Lemma 3. The proposition therefore gives termination,
-monotonicity, and the $O(m^2)$ cost; no minimality claim is needed.
+so each surviving chain is monotone at termination. The proposition therefore
+gives termination, monotonicity, and the stated cost; no minimality claim is
+needed.
 
-### Betweenness-Safe Collinear Cleanup
+### Canonicalization: Removing Redundant Vertices
 
-A repair can still contain collinear stored points. In the x-first encoding,
-two consecutive points with the same $y$ make the second point lie on a
+Canonicalization applies to a raw creation ordering. An ordering can still
+contain redundant stored points. In the x-first encoding,
+two cyclic consecutive points with the same $y$ make the second point lie on a
 horizontal edge, while two with the same $x$ make the first point lie on a
 vertical edge. Removing such a point preserves the represented boundary only
 when the point lies *strictly between* its neighbours. Algorithm
-\ref{alg:cleanup} enforces that condition.
+\ref{alg:cleanup} enforces
+
+that condition. It removes cyclic consecutive duplicates first, then uses a
+work queue so that only the neighbours of a removed point are re-examined.
+
+![Betweenness removal: a same-$y$ pair drops the second point; a same-$x$ pair drops the first.](figures/fig_drop.pdf){#fig:drop width="98%"}
 
 ```{=latex}
 \begin{algorithm}[t]
 \footnotesize
-\caption{\textsc{CleanupCollinear}$(S)$}
+\caption{\textsc{Canonicalize}$(S)$}
 \label{alg:cleanup}
 \begin{algorithmic}[1]
-\Require stored points $S$
-\Ensure a cleaned list and a local-condition flag
-\State $\mathit{changed}\gets\textsc{True}$
-\While{$\mathit{changed}$ \textbf{and} $|S|>2$}
-  \State $\mathit{changed}\gets\textsc{False}$
-  \For{$i\gets0$ \textbf{to} $|S|-1$}
-    \State $j\gets(i+1)\bmod|S|$
-    \If{$y_i=y_j$}
-      \State $k\gets(j+1)\bmod|S|$
-      \If{$\min(x_i,x_k)<x_j<\max(x_i,x_k)$}
-        \State remove $s_j$; $\mathit{changed}\gets\textsc{True}$; \textbf{break}
-      \EndIf
-    \ElsIf{$x_i=x_j$}
-      \State $k\gets(i-1)\bmod|S|$
-      \If{$\min(y_k,y_j)<y_i<\max(y_k,y_j)$}
-        \State remove $s_i$; $\mathit{changed}\gets\textsc{True}$; \textbf{break}
-      \EndIf
-    \EndIf
-  \EndFor
+\Require stored points $S=(s_0,\ldots,s_{m-1})$
+\Ensure a canonical list, or a failure if an unexpected obstruction remains
+\State remove cyclic consecutive duplicates from $S$
+\If{$|S|\le 2$}
+  \State \Return $S$
+\EndIf
+\State build a circular doubly linked list over $S$ and a queue of all indices
+\While{the queue is nonempty \textbf{and} $|S|>2$}
+  \State pop index $i$; let $p\gets\mathit{prev}(i)$, $q\gets\mathit{next}(i)$
+  \If{$p$ and $s_i$ share $y$ \textbf{and} $x_i$ lies strictly between $x_p$ and $x_q$}
+    \State remove $s_i$; enqueue $p$ and $q$
+  \ElsIf{$s_i$ and $q$ share $x$ \textbf{and} $y_i$ lies strictly between $y_p$ and $y_q$}
+    \State remove $s_i$; enqueue $p$ and $q$
+  \EndIf
 \EndWhile
-\State \Return $(S,\textsc{IsAdmissible}(S))$
+\If{\textsc{IsCanonical}$(S)$ is false}
+  \State \Return failure
+\EndIf
+\State \Return $S$
 \end{algorithmic}
 \end{algorithm}
 ```
 
-**Lemma 3 (cleanup preserves the boundary).** If the removed point lies strictly
-between its neighbours, Algorithm \ref{alg:cleanup} preserves the represented
-boundary and the signed area. If it does not lie between them, the algorithm
-does not remove it; the returned flag reports that the input is not admissible.
+**Lemma 3 (canonicalization preserves perimeter and area).** If a removed
+stored point lies strictly between its neighbours, deleting it preserves the
+represented boundary, hence both the perimeter and the signed area. Algorithm
+\ref{alg:cleanup} removes only such points, returns a canonical list when it
+succeeds. Its running time is $O(m)$.
 
 *Proof.* A removed point lies in the interior of a straight boundary edge, so
 deleting it merges two collinear edges into a single edge; the polygon is
-unchanged as a point set and its area is unchanged. The betweenness test is
-exactly the condition that the point is interior to that edge. Without the
-test, a spike such as $((0,0),(2,0),(1,1))$ would lose the segment from
-$(1,0)$ to $(2,0)$; the spike has the same area but a different boundary. The
-flag is necessary because a vertical or horizontal run can collapse to two
-points that still share an axis; such a list is not admissible. $\square$
+unchanged as a point set, so its perimeter and area are unchanged. The
+betweenness test is exactly the condition that the point is interior to that
+edge. Without the test, a spike such as $((0,0),(2,0),(1,1))$ would lose the
+segment from $(1,0)$ to $(2,0)$; the spike has the same area but a different
+perimeter and boundary. The first pass removes only cyclic consecutive
+duplicates, which are zero-length edges and have the same preservation
+property. Each point is removed at most once and only the two neighbours of a
+removed point are re-examined, so the work queue performs $O(m)$ tests in
+total; the final canonicality check is a single $O(m)$ pass. The final check is
+a safety net for an unexpected non-canonical configuration. $\square$
 
-The cleanup is a repair, not a validity certificate: it can only remove points
-whose removal is boundary-preserving, and it reports failure otherwise. The
-The wrapper raises \texttt{ValueError} when the flag is false, rather than
-returning a silently non-admissible list. The composed repair is therefore
-$O(m^2)$ worst case, which is appropriate for $m\le 100$ but is not an $O(m)$
-hull.
+The restart-based version of the betweenness scan is $O(m^2)$ worst case,
+because it restarts an $O(m)$ scan after each removal. The work-queue
+implementation above is $O(m)$ and is the canonicalizer exposed by the
+implementation. Canonicalization is not a simplicity certificate: it removes
+only points whose deletion preserves the boundary. The C++ implementation
+throws only if the final safety check fails.
 
-### Composition, Repair, and Applications
+### Composition and Applications
 
 The hull pass has two uses. The first is independent of creation: it computes
 the $x$- or $y$-monotone hull of a stored polygon or point set, and composing
 the two passes yields the rectilinear convex hull. The same construction gives
 a monotone enclosure or bounding shape and is a useful preprocessing step for
-decomposition. The second use is repair: when the input is a raw creation
-ordering, the passes remove the monotonicity violations and the cleanup turns
-the result into a locally admissible encoding.
+decomposition. The second use is to compute a monotone or convex hull
+explicitly.
 
 Applying the $x$-monotone hull and then the $y$-monotone hull produces a
 representation that is both $x$- and $y$-monotone on the tested fixtures; the
-composition is checked for monotonicity and the local condition before it is
-used as a decomposition input. Figure @fig:hull shows the resulting rectilinear
+composition is checked for monotonicity and canonicality before it is used as a
+decomposition input.
+ Figure @fig:hull shows the resulting rectilinear
 convex hull of a point set.
 
-![The rectilinear convex hull of a point set, obtained by the $x$- then $y$-monotone hull passes. The same passes serve as a repair for raw creation orderings.](figures/f-hull.pdf){#fig:hull width="78%"}
+![The rectilinear convex hull of a point set, obtained by the $x$- then $y$-monotone hull passes.](figures/f-hull.pdf){#fig:hull width="78%"}
 
 ## Recursive Cut Framework {#sec:cut}
 
@@ -676,15 +784,19 @@ different predicates in @sec:implicit.
 \end{algorithm}
 ```
 
-The base cases are stored pieces, not expanded boundaries. A two-node piece is a
-rectangle; a three-node piece is an L-shape when the expansion is simple. The
-predicate `FindConcave` returns the first stored vertex that violates the
-policy's concavity test. If no such vertex exists, the current cycle is returned
-as a single piece. The nearest-edge search returns a node $v_{\min}$ and a flag
-indicating whether the cut is vertical. The cut is inserted as a new node; the
-two recursive calls then process the two sides. The `FirstTarget` hook is the
-only difference between the explicit and implicit recursions: the explicit
-policy recurses first on $v_{\mathrm{cur}}$, the implicit policy on $v_{\min}$.
+The base cases are stored pieces, not expanded boundaries. For a simple input
+polygon, a two-node piece is a non-degenerate rectangle (its two points differ
+in both coordinates); a three-node piece is an L-shape when the expansion is
+simple. Canonicality alone also admits a distinct two-point list that shares an
+axis; it is a degenerate segment, not a simple polygon, and is not a
+decomposition base case. The predicate `FindConcave` returns the first stored
+vertex that violates the policy's concavity test. If no such vertex exists, the
+current cycle is returned as a single piece. The nearest-edge search returns a
+node $v_{\min}$ and a flag indicating whether the cut is vertical. The cut is
+inserted as a new node; the two recursive calls then process the two sides.
+The `FirstTarget` hook is the only difference between the explicit and implicit
+recursions: the explicit policy recurses first on $v_{\mathrm{cur}}$, the
+implicit policy on $v_{\min}$.
 
 ### Nearest Edge and Cut Insertion
 
@@ -712,6 +824,8 @@ implementation uses a strict inequality to break ties and to avoid selecting an
 edge incident to $v$ itself. Lemma 4 proves that the projection is the first
 boundary hit and that the open segment lies inside the polygon.
 
+![The cut primitive: (a) concave vertices; (b) nearest visible edge; (c) split and recurse.](figures/fig_cut_primitive.pdf){#fig:cut-primitive width="98%"}
+
 ### Degenerate Cuts
 
 A cut point can coincide with an existing vertex. When the nearest target is
@@ -722,15 +836,17 @@ instead of inserting a duplicate. The twelve-point fixture exercises this case:
 the first cut at the stored vertex $(3,2)$ targets $(1,2)$, which is adjacent in
 the list, so the two-node piece $(2,3),(1,2)$ is split off as a unit. The
 remaining two pieces are the area-10 piece (six stored points in the raw
-output, five after the cleanup) and the five-point piece of area 9. Without the degenerate
+output, five after canonicalization) and the five-point piece of area 9.
+ Without the degenerate
 split, the same run returns a single
 nineteen-area piece and a one-area piece, and the three-piece partition is lost.
 
-The convex wrapper can also receive a zero-width two-node sliver on a
-mixed fixture. Such a sliver has zero area and is discarded by the wrapper; it
-is not a piece of the output. Because the sliver has empty interior, discarding
-it does not change the partition of the polygon's interior or the area sum. The
-the test suite records this behavior.
+The convex wrapper can also receive a zero-width two-node sliver on a mixed
+fixture. Such a sliver is a distinct two-point list that shares an axis; it is
+canonical but not a simple polygon. It has zero area and is discarded by the
+wrapper; it is not a piece of the output. Because the sliver has empty
+interior, discarding it does not change the partition of the polygon's interior
+or the area sum. The test suite records this behavior.
 
 ## Convex Decomposition {#sec:convex}
 
@@ -827,10 +943,10 @@ Orthogonally convex & $(3,0),(4,1),(6,2),(5,5),(4,4)$ & 9 \\
 ```
 
 The C++ convex policy returns the six-point list shown for the area-10 piece.
-The cleanup pass removes the collinear stored point $(3,0)$ from the raw
-six-point list, yielding the five-point list; the area and the
-output class are unchanged. This is a concrete example of why the cleanup is a
-repair pass rather than a validity check.
+The canonicalization pass removes the redundant collinear point $(3,0)$ from
+the raw six-point list, yielding the five-point list; the perimeter, the area,
+and the output class are unchanged. This is a concrete example of why
+canonicalization is not a simplicity certificate.
 
 ![Convex decomposition of the twelve-point fixture: three orthogonally convex pieces of areas 1, 9, and 10.](figures/fig_convex_example.pdf){#fig:convex width="78%"}
 
@@ -889,6 +1005,8 @@ shows the implicit phase; a stored reflex corner is handled by the explicit
 phase in the same way. Together the two phases cover both types of
 $270^\circ$ vertex.
 
+![A U-shape contains both explicit $270^\circ$ stored vertices (blue) and implicit $270^\circ$ vertices created by the expansion (purple).](figures/fig_explicit_implicit.pdf){#fig:explicit-implicit width="72%"}
+
 ## Rectangle Decomposition {#sec:rectangle}
 
 ### Three Steps
@@ -914,6 +1032,8 @@ A simple orthogonal polygon with no $270^\circ$ vertex is a rectangle. Steps 2
 and 3 are repeated until neither type remains; a cut can create a new
 $270^\circ$ vertex of the other type, and the corresponding step handles it. The
 three steps therefore specify a rectangle decomposition.
+
+![The three-step rectangle decomposition pipeline.](figures/fig_pipeline.pdf){#fig:pipeline width="98%"}
 
 ### Correctness
 
@@ -941,7 +1061,9 @@ pipeline on the twelve-point fixture.
 
 Applying the pipeline to the twelve-point fixture yields seven rectangles,
 listed in Table \ref{tbl:rectangles}. Every rectangle has two stored points with
-distinct $x$- and $y$-coordinates, and the areas sum to 20.
+distinct $x$- and $y$-coordinates, and the areas sum to 20. This is the
+non-degenerate two-point case; canonicality alone also admits a two-point
+shared-axis list, which is not a rectangle.
 
 ```{=latex}
 \begin{table*}[t]
@@ -981,28 +1103,34 @@ three-step rectangle pipeline. The seven-rectangle result in Table
 
 ## Complexity {#sec:complexity}
 
-Let $n$ be the number of stored points of the input polygon.
+Let $n$ be the number of boundary vertices and $m=n/2$ the number of stored
+points. We state the bounds in $m$.
 
-**Local condition.** The local-condition scan is $O(n^2)$ in the simple
-implementation and $O(n\log n)$ after sorting. It is adequate for the small
-polygons of the domain.
+**Canonicality.** The canonicality check is a single $O(m)$ pass: it scans the
+cyclic consecutive stored points for duplicates first, then for
+betweenness-redundant shared-axis pairs. No sorting or all-pairs scan is
+needed.
 
-**Creation and repair.** The creation sort is $O(n\log n)$. Each monotone sweep
-is $O(n)$; the betweenness-safe cleanup is $O(n^2)$ worst case, so the composed
-repair is $O(n^2)$.
+**Creation and canonicalization.** The creation sort is $O(m\log m)$.
+Canonicalization of a creation ordering is $O(m)$ because each point is
+removed at most once and only its neighbours are revisited.
 
-**Cut stage.** The nearest-edge search scans $O(n)$ edges. Each cut increases
-the number of pieces by one and the recursion creates at most $O(n)$ pieces, so
-the cut stage takes $O(n^2)$ time. The linked list supports insertion in $O(1)$
-and the point array is appended in amortized $O(1)$. The recursion uses $O(n)$
-stack space in the worst case and $O(n)$ storage for the pieces.
+**Monotone hull.** Each sweep is $O(m)$; the hull's restart-based collinear
+scan is $O(m^2)$ worst case.
 
-**Rectangle stage.** Each explicit or implicit cut scans $O(n)$ stored points
-and edges, and the recursion creates at most $O(n)$ pieces, so the rectangle
-stage takes $O(n^2)$ time in the worst case. The output has $O(n)$ rectangles
+**Cut stage.** The nearest-edge search scans $O(m)$ stored edges. Each cut
+increases the number of pieces by one and the recursion creates at most $O(m)$
+pieces, so the cut stage takes $O(m^2)$ time. The linked list supports insertion
+in $O(1)$ and the point array is appended in amortized $O(1)$. The recursion
+uses $O(m)$ stack space in the worst case and $O(m)$ storage for the pieces.
+
+**Rectangle stage.** Each explicit or implicit cut scans $O(m)$ stored points
+and edges, and the recursion creates at most $O(m)$ pieces, so the rectangle
+stage takes $O(m^2)$ time in the worst case. The output has $O(m)$ rectangles
 because every cut increases the number of pieces by one.
 
-**Overall.** The pipeline runs in $O(n^2)$ time and $O(n)$ extra space. On the
+**Overall.** The pipeline runs in $O(m^2)$ time and $O(m)$ extra space.
+Canonicalization is linear and is not the source of the quadratic term. On the
 twelve-point fixture the convex stage returns three pieces after two cuts, and
 the rectangle stage returns seven rectangles.
 
@@ -1011,42 +1139,57 @@ the rectangle stage returns seven rectangles.
 ### Implementations
 
 The algorithms are implemented in C++20 in `physdes-cpp` (the `Recti` library).
-The implementation provides the local-condition check, the creation and repair
-passes, the convex, explicit, and implicit phases, and the three-step rectangle
-pipeline. It uses the twelve-point fixture and the area/orientation conventions
-described above.
+The implementation provides `is_canonical` (a single $O(m)$ pass),
+`canonicalize` (an $O(m)$ work-queue pass that removes consecutive duplicates
+and redundant collinear points), the creation and canonicalization passes, the
+convex, explicit, and implicit phases, and the three-step rectangle pipeline.
+It uses the twelve-point fixture and the area/orientation conventions described
+above.
+
+The main entry points are `is_canonical` and `canonicalize`; the creation
+routines `create_xmono_rpolygon` and `create_ymono_rpolygon`; the hull routines
+`rpolygon_make_xmonotone_hull`, `rpolygon_make_ymonotone_hull`, and
+`rpolygon_make_convex_hull`; and the cut routines `rpolygon_cut_convex`,
+`rpolygon_cut_explicit`, `rpolygon_cut_implicit`, and
+`rpolygon_cut_rectangle`. The creation routines return an orientation flag; the
+x-monotone variant reports anti-clockwise and the y-monotone variant reports
+clockwise, so the tests check the sign explicitly.
 
 The tests build and run with `xmake build test_recti` and
-`xmake run test_recti`. The suite is the `test_recti` target at commit
-`b5ef6ae` of `physdes-cpp`, plus the test fixtures described in this paper.
+`xmake run test_recti`. The suite is the `test_recti` target in the current
+working tree of the `dev` branch of `physdes-cpp`, plus the test fixtures
+described in this paper.
 
 ### Test Design
 
-The tests cover five layers.
+The tests cover six layers.
 
-1. **Local-condition tests.** The cases of Table \ref{tbl:admissible},
-   including the $m<2$ cases.
-2. **Cleanup tests.** The spike `((0,0),(2,0),(1,1))` is not removed by the
-   cleanup and is reported as non-admissible; vertical and horizontal runs are
-   rejected.
-3. **Creation and repair tests.** Create an ordering, apply the matching
-   monotone repair, and assert the local condition and monotonicity on the
-   result. The twelve-point fixture whose $x$-repair is not locally admissible
-   before cleanup is included.
-4. **Cut tests.** Assert orthogonal convexity on the *expanded* pieces and check
-   signed-area preservation. The twelve-point fixture is required to return
-   three pieces of areas 1, 9, and 10. The mixed fixture that produces a
-   zero-width sliver is required to return two valid pieces; the sliver is
-   discarded. The wrapper applies the cleanup before these assertions; the raw convex
-   policy returns the six-point area-10 list described above, so the fixture
-   test checks both its area and convexity and the cleaned five-point
-   representative. A bridged-hole fixture
-   $(4,1),(10,7),(7,5),(9,2),(6,5),(7,7)$ is cut into three pieces of areas
-   $2,15,10$; the bridge is traversed twice and the area is preserved. Two
-   AGPLIB instances, `rand-10-1` and `rand-12-6` [@agplib], are cut into two
-   and three orthogonally convex pieces with area preservation. The C++ suite
-   includes the same two AGPLIB fixtures and the bridged-hole fixture.
-5. **Rectangle tests.** Assert that every output piece is a two-point
+1. **Canonicality tests.** The canonical-form cases, including $m<2$, the
+   distinct two-point shared-axis case, the two-point duplicate, $m\ge3$
+   betweenness-collinear points, the shared-axis cases, and the non-adjacent
+   duplicate case.
+2. **Canonicalization tests.** `canonicalize` removes consecutive duplicates,
+   removes a betweenness-collinear point, preserves the signed area (and, by
+   Lemma 3, the perimeter), and keeps a non-redundant point.
+3. **Creation and canonicalization tests.** Create an ordering, assert its
+   monotonicity, apply canonicalize, and assert canonicality of the canonicalized
+   list. The twelve-point orderings are included.
+4. **Hull tests.** Assert monotonicity and canonicality of the hull outputs.
+5. **Cut tests.** Assert orthogonal convexity on the *expanded* pieces and check
+   signed-area preservation; assert canonicality on the pieces where the
+   implementation guarantees it (the random, AGPLIB, and bridged-hole
+   fixtures). The twelve-point fixture is required to return three pieces of
+   areas 1, 9, and 10; its raw pieces may contain implicit collinear points, so
+   canonicality is not asserted for them, only convexity and area. The mixed
+   fixture that produces a zero-width sliver is required to return two valid
+   pieces; the sliver is canonical but not simple and is discarded. A
+   bridged-hole
+   fixture $(4,1),(10,7),(7,5),(9,2),(6,5),(7,7)$ is cut into three pieces of
+   areas $2,15,10$; the bridge is traversed twice and the area is preserved.
+   Two AGPLIB instances, `rand-10-1` and `rand-12-6` [@agplib], are cut into
+   two and three orthogonally convex pieces with area preservation. The C++
+   suite includes the two AGPLIB fixtures and the bridged-hole fixture.
+6. **Rectangle tests.** Assert that every output piece is a two-point
    rectangle with distinct coordinates and positive area; the twelve-point
    fixture must return seven rectangles of areas 1, 1, 2, 2, 4, 4, and 6, and
    the area sum must be 20.
@@ -1055,12 +1198,14 @@ The convexity oracle is deliberately not `rpolygon_is_convex(piece)` on the
 stored points. That call checks the stored points, not the implicit vertices,
 and it returns true for any stored list of length at most three. The tests
 expand the piece first and check orthogonal convexity on the full boundary. This
-is the oracle that catches a zero-length edge in the six-point cut piece.
+is the oracle that catches a zero-length edge in the six-point cut piece. A
+canonical two-point shared-axis list expands to a degenerate boundary; the cut
+wrapper discards it as a zero-width sliver rather than treating it as a piece.
 
 ### Results
 
 Table \ref{tbl:results} reports the suite sizes and the fixture results. The
-C++ suite passes 142 cases with 962 assertions under `xmake`.
+C++ suite passes 143 cases with 974 assertions under `xmake`.
 
 ```{=latex}
 \begin{table*}[t]
@@ -1071,49 +1216,63 @@ C++ suite passes 142 cases with 962 assertions under `xmake`.
 \hline
 Suite / check & Cases / assertions & Result \\
 \hline
-C++ \texttt{test\_recti} & 142 cases, 962 assertions & pass \\
-Local condition & Table \ref{tbl:admissible} & pass \\
+C++ \texttt{test\_recti} & 143 cases, 974 assertions & pass \\
+Canonicality & Table \ref{tbl:canonical} & pass \\
+Canonicalization & duplicates, betweenness & pass \\
+Area preservation & all canonicalization tests & pass \\
 Convex cut, twelve-point fixture & 3 pieces; areas 1, 9, 10 & pass \\
 Rectangle cut, twelve-point fixture & 7 rectangles; areas 1, 1, 2, 2, 4, 4, 6 & pass \\
-Area preservation & all convex-cut and rectangle tests & pass \\
 \hline
 \end{tabular}
 \end{table*}
 ```
 
 The twelve-point fixture is decomposed into seven rectangles of areas
-$1,1,2,2,4,4,6$, all summing to 20. The tests assert the output class
-(local condition, orthogonal convexity, and rectangle shape), not only the
-area; this is what distinguishes a correct rectangle decomposition from a
-collection of convex pieces with the right total area.
+$1,1,2,2,4,4,6$, all summing to 20. The tests assert output-class properties
+(canonicality where guaranteed, orthogonal convexity, and rectangle shape), not
+only the area; this is what distinguishes a correct rectangle decomposition
+from a collection of convex pieces with the right total area. The three raw
+even-index fixture pieces are the exception: their convexity and area are
+asserted, but canonicality is not, because they may contain implicit collinear
+points.
 
 ### Threats to Validity
 
 The evaluation uses generated point sets and hand-built fixtures, not foundry
-data. The claims are algorithmic: exactness, termination, area preservation,
-and the output class. They are not signoff claims. The implementation is not
-cross-validated against an independent oracle on random inputs; the shared
-fixture and the same area/orientation conventions are the current check. It
-uses `int` coordinates; the intended range is small, and overflow is not
-handled.
+data. The claims are algorithmic: exactness, termination, canonicality,
+perimeter and area preservation, and the output class. They are not signoff
+claims. Canonicality is local and does not imply simplicity; simplicity is an
+assumption on the input and is checked separately where the implementation
+needs a guard. The implementation is not cross-validated against an independent
+oracle on random inputs; the shared fixture and the same area/orientation
+conventions are the current check. It uses `int` coordinates; the intended range
+is small, and overflow is not handled.
 
 ## Discussion and Limitations {#sec:discussion}
 
-**Representation.** The local condition is a property of the encoding, not a
-validity test; simplicity is an assumption on the input. The encoding depends on
-the starting vertex, and the algorithms use the given rotation. The
-implementation retains the name `is_canonical` for compatibility.
+**Representation.** Canonicality is a local property of the encoding, not a
+simplicity certificate: a canonical list can repeat a non-adjacent point or
+expand to a self-intersecting boundary. Simplicity is an assumption on the
+input and is checked separately where the implementation needs a guard. The
+encoding depends on the starting vertex, and the algorithms use the given
+rotation. `is_canonical` is the canonicality predicate; `canonicalize` is an
+$O(m)$ canonicalization pass that removes consecutive duplicates and redundant collinear
+points.
 
 **Polygons with holes.** A polygon with holes is reduced to a single boundary by
 a bridge cut from the outer boundary to each hole. The bridge is traversed in
 both directions, so the area is unchanged; the boundary is weakly simple for a
 zero-width bridge and simply connected for a narrow bridge. The even-index
 encoding and the cut skeleton then apply to that boundary, and repeated bridge
-vertices are handled by the degenerate split. This is standard and is not
+vertices are handled by the degenerate split; non-adjacent repeats are
+canonical and do not affect the canonicality check. This is standard and is not
 specific to the even-index representation. The proofs are stated for a simply
 connected input; the bridge reduction supplies that case.
 
-**No optimality claim.** The rectangle pipeline is a cut-based decomposition,
+![A bridge cut from the outer boundary to a hole merges the two boundaries into one cycle; the bridge is traversed in both directions.](figures/fig_bridge.pdf){#fig:bridge width="72%"}
+
+**No optimality claim.**
+ The rectangle pipeline is a cut-based decomposition,
 not a minimum-cardinality partition. The seven rectangles on the
 fixture are not claimed to be minimal. Minimum rectangle partition is a
 different problem with a rich literature [@ohtsuki1982minimum;
@@ -1121,42 +1280,51 @@ different problem with a rich literature [@ohtsuki1982minimum;
 preprocessing pipeline.
 
 **Proof scope.** The proofs assume a simply connected input and a reduced
-boundary. They cover termination, partition, area preservation, the convexity
-criterion, orthogonal convexity of the convex stage, and rectangle output. A
-polygon with holes is reduced to this case by the bridge cut described above;
-minimum-cardinality optimization is not addressed.
+boundary. They cover canonicality (local, not a simplicity certificate),
+perimeter and area preservation under canonicalization, $O(m)$
+canonicalization, termination, partition, the convexity criterion, orthogonal
+convexity of the convex stage, and rectangle output. A polygon with holes is
+reduced to this case by the bridge cut described above; minimum-cardinality
+optimization is not addressed.
 
-**Quadratic scaling.** The decomposition is $O(n^2)$. For $n\le 100$ this is
-appropriate; for $n>10^3$ a sub-quadratic method would be preferable. The
-literature on minimum/near-minimum rectangle partition is relevant, but the
-present pipeline is not optimized for that regime.
+**Quadratic scaling.** The decomposition is $O(m^2)$, where $m$ is the number
+of stored points. For $m\le 100$ this is appropriate; for $m>10^3$ a
+sub-quadratic method would be preferable. The literature on
+minimum/near-minimum rectangle partition is relevant, but the present pipeline
+is not optimized for that regime. Canonicalization itself is linear and is not
+the source of the quadratic term.
 
 **Degeneracies.** Zero-width slivers, duplicate implicit points, and collinear
-stored points are handled by the betweenness cleanup, the degenerate two-node
-split, and the zero-width discard. The treatment is not exhaustive: cuts through
-vertices and cuts along the boundary still need separate case analysis. Exact
-integer arithmetic avoids rounding but not these combinatorial degeneracies;
-symbolic perturbation [@edelsbrunner1990sos] is a complementary technique.
+stored points are handled by canonicalization (consecutive duplicates first,
+then betweenness-collinear points), the degenerate two-node split, and the
+zero-width discard. A distinct two-point
+shared-axis list is canonical but not simple; the cut wrapper discards it as a
+zero-width sliver.
+ The treatment is
+not exhaustive: cuts through vertices and cuts along the boundary still need
+separate case analysis. Exact integer arithmetic avoids rounding but not these
+combinatorial degeneracies; symbolic perturbation [@edelsbrunner1990sos] is a
+complementary technique.
 
 ## Conclusion {#sec:conclusion}
 
 We studied the even-index representation of rectilinear polygons and the
-algorithms that create, repair, and decompose them. For a simple input polygon,
-we proved that the encoding satisfies the local condition, proved the compressed
-area formula, and proved that the betweenness-safe cleanup preserves the
-boundary and area. The recursive cut framework has precise convex, explicit,
+algorithms that create, canonicalize, and decompose them. For a simple input polygon,
+we proved that the encoding is canonical, proved the compressed area formula,
+and proved that canonicalization preserves the boundary, the perimeter, and the
+area in $O(m)$ time. The recursive cut framework has precise convex, explicit,
 and implicit phases; the cut-partition lemma, the convexity criterion, and the
 rectangle theorem show that the three-step algorithm returns a partition into
-rectangles. The implementation is in C++20 and is verified by output-class tests, not
-only by area checks. A polygon with holes is reduced
-to a single boundary by a bridge cut from the outer boundary to each hole; this
-is not specific to the even-index representation. Open problems include
+rectangles. The implementation is in C++20 and is verified by output-class
+tests, not only by area checks. A polygon with holes is reduced to a single
+boundary by a bridge cut from the outer boundary to each hole; this is not
+specific to the even-index representation. Open problems include
 minimum-cardinality rectangle partitioning.
 
 ## Code Availability {#sec:code}
 
 The C++20 implementation is in `physdes-cpp` under the `luk036` organization.
 The tests build and run with `xmake build test_recti` and
-`xmake run test_recti`. The implementation provides the local-condition check,
-creation/repair, the convex, explicit, and implicit phases, and the three-step
-rectangle pipeline.
+`xmake run test_recti`. The implementation provides `is_canonical`,
+`canonicalize`, creation/canonicalization, the convex, explicit, and implicit phases, and
+the three-step rectangle pipeline.
