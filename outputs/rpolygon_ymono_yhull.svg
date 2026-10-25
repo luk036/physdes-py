@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-7.8 -9.2 14.6 15.0" width="760" height="780">
+<rect x="-7.8" y="-9.2" width="14.6" height="15.0" fill="white"/>
+<text x="-6.0" y="-8.6" font-family="sans-serif" font-size="0.46" fill="#222">create_ymono_rpolygon -> rpolygon_make_ymonotone_hull</text>
+<text x="-6.0" y="-7.999999999999999" font-family="sans-serif" font-size="0.34" fill="#1a7f37">is_canonical = True | red = consecutive same-orientation edges</text>
+<text x="-6.0" y="-7.299999999999999" font-family="monospace" font-size="0.3" fill="#1a7f37">no consecutive same-orientation edges</text>
+<polygon points="-3,4 3,4 3,3 0,3 0,1 5,1 5,-1 2,-1 2,-2 1,-2 1,-4 -4,-4 -4,-3 -5,-3 -5,-1 -6,-1 -6,2 -3,2" fill="#88C0D0" fill-opacity="0.18" stroke="none"/>
+<line x1="-3" y1="4" x2="3" y2="4" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="3" y1="4" x2="3" y2="3" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="3" y1="3" x2="0" y2="3" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="0" y1="3" x2="0" y2="1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="0" y1="1" x2="5" y2="1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="5" y1="1" x2="5" y2="-1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="5" y1="-1" x2="2" y2="-1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="2" y1="-1" x2="2" y2="-2" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="2" y1="-2" x2="1" y2="-2" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="1" y1="-2" x2="1" y2="-4" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="1" y1="-4" x2="-4" y2="-4" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-4" y1="-4" x2="-4" y2="-3" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-4" y1="-3" x2="-5" y2="-3" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-5" y1="-3" x2="-5" y2="-1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-5" y1="-1" x2="-6" y2="-1" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-6" y1="-1" x2="-6" y2="2" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-6" y1="2" x2="-3" y2="2" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<line x1="-3" y1="2" x2="-3" y2="4" stroke="#333" stroke-width="0.05" stroke-linecap="round"/>
+<circle cx="-3" cy="4" r="0.06" fill="#666"/>
+<circle cx="3" cy="4" r="0.06" fill="#666"/>
+<circle cx="3" cy="3" r="0.06" fill="#666"/>
+<circle cx="0" cy="3" r="0.06" fill="#666"/>
+<circle cx="0" cy="1" r="0.06" fill="#666"/>
+<circle cx="5" cy="1" r="0.06" fill="#666"/>
+<circle cx="5" cy="-1" r="0.06" fill="#666"/>
+<circle cx="2" cy="-1" r="0.06" fill="#666"/>
+<circle cx="2" cy="-2" r="0.06" fill="#666"/>
+<circle cx="1" cy="-2" r="0.06" fill="#666"/>
+<circle cx="1" cy="-4" r="0.06" fill="#666"/>
+<circle cx="-4" cy="-4" r="0.06" fill="#666"/>
+<circle cx="-4" cy="-3" r="0.06" fill="#666"/>
+<circle cx="-5" cy="-3" r="0.06" fill="#666"/>
+<circle cx="-5" cy="-1" r="0.06" fill="#666"/>
+<circle cx="-6" cy="-1" r="0.06" fill="#666"/>
+<circle cx="-6" cy="2" r="0.06" fill="#666"/>
+<circle cx="-3" cy="2" r="0.06" fill="#666"/>
+<circle cx="-3" cy="4" r="0.14" fill="#1F5FA8"/>
+<text x="-2.82" y="4.12" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">0</text>
+<circle cx="3" cy="3" r="0.14" fill="#1F5FA8"/>
+<text x="3.18" y="3.12" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">1</text>
+<circle cx="0" cy="1" r="0.14" fill="#1F5FA8"/>
+<text x="0.18" y="1.12" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">2</text>
+<circle cx="5" cy="-1" r="0.14" fill="#1F5FA8"/>
+<text x="5.18" y="-0.88" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">3</text>
+<circle cx="2" cy="-2" r="0.14" fill="#1F5FA8"/>
+<text x="2.18" y="-1.88" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">4</text>
+<circle cx="1" cy="-4" r="0.14" fill="#1F5FA8"/>
+<text x="1.18" y="-3.88" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">5</text>
+<circle cx="-4" cy="-3" r="0.14" fill="#1F5FA8"/>
+<text x="-3.82" y="-2.88" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">6</text>
+<circle cx="-5" cy="-1" r="0.14" fill="#1F5FA8"/>
+<text x="-4.82" y="-0.88" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">7</text>
+<circle cx="-6" cy="2" r="0.14" fill="#1F5FA8"/>
+<text x="-5.82" y="2.12" font-family="sans-serif" font-size="0.28" fill="#1F5FA8">8</text>
+</svg>
