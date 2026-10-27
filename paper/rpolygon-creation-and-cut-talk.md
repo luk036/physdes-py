@@ -5,8 +5,8 @@
 #     rpolygon-creation-and-cut-talk.md -o rpolygon-creation-and-cut-talk.tex
 #   lualatex -interaction=nonstopmode -halt-on-error rpolygon-creation-and-cut-talk.tex
 #   lualatex -interaction=nonstopmode -halt-on-error rpolygon-creation-and-cut-talk.tex
-title: "Even-Index Representations and Recursive Decomposition of Rectilinear Polygons"
-subtitle: "Representation, canonicalization, and three-step rectangle decomposition"
+title: "The Even-Index Encoding for Rectilinear Polygons"
+subtitle: "Simplicity, run time, and memory versus the full-vertex list"
 author: "Wai-Shing Luk"
 institute: "physdes"
 date: "\\today"
@@ -33,25 +33,33 @@ link-citations: true
 - Rectilinear polygons model **obstacles**, **regions**, and **layout fracturing** patterns [@sherwani1999algorithms; @kahng2011vlsi].
 - Coordinates are **integers**; rounding is not merely inaccurate but illegal.
 - The polygons of interest are small: $n \le 100$ vertices.
-- Consequently, **quadratic algorithms are acceptable**; clarity and exactness dominate.
+- At these sizes a quadratic algorithm is not merely acceptable: with small
+  constants it can beat a sub-quadratic method. Clarity and exactness dominate.
 
-## Problem Statement and Contributions
+## The Representation Question
 
-**Input.** A simple rectilinear polygon $P$ and its even-index encoding
-$S=(s_0,\ldots,s_{m-1})$ with $s_i\in\mathbb{Z}^2$.
+**Input.** A simple rectilinear polygon $P$.
 
-**Tasks.**
+- Full boundary: $n$ vertices, $2n$ coordinates.
+- Even-index: $m=n/2$ stored points; the omitted vertex is $(x_{i+1},y_i)$.
+- The encoding is reversible, but what does the halving actually buy?
 
-1. A compact even-index representation and its canonical form.
-2. An $O(m)$ canonicalization of creation orderings while preserving the
-   perimeter and the area.
-3. A three-step rectangle decomposition: convex decomposition, explicit
-   $270^\circ$ handling, and implicit $270^\circ$ handling.
-4. C++20 implementation and verification.
+**Contributions.**
 
-**Contributions.** The canonical form of the encoding, the compressed area
-formula, an $O(m)$ canonicalization, a three-step rectangle decomposition, and
-output-class tests that area checks alone cannot replace.
+1. A compact encoding, its canonical form, and the reconstruction rule.
+2. An exact cost model for storage, passes, and expansion.
+3. A C++20 benchmark and a full-vertex convex baseline.
+4. A three-step rectangle decomposition in $O(m^2)$.
+
+## Headline Results
+
+- **Memory:** 2.00$\times$ fewer bytes at the largest size; 1.91$\times$ at $n=64$.
+- **Bounding box:** 1.93--2.00$\times$ faster.
+- **Area / canonicality:** only about 1.3$\times$, not 2$\times$; per-iteration
+  work does not halve.
+- **Expansion:** 7--13$\times$ the full area pass at $m=8192$.
+- **Full-vertex convex cut:** 2--12$\times$ slower; 12$\times$ at $n=260$.
+- **Source size:** 268 versus 220 NBNC for canonical output; no advantage.
 
 # Representation
 
@@ -114,6 +122,15 @@ before $S_{i+1}$, including the closing pair $S_{m-1}\to S_0$.
 
 - The diagonal chord $S_iS_{i+1}$ is **not** a boundary edge.
 - The y-first form $(x_0,y_1)$ reconstructs a different polygon.
+
+## Reconstruction
+
+- The full boundary is recovered by inserting $I_i=(x_{i+1},y_i)$ between
+  consecutive stored points.
+- The first edge is horizontal, so the x-first rule is exact.
+- The y-first form $(x_0,y_1)$ reconstructs a different polygon.
+- Reducedness is essential: a $180^\circ$ vertex breaks the rule.
+- Simplicity is a global condition on the boundary.
 
 ## Minimal Encodings
 
@@ -262,22 +279,20 @@ return true
 - A work queue revisits only the neighbours of a removed point: $O(m)$.
 - The final `is_canonical` check is a safety net.
 
-## Orientation and Signed Area
+## Area and Perimeter
 
-For a simple polygon with vertices $(x_i,y_i)$,
+**Perimeter.** Over stored pairs,
+$$P(S)=\sum_{i=0}^{m-1}\bigl(|x_{i+1}-x_i|+|y_{i+1}-y_i|\bigr);$$
+the two terms are exactly the two boundary legs between $S_i$ and $S_{i+1}$.
 
-$$A=\frac12\sum_i\left(x_i y_{i+1}-x_{i+1}y_i\right).$$
+**Signed area** in the implementation's form:
+$$A(S)=v_1^x v_1^y+\sum_{i=2}^{m-1}v_i^x\bigl(v_i^y-v_{i-1}^y\bigr),\qquad
+v_i=s_i-s_0.$$
 
+- **Lemma.** This equals the signed area of the reconstructed boundary.
 - $A>0$: anticlockwise; $A<0$: clockwise.
-- The even-index encoding admits an $O(m)$ evaluation over the stored points.
-- Perimeter $P(S)=\sum_i(|x_{i+1}-x_i|+|y_{i+1}-y_i|)$; redundant removal
-  preserves both $P$ and $A$.
-- The sign drives the cut branches and serves as a cheap postcondition.
-
-**Lemma.** The signed area is invariant under the x-first expansion $E$.
-
-*Proof sketch.* Each inserted vertex is collinear with an axis-aligned edge and
-contributes zero net area. $\square$
+- Canonicalization preserves both $P$ and $A$.
+- The benchmark uses this formula on both representations, not a different one.
 
 ## Creation Outputs Are Not Canonical
 
@@ -290,6 +305,145 @@ contributes zero net area. $\square$
 
 - Raw creation orderings contain consecutive collinear triples.
 - Canonicalization removes the redundant points.
+
+# Comparison
+
+## Simplicity
+
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lll}
+\hline
+Aspect & Full vertex list & Even-index encoding \\
+\hline
+Stored records & $n$ points & $m=n/2$ points \\
+Omitted vertices & none & $m$, recovered by one rule \\
+Canonicality check & duplicate and collinear scan over $n$ & local betweenness scan over $m$ \\
+Rectangle base case & 4 vertices & 2 points \\
+L-shape base case & 6 vertices & 3 points \\
+Axis convention & none & fixed x-first \\
+GDSII interchange & direct & expand first \\
+\hline
+\end{tabular}
+\end{center}
+
+- The base-case saving is real.
+- The axis convention is a price, not a code-size advantage.
+
+## Run Time: Counting versus Timing
+
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllll}
+\hline
+Pass & Full list & Even-index & Trip ratio & Measured \\
+\hline
+Storage records & $n$ & $m$ & 2 & $2.00\times$ bytes \\
+Bounding box & $n$ & $m$ & 2 & $1.93$--$2.00\times$ \\
+Area & $n-1$ terms & $m-1$ terms & $\approx2$ & $\approx1.3\times$ \\
+Canonicality & $n$ tests & $m$ tests & 2 & $\approx1.3\times$ \\
+Perimeter & $n$ edges & $m$ pairs & 1 arithmetic & not measured \\
+Expansion & --- & $O(m)$ & --- & $7$--$13\times$ \\
+Cut & $O(n^2)$ & $O(m^2)$ & 4 pairs & not measured \\
+\hline
+\end{tabular}
+\end{center}
+
+- Trip count halves; timing follows only where per-iteration work is unchanged.
+- Both sides use the same telescoping area formula.
+- The asymptotic order is unchanged.
+
+## Measured Throughput
+
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{rrrrr}
+\hline
+$m$ & $n$ & area ratio & bbox ratio & canon ratio \\
+\hline
+128 & 256 & 1.41 & 1.93 & 1.30 \\
+512 & 1024 & 1.72 & 1.95 & 1.32 \\
+2048 & 4096 & 1.34 & 1.98 & 1.35 \\
+8192 & 16384 & 1.33 & 2.00 & 1.34 \\
+\hline
+\end{tabular}
+\end{center}
+
+- Median of 7 trials, MSVC release, Intel i9-13900H; ratio = full/even.
+- Area is about 1.3$\times$ at the largest size, not 2$\times$.
+- Expansion at $m=8192$: 138--183 $\mu$s versus 14--19 $\mu$s for the full
+  area pass ($7$--$13\times$).
+- Every row uses the same polygon for both representations.
+
+## Memory
+
+- 8 bytes per point (two 32-bit integers); 32-byte header.
+$$B_{\text{even}}(n)=32+\left(\frac{n}{2}-1\right)8,\qquad
+B_{\text{full}}(n)=32+(n-1)8.$$
+
+\begin{center}\scriptsize
+\begin{tabular}{rrrr}
+\hline
+$n$ & even bytes & full bytes & ratio \\
+\hline
+64 & 280 & 536 & 1.91 \\
+256 & 1048 & 2072 & 1.98 \\
+1024 & 4120 & 8216 & 1.99 \\
+4096 & 16408 & 32792 & 2.00 \\
+16384 & 65560 & 131096 & 2.00 \\
+\hline
+\end{tabular}
+\end{center}
+
+- The ratio tends to two; measured allocations agree.
+- GDSII stores 8 bytes per vertex, so the payload is halved.
+- Expansion adds $n$ points temporarily: the saving is in steady state.
+
+## Source Size
+
+Non-blank, non-comment lines (NBNC), C++20:
+
+\begin{center}\scriptsize
+\begin{tabular}{lrr}
+\hline
+Scope & Even-index & Full-vertex \\
+\hline
+Decomposition logic & 185 & 187 \\
+Canonicalization & 83 & 33 \\
+Total, canonical output & 268 & 220 \\
+\hline
+\end{tabular}
+\end{center}
+
+- The decomposition logic is almost identical.
+- The even-index canonicalizer is more elaborate.
+- Source size does not favour the encoding; its advantage is memory and time.
+
+## Full-Vertex Convex Baseline
+
+- Stores all $n$ vertices; same linked list and $O(1)$ split as the even-index
+  version.
+- Tests orthogonal convexity globally (x and y monotonicity); an L-shape has a
+  reflex vertex but is convex, so a local reflex test is insufficient.
+- Cuts at the first reflex vertex along an interior axis.
+
+\begin{center}\scriptsize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrr}
+\hline
+Fixture & $n$ & pieces (even/full) & full cut ($\mu$s) & ratio \\
+\hline
+Twelve-point & 24 & 3 / 5 & 10.8 & 2.5$\times$ \\
+Comb $k=2$ & 12 & 3 / 3 & 5.1 & 2.0$\times$ \\
+Comb $k=8$ & 36 & 9 / 9 & 25.3 & 3.1$\times$ \\
+Comb $k=32$ & 132 & 33 / 33 & 213.6 & 7.2$\times$ \\
+Comb $k=64$ & 260 & 65 / 65 & 788.3 & 11.9$\times$ \\
+\hline
+\end{tabular}
+\end{center}
+
+- Same polygon per row; the gap grows with size.
+- Remaining cost: global convexity test plus $2\times$ point count.
 
 # Monotone Hulls
 
@@ -510,10 +664,10 @@ adjacent vertex.
 |:----------|:-----|
 | canonicality check | $O(m)$ |
 | canonicalization | $O(m)$ |
-| concave-vertex scan | $O(n)$ |
-| nearest-edge scan | $O(n)$ |
+| concave-vertex scan | $O(m)$ |
+| nearest-edge scan | $O(m)$ |
 | insert / split | $O(1)$ |
-| total decomposition | $O(n^2)$ |
+| total decomposition | $O(m^2)$ |
 
 For $n\le 100$, quadratic time is preferable to a complicated sub-quadratic
 implementation.
@@ -526,9 +680,15 @@ implementation.
 
 - `xmake build test_recti`
 - `xmake run test_recti`
-- **143 test cases**
-- **974 assertions**
+- **147 test cases**
+- **1431 assertions**
 - **0 failures**
+
+**Benchmarks**
+
+- `xmake build bench_repr` / `xmake run bench_repr`
+- `xmake build bench_cut` / `xmake run bench_cut`
+- MSVC release, Intel i9-13900H
 
 - Canonicalization processes the creation ordering before the canonicality
   check; raw creation is only an ordering, not a polygon.
@@ -537,6 +697,8 @@ implementation.
 - A bridged-hole fixture is cut into three pieces of areas 2, 15, and 10;
   the area is preserved.
 - Two AGPLIB polygons and the bridged-hole fixture are tested in C++.
+- The full-vertex baseline is tested on the twelve-point fixture, comb
+  fixtures, and a 200-point random polygon.
 
 ## Limitations and Threats to Validity
 
@@ -544,14 +706,17 @@ implementation.
    assumption on the input.
 2. **Synthetic inputs.** The evaluation uses generated point sets and hand-built
    fixtures, not foundry data; the claims are algorithmic, not signoff.
-3. **Quadratic scaling.** Decomposition is $O(n^2)$; canonicalization is $O(m)$.
-   For $n\le 100$ this is appropriate, and sub-quadratic methods are not
-   addressed here.
+3. **Quadratic scaling.** Decomposition is $O(m^2)$; canonicalization is $O(m)$.
+For $n\le 100$ the quadratic algorithm is often faster, and sub-quadratic
+methods are not addressed here.
+
 4. **No optimality claim.** The three-step algorithm returns a rectangle
    partition, not a minimum-cardinality one.
 5. **Robustness.** Integer arithmetic is exact; degenerate input handling beyond
    the stated invariants is outside the present scope
    [@edelsbrunner1990sos].
+6. **Benchmark scope.** One machine, one compiler, and one fixture family; the
+   area ratio is indicative, while the byte and bounding-box ratios are stable.
 
 ## Polygons with Holes
 
@@ -585,9 +750,13 @@ implementation.
 
 - A canonical form with a redundant-vertex criterion.
 - An $O(m)$ canonicalization that preserves perimeter and area.
+- An exact cost model and C++20 measurements: 2.00$\times$ bytes and bounding
+  box, about 1.3$\times$ area, 7--13$\times$ expansion.
+- A full-vertex convex baseline: valid pieces, 2--12$\times$ slower (12$\times$
+  at $n=260$).
 - A three-step rectangle decomposition: convex decomposition, explicit
   $270^\circ$ handling, and implicit $270^\circ$ handling.
-- Output-class tests and C++20 verification (143 cases, 974 assertions).
+- Output-class tests and C++20 verification (147 cases, 1431 assertions).
 
 **Open problems.**
 
