@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## Version 0.10 (2026-11-20)
+
+### Features
+- **Spikes in canonical form**: `RPolygon` canonical form now permits spikes, and a public `canonicalize` helper was added. (#dc3dcda)
+- **Even-index predicate and hull cleanup**: Added the canonical even-index predicate with hull cleanup. (#8d80a1f)
+- **Revised rpolygon decomposition**: Updated the decomposition pipeline and added literature-driven tests. (#0ce5cb5)
 
 ### Performance
 - **True linear-time DME median selection**: `_build_merging_tree` found the partition median with `sorted(keys)[count // 2]`, making the recursion `O(n log²n)`. It now uses a median-of-medians `_select_kth` helper, restoring the `O(n log n)` construction the Rust/C++ ports achieve; the resulting tree stays bit-identical.
@@ -13,6 +18,24 @@
 - **`rpolygon_cut_explicit` infinite recursion**: The explicit decomposer's concave-vertex hook omitted the direction-reversal guard used by the convex variant, so concave polygons (such as a clockwise L-shape) drove the recursion unboundedly or produced degenerate pieces. Added the guard and replaced the skipped placeholder test with a real regression test.
 - **Stale `ManhattanArc3D` "(Not working)" docstring**: The class is functional (all 14 doctests pass); the label was outdated.
 - **Removed `tests/run_failing_tests.py`**: It pointed at `tests/test_geometric_hypothesis.py`, which does not exist.
+- **Degenerate 2-node convex-cut piece**: When the cut point duplicates `v_min`, the existing 2-node piece is reused instead of appending a duplicate, keeping the remainder canonical and fixing the non-convex leftover for the shared twelve-point fixture. (#379911e)
+- **Convex-cut parity with C++**: Restored the original half-open scan and zero-area filtering, and added the shared even-index fixture test. (#7cc64a9)
+- **Flaky scalar-additivity Hypothesis test**: The fixed `1e-12` tolerance failed when nearly equal scalars cancel; it now scales with the operand magnitudes. (#bfc93c4)
+
+### Refactoring
+- **Raw convex-cut pieces**: `rpolygon_cut` now returns the raw recursion pieces instead of dropping zero-area entries, and the unused `even_index_signed_area` helper was removed. (#a16ef74)
+
+### Testing & Code Quality
+- **Keepout tests without `icecream`**: Replaced the `ic()` debug prints in the 3D router keepout tests with SVG/terminal/parent assertions. (#b2253c8)
+- **Benchmarks**: Added size-sweep benchmarks for the DME and Steiner forest. (#c685f69)
+
+### Build & CI
+- **pytest-benchmark 5.3.1**: Requires `pytest-benchmark>=5.3.1` for pytest 9 compatibility, installs the PyPI wheel (the conda-forge build needs Python >=3.11) in the Python 3.10 environment, and drops the redundant conda pytest install. (#d6dd2c0, #071760f, #7b74e57)
+
+### Documentation
+- **rpolygon papers and talks**: Added and revised the rpolygon creation/decomposition paper, the linear-time DME talk, and the physical-design paper/Beamer deck, with regenerated figures. (#d91c392, #e8d1330, #d073ac4, #9b85653, #d2de2a3)
+- **Canonical-form and decomposition figures**: Added the convex-decomposition, twelve-point, and generated polygon figures. (#825f30c, #28597b2, #8e4841c)
+- **rpolygon even-index representation**: Documented the canonical representation. (#01df58e)
 
 ## Version 0.9 (2026-10-09)
 
