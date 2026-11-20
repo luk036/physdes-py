@@ -133,11 +133,20 @@ class TestVector2Properties:
         self, v: Vector2, s1: float, s2: float
     ) -> None:
         """Test that (s1 + s2) * v == s1 * v + s2 * v."""
-        # Use approximate equality for floating-point operations
+        # Use approximate equality for floating-point operations.  When
+        # s1 and s2 nearly cancel, (s1 + s2) is tiny while s1 * v and
+        # s2 * v are large, so the rounding error scales with the
+        # operands rather than with the result.
         import math
 
+        tolerance = (
+            1e-12
+            * max(1.0, abs(s1), abs(s2))
+            * max(1.0, abs(v.x), abs(v.y))
+        )
+
         def approx_equal(
-            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = 1e-12
+            a: float, b: float, rel_tol: float = 1e-9, abs_tol: float = tolerance
         ) -> bool:
             return math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
 
